@@ -1,26 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import Main from './Main/Main';
+import Experiences from './Main/Experiences/Experiences';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface P{
 }
 
-export default App;
+interface S{
+}
+
+class App extends React.Component<P, S>{
+  constructor(props: P){
+    super(props);
+    this.state = {
+    }
+  }
+
+  render(): React.ReactNode {
+    
+    return (
+      <div style={{display: 'flex', height: '100%', justifyContent: 'center'}}>
+        <Main></Main>
+      </div>
+    )
+  }
+}
+
+export default App
