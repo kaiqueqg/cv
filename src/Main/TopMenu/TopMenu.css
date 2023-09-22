@@ -1,0 +1,23 @@
+.langImg{
+  height: 30px;
+  width: 30px;
+  margin: 10px;
+  padding: 10px;
+}
+
+.langImg:hover{
+  background-color: #31353D;
+}
+
+.langImgSelected{
+  height: 30px;
+  width: 30px;
+  margin: 10px;
+  border: 1px solid black;
+  border-radius: 10%;
+  padding: 10px;
+}
+
+.langImgSelected:hover{
+  background-color: #31353D;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import colors from '../../../Colors';
+import T from '../../../Text/T';
 import { ExperienceData } from '../../../Types';
 
 interface P{
@@ -21,10 +22,10 @@ class Experience extends React.Component<P, S>{
     
     return (
       <div style={{margin: '10px'}}>
-        <div style={{fontSize: '30px', fontWeight: 'bold', margin: '10px 10px 0px', color: colors.blue}}>{experienceData.company}</div>
-        <div style={{fontSize: '13px', margin: '0px 0px 10px 10px', color: colors.grey}}>{experienceData.timeOnIt}</div>
-        <div style={{fontSize: '15px', margin: '0px 10px', color: colors.blue}}>{experienceData.jobTitle}</div>
-        <div style={{margin: '10px', color: colors.blue}}>{experienceData.description}</div>
+        <T style={{fontSize: '30px', fontWeight: 'bold', margin: '10px 10px 0px', color: colors.blue}} text={experienceData.company}></T>
+        <T style={{fontSize: '13px', margin: '0px 0px 10px 10px', color: colors.grey}} text={experienceData.timeOnIt}></T>
+        <T style={{fontSize: '15px', margin: '0px 10px', color: colors.blue}} text={experienceData.jobTitle}></T>
+        <T style={{margin: '10px', color: colors.blue}} text={experienceData.description}></T>
       </div>
     )
   }

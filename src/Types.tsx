@@ -1,6 +1,16 @@
 export interface ExperienceData{
-  timeOnIt: string,
-  company: string,
-  jobTitle: string,
-  description: string,
+  timeOnIt: LangText,
+  company: LangText,
+  jobTitle: LangText,
+  description: LangText,
 }
+
+export interface LangText{
+  current: Language,
+  ptbr: string,
+  en?: string,
+  fr?: string,
+  it?: string,
+}
+
+export enum Language{ PR_BR, EN, FR, IT }
