@@ -1,0 +1,15 @@
+@import '../../../../../Colors.scss';
+
+.knowledgeContainer{
+  display: flex;
+  flex-direction: row;
+}
+
+.level{
+  margin: 1px;
+}
+
+.levelText{
+  margin: 1px;
+  color: $beige;
+}

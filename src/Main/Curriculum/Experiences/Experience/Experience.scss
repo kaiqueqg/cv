@@ -1,0 +1,36 @@
+@import '../../../../../Colors.scss';
+
+.experienceContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 10px;
+}
+
+.experienceCompany{
+  font-size: 35px;
+  font-weight: bold;
+  margin: 10px 0px 0px 10px;
+  color: $blue;
+  text-align: left;
+}
+
+.experienceTimeOnIt{
+  text-align: left;
+  font-size: 13px;
+  margin: 0px 0px 10px 10px;
+  color: $grey;
+}
+
+.experienceJobTitle{
+  text-align: left;
+  font-size: 15px;
+  margin: 0px 10px;
+  color: $blue;
+}
+
+.experienceDescription{
+  text-align: left;
+  margin: 10px 0px 0px 10px;
+  color: $blue;
+}

@@ -1,0 +1,13 @@
+@import '../../../../Colors.scss';
+
+.experiencesContainer {
+  display: flex;
+  background-color: $beige;
+  width: 70%;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.experiencesSeparator{
+  width: 100%;
+}

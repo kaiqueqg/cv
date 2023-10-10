@@ -14,3 +14,4 @@ export interface LangText{
 }
 
 export enum Language{ PR_BR, EN, FR, IT }
+export enum MenuOption{ Curriculum, GroceryList, SleepDevice, WorldDefence }

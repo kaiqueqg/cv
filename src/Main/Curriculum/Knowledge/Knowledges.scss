@@ -1,0 +1,33 @@
+@import '../../../../Colors.scss';
+
+.myName{
+  text-align: center;
+  width: 100%;
+  color: $beige;
+}
+
+.knowledgesSeparator{
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.24);
+  border-width: 1px 0px 0px 0px;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.knowledgesContainer{
+  background-color: $cvBlue;
+  display: flex;
+  height: 100%;
+  width: 30%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1%;
+}
+
+.meImage{
+  width: 150px;
+  height: 200px;
+  border: 1px solid $beige;
+  border-radius: 5px;
+  align-self: center;
+}

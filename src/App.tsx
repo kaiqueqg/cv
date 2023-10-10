@@ -1,14 +1,17 @@
 import React from 'react';
-import './App.css';
-import Curriculum from './Main/Main';
+import './App.scss';
+import Curriculum from './Main/Curriculum/Curriculum';
+import GroceryList from './Main/GroceryList/GroceryList';
+import SleepDevice from './Main/SleepDevice/SleepDevice';
 import TopMenu from './Main/TopMenu/TopMenu';
-import { Language } from './Types';
+import { Language, MenuOption } from './Types';
 
 interface P{
 }
 
 interface S{
   lang: Language,
+  menuOption: MenuOption,
 }
 
 class App extends React.Component<P, S>{
@@ -16,20 +19,27 @@ class App extends React.Component<P, S>{
     super(props);
     this.state = {
       lang: Language.PR_BR,
+      menuOption: MenuOption.GroceryList,
     }
   }
 
   changeLanguage = (lang: Language) => {
     this.setState({lang});
   }
+  
+  changeMenuOption = (menuOption: MenuOption) => {
+    this.setState({menuOption})
+  }
 
   render(): React.ReactNode {
-    const { lang } = this.state;
+    const { lang, menuOption } = this.state;
     
     return (
-      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-        <TopMenu lang={lang} changeLanguage={this.changeLanguage}></TopMenu>
-        <Curriculum lang={lang}></Curriculum>
+      <div className="appContainer">
+        <TopMenu lang={lang} currentMenuOptionSelected={menuOption} changeLanguage={this.changeLanguage} changeMenuOption={this.changeMenuOption}></TopMenu>
+        {menuOption === MenuOption.Curriculum && <Curriculum lang={lang} changeLanguage={this.changeLanguage}></Curriculum>}
+        {menuOption === MenuOption.GroceryList && <GroceryList></GroceryList>}
+        {menuOption === MenuOption.SleepDevice && <SleepDevice></SleepDevice>}
       </div>
     )
   }

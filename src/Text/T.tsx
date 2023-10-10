@@ -1,6 +1,6 @@
 import React from 'react';
 import { LangText, Language } from '../Types';
-import './T.css'
+import './T.scss'
 
 interface P{
   text: LangText,

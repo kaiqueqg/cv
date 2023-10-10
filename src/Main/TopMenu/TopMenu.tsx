@@ -1,12 +1,12 @@
 import React from 'react';
-import './TopMenu.css';
-import { Language } from '../../Types';
-import Text from '../../Text/T';
-import T from '../../Text/T';
+import './TopMenu.scss';
+import { Language, MenuOption } from '../../Types';
 
 interface P{
   lang: Language,
+  currentMenuOptionSelected: MenuOption,
   changeLanguage: (language: Language) => void,
+  changeMenuOption: (menuOption: MenuOption) => void,
 }
 
 interface S{
@@ -20,14 +20,16 @@ class TopMenu extends React.Component<P, S>{
   }
 
   render(): React.ReactNode {
-    const { lang } = this.props;
+    const { currentMenuOptionSelected, changeMenuOption } = this.props;
 
     return (
-      <div style={{width: '70%', display: 'flex', flexDirection: 'row', justifyContent: 'right'}}>
-        <img src={process.env.PUBLIC_URL + '/brazil.png'} alt='' className={lang !== Language.PR_BR? 'langImg' : 'langImgSelected'} onClick={() => {this.props.changeLanguage(Language.PR_BR)}}></img>
-        <img src={process.env.PUBLIC_URL + '/united-states-of-america.png'} alt='' className={lang !== Language.EN? 'langImg' : 'langImgSelected'} onClick={() => {this.props.changeLanguage(Language.EN)}}></img>
-        <img src={process.env.PUBLIC_URL + '/france.png'} alt='' className={lang !== Language.FR? 'langImg' : 'langImgSelected'} onClick={() => {this.props.changeLanguage(Language.FR)}}></img>
-        <img src={process.env.PUBLIC_URL + '/italy.png'} alt='' className={lang !== Language.IT? 'langImg' : 'langImgSelected'} onClick={() => {this.props.changeLanguage(Language.IT)}}></img>
+      <div className='topMenu'>
+        <div key='cvBtn' className={MenuOption.Curriculum === currentMenuOptionSelected? 'menuButton menuSelected': 'menuButton'} onClick={() => {changeMenuOption(MenuOption.Curriculum)}}>
+          <div className='text'>Curriculum</div>
+        </div>
+        <div key='groceryBtn' className={MenuOption.GroceryList === currentMenuOptionSelected? 'menuButton menuSelected': 'menuButton'} onClick={() => {changeMenuOption(MenuOption.GroceryList)}}>
+          <div className='text'>Grocery List</div>
+        </div>
       </div>
     )
   }

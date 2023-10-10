@@ -1,6 +1,6 @@
 import React from 'react';
-import colors from '../../Colors';
-import { ExperienceData, Language } from '../../Types';
+import './Experiences.scss'
+import { ExperienceData, Language } from '../../../Types';
 import Experience from './Experience/Experience';
 
 interface P{
@@ -136,14 +136,12 @@ class Experiences extends React.Component<P, S>{
         - Risoluzione dei problemi di compilazione ed esecuzione,
         creazione di progetti tramite CMake.
         - Riunione quotidiana del team per chiarimenti e
-        pianificazione delle attività.
-        `}}, 
-  ]
+        pianificazione delle attività.`}},]
     
     return (
-      <div style={{backgroundColor: colors.beige, display: 'flex', width: '70%', flexDirection: 'column'}}>
+      <div className='experiencesContainer'>
         {experiences.map((item, index) => {
-          return <Experience key={index+item.company.ptbr} experienceData={item}></Experience>
+          return (<div className='experiencesSeparator'><Experience key={index+item.company.ptbr} experienceData={item}></Experience></div>)
         })}
       </div>
     )
