@@ -19,7 +19,7 @@ class App extends React.Component<P, S>{
     super(props);
     this.state = {
       lang: Language.PR_BR,
-      menuOption: MenuOption.GroceryList,
+      menuOption: MenuOption.Curriculum,
     }
   }
 

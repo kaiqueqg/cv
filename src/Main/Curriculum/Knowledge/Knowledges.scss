@@ -3,7 +3,7 @@
 .myName{
   text-align: center;
   width: 100%;
-  color: $beige;
+  color: $knowledge-text;
 }
 
 .knowledgesSeparator{
@@ -15,7 +15,7 @@
 }
 
 .knowledgesContainer{
-  background-color: $cvBlue;
+  background-color: $knowledges-container;
   display: flex;
   height: 100%;
   width: 30%;
@@ -27,7 +27,7 @@
 .meImage{
   width: 150px;
   height: 200px;
-  border: 1px solid $beige;
+  border: 1px solid $knowledges-image;
   border-radius: 5px;
   align-self: center;
 }

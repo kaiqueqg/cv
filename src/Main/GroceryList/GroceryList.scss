@@ -7,8 +7,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   color: $beige;
-  margin: 10px 0px 50px 0px;
-  padding: 10px 5px;
 }
 
 .title{
@@ -16,34 +14,33 @@
   align-self: center;
   font-size: 30px;
   font-weight: bold;
-  margin: 20px 0px 40px 0px
+  margin: 20px 0px 40px 0px;
+  color: $grocery-text;
 }
 
 .subTitle{
-  margin: 30px 0px 10px 10px;
-  align-self: center;
+  margin: 30px 0px 10px 20px;
+  align-self: left;
   font-size: 35px;
   font-weight: bold;
-  font-family: 'Ariel';
-}
-
-.subTitleResponse{
-  font-size: 19px;
-  margin: 0px 10px;
-  text-align: left;
-  color: $beige-light-dark;
-}
-
-.grocerySeparator{
-  width: 100%;
-  border-width: 1px 0px 0px 0px;
-  border-color: $blue-light;
-  border-style: solid;
-  margin: 20px 0px;
+  color: $grocery-text;
 }
 
 .link{
-  color: $beige;
+  color: $grocery-text;
 }
 
+.sourceCode{
+  color: $grocery-text;
+  margin: 0px 20px;
+}
 
+.grocerylistImg{
+  border: 1px solid black;
+}
+
+.grocerylistText{
+  margin: 30px 20px;
+  color: $grocery-text;
+  font-weight: bold;
+}
