@@ -25,10 +25,10 @@ class TopMenu extends React.Component<P, S>{
     return (
       <div className='topMenu'>
         <div key='cvBtn' className={MenuOption.Curriculum === currentMenuOptionSelected? 'menuButton menuSelected': 'menuButton'} onClick={() => {changeMenuOption(MenuOption.Curriculum)}}>
-          <div className='text'>Curriculum</div>
+          <div className={MenuOption.Curriculum === currentMenuOptionSelected? 'text textSelected': 'text'}>Curriculum</div>
         </div>
         <div key='groceryBtn' className={MenuOption.GroceryList === currentMenuOptionSelected? 'menuButton menuSelected': 'menuButton'} onClick={() => {changeMenuOption(MenuOption.GroceryList)}}>
-          <div className='text'>Grocery List</div>
+          <div className={MenuOption.GroceryList === currentMenuOptionSelected? 'text textSelected': 'text'}>Knowledge showcase</div>
         </div>
       </div>
     )

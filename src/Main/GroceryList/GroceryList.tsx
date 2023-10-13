@@ -20,7 +20,7 @@ class GroceryList extends React.Component<P, S>{
       <div className='groceryContainer'>
         <div className='title'>Personal use project & knowledge showcase</div>
         <img src={process.env.PUBLIC_URL + '/how.png'} alt='' style={{width: '1000px' , height: '300px', alignSelf: 'center'}} className='grocerylistImg'></img>
-        <div className='grocerylistText'>To run, use this docker-compose: <a className='link' href='https://github.com/kaiqueqg/grocerylist-api/blob/main/compose-prod.yml'>compose-prod.yml</a></div>
+        <div className='grocerylistText'>TO RUN: Use this docker-compose: <a className='link' href='https://github.com/kaiqueqg/grocerylist-api/blob/main/compose-prod.yml'>compose-prod.yml</a></div>
         <div className='subTitle'>GitHub:</div>
         <div className='sourceCode'>API: <a className='link' href='https://github.com/kaiqueqg/grocerylist-api'>https://github.com/kaiqueqg/grocerylist-api</a></div>
         <div className='sourceCode'>Front-end: <a className='link' href='https://github.com/kaiqueqg/grocerylist-front'>https://github.com/kaiqueqg/grocerylist-front</a></div>

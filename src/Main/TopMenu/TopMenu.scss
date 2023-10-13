@@ -21,26 +21,27 @@
   align-items: center;
   justify-content: center;
   border-style: solid;
-  border-color: rgba(0, 0, 0, 0);
-  border-width: 0px 0px 4px 0px;
+  border-color: transparent;
+  border-width: 1px 1px 4px 1px;
+}
+
+.menuButton:hover{
+  border-width: 1px 1px 4px 1px;
+  border-color: $topmenu-menubutton-hover;
 }
 
 .menuSelected{
   border-style: solid;
   border-color: $topmenu-border;
-  border-width: 1px 1px 4px 1px;
-  background-color: white;
-  border-radius: 3px 3px 0px 0px;
-}
-
-.icon{
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+  background-color: $topmenu-selected-bg;
 }
 
 .text{
   font-size: 15px;
   font-weight: bold;
-  color: $blue-darker;
+  color: $topmenu-selected-text;
+}
+
+.textSelected{
+  color: white;
 }
