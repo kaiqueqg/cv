@@ -1,3 +1,4 @@
+@import '../../../Global.scss';
 @import '../../../Colors.scss';
 
 .groceryContainer{
@@ -7,6 +8,10 @@
   justify-content: flex-start;
   align-items: flex-start;
   color: $beige;
+
+  @media screen and (max-width: $screen-max-width){
+    width: 90%;
+  }
 }
 
 .title{
@@ -16,14 +21,24 @@
   font-weight: bold;
   margin: 20px 0px 40px 0px;
   color: $grocery-text;
+
+  @media screen and (max-width: $screen-max-width){
+    font-size: 20px;
+    align-self: center;
+  }
 }
 
 .subTitle{
-  margin: 30px 0px 10px 20px;
-  align-self: left;
-  font-size: 35px;
+  margin: 30px 0px 10px 0px;
+  text-align: left;
+  font-size: 30px;
   font-weight: bold;
   color: $grocery-text;
+
+  @media screen and (max-width: $screen-max-width){
+    font-size: 20px;
+    align-self: center;
+  }
 }
 
 .link{
@@ -32,15 +47,52 @@
 
 .sourceCode{
   color: $grocery-text;
-  margin: 0px 20px;
-}
+  margin: 2px 10px;
+  text-align: left;
 
-.grocerylistImg{
-  border: 1px solid black;
+  @media screen and (max-width: $screen-max-width){
+    margin: 2px 0px;
+  }
 }
 
 .grocerylistText{
-  margin: 30px 5px 5px 20px;
+  margin: 2px 10px;
   color: $grocery-text;
   font-weight: bold;
+  text-align: left;
+  font-size: 15px;
+
+  @media screen and (max-width: $screen-max-width){
+    margin: 2px 0px;
+  }
+}
+
+.appSampleContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.how{
+  border: 1px solid black;
+  width: 100%;
+  max-width: 1000px;
+  align-self: center;
+}
+
+.appSampleImage{
+  width: 300px;
+  height: 633px;
+  align-self: center;
+  margin: 10px;
+}
+
+.frontSampleImg{
+  width: 100%;
+  max-width: 1200px;
+  align-self: center;
+  margin: 10px;
 }

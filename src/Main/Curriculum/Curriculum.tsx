@@ -1,44 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Curriculum.scss'
 import Experiences from './Experiences/Experiences';
 import Knowledges from './Knowledge/Knowledges';
 import { Language } from '../../Types';
 
-interface P{
-  lang: Language,
-  changeLanguage: (language: Language) => void,
+interface CurriculumProps{
 }
 
-interface S{
-}
+const Curriculum: React.FC<CurriculumProps> = () => {
+  const [lang, setLang] = useState<Language>(Language.PR_BR);
 
-class Curriculum extends React.Component<P, S>{
-  constructor(props: P){
-    super(props);
-    this.state = {
-    }
-  }
-
-  render(): React.ReactNode {
-    const { lang } = this.props;
-    
-    return (
-      <div className='curriculumContainer'>
-        <div className='cvTopItemsContainer'>
-          <div className='cvLangContainer'>
-            <img src={process.env.PUBLIC_URL + '/brazil.png'} alt='' className={lang !== Language.PR_BR? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {this.props.changeLanguage(Language.PR_BR)}}></img>
-            <img src={process.env.PUBLIC_URL + '/united-states-of-america.png'} alt='' className={lang !== Language.EN? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {this.props.changeLanguage(Language.EN)}}></img>
-            <img src={process.env.PUBLIC_URL + '/france.png'} alt='' className={lang !== Language.FR? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {this.props.changeLanguage(Language.FR)}}></img>
-            <img src={process.env.PUBLIC_URL + '/italy.png'} alt='' className={lang !== Language.IT? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {this.props.changeLanguage(Language.IT)}}></img>
-          </div>
+  return (
+    <div className='curriculumContainer'>
+      <div className='cvTopItemsContainer'>
+        <div className='cvLangContainer'>
+          <img src={process.env.PUBLIC_URL + '/brazil.png'} alt='' className={lang !== Language.PR_BR? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {setLang(Language.PR_BR)}}></img>
+          {/* <img src={process.env.PUBLIC_URL + '/united-states-of-america.png'} alt='' className={lang !== Language.EN? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {setLang(Language.EN)}}></img> */}
+          <img src={process.env.PUBLIC_URL + '/france.png'} alt='' className={lang !== Language.FR? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {setLang(Language.FR)}}></img>
+          <img src={process.env.PUBLIC_URL + '/italy.png'} alt='' className={lang !== Language.IT? 'cvLangImg' : 'cvLangImgSelected'} onClick={() => {setLang(Language.IT)}}></img>
         </div>
-        <div className='cvContainer'>
-          <Knowledges lang={lang}></Knowledges>
-          <Experiences lang={lang}></Experiences>
-        </div>
-      </div> 
-    )
-  }
+      </div>
+      <div className='cvContainer'>
+        {lang === Language.PR_BR && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum.pdf#view=fitH"}/>}
+        {/* {lang === Language.EN && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-En.pdf#view=fitH"}/>} */}
+        {lang === Language.FR && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-Fr.pdf#view=fitH"}/>}
+        {lang === Language.IT && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-It.pdf#view=fitH"}/>}
+        {/* <Knowledges lang={lang}></Knowledges>
+        <Experiences lang={lang}></Experiences> */}
+      </div>
+    </div> 
+  )
 }
 
 export default Curriculum

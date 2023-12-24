@@ -13,5 +13,17 @@ export interface LangText{
   it?: string,
 }
 
+export interface UserModel{
+  UserId: string,
+  Username: string,
+  Password: string,
+}
+
+export interface LoginModel{
+  User?: UserModel,
+  Token: string,
+  ErrorMessage: string,
+}
+
 export enum Language{ PR_BR, EN, FR, IT }
-export enum MenuOption{ Curriculum, GroceryList, SleepDevice, WorldDefence }
+export enum MenuOption{ Login, Curriculum, GroceryList, SleepDevice, WorldDefence }

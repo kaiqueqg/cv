@@ -22,33 +22,47 @@ class Experiences extends React.Component<P, S>{
     let experiences: ExperienceData[] = [
     {company: {...base, ptbr: 'Acrelec'},  
       timeOnIt: {...base,
-        ptbr: 'jan de 2021 - mar de 2022 · 1 ano 3 meses',
-        en: 'jan 2021 - mar 2022 · 1 year 3 months',
-        fr: 'janvier 2021 - mars 2022 - 1 an 3 mois',
-        it: 'gennaio 2021 - marzo 2022 · 1 anno 3 mesi'},
+        ptbr: 'jan de 2021 - mar de 2022',
+        en: 'jan 2021 - mar 2022',
+        fr: 'janvier 2021 - mars 2022',
+        it: 'gennaio 2021 - marzo 2022'},
       jobTitle: {...base,
         ptbr:'Desenvolvedor de software',
         en: 'Software developer',
         fr: 'Développeur de logiciels',
         it: 'Sviluppatore di software'},
       description: {...base, 
-        ptbr: '- Desenvolvimento e manutenção do principal software, um Point of Sale feito em Python e React e esporadicamente usando MySQL.',
+        ptbr: `Colaborei no desenvolvimento de um sistema de Point of Sale (POS) para hamburguerias desde gerenciarem os pedidos, envio de solicitações à cozinha e processamento de pagamentos. 
+
+        Como desenvolvedor full-stack, minhas principais responsabilidades incluíram aprimorar o sistema por meio do desenvolvimento de novas funcionalidades e redesenho da interface do usuário (UI) utilizando ReactJS, bem como a integração com um sistema de pedidos por celular. 
+
+        Além disso, trabalhei na implementação de funcionalidades de promoções e descontos, correção de erros de manipulação de pedidos em Python, e otimização de consultas no banco de dados MySQL. 
+
+        Diariamente, seguimos metodologias ágeis, como Sprints e Kanban, com um foco no levantamento de requisitos, atribuição de pontos para atividades e realização de testes rigorosos para garantir a qualidade do sistema.
+        `,
         en: '- Development and maintenance of the main company software, a Point of Sale made in Python and React and sporadically using MySQL.',
         fr: '- Développement et maintenance du logiciel principal, un point de vente réalisé en Python et React, avec une utilisation occasionnelle de MySQL.',
         it: '- Sviluppo e manutenzione del software principale, un punto vendita realizzato in Python e React e utilizzo sporadico di MySQL'}},
     {company: {...base, ptbr: 'Itaú'}, 
       timeOnIt: {...base,
-        ptbr: 'jan de 2021 - mar de 2022 · 1 year 3 months',
-        en: 'september 2019 - november 2020 - 1 to 3 months',
-        fr: 'septembre 2019 - novembre 2020 - 1 an 3 mois',
-        it: 'settembre 2019 - novembre 2020 1 anno 3 mesi'},
+        ptbr: 'jan de 2021 - mar de 2022',
+        en: 'september 2019 - november 2020',
+        fr: 'septembre 2019 - novembre 2020',
+        it: 'settembre 2019 - novembre 2020'},
       jobTitle: {...base,
         ptbr:'Desenvolvedor de software',
         en: 'Software developer',
         fr: 'Développeur de logiciels',
         it: 'Sviluppatore di software'},
       description: {...base, 
-        ptbr: '- Desenvolvimento e manutenção do principal software, um Point of Sale feito em Python e React e esporadicamente usando MySQL.',
+        ptbr: `Desempenhei o papel de desenvolvedor full-stack, trabalhando com novos requisitos, além da manutenção do sistema existente utilizado pela equipe que cuida da segurança de todas as agências do banco Itaú. Principais partes que atuei foram no back-end em C# Net com padrões como DDD e Repository, front-end em Javascript e utilizando banco de dados em SQL Server. Todo o trabalho envolveu Sprints com pontuação em fibonacci. 
+
+        Também desenvolvi atividades de forma individual, como por exemplo: 
+        
+        - Uma máquina de estado para substituir trabalho de funcionários que manualmente selecionavam quais empresas poderiam marcar, quais horários podiam visitar as agências. Software deveria a partir de um flowchart complexo levantado anteriormente com a gerência da área, aceitar ou recusar o pedido de manutenção que outras empresas fariam nas agências do banco Itaú.
+        - Uma máquina de estado, que ia substituir o trabalho manual que levava semanas, feito todo final de ano, que parava diversos funcionários para realizar o recadastramento de fornecedores de serviços e equipamentos para as agências. Software fez o recadastramento de milhares de fornecedores, além de revelar inconsistências nos cadastros anteriores, requerendo ajustes pois a entrega do recadastramento tinha tempo limite.
+        - Software para manipular outro sistema de enviar mensagens de aviso de precaução na época de COVID para agências selecionadas.
+        `,
         en: '- Development and maintenance of the main company software, a Point of Sale made in Python and React and sporadically using MySQL.',
         fr: `- Développement et maintenance du système utilisé par la
         sécurité des agences de la banque Itaú en C# Net Core,
@@ -62,10 +76,10 @@ class Experiences extends React.Component<P, S>{
         macchina a stati finiti per sostituire il lavoro manuale.`}},
     {company: {...base, ptbr: 'Afresp'},
       timeOnIt: {...base,
-        ptbr: 'mai de 2018 - set de 2019 · 1 ano 5 meses',
-        en: 'may 2018 - sep 2019 · 1 year 5 months',
-        fr: 'mai 2018 - septembre 2019 - 1 an 5 mois',
-        it: 'maggio 2018 - settembre 2019 1 anno 5 mesi'},
+        ptbr: 'mai de 2018 - set de 2019',
+        en: 'may 2018 - sep 2019',
+        fr: 'mai 2018 - septembre 2019',
+        it: 'maggio 2018 - settembre 2019'},
       jobTitle: {...base,
         ptbr:'Desenvolvedor de software',
         en: 'Software developer',
@@ -86,19 +100,18 @@ class Experiences extends React.Component<P, S>{
         reddito associata all'associazione.`}},
     {company: {...base, ptbr: 'RDI Software'}, 
       timeOnIt: {...base,
-        ptbr: 'jan de 2021 - mar de 2022 · 1 year 3 months',
-        en: 'jul 2014 - jun 2015 · 1 year',
-        fr: 'juillet 2014 - juin 2015 - 1 an',
-        it: 'lug 2014 - giu 2015 1 anno'},
+        ptbr: 'jan de 2021 - mar de 2022',
+        en: 'jul 2014 - jun 2015',
+        fr: 'juillet 2014 - juin 2015',
+        it: 'lug 2014 - giu 2015'},
       jobTitle: {...base,
         ptbr:'Desenvolvedor de software',
         en: 'Software developer',
         fr: 'Développeur de logiciels',
         it: 'Sviluppatore di software'},
       description: {...base, 
-        ptbr: `- Desenvolvimento de novas funcionalidades em C#/C++ puro no software utilizado para controle da produção de lanches nos restaurantes do Mc Donald's
-        - Sustentação do sistema em C++ já existente que faz o controle da cozinha e caixa do Mc Donald's.
-        - Controle e planejamento do desenvolvimento utilizando sprints e daily meetings.`,
+        ptbr: `Trabalhei principalmente no desenvolvimento e manutenção do software utilizado pelo McDonald 's em todo mundo para controle da cozinha e pedidos nos restaurantes. Trabalho consistia em desenvolvimento em C/C++ tanto do back-end como front-end, desde implementação de novas promoções, correções de erros e criação de novas funcionalidades. 
+        Também trabalhei na equipe de desenvolvimento do novo sistema em C# .Net para eventualmente substituir o software mais antigo.`,
         en: `- Development of new functionalities in C#/C++ pure in the software that control the production of sandwiches in the McDonald's restaurants.
         - Maintenance of the software in C++ already in the restaurants controlling the kitchen and payments of McDonald's.
         - Control and planning of the development utilizing sprints and daily meetings.
@@ -111,17 +124,17 @@ class Experiences extends React.Component<P, S>{
         nei ristoranti McDonald's.`}},
     {company: {...base, ptbr: 'Totvs'}, 
       timeOnIt: {...base,
-        ptbr: 'jul de 2012 - jul de 2014 · 2 anos 1 mês',
-        en: 'jul 2012 - jul 2014 · 2 years 1 month',
-        fr: 'juillet 2012 - juillet 2014 - 2 ans 1 mois',
-        it: 'lug 2012 - lug 2014 · 2 anni 1 mese'},
+        ptbr: 'jul de 2012 - jul de 2014',
+        en: 'jul 2012 - jul 2014',
+        fr: 'juillet 2012 - juillet 2014',
+        it: 'lug 2012 - lug 2014'},
       jobTitle: {...base,
         ptbr:'Técnico de pesquisa e desenvolvimento',
         en: 'Technician in R&D',
         fr: 'Technicien en Recherche et Développement',
         it: 'Tecnico di ricerca e sviluppo'},
       description: {...base, 
-        ptbr: '- Desenvolvimento e manutenção do principal software, um Point of Sale feito em Python e React e esporadicamente usando MySQL.',
+        ptbr: 'Desenvolvimento de uma máquina virtual em C/C++ e QT para linguagem própria da empresa (ADVPL). Solução de problemas de compilação e execução, criação de projeto através de CMake. Daily meeting do time para esclarecimento e planejamento de atividades.',
         en: `- Development of a virtual machine in C/C++ and QT for the own company language (ADVPL).
         - Solution of compilation and execution issues and creation of the software using CMake.
         - Daily meeting with the team for planning of the activities. `,
@@ -141,7 +154,7 @@ class Experiences extends React.Component<P, S>{
     return (
       <div className='experiencesContainer'>
         {experiences.map((item, index) => {
-          return (<div className='experiencesSeparator'><Experience key={index+item.company.ptbr} experienceData={item}></Experience></div>)
+          return (<div key={Math.random()} className='experiencesSeparator'><Experience key={index+item.company.ptbr} experienceData={item}></Experience></div>)
         })}
       </div>
     )

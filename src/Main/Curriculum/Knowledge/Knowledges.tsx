@@ -25,7 +25,7 @@ class Knowledges extends React.Component<P, S>{
     
     return (
       <div className='knowledgesContainer'>
-        <img className='meImage' src={process.env.PUBLIC_URL + '/3x4.png'} alt=''></img>
+        <img className='meImage' src={'https://drive.google.com/uc?export=view&id=' + '1JtidlMFYjkY9l_dt8JjD7lsj_07G-Jo3'} alt=''></img>
         <h1 className='myName' >Kaique Gomes</h1>
         <T className='summary' text={{current: lang, ptbr: 'Desenvolvedor de software com 11 anos de experiência.', en: 'Software developer with 11 years of experience.', fr:'Développeur de logiciels avec 11 ans d\'expérience.', it: 'Sviluppatore software con 11 anni di esperienza.'}}></T>
         <T className='basicText' text={{current: lang, ptbr: 'Português: Nativo', en: 'Portuguese: Native', fr: 'Portugais: Natif', it: 'Portoghese: Madrelingua'}}></T>

@@ -1,48 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import Curriculum from './Main/Curriculum/Curriculum';
 import GroceryList from './Main/GroceryList/GroceryList';
 import SleepDevice from './Main/SleepDevice/SleepDevice';
 import TopMenu from './Main/TopMenu/TopMenu';
-import { Language, MenuOption } from './Types';
+import { BrowserRouter, Navigate, Route, Routes  } from 'react-router-dom';
+import { UserProvider } from './Contexts/UserContext';
+import Login from './Main/Login/Login';
 
-interface P{
+interface AppProps{
 }
 
-interface S{
-  lang: Language,
-  menuOption: MenuOption,
-}
+const App: React.FC<AppProps> = () => {
 
-class App extends React.Component<P, S>{
-  constructor(props: P){
-    super(props);
-    this.state = {
-      lang: Language.PR_BR,
-      menuOption: MenuOption.Curriculum,
-    }
-  }
-
-  changeLanguage = (lang: Language) => {
-    this.setState({lang});
-  }
+  useEffect(() => {
+  });
   
-  changeMenuOption = (menuOption: MenuOption) => {
-    this.setState({menuOption})
-  }
-
-  render(): React.ReactNode {
-    const { lang, menuOption } = this.state;
-    
-    return (
+  return (
+    <UserProvider>
       <div className="appContainer">
-        <TopMenu lang={lang} currentMenuOptionSelected={menuOption} changeLanguage={this.changeLanguage} changeMenuOption={this.changeMenuOption}></TopMenu>
-        {menuOption === MenuOption.Curriculum && <Curriculum lang={lang} changeLanguage={this.changeLanguage}></Curriculum>}
-        {menuOption === MenuOption.GroceryList && <GroceryList></GroceryList>}
-        {menuOption === MenuOption.SleepDevice && <SleepDevice></SleepDevice>}
+        <BrowserRouter>
+          <TopMenu></TopMenu>
+          <Routes>
+            <Route path="/" element={<Navigate replace to="/cv" />} />
+            {/* <Route path="/login" element={<Login></Login>}></Route> */}
+            <Route path="/cv" element={<Curriculum></Curriculum>}/>
+            <Route path="/knowledgeshowcase" element={<GroceryList></GroceryList>} />
+            {/* <Route path="/sleepdevice" element={<SleepDevice></SleepDevice>} /> */}
+          </Routes>
+        </BrowserRouter>
       </div>
-    )
-  }
+    </UserProvider>
+    
+  )
 }
 
 export default App

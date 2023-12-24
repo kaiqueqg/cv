@@ -18,15 +18,32 @@ class T extends React.Component<P, S>{
     }
   }
 
+  getText = () => {
+    const { text } =this.props;
+    let cText = text.ptbr;
+    switch(text.current){
+      case Language.EN:
+        cText = text.en? text.en:text.ptbr;
+        break;
+      case Language.FR:
+        cText = text.fr? text.fr:text.ptbr;
+        break;
+      case Language.IT:
+        cText = text.it? text.it:text.ptbr;
+        break;
+    }
+    return cText;
+  }
+
   render(): React.ReactNode {
     const { text } = this.props;
-    
+
     return (
       <React.Fragment>
-        {text.current === Language.PR_BR && <div className={this.props.className} style={this.props.style}>{text.ptbr}</div>}
-        {text.current === Language.EN && <div className={this.props.className} style={this.props.style}>{text.en ? text.en: text.ptbr}</div>}
-        {text.current === Language.FR && <div className={this.props.className} style={this.props.style}>{text.fr ? text.fr: text.ptbr}</div>}
-        {text.current === Language.IT && <div className={this.props.className} style={this.props.style}>{text.it ? text.it: text.ptbr}</div>}
+        {text.current === Language.PR_BR && <div className={this.props.className} style={this.props.style}>{this.getText()}</div>}
+        {text.current === Language.EN && <div className={this.props.className} style={this.props.style}>{this.getText()}</div>}
+        {text.current === Language.FR && <div className={this.props.className} style={this.props.style}>{this.getText()}</div>}
+        {text.current === Language.IT && <div className={this.props.className} style={this.props.style}>{this.getText()}</div>}
       </React.Fragment>
     )
   }

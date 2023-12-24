@@ -1,0 +1,71 @@
+@import '../../../Global.scss';
+@import '../../Colors.scss';
+
+.login-container{
+  display: flex;
+  width: 70%;
+  height: 100%;
+  padding: 50px;
+  flex-direction: row;
+  border: 1px solid red;
+  justify-content: center;
+
+  @media screen and (max-width: $screen-max-width){
+    width: 90%;
+  }
+}
+
+.login-box{
+  max-width: 500px;
+  border: 1px solid black;
+  justify-content: center;
+}
+
+.login-row{
+  margin: 2% 1% 2% 1%;
+  display: flex;
+  justify-content: center;
+  border: 1px solid green;
+}
+
+.username{
+  color: beige;
+  background-color: #282C34;
+}
+
+.username::placeholder{
+  color: $placeholder-dark;
+}
+
+.password{
+  color: beige;
+  background-color: #282C34;
+}
+
+.password::placeholder{
+  color: $placeholder-dark;
+}
+
+.btn-login{
+  background-color: $green;
+  color: black;
+  font-weight: bold;
+  border-width: 0px;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.btn-login:active{ 
+  border-color: $beige;
+  color: $beige;
+  background-color: $blue-darker;
+} 
+
+.btn-logout{
+  background-color: $red;
+  color: black;
+  font-weight: bold;
+  border-width: 0px;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
