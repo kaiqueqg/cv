@@ -1,7 +1,7 @@
 import './TopMenu.scss';
 import { Language, MenuOption } from '../../Types';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 interface TopMenuProps{
 }
@@ -10,12 +10,30 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
   const navigate = useNavigate();
 
   const [ currentMenuOption, setCurrentMenuOption ] = useState<MenuOption>(MenuOption.Curriculum);
+  const location = useLocation();
+
+  useEffect(() => {
+    switch (location.pathname) {
+      case '/login':
+        setCurrentMenuOption(MenuOption.Login);
+        break;
+      case '/cv':
+        setCurrentMenuOption(MenuOption.Curriculum);
+        break;
+      case '/knowledgeshowcase':
+        setCurrentMenuOption(MenuOption.GroceryList);
+        break;
+      default:
+        setCurrentMenuOption(MenuOption.Curriculum);
+        break;
+    }
+  }, [location.pathname]);
 
   return (
     <div className='topMenu'>
-      {/* <div key='loginBtn' className={MenuOption.Login === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.Login); navigate("/login");}}>
+      <div key='loginBtn' className={MenuOption.Login === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.Login); navigate("/login");}}>
         <div className={MenuOption.Login === currentMenuOption? 'text textSelected': 'text'}>Login</div>
-      </div> */}
+      </div>
       <div key='cvBtn' className={MenuOption.Curriculum === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.Curriculum); navigate("/cv");}}>
         <div className={MenuOption.Curriculum === currentMenuOption? 'text textSelected': 'text'}>Curriculum</div>
       </div>

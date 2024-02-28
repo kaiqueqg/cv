@@ -1,8 +1,7 @@
-@import '../../../Colors.scss';
-@import '../../../Global.scss';
+@import '../../global.scss';
 
 .topMenu{
-  width: 70%;
+  width: 80%;
   height: 70px;
   display: flex;
   flex-direction: row;
@@ -27,7 +26,7 @@
   justify-content: center;
   border-style: solid;
   border-color: transparent;
-  border-width: 1px 1px 4px 1px;
+  border-width: 1px 1px 0px 1px;
 }
 
 .menuButton:hover{

@@ -1,0 +1,125 @@
+@import '../../../../global.scss';
+
+.item-row-color-one{
+  background-color: #282C34
+}
+
+.item-row-color-two{
+  background-color: #21242b
+}
+
+.item-row-text{
+  font-size: 0.9em;
+  vertical-align: middle;
+  color: beige;
+  text-align: left;
+}
+
+.item-row-details{
+  margin-top: 1%;
+}
+
+.item-row-details-line{
+  display: flex;
+  align-items: center;
+}
+
+.item-row-details-line-right{
+  display: flex;
+  align-items: right;
+}
+
+.item-row-details-text{
+  vertical-align: middle;
+  font-size: 1em;
+  color: beige;
+  text-align: left;
+  margin: 1%;
+  width: 20%;
+
+  @media screen and (max-width: $screen-max-width){
+    font-size: 0.7em;
+  }
+}
+
+.item-row-input{
+  margin: 1%;
+  font-size: 1em;
+  color: beige;
+  text-align: 'left';
+  background-color: #282C34;
+  width: 60%;
+
+  @media screen and (max-width: $screen-max-width){
+    font-size: 0.7em;
+  }
+}
+
+.form-control:focus{
+  color: beige;
+  border-color: red;
+  background-color: #282C34;
+}
+
+.checked-image{
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff00;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.checked-image:hover{
+  border-width: 0px;
+}
+
+.item-row-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.item-row-image{
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff00;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.item-row-image-plusminus{
+  margin: 5px 0px 5px 0px;
+  padding: 5px 5px 5px 5px;
+}
+
+.item-row-image:hover{
+  border-width: 0px;
+}
+
+.item-row-donecancel-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px;
+  //border: 1px solid red;
+}
+
+.item-row-done{
+  cursor: pointer;
+  width: 35px;
+  height: 35px;
+  // border: 1px solid white;
+}
+
+.item-row-cancel{
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  //border: 1px solid white;
+}

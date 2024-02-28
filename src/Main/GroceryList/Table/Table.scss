@@ -1,0 +1,32 @@
+@import '../../../global.scss';
+
+.grocerylist-table{
+  width: 100%;
+  margin: 0px 0px 10px 0px;
+  border: 1px solid $blue-darker;
+  background-color: #282C34;
+}
+
+.grocerylist-table-title{
+  text-align: center;
+  color: beige;
+}
+
+.header-row{
+  background-color: #282C34;
+  color: beige;
+}
+
+.category-add-image{
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.category-add-image:hover{
+  border-width: 0px;
+}
+
+.info-text{
+  color: beige;
+}

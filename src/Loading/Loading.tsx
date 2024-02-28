@@ -1,9 +1,19 @@
 import React from 'react'
 import './Loading.scss'
 
-const Loading: React.FC = () => {
+interface LoadingProps{
+  IsBlack?: boolean
+}
+
+const Loading: React.FC<LoadingProps> = ({ IsBlack = false }) => {
   return(
-    <img src={process.env.PUBLIC_URL + '/refresh.png'} className="loading-image rotate-icon" alt='a'></img>
+    <React.Fragment>
+      {IsBlack?
+        <img src={process.env.PUBLIC_URL + '/refresh-black.png'} className="loading-image rotate-icon" alt='a'></img>
+        :
+        <img src={process.env.PUBLIC_URL + '/refresh-white.png'} className="loading-image rotate-icon" alt='a'></img>
+      }
+    </React.Fragment>
   );
 }
 

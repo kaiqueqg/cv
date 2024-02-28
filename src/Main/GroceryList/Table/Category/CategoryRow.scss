@@ -1,0 +1,83 @@
+.category-row{
+  background-color: rgba(29, 29, 29);
+}
+
+.category-row-text{
+  color: beige;
+  vertical-align: middle;
+  margin: '0';
+  width: 100%;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.category-row-input{
+  color: beige;
+  background-color: #282C34;
+  text-align: center;
+  margin: '0';
+  width: 100%;
+}
+
+.form-controle:focus{
+  color: beige;
+  border-color: red;
+  background-color: #282C34;
+}
+
+.add-image{
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff00;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.add-image:hover{
+  border-width: 0px;
+}
+
+.trash-image{
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff00;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.trash-image:hover{
+  border-width: 0px;
+}
+
+.fold-image{
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff00;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.fold-image:hover{
+  border-width: 0px;
+}
+
+.unfold-image{
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ffffff00;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+}
+
+.unfold-image:hover{
+  border-width: 0px;
+}
+

@@ -1,16 +1,15 @@
-@import '../../../Global.scss';
-@import '../../../Colors.scss';
+@import '../../global.scss';
 
 .groceryContainer{
   display: flex;
   flex-direction: column;
-  width: 70%;
+  width: 80%;
   justify-content: flex-start;
   align-items: flex-start;
   color: $beige;
 
   @media screen and (max-width: $screen-max-width){
-    width: 90%;
+    width: 100%;
   }
 }
 
@@ -95,4 +94,27 @@
   max-width: 1200px;
   align-self: center;
   margin: 10px;
+}
+
+.option-container{
+  background-color: #282C34;
+  padding: 5px;
+  width: 100%;
+  margin: 10px 0px 0px 0px;
+}
+
+.option-gear{
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  border: 2px solid #282C34;
+}
+
+.option-gear:hover{
+  border: 0px solid #282C34;
+}
+
+.option{
+  color: beige;
+  padding: 4px 0px;
 }

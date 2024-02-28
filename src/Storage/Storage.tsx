@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { UserModel } from '../Types';
+import { DBUser } from '../Types';
 
 
 type StorageKeys = {
@@ -17,7 +17,6 @@ const keys: StorageKeys = {
 const storage = {
   getToken(): string|null{
     const token = localStorage.getItem(keys.JwtToken);
-    //console.log('token: ' + token);
     return token;
   },
   setToken(token: string){
@@ -26,13 +25,11 @@ const storage = {
   deleteToken(){
     localStorage.removeItem(keys.JwtToken);
   },
-  getUser(): UserModel|null{
+  getUser(): DBUser|null{
     const userJson = localStorage.getItem(keys.User);
-    //console.log('getUser: ' + userJson)
     return userJson ? JSON.parse(userJson) : null;
   },
-  setUser(user: UserModel){
-    //console.log('setUser' + keys.User);
+  setUser(user: DBUser){
     localStorage.setItem(keys.User, JSON.stringify(user));
   },
   deleteUser(){
@@ -41,7 +38,7 @@ const storage = {
   getBaseUrl() : string{
     const value = localStorage.getItem(keys.BaseUrl);
     if(value === null){
-      toast.error("No base url saved on cookie!");
+      toast.error("No base url saved on local storage!");
       return 'https://ygwynyk5j6.execute-api.sa-east-1.amazonaws.com/dev/api'
     }
     else return value;

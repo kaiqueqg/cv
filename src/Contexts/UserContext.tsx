@@ -1,17 +1,20 @@
 // UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { toast } from 'react-toastify';
-import request from '../Requests/RequestFactory';
-import storage from '../Storage/Storage';
-import { UserModel } from '../Types';
+import { identityApi } from '../Requests/RequestFactory';
+import { DBUser } from '../Types';
 
 interface UserContextType {
-  user: UserModel|null,
-  setUser: React.Dispatch<React.SetStateAction<UserModel|null>>,
-  baseUrl: string,
-  setBaseUrl: React.Dispatch<React.SetStateAction<string>>,
+  user: DBUser|null,
+  setUser: React.Dispatch<React.SetStateAction<DBUser|null>>,
+  hideQuantity: boolean,
+  setHideQuantity: React.Dispatch<React.SetStateAction<boolean>>,
+  shouldCreateNewItemWhenCreateNewCategory: boolean,
+  setShouldCreateNewItemWhenCreateNewCategory: React.Dispatch<React.SetStateAction<boolean>>,
   isServerUp: boolean, 
   setIsServerUp : React.Dispatch<React.SetStateAction<boolean>>,
+  theme: string,
+  setTheme: React.Dispatch<React.SetStateAction<string>>,
   testServer : () => void,
 }
 
@@ -22,12 +25,14 @@ interface UserProviderProps {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<UserModel|null>(null);
-  const [baseUrl, setBaseUrl] = useState(storage.getBaseUrl());
+  const [user, setUser] = useState<DBUser|null>(null);
+  const [hideQuantity, setHideQuantity] = useState<boolean>(false);
+  const [shouldCreateNewItemWhenCreateNewCategory, setShouldCreateNewItemWhenCreateNewCategory,] = useState<boolean>(false);
   const [isServerUp, setIsServerUp] = useState<boolean>(true);
+  const [theme, setTheme] = useState<string>('light');
 
   const testServer = async () => {
-    await request('/IsUp', 'GET', undefined, () => {
+    await identityApi.isUp(undefined, () => {
       setIsServerUp(false);
       toast.error('Server probably down...');
     });
@@ -37,10 +42,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     <UserContext.Provider 
       value={{
         user,
-        baseUrl,
-        setBaseUrl,
         setUser,
+        hideQuantity, setHideQuantity, 
+        shouldCreateNewItemWhenCreateNewCategory, setShouldCreateNewItemWhenCreateNewCategory,
         isServerUp, setIsServerUp,
+        theme, setTheme,
         testServer,
       }}>
       {children}

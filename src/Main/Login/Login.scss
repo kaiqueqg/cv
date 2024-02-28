@@ -1,71 +1,111 @@
-@import '../../../Global.scss';
-@import '../../Colors.scss';
+@import '../../global.scss';
 
 .login-container{
   display: flex;
-  width: 70%;
-  height: 100%;
-  padding: 50px;
-  flex-direction: row;
-  border: 1px solid red;
+  align-items: center;
   justify-content: center;
-
-  @media screen and (max-width: $screen-max-width){
-    width: 90%;
-  }
+  padding: 30px;
+  width: 70%;
 }
 
 .login-box{
-  max-width: 500px;
-  border: 1px solid black;
-  justify-content: center;
+}
+
+.loggedBox{
+  border-radius: 2px;
+  width: 300px;
+  padding: 10%;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.userRow{
+  margin-bottom: 5px;
 }
 
 .login-row{
-  margin: 2% 1% 2% 1%;
-  display: flex;
-  justify-content: center;
-  border: 1px solid green;
+  margin: 10px;
+  //border: 1px solid yellow;
 }
 
-.username{
+.alert-message {
+  display: block;
+  color: crimson;
+  margin: 5px 0px;
+}
+
+.focus-message {
+  display: none;
+  color: darkblue;
+  margin: 5px 0px;
+}
+
+.input-base:focus + .focus-message {
+  display: block;
+}
+
+.input-base{
   color: beige;
   background-color: #282C34;
+  border-radius: 0%;
+  border: 0px solid black;
+  padding: 5px;
 }
 
-.username::placeholder{
+.input-base:active{
+  border-radius: 0%;
+  border: 0px solid black;
+  padding: 5px;
+}
+
+.input-base::placeholder{
   color: $placeholder-dark;
 }
 
-.password{
-  color: beige;
-  background-color: #282C34;
+.btn-base{
+  color: black;
+  width: 100px;
+  height: 100%;
+  padding: 5px;
+  font-weight: bold;
+  border: 1px solid black;
 }
 
-.password::placeholder{
-  color: $placeholder-dark;
+.btn-base:hover{
+
+}
+
+.btn-base:active{
+
 }
 
 .btn-login{
   background-color: $green;
-  color: black;
-  font-weight: bold;
-  border-width: 0px;
-  border-radius: 5px;
-  padding: 10px 20px;
 }
 
 .btn-login:active{ 
   border-color: $beige;
   color: $beige;
   background-color: $blue-darker;
-} 
+}
+
+.btn-logout:hover{
+
+}
 
 .btn-logout{
   background-color: $red;
-  color: black;
-  font-weight: bold;
-  border-width: 0px;
-  border-radius: 5px;
-  padding: 10px 20px;
+  
+}
+
+.btn-logout:hover{
+
+}
+
+.btn-create{
+  background-color: $cv-blue;
+  color: white;
+}
+
+.btn-create:hover{
 }
