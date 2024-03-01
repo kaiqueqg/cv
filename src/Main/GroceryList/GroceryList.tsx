@@ -49,7 +49,7 @@ const GroceryList: React.FC<GroceryListProps> = (props) => {
       <UserProvider>
         <div className="appContainer">
           {(user !== null && user !== undefined && user.Status === 'Active') ?
-            <React.Fragment>
+            <div className='groceryContainer'>
               {/* <div className='option-container'>
                 <img src={process.env.PUBLIC_URL + '/settings.png'} onClick={handleIsOptionOpen} className="option-gear" alt='meaningfull text'></img>
                 {isOptionOpen && 
@@ -59,7 +59,7 @@ const GroceryList: React.FC<GroceryListProps> = (props) => {
                 </div>}
               </div> */}
               <Table></Table>
-            </React.Fragment>
+            </div>
             :
             <div className='groceryContainer'>
               <div className='title'>Personal use project & knowledge showcase</div>
@@ -70,7 +70,7 @@ const GroceryList: React.FC<GroceryListProps> = (props) => {
               <div className='sourceCode'><b>2- </b>Fill the fields to "send it".</div>
               <div className='sourceCode'><b>3- </b>I'll receive an email to approve the new user.</div>
               <div className='sourceCode'><b>4- </b>When approved, you'll be able to test my Grocery List app here on "Knowledge showcase" tab.</div>
-              <div className='sourceCode'><b>React Native Android App: </b><a className='link' href='https://github.com/kaiqueqg/grocerylist-app/blob/main/apk/GroceryListApp.apk'>GroceryListApp.apk</a></div>
+              <div className='sourceCode'><b>React Native Android App: </b><a className='link' href='https://github.com/kaiqueqg/grocerylist-app/blob/main/apk/grocerylistv2.apk'>GroceryListApp.apk</a></div>
 
               <div className='title'>{"Version 1 (deprecated)"}</div>
               <img src={process.env.PUBLIC_URL +  '/how.png'} alt='' className='how'></img>

@@ -38,7 +38,7 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
         <div className={MenuOption.Curriculum === currentMenuOption? 'text textSelected': 'text'}>Curriculum</div>
       </div>
       <div key='groceryBtn' className={MenuOption.GroceryList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.GroceryList); navigate("/knowledgeshowcase")}}>
-        <div className={MenuOption.GroceryList === currentMenuOption? 'text textSelected': 'text'}>Knowledge showcase</div>
+        <div className={MenuOption.GroceryList === currentMenuOption? 'text textSelected': 'text'}>Showcase</div>
       </div>
       {/* <div key='sleepDeviceBtn' className={MenuOption.SleepDevice === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.SleepDevice); navigate("/sleepDevice")}}>
         <div className={MenuOption.SleepDevice === currentMenuOption? 'text textSelected': 'text'}>Sleep Device</div>
