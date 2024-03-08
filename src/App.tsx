@@ -1,24 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
+import './global.scss';
 import Curriculum from './Main/Curriculum/Curriculum';
 import GroceryList from './Main/GroceryList/GroceryList';
 import TopMenu from './Main/TopMenu/TopMenu';
-import { BrowserRouter, Navigate, Route, Routes  } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate  } from 'react-router-dom';
 import { UserProvider, useUserContext } from './Contexts/UserContext';
 import Login from './Main/Login/Login';
 import storage from './Storage/Storage';
 import { ToastContainer } from 'react-toastify';
+import { MenuOption } from './Types';
 
 
 interface AppProps{
 }
 
 const App: React.FC<AppProps> = () => {
-  const { setUser } = useUserContext();
   
   useEffect(() => {
-    let user = storage.getUser();
-    setUser(user);
   }, []);
   
   return (

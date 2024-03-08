@@ -1,9 +1,11 @@
+@import './global.scss';
+
 .appContainer {
   display: flex;
   height: 100%;
   width: 100%;
-  justify-content: center;
   align-items: center;
   text-align: center;
   flex-direction: column;
+  justify-content: flex-start; /* Adjusted from center to flex-start */
 }

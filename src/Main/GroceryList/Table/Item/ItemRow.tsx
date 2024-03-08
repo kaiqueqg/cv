@@ -213,9 +213,9 @@ const ItemRow: React.FC<ItemRowProps> = (props) => {
 
   return(
     <>
-      <tr className={props.isPair? 'item-row-color-one' : 'item-row-color-two'}>
-        <td style={{textAlign: 'center'}}>
-          {isEditing && !isDeleting && <img src={process.env.PUBLIC_URL + '/trash.png'} className="item-row-image" alt='meaningfull text' onClick={displayConfirmDeleteRow}></img>}
+      <div className={props.isPair? 'item-row-color-one' : 'item-row-color-two'}>
+        <div style={{textAlign: 'center'}}>
+          {isEditing && !isDeleting && <img src={process.env.PUBLIC_URL + '/trash-red.png'} className="item-row-image" alt='meaningfull text' onClick={displayConfirmDeleteRow}></img>}
           {isEditing && isDeleting && <Loading></Loading>}
           {!isEditing && !hideQuantity && 
             <div className='item-row-container'>
@@ -223,12 +223,12 @@ const ItemRow: React.FC<ItemRowProps> = (props) => {
               <img className="item-row-image item-row-image-plusminus" src={process.env.PUBLIC_URL + '/minus.png'} alt='meaningfull text' onClick={decreaseQuantity}></img>
             </div>
           }
-        </td>
+        </div>
         {isSavingItem ? 
         <Loading></Loading>
         :
         (isEditing ?
-          <td className="item-row-details">
+          <div className="item-row-details">
             <div className='item-row-details-line'>
               <div className='item-row-details-text'>TEXT:</div>
               <input className='form-control item-row-input' type='text' value={textValue.toUpperCase()} onChange={handleTextInputChange} onKeyDown={handleKeyDown} autoFocus></input>
@@ -249,20 +249,20 @@ const ItemRow: React.FC<ItemRowProps> = (props) => {
               <img src={process.env.PUBLIC_URL + '/done.png'} className="item-row-done" alt='meaningfull text' style={{marginRight: '30px'}} onClick={doneEdit}></img>
               <img src={process.env.PUBLIC_URL + '/cancel.png'} className="item-row-cancel" alt='meaningfull text' onClick={cancelEdit}></img>
             </div>
-          </td>
+          </div>
           :
-          <td className={'item-row-text'} onClick={handleRowClick}>{getDisplayText()}</td>
+          <div className={'item-row-text'} onClick={handleRowClick}>{getDisplayText()}</div>
         )
         }
-        <td>
+        <div>
           {isSavingIsChecked ? 
             <Loading></Loading>
             :
             <img src={item.IsChecked ? process.env.PUBLIC_URL + '/checked.png' : process.env.PUBLIC_URL + '/unchecked.png'} className="item-row-image" alt='meaningfull text' onClick={changeIsChecked}></img>
           }
-        </td>
+        </div>
         
-      </tr>
+      </div>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Table.scss';
-import { Category, Item, Response } from '../../../Types';
+import { Category, GroceryList, Item, Response } from '../../../Types';
 import CategoryRow from './Category/CategoryRow';
 import { useUserContext } from '../../../Contexts/UserContext';
 import Loading from '../../../Loading/Loading';
@@ -11,7 +11,8 @@ interface TableProps{
 }
 
 const Table: React.FC<TableProps> = (props) => {
-  const [data, setData] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [items, setItems] = useState<Item[]|null>(null);
   const [isGettingCategoryList, setIsGettingCategoryList] = useState<boolean>(false);
   const [areAllOpen, setAreAllOpen] = useState<boolean>(false);
   const [isAddingCategory, setIsAddingCategory] = useState<boolean>(false);
@@ -19,8 +20,40 @@ const Table: React.FC<TableProps> = (props) => {
   const {shouldCreateNewItemWhenCreateNewCategory, testServer} = useUserContext();
 
   useEffect(() => {
-    getCategoryList();
+    //getCategoryList();
+    getGroceryList();
   }, []);
+
+  const getGroceryList = async () => {
+    setIsGettingCategoryList(true);
+    
+    try {
+      const response = await grocerylistApi.getGroceryList(() => {testServer();});
+      
+      //! Problem with reaching server
+      if(response !== undefined && response !== null){
+        const respGetGroceryList: Response<GroceryList> = await response.json();
+        //!Problem with response data or missing
+        if(respGetGroceryList.WasAnError || respGetGroceryList.Data === null || respGetGroceryList.Data === undefined){
+          log.pop(respGetGroceryList.Message);
+        }
+        //*Happy path
+        else{
+          log.dev('getGroceryList', 'grocerylist', respGetGroceryList.Data);
+          setCategories(respGetGroceryList.Data.categories);
+          setItems(respGetGroceryList.Data.items);
+        }
+      }
+      else{
+        log.pop('There was an error trying to  reach the server');
+      }
+    } 
+    catch (err) {
+      log.err(JSON.stringify(err));
+    }
+
+    setIsGettingCategoryList(false);
+  }
 
   const getCategoryList = async () => {
     setIsGettingCategoryList(true);
@@ -42,7 +75,7 @@ const Table: React.FC<TableProps> = (props) => {
             areAnyOneOpen = respGetCategoryList.Data[i].IsOpen;
           }
           setAreAllOpen(areAnyOneOpen);
-          setData(respGetCategoryList.Data);
+          setCategories(respGetCategoryList.Data);
         }
       }
       else{
@@ -101,47 +134,53 @@ const Table: React.FC<TableProps> = (props) => {
   }
 
   const redrawCallback = () => {
-    getCategoryList();
+    getGroceryList();
+  }
+
+  const getItems = (category: Category):Item[]|undefined => {
+    const filteredItems = items === null? undefined : items.filter(item => item.UserIdCategoryId.slice(-40) === category.CategoryId)
+    return filteredItems;
   }
 
   return(
-    <>
-      <table key='table' className='grocerylist-table'>
-        <thead>
-          <tr className='header-row'>
-            <td>
-              <img src={process.env.PUBLIC_URL + '/download.png'} className="category-add-image" alt='meaningfull text' onClick={getCategoryList}></img>
-            </td>
-            <td className='grocerylist-table-title'>
+    <div className="table-container">
+      <div key='table' className='grocerylist-table'>
+        <div>
+          <div className='header-row'>
+            <div>
+              <img src={process.env.PUBLIC_URL + '/download.png'} className="category-add-image" alt='meaningfull text' onClick={getGroceryList}></img>
+            </div>
+            <div className='grocerylist-table-title'>
               GROCERY LIST
-            </td>
-            <td>
+            </div>
+            <div>
               {isAddingCategory? 
                 <Loading></Loading>
                 :
                 <img src={process.env.PUBLIC_URL + '/add.png'} className="category-add-image" alt='meaningfull text' onClick={addNewCategory}></img>}
-            </td>
-          </tr>
-        </thead>
+            </div>
+          </div>
+        </div>
         {isGettingCategoryList?
-          <tbody>
-            <tr>
-              <td></td>
-                <td className="loading-items"><Loading></Loading></td>            
-              <td></td>
-            </tr>
-          </tbody>
+          <div>
+            <div>
+              <div></div>
+                <div className="loading-items"><Loading></Loading></div>            
+              <div></div>
+            </div>
+          </div>
           :
-          <tbody key='tbody'>
-            { data.map((category) => (
-              <CategoryRow 
+          <div key='tbody'>
+            {categories.map((category) => (
+              <CategoryRow
+                receivedItems={getItems(category)}
                 key={'category' + category.CategoryId} 
                 redrawCallback={redrawCallback}
                 category={category}></CategoryRow>
             ))}
-          </tbody>}
-      </table>
-    </>
+          </div>}
+      </div>
+    </div>
   );
 }
 

@@ -9,7 +9,7 @@ const Loading: React.FC<LoadingProps> = ({ IsBlack = false }) => {
   return(
     <React.Fragment>
       {IsBlack?
-        <img src={process.env.PUBLIC_URL + '/refresh-black.png'} className="loading-image rotate-icon" alt='a'></img>
+        <img src={process.env.PUBLIC_URL + '/refresh-white.png'} className="loading-image rotate-icon" alt='a'></img>
         :
         <img src={process.env.PUBLIC_URL + '/refresh-white.png'} className="loading-image rotate-icon" alt='a'></img>
       }

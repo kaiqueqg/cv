@@ -24,7 +24,7 @@ const request = async (url: string, endpoint: string, method: string, body?: str
 
     if(response !== undefined && errors.includes(response.status)){
       const message = await response.text();
-      toast.warning(message, { autoClose: 10000});
+      log.err('request', message);
     }
 
     return response;
@@ -60,28 +60,38 @@ export const identityApi = {
 
 export const grocerylistApi = {
   async getCategoryList(fError?: () => void): Promise<any>{
+    //log.dev('getCategoryList', 'started');
     return this.requestGroceryList('/GetCategoryList', 'GET', undefined, fError);
   },
   async getCategoryItemList(categoryId: string, fError?: () => void): Promise<any>{
+    //log.dev('getCategoryItemList', 'started');
     return this.requestGroceryList('/GetCategoryItemList', 'POST', JSON.stringify({CategoryId: categoryId}), fError);
   },
   async getCategory(categoryId: string, fError?: () => void): Promise<any>{
     return this.requestGroceryList('/GetCategory', 'POST', JSON.stringify({CategoryId: categoryId}), fError);
   },
   async putCategory(category: Category, fError?: () => void): Promise<any>{
+    //log.dev('putCategory', 'started');
     return this.requestGroceryList('/PutCategory', 'PUT', JSON.stringify(category), fError);
   },
   async deleteCategory(categoryId: string, fError?: () => void): Promise<any>{
+    //log.dev('deleteCategory', 'started');
     return this.requestGroceryList('/DeleteCategory', 'DELETE', JSON.stringify({CategoryId: categoryId}), fError);
   },
   async getItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<any>{
     return this.requestGroceryList('/GetItem', 'POST', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
   },
   async putItem(item: Item, fError?: () => void): Promise<any>{
+    //log.dev('putItem', 'started');
     return this.requestGroceryList('/PutItem', 'PUT', JSON.stringify(item), fError);
   },
   async deleteItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<any>{
+    //log.dev('deleteItem', 'started');
     return this.requestGroceryList('/DeleteItem', 'DELETE', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
+  },
+  async getGroceryList(fError?: () => void): Promise<any>{
+    log.dev('getGroceryList', 'started');
+    return this.requestGroceryList('/GetGroceryList', 'GET', undefined, fError);
   },
 
   async requestGroceryList(endpoint: string, method: string, body?: string, fError?: () => void): Promise<any>{

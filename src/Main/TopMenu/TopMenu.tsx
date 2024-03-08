@@ -1,16 +1,16 @@
 import './TopMenu.scss';
-import { Language, MenuOption } from '../../Types';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { MenuOption } from '../../Types';
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate  } from 'react-router-dom';
+
 
 interface TopMenuProps{
 }
 
 const TopMenu: React.FC<TopMenuProps> = (props) => {
   const navigate = useNavigate();
-
-  const [ currentMenuOption, setCurrentMenuOption ] = useState<MenuOption>(MenuOption.Curriculum);
   const location = useLocation();
+  const [ currentMenuOption, setCurrentMenuOption ] = useState<MenuOption>(MenuOption.Curriculum);
 
   useEffect(() => {
     switch (location.pathname) {

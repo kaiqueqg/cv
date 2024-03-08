@@ -49,7 +49,7 @@ const GroceryList: React.FC<GroceryListProps> = (props) => {
       <UserProvider>
         <div className="appContainer">
           {(user !== null && user !== undefined && user.Status === 'Active') ?
-            <div className='groceryContainer'>
+            <div className='tableInnerContainer'>
               {/* <div className='option-container'>
                 <img src={process.env.PUBLIC_URL + '/settings.png'} onClick={handleIsOptionOpen} className="option-gear" alt='meaningfull text'></img>
                 {isOptionOpen && 
@@ -61,7 +61,7 @@ const GroceryList: React.FC<GroceryListProps> = (props) => {
               <Table></Table>
             </div>
             :
-            <div className='groceryContainer'>
+            <div className='showcaseInnerConainer'>
               <div className='title'>Personal use project & knowledge showcase</div>
               <div className='title'>Version 2</div>
               <img src={process.env.PUBLIC_URL +  '/how2.jpg'} alt='' className='how'></img>
@@ -69,23 +69,23 @@ const GroceryList: React.FC<GroceryListProps> = (props) => {
               <div className='sourceCode'><b>1- </b>Go to Login tab</div>
               <div className='sourceCode'><b>2- </b>Fill the fields to "send it".</div>
               <div className='sourceCode'><b>3- </b>I'll receive an email to approve the new user.</div>
-              <div className='sourceCode'><b>4- </b>When approved, you'll be able to test my Grocery List app here on "Knowledge showcase" tab.</div>
+              <div className='sourceCode'><b>4- </b>When approved, you'll be able to test my Grocery List app here on "Showcase" tab.</div>
               <div className='sourceCode'><b>React Native Android App: </b><a className='link' href='https://github.com/kaiqueqg/grocerylist-app/blob/main/apk/grocerylistv2.apk'>GroceryListApp.apk</a></div>
 
-              <div className='title'>{"Version 1 (deprecated)"}</div>
+              <div className='title' style={{color: '#EE6C4D'}}>{"Version 1 (deprecated)"}</div>
               <img src={process.env.PUBLIC_URL +  '/how.png'} alt='' className='how'></img>
-              <div className='subTitle'>Run yourself:</div>
+              <div className='subTitle' style={{color: '#EE6C4D'}}>Run yourself:</div>
               <div className='grocerylistText'>Use this docker-compose: <a className='link' href='https://github.com/kaiqueqg/grocerylist-api/blob/main/compose-prod.yml'>https://github.com/kaiqueqg/grocerylist-api/blob/main/compose-prod.yml</a></div>
               <div className='sourceCode'>{"Api address: http://<ip-computer-running-api>:5000/api"}</div>
               <div className='sourceCode'>{"username: test"}</div>
               <div className='sourceCode'>{"password: test"}</div>
-              <div className='subTitle'>GitHub:</div>
+              <div className='subTitle' style={{color: '#EE6C4D'}}>GitHub:</div>
               <div className='sourceCode'>API: <a className='link' href='https://github.com/kaiqueqg/grocerylist-api'>https://github.com/kaiqueqg/grocerylist-api</a></div>
               <div className='sourceCode'>Front-end: <a className='link' href='https://github.com/kaiqueqg/grocerylist-front'>https://github.com/kaiqueqg/grocerylist-front</a></div>
               <div className='sourceCode'>App: <a className='link' href='https://github.com/kaiqueqg/grocerylist-app'>https://github.com/kaiqueqg/grocerylist-app</a></div>
-              <div className='subTitle'>Docker hub:</div>
+              <div className='subTitle' style={{color: '#EE6C4D'}}>Docker hub:</div>
               <div className='sourceCode'><a className='link' href='https://hub.docker.com/repositories/kaiqueqg'>https://hub.docker.com/repositories/kaiqueqg</a></div>
-              <div className='subTitle'>App:</div>
+              <div className='subTitle' style={{color: '#EE6C4D'}}>App:</div>
               <div className='sourceCode'>Download the apk: <a className='link' href='https://github.com/kaiqueqg/grocerylist-app/blob/main/apk/GroceryListApp.apk'>GroceryListApp.apk</a></div>
               <br></br>
               <div className="appSampleContainer">

@@ -1,16 +1,14 @@
 @import '../../global.scss';
 
 .topMenu{
-  width: 80%;
-  height: 70px;
   display: flex;
+  width: 100%;
   flex-direction: row;
-  border-color: $topmenu-border;
+  border-color: $beige;
   border-style: solid;
   border-width: 0px 0px 1px 0px;
-  align-items: flex-end;
   justify-content: center;
-  background-color: $topmenu-bg;
+  padding: 20px 0px 0px 0px;
   //border: 1px solid red;
 
   @media screen and (max-width: $screen-max-width){
@@ -28,27 +26,27 @@
   justify-content: center;
   border-style: solid;
   border-color: transparent;
-  border-width: 1px 1px 0px 1px;
-  //border: 1px solid green;
+  border-width: 1px 1px 4px 1px;
 }
 
 .menuButton:hover{
+  border-style: solid;
   border-width: 1px 1px 4px 1px;
-  border-color: $topmenu-menubutton-hover;
+  border-color: $beige;
 }
 
 .menuSelected{
   border-style: solid;
-  border-color: $topmenu-border;
-  background-color: $topmenu-selected-bg;
+  border-color: $beige;
+  background-color: $cv-blue;
 }
 
 .text{
   font-size: 15px;
   font-weight: bold;
-  color: $topmenu-selected-text;
+  color: $beige;
 }
 
 .textSelected{
-  color: white;
+  color: $beige;
 }

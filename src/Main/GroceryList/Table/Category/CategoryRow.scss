@@ -1,11 +1,19 @@
+@import '../../../../global.scss';
+
 .category-row{
-  background-color: rgba(29, 29, 29);
+  display: flex;
+  width: 100%;
+  background-color: $blue-dark;
+  border-width: 1px;
+  border-color: green;
+  border-style: solid;
+  //border: 1px solid $beige-dark;
+  //height: 45px;
 }
 
 .category-row-text{
   color: beige;
   vertical-align: middle;
-  margin: '0';
   width: 100%;
   font-weight: bold;
   font-size: 20px;
@@ -30,8 +38,8 @@
   border-width: 2px;
   border-style: solid;
   border-color: #ffffff00;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   margin: 5px;
 }
 
@@ -44,8 +52,8 @@
   border-width: 2px;
   border-style: solid;
   border-color: #ffffff00;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   margin: 5px;
 }
 
@@ -58,8 +66,8 @@
   border-width: 2px;
   border-style: solid;
   border-color: #ffffff00;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   margin: 5px;
 }
 
@@ -72,8 +80,8 @@
   border-width: 2px;
   border-style: solid;
   border-color: #ffffff00;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   margin: 5px;
 }
 

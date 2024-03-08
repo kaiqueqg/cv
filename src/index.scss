@@ -7,20 +7,20 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: $grey;
+  min-height: 100vh;
+  
+}
+
+div{
+  color: $beige;
 }
 
 .indexContainer{
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
   align-items: center;
-}
-
-div{
-  
+  background-color: $blue-darker;
+  min-height: 100vh;
 }
 
 .concert-one-regular {

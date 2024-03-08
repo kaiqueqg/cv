@@ -8,8 +8,10 @@ import log from '../../../../Log/Log';
 import { grocerylistApi } from '../../../../Requests/RequestFactory';
 import { useUserContext } from '../../../../Contexts/UserContext';
 import storage from '../../../../Storage/Storage';
+import { redirect } from 'react-router-dom';
 
 interface CategoryProps{
+  receivedItems?: Item[],
   category: Category,
   redrawCallback: () => void,
 }
@@ -29,7 +31,17 @@ const CategoryRow: React.FC<CategoryProps> = (props) => {
 
   useEffect(() => 
   {
-    if(category.IsOpen) getItemList();
+    const {receivedItems} = props;
+    if(category.IsOpen) {
+      if(receivedItems === undefined){
+        //log.dev('CategoryRow.useEffect', 'undefined');
+        getItemList();
+      }
+      else{
+        //log.dev('CategoryRow.useEffect', 'receivedItems', receivedItems);
+        setItems(receivedItems);
+      }
+    }
   }, []);
 
   const getItemList = async () => {
@@ -44,7 +56,7 @@ const CategoryRow: React.FC<CategoryProps> = (props) => {
   
         //!Problem with response data or missing
         if(respGetItemList.WasAnError || respGetItemList.Data === null || respGetItemList.Data === undefined){
-          log.pop(respGetItemList.Message);
+          //log.pop(respGetItemList.Message);
         }
         //*Happy path
         else{
@@ -240,41 +252,48 @@ const CategoryRow: React.FC<CategoryProps> = (props) => {
 
   return(
     <>
-      <tr className='category-row' >
-        <td style={{width: '15%', textAlign:'center'}}  >
+      <div className='category-row' >
+        <div style={{width: '15%', textAlign:'center'}}  >
           {isSavingIsOpen?
           <Loading></Loading>
           :
-          (category.IsOpen ?
-            <img src={process.env.PUBLIC_URL + '/down-chevron.png'} className="unfold-image" alt='meaningfull text' onClick={changeItemsDisplay}></img>
+          (isEditing? 
+            (isDeleting?
+              <Loading></Loading>
+              :
+              <img src={process.env.PUBLIC_URL + '/trash-red.png'} className="trash-image" alt='meaningfull text' onClick={displayConfirmDeleteRow}></img>
+            )
             :
-            <img src={process.env.PUBLIC_URL + '/up-chevron.png'} className="fold-image" alt='meaningfull text' onClick={changeItemsDisplay}></img>
-          )}
-        </td>
+            (category.IsOpen ?
+              <img src={process.env.PUBLIC_URL + '/down-chevron.png'} className="unfold-image" alt='meaningfull text' onClick={changeItemsDisplay}></img>
+              :
+              <img src={process.env.PUBLIC_URL + '/up-chevron.png'} className="fold-image" alt='meaningfull text' onClick={changeItemsDisplay}></img>
+            )
+          )
+          }
+        </div>
         {!isEditing ? 
-          <td style={{width: '75%', textAlign: 'center'}} onClick={handleRowClick}>
+          <div style={{width: '75%', textAlign: 'center' , border: '1px solid red'}} onClick={handleRowClick}>
             {(isSavingText ?
             <Loading></Loading>
             :
             <div className='category-row-text'>{category.Text.toUpperCase()}</div>)}
-          </td>
+          </div>
           :
-          <td>
+          <div>
             <input className='form-control category-row-input' type='text' value={textValue.toUpperCase()} onChange={handleInputChange} onKeyDown={handleKeyDown} autoFocus></input>
-          </td>
+          </div>
         }
-        <td style={{width: '10%'}}>
-          {isEditing && !isDeleting && <img src={process.env.PUBLIC_URL + '/trash.png'} className="trash-image" alt='meaningfull text' onClick={displayConfirmDeleteRow}></img>}
-          {isEditing && isDeleting && <Loading></Loading>}
-          {category.IsOpen && !isEditing && 
+        <div style={{width: '10%'}}>
+          {category.IsOpen && 
             (isCreatingNewItem ? 
               <Loading></Loading>
               :
               <img src={process.env.PUBLIC_URL + '/add.png'} className="add-image" alt='meaningfull text' onClick={addNewItem}></img>)
           }
           {!category.IsOpen && !isEditing && <img src={process.env.PUBLIC_URL + '/add.png'} className="add-image" alt='meaningfull text' onClick={addNewItem}></img>}
-        </td>
-      </tr>
+        </div>
+      </div>
       {category.IsOpen &&
       (isRequestingItems ? 
         <tr>

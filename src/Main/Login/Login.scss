@@ -4,28 +4,62 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  min-height: 400px;
+  flex-direction: row;
+  margin-top: 10px;
+  //border: 1px solid grey;
+}
+
+.logged-container{
   padding: 30px;
-  width: 70%;
+  //border: 1px solid grey;
 }
 
-.login-box{
-}
-
-.loggedBox{
+.logged-info-box {
+  display: flex;
   border-radius: 2px;
-  width: 300px;
-  padding: 10%;
-  margin-bottom: 30px;
-  text-align: left;
+  margin: 50px 0px;
+  //border: 1px solid green;
+}
+
+.logged-box {
+  flex: 1;
+  //border: 1px solid yellow;
 }
 
 .userRow{
-  margin-bottom: 5px;
+  margin-bottom: 1px;
+  padding: 5px;
+  color: $blue-light;
+  text-align: left;
+  border-color: $grey;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  max-width: 300px;
+  //border: 1px solid red;
+}
+
+.userData{
+  margin-bottom: 1px;
+  //background-color: $cv-blue;
+  padding: 5px;
+  color: white;
+  text-align: left;
+  border-color: $grey;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  max-width: 300px;
+  //border: 1px solid red;
+}
+
+.login-box{
+  //border: 1px solid red;
 }
 
 .login-row{
   margin: 10px;
-  //border: 1px solid yellow;
+  //border: 1px solid purple;
 }
 
 .alert-message {
@@ -35,8 +69,8 @@
 }
 
 .focus-message {
-  display: none;
-  color: darkblue;
+  display: block;
+  color: crimson;
   margin: 5px 0px;
 }
 
@@ -64,48 +98,37 @@
 
 .btn-base{
   color: black;
-  width: 100px;
-  height: 100%;
-  padding: 5px;
+  background-color: lightgray;
+  padding: 7px 14px;
+  margin: 1px 5px;
   font-weight: bold;
-  border: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0);
 }
 
 .btn-base:hover{
-
-}
-
-.btn-base:active{
-
+  border: 1px solid $beige;
 }
 
 .btn-login{
   background-color: $green;
 }
 
-.btn-login:active{ 
-  border-color: $beige;
-  color: $beige;
-  background-color: $blue-darker;
+.btn-login:hover{ 
+  border: 1px solid $beige;
 }
 
 .btn-logout:hover{
-
 }
 
 .btn-logout{
   background-color: $red;
-  
 }
 
-.btn-logout:hover{
-
+.btn-togrocerylist{
+  background-color: $grey-light;
 }
 
 .btn-create{
   background-color: $cv-blue;
   color: white;
-}
-
-.btn-create:hover{
 }

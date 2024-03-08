@@ -37,7 +37,10 @@ export interface Response<T>{
 }
 
 export interface GroceryList{
-  categories: Category[]
+  categories: Category[],
+  items: Item[],
+  deletedCategories: Category[],
+  deletedItems: Item[],
 }
 
 export interface Category{

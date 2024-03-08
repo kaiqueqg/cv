@@ -1,7 +1,10 @@
 @import 'react-toastify/dist/ReactToastify.css';
 
 $screen-max-width: 700px;
-$blue: #21242B;
+$blue: #004cff;
+$bluey: #415073;
+$blue-b: #282C34;
+$blue-darky: #2A3455;
 $blue-dark: #21242B;
 $blue-darker: #1D1D1D;
 $blue-light: #98C1D9;
@@ -10,28 +13,11 @@ $beige-light-dark: #afafaf;
 $beige-dark: #4B4B46;
 $beige-darker: #32322D;
 $red: #EE6C4D;
-$green: #b7e9b7;
-$green-dark: #479647;
+$green: #89db89;
+$green-dark: #5DA15D;
 $blue-light: #98C1D9;
 $placeholder-TextColor: grey;
 $grey: grey;
+$grey-light: rgb(201, 201, 201);
 $placeholder-dark: grey;
-$cv-blue: #0A66C2;
-
-$topmenu-border: $blue-darker;
-$topmenu-bg: white;
-$topmenu-selected-bg: $cv-blue;
-$topmenu-selected-text: $blue-darker;
-$topmenu-selected-textcolor: $grey;
-$topmenu-menubutton-hover: $topmenu-border;
-
-$cv-lang-selected: $blue-darker;
-$cv-lang: $cv-blue;
-
-$experience-bg: white;
-$experience-text: $blue-darker;
-$knowledges-container: $cv-blue;
-$knowledge-text: $beige;
-$knowledges-image: $blue-darker;
-
-$grocery-text: $blue-darker;
+$cv-blue: #0A66C2; 

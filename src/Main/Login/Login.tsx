@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './Login.scss'
-import { CreateUserModel, DBUser, Response } from '../../Types'
+import { CreateUserModel, DBUser, MenuOption, Response } from '../../Types'
 import Loading from '../../Loading/Loading';
 import { toast } from 'react-toastify';
 import { useUserContext } from '../../Contexts/UserContext';
 import storage from '../../Storage/Storage';
 import log from '../../Log/Log';
 import { identityApi } from '../../Requests/RequestFactory';
-import { isEmptyStatement } from 'typescript';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginProps{
 }
@@ -37,6 +37,7 @@ const Login: React.FC<LoginProps> = (props) => {
   const [userList, setUserList] = useState<DBUser[]>([]);
 
   const { user, setUser, testServer, isServerUp } = useUserContext();
+  const navigate = useNavigate();
 
   useEffect(() => {
     verifyLogin();
@@ -284,6 +285,7 @@ const Login: React.FC<LoginProps> = (props) => {
         setIsLogged(true);
       }
     } catch (error) {
+      setIsLogging(false);
     }
     setTimeout(() => {
       setIsLogging(false);
@@ -310,6 +312,10 @@ const Login: React.FC<LoginProps> = (props) => {
     }
   }
 
+  const changeToGroceryList = () => {
+    navigate('/knowledgeshowcase')
+  }
+
   return(
     <div className='login-container'>
       {isServerUp?
@@ -318,7 +324,7 @@ const Login: React.FC<LoginProps> = (props) => {
           :
           (!isLogged?
             <div className=''>
-              <div className=' login-box'>
+              <div className='login-box'>
                 <h3 style={{margin: '10px 0px'}}>Login</h3>
                 <div className="login-row">
                   <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email"></input>
@@ -326,7 +332,7 @@ const Login: React.FC<LoginProps> = (props) => {
                   {typeAnValidEmail && <span className="alert-message concert-one-regular">Type a valid email.</span>}
                 </div>
                 <div className="login-row">
-                  <input className="input-base"  type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
+                  <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
                   {typeAnPassword && <span className="alert-message concert-one-regular">Type a password.</span>}
                 </div>
                 <div className="login-row">
@@ -334,14 +340,12 @@ const Login: React.FC<LoginProps> = (props) => {
                 </div>
               </div>
               <div className=" login-box">
-
                 <div style={{width: '100%', height:'1px', margin: '40px 0px', backgroundColor: 'black'}}></div>
-
                 <h3 style={{margin: '40px 0px 30px 0px'}}>Do you want to test my project?</h3>
                 <div className="login-row">
                   <input className="input-base" type="text" onChange={changeCreateEmail} placeholder="Email" aria-label="Email"></input>
                   {typeAnEmailCreate && <span className="alert-message concert-one-regular">Type an email.</span>}
-                  {typeAnValidEmailCreate && <span className="alert-message concert-one-regular">Type a valid email.</span>}
+                  {typeAnValidEmailCreate && <span className="alert-message concert-one-regular">Type in a valid email style.</span>}
                 </div>
                 <div className="login-row">
                   <input className="input-base" type="text" onChange={changeUsername} placeholder="Username" aria-label="Username"></input>
@@ -352,7 +356,7 @@ const Login: React.FC<LoginProps> = (props) => {
                   {typeAnPasswordCreate ?
                     <span className="alert-message concert-one-regular">Type an password.</span>
                     :
-                    <span className="focus-message concert-one-regular">For now isn't encrypted, so, put something silly!</span>
+                    <span className="focus-message concert-one-regular">For now isn't encrypted, put something silly!</span>
                   }
                 </div>
                 <div className="login-row">
@@ -369,15 +373,24 @@ const Login: React.FC<LoginProps> = (props) => {
               </div>
             </div>
             :
-            <div className="login-box">
-              <div className="loggedBox">
-                <div className="userRow"><b>Username:</b> {user?.Username}</div>
-                <div className="userRow"><b>Email:</b> {user?.Email}</div>
-                <div className="userRow"><b>Role:</b> {user?.Role}</div>
-                <div className="userRow"><b>Status:</b> {user?.Status}</div>
+            <div className="logged-container">
+              <div className="logged-info-box">
+                <div className="logged-box">
+                  <div className="userRow"><b>Username:</b> </div>
+                  <div className="userRow"><b>Email:</b> </div>
+                  <div className="userRow"><b>Role:</b> </div>
+                  <div className="userRow"><b>Status:</b> </div>
+                </div>
+                <div className="logged-box">
+                  <div className="userData">{user?.Username}</div>
+                  <div className="userData">{user?.Email}</div>
+                  <div className="userData">{user?.Role}</div>
+                  <div className="userData">{user?.Status}</div>
+                </div>
               </div>
               <div className="logout-row">
                 <button className="btn-base btn-logout" type="button"  onClick={logout}>Logout</button>
+                <button className="btn-base btn-togrocerylist" type="button"  onClick={changeToGroceryList}>To Grocery List</button>
               </div>
             </div>
             )
