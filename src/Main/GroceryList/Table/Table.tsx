@@ -144,42 +144,33 @@ const Table: React.FC<TableProps> = (props) => {
 
   return(
     <div className="table-container">
-      <div key='table' className='grocerylist-table'>
-        <div>
-          <div className='header-row'>
-            <div>
-              <img src={process.env.PUBLIC_URL + '/download.png'} className="category-add-image" alt='meaningfull text' onClick={getGroceryList}></img>
-            </div>
-            <div className='grocerylist-table-title'>
-              GROCERY LIST
-            </div>
-            <div>
-              {isAddingCategory? 
-                <Loading></Loading>
-                :
-                <img src={process.env.PUBLIC_URL + '/add.png'} className="category-add-image" alt='meaningfull text' onClick={addNewCategory}></img>}
-            </div>
-          </div>
+      <div className='header-row'>
+        <div className='grocerylist-header-image-container'>
+          <img src={process.env.PUBLIC_URL + '/download.png'} className="grocerylist-header-image" alt='meaningfull text' onClick={getGroceryList}></img>
         </div>
-        {isGettingCategoryList?
-          <div>
-            <div>
-              <div></div>
-                <div className="loading-items"><Loading></Loading></div>            
-              <div></div>
-            </div>
-          </div>
-          :
-          <div key='tbody'>
-            {categories.map((category) => (
-              <CategoryRow
-                receivedItems={getItems(category)}
-                key={'category' + category.CategoryId} 
-                redrawCallback={redrawCallback}
-                category={category}></CategoryRow>
-            ))}
-          </div>}
+        <div className='grocerylist-title'>
+          GROCERY LIST
+        </div>
+        <div className='grocerylist-header-image-container'>
+          {isAddingCategory? 
+            <Loading></Loading>
+            :
+            <img src={process.env.PUBLIC_URL + '/add.png'} className="grocerylist-header-image" alt='meaningfull text' onClick={addNewCategory}></img>
+          }
+        </div>
       </div>
+      {isGettingCategoryList?
+        <div className="loading-items"><Loading></Loading></div>            
+        :
+        <div>
+          {categories.map((category) => (
+            <CategoryRow
+              receivedItems={getItems(category)}
+              key={'category' + category.CategoryId} 
+              redrawCallback={redrawCallback}
+              category={category}></CategoryRow>
+          ))}
+      </div>}
     </div>
   );
 }

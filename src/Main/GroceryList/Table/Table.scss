@@ -1,40 +1,48 @@
 @import '../../../global.scss';
 
+$bor: false;
+
 .table-container{
   display: flex;
-  height: 100%;
-  width: 100%;
-}
-
-.grocerylist-table{
-  width: 100%;
-  height: 100%;
-}
-
-.grocerylist-table-title{
-  text-align: center;
-  color: beige;
-  //height: 45px;
+  flex-direction: column;
+  @if $bor {border: 1px solid red;}
 }
 
 .header-row{
-  background-color: #282C34;
+  display: flex;
+  flex-direction: row;
+  background-color: $blue-b;
   color: beige;
-  //border: 1px solid $beige-dark;
+  align-items: center;
+  border: 1px solid grey;
+  @if $bor {border: 1px solid yellow;}
 }
 
-.category-add-image{
+.grocerylist-title{
+  align-items: center;
+  justify-content: center;
+  width: 70%;
+  color: beige;
+  padding: 5px;
+  @if $bor {border: 1px solid green;}
+}
+
+.grocerylist-header-image-container{
+  width: 15%;
+  padding: 5px 0px;
+  @if $bor {border: 1px solid yellow;}
+}
+
+.grocerylist-header-image{
   cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #ffffff00;
-  width: 25px;
-  height: 25px;
-  margin: 5px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 3px;
+  @if $bor {border: 1px solid purple;}
 }
 
-.category-add-image:hover{
-  border-width: 0px;
+.grocerylist-header-image:hover{
+  padding: 0px;
 }
 
 .info-text{

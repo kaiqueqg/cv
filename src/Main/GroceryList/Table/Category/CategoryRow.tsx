@@ -253,7 +253,7 @@ const CategoryRow: React.FC<CategoryProps> = (props) => {
   return(
     <>
       <div className='category-row' >
-        <div style={{width: '15%', textAlign:'center'}}  >
+        <div className='category-image-container'>
           {isSavingIsOpen?
           <Loading></Loading>
           :
@@ -272,19 +272,18 @@ const CategoryRow: React.FC<CategoryProps> = (props) => {
           )
           }
         </div>
-        {!isEditing ? 
-          <div style={{width: '75%', textAlign: 'center' , border: '1px solid red'}} onClick={handleRowClick}>
+        {isEditing ? 
+          <input className='category-text-input' type='text' value={textValue.toUpperCase()} onChange={handleInputChange} onKeyDown={handleKeyDown} autoFocus></input>
+          :
+          <>
             {(isSavingText ?
             <Loading></Loading>
             :
-            <div className='category-row-text'>{category.Text.toUpperCase()}</div>)}
-          </div>
-          :
-          <div>
-            <input className='form-control category-row-input' type='text' value={textValue.toUpperCase()} onChange={handleInputChange} onKeyDown={handleKeyDown} autoFocus></input>
-          </div>
+            <div className='category-text' onClick={handleRowClick}>{category.Text.toUpperCase()}</div>)
+            }
+          </>
         }
-        <div style={{width: '10%'}}>
+        <div className='category-image-container'>
           {category.IsOpen && 
             (isCreatingNewItem ? 
               <Loading></Loading>
@@ -296,11 +295,11 @@ const CategoryRow: React.FC<CategoryProps> = (props) => {
       </div>
       {category.IsOpen &&
       (isRequestingItems ? 
-        <tr>
-          <td></td>
-            <td className="loading-items"><Loading></Loading></td>            
-          <td></td>
-        </tr>
+        <div>
+          <div></div>
+            <div className="loading-items"><Loading></Loading></div>            
+          <div></div>
+        </div>
         :
         items.map((item: Item, index: number) => (
           <ItemRow 

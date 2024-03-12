@@ -214,14 +214,14 @@ const ItemRow: React.FC<ItemRowProps> = (props) => {
   return(
     <>
       <div className={props.isPair? 'item-row-color-one' : 'item-row-color-two'}>
-        <div style={{textAlign: 'center'}}>
+        <div className='item-row-container'>
           {isEditing && !isDeleting && <img src={process.env.PUBLIC_URL + '/trash-red.png'} className="item-row-image" alt='meaningfull text' onClick={displayConfirmDeleteRow}></img>}
           {isEditing && isDeleting && <Loading></Loading>}
           {!isEditing && !hideQuantity && 
-            <div className='item-row-container'>
-              <img className="item-row-image item-row-image-plusminus" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={increaseQuantity}></img>
-              <img className="item-row-image item-row-image-plusminus" src={process.env.PUBLIC_URL + '/minus.png'} alt='meaningfull text' onClick={decreaseQuantity}></img>
-            </div>
+          <>
+            <img className="item-row-image-plusminus" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={increaseQuantity}></img>
+            <img className="item-row-image-plusminus" src={process.env.PUBLIC_URL + '/minus.png'} alt='meaningfull text' onClick={decreaseQuantity}></img>
+          </>
           }
         </div>
         {isSavingItem ? 
@@ -246,22 +246,21 @@ const ItemRow: React.FC<ItemRowProps> = (props) => {
               <input className='form-control item-row-input' type='text' value={quantityUnit} onChange={handleQuantityUnitChange} onKeyDown={handleKeyDown}></input>
             </div>
             <div className='item-row-donecancel-container'>
-              <img src={process.env.PUBLIC_URL + '/done.png'} className="item-row-done" alt='meaningfull text' style={{marginRight: '30px'}} onClick={doneEdit}></img>
               <img src={process.env.PUBLIC_URL + '/cancel.png'} className="item-row-cancel" alt='meaningfull text' onClick={cancelEdit}></img>
+              <img src={process.env.PUBLIC_URL + '/done.png'} className="item-row-done" alt='meaningfull text' onClick={doneEdit}></img>
             </div>
           </div>
           :
           <div className={'item-row-text'} onClick={handleRowClick}>{getDisplayText()}</div>
         )
         }
-        <div>
-          {isSavingIsChecked ? 
+        <div className='item-row-container'>
+          {isSavingIsChecked ? // CHECKED
             <Loading></Loading>
             :
             <img src={item.IsChecked ? process.env.PUBLIC_URL + '/checked.png' : process.env.PUBLIC_URL + '/unchecked.png'} className="item-row-image" alt='meaningfull text' onClick={changeIsChecked}></img>
           }
         </div>
-        
       </div>
     </>
   );

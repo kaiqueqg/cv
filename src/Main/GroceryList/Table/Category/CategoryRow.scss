@@ -1,91 +1,108 @@
 @import '../../../../global.scss';
 
+$bor: false;
+
 .category-row{
   display: flex;
-  width: 100%;
+  flex-direction: row;
   background-color: $blue-dark;
-  border-width: 1px;
-  border-color: green;
+  align-items: center;
+  border-width: 0px 1px 1px 1px;
+  border-color: $blue-darker;
   border-style: solid;
-  //border: 1px solid $beige-dark;
-  //height: 45px;
+  @if $bor {border: 1px solid red;}
 }
 
-.category-row-text{
-  color: beige;
-  vertical-align: middle;
-  width: 100%;
+.category-text{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70%;
   font-weight: bold;
-  font-size: 20px;
+  color: beige;
+  padding: 5px;
+  @if $bor {border: 1px solid yellow;}
 }
 
-.category-row-input{
-  color: beige;
-  background-color: #282C34;
+.category-text-input{
+  display: flex;
+  background-color: $blue-dark;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin: '0';
-  width: 100%;
+  width: 70%;
+  font-weight: bold;
+  color: $beige;
+  border: 1px solid $beige;
+  border-radius: 5px;
+  @if $bor {border: 1px solid green;}
 }
 
-.form-controle:focus{
-  color: beige;
-  border-color: red;
-  background-color: #282C34;
+.category-text-input:focus{
+  display: flex;
+  background-color: $blue-dark;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 70%;
+  font-weight: bold;
+  color: $red;
+  border: 1px solid yellow;
+  border-radius: 5px;
+  @if $bor {border: 1px solid green;}
+}
+
+.category-image-container{
+  width: 15%;
+  padding: 5px 0px;
+  @if $bor {border: 1px solid yellow;}
 }
 
 .add-image{
   cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #ffffff00;
-  width: 25px;
-  height: 25px;
-  margin: 5px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 3px;
+  @if $bor {border: 1px solid purple;}
 }
 
 .add-image:hover{
-  border-width: 0px;
+  padding: 0px;
 }
 
 .trash-image{
   cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #ffffff00;
-  width: 25px;
-  height: 25px;
-  margin: 5px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 3px;
+  @if $bor {border: 1px solid purple;}
 }
 
 .trash-image:hover{
-  border-width: 0px;
+  padding: 0px;
 }
 
 .fold-image{
   cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #ffffff00;
-  width: 25px;
-  height: 25px;
-  margin: 5px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 3px;
+  @if $bor {border: 1px solid purple;}
 }
 
 .fold-image:hover{
-  border-width: 0px;
+  padding: 0px;
 }
 
 .unfold-image{
   cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #ffffff00;
-  width: 25px;
-  height: 25px;
-  margin: 5px;
+  max-width: 30px;
+  max-height: 30px;
+  padding: 3px;
+  @if $bor {border: 1px solid purple;}
 }
 
 .unfold-image:hover{
-  border-width: 0px;
+  padding: 0px;
 }
 
