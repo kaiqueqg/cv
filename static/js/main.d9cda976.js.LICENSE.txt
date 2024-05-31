@@ -62,4 +62,6 @@
  * @license MIT
  */
 
-//!Problem with response data or missing
+//! Problem with reaching server
+
+//!Problem with reaching server
