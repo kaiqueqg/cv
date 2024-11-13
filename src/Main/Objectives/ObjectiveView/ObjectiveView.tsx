@@ -912,7 +912,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
                 :
                 <>
                   <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsOpen()}} className='objectiveNewItemImageContainer'>
-                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/arrow-left-filled' + getTintColor() + '.png'}></img>
+                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'}></img>
                   </div>
                   <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} className='objectiveNewItemImageContainer'>
                     <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'}></img>

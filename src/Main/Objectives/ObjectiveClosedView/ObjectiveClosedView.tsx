@@ -14,6 +14,7 @@ const ObjectiveClosedView: React.FC<ObjectiveClosedViewProps> = (props) => {
   const { objective, putObjectiveInDisplay } = props;
 
   const [isOpening, setIsOpening] = useState<boolean>(false);
+  const [isBeingHover, setIsBeingHover] = useState<boolean>(false);
 
   const onChangeObjectiveOpen = async (objective: Objective) => {
     setIsOpening(true);
@@ -67,14 +68,28 @@ const ObjectiveClosedView: React.FC<ObjectiveClosedViewProps> = (props) => {
     }
   }
 
+  const getTintColor = () => {
+    if(objective.Theme === 'darkWhite')
+      return '-black';
+    else
+      return '';
+  }
+
   return (
     <div 
       className={'objectiveClosedContainer' + getTheme()} 
-      onClick={()=>onChangeObjectiveOpen(objective)}>
+      onClick={()=>onChangeObjectiveOpen(objective)}
+      onMouseEnter={()=>{setIsBeingHover(true)}}
+      onMouseLeave={()=>{setIsBeingHover(false)}}
+      >
       { isOpening ?
         <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
         :
-        <div className={'objectiveClosedText' + getTextColor()}>{objective.Title}</div>
+        (isBeingHover?
+          <img className="objectiveClosedImage" src={process.env.PUBLIC_URL + '/unarchive' + getTintColor() + '.png'} alt='meaningfull text'></img>
+          :
+          <div className={'objectiveClosedText' + getTextColor()}>{objective.Title}</div>
+        )
       }
     </div>
   )

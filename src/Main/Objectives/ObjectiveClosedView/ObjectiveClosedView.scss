@@ -5,7 +5,7 @@
   display: flex;
   min-height: 40px;
 
-  padding: 5px 10px;
+  padding: 2px 10px;
   margin: 10px 0px 0px 0px;
   justify-content: center;
   align-items: center;
@@ -24,6 +24,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.objectiveClosedImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
 }
 
 .objObjectiveBlue{background-color: #113a58;}
