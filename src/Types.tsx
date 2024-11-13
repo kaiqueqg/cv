@@ -1,10 +1,3 @@
-export interface ExperienceData{
-  timeOnIt: LangText,
-  company: LangText,
-  jobTitle: LangText,
-  description: LangText,
-}
-
 export interface LangText{
   current: Language,
   ptbr: string,
@@ -13,12 +6,38 @@ export interface LangText{
   it?: string,
 }
 
-export interface DBUser{
+export interface ResponseUser{
+  Username: string,
   Email: string,
-  Username?: string,
-  Password?: string,
-  Role?: string,
-  Status?: string,
+  Status: string,
+  Role: string,
+  CreateAt: string,
+  FCMToken?: string,
+}
+
+export interface ResponseServices{
+  Name: string,
+  Up: boolean,
+  UpReason: string,
+  RequestNewUserUp: boolean,
+  RequestNewUserUpReason: string,
+}
+
+export interface LoginModel{
+  User?: ResponseUser,
+  Token: string,
+  ErrorMessage: string
+}
+
+export interface ChangeUserStatusRequest { Email: string, Status: string }
+
+export interface DBUserPrefs{
+  shouldCreateNewItemWhenCreateNewCategory: boolean,
+  hideQuantity: boolean,
+  showOnlyItemText: boolean,
+  checkedUncheckedBoth: string,
+  locked: boolean,
+  theme: string,
 }
 
 export interface CreateUserModel{
@@ -36,29 +55,6 @@ export interface Response<T>{
   Code: number,
 }
 
-export interface GroceryList{
-  categories: Category[],
-  items: Item[],
-  deletedCategories: Category[],
-  deletedItems: Item[],
-}
-
-export interface Category{
-  CategoryId: string,
-  Text: string,
-  IsOpen: boolean
-}
-
-export interface Item{
-  UserIdCategoryId: string,
-  ItemId: string,
-  Text: string,
-  IsChecked: boolean,
-  Quantity: number,
-  QuantityUnit: string,
-  GoodPrice: string,
-}
-
-export enum Language{ PR_BR, EN, FR, IT }
-export enum MenuOption{ Login, Curriculum, GroceryList, SleepDevice, WorldDefence }
-export enum LogLevel { Dev, Warn, Error, None  }
+export enum Language{ PR_BR, EN, FR, IT };
+export enum MenuOption{ Main, Login, Curriculum, GroceryList, ObjectivesList, SleepDevice, WorldDefence };
+export enum LogLevel { Dev, Warn, Error, None  };

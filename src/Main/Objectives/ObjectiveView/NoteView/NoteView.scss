@@ -1,0 +1,106 @@
+@import '../../../../global.scss';
+
+.noteContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2px;
+  
+  align-items: center;
+  text-align: start;
+  
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.noteContainer:hover{
+  // border-color: red;
+}
+
+.noteContainerSelected{
+  border-color: red;
+  border-style: dashed;
+}
+
+.noteContainerSelectedEnding{
+  border-style: solid;
+}
+
+.noteTitleContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.noteTitle{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  margin-right: 5px;
+  padding: 0px 10px 0px 10px;
+  color: beige;
+  white-space: pre-line;
+}
+.noteTitle:hover{
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.noteTextArea{
+  user-select: text;
+  width: 100%;
+  margin-right: 5px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 1px;
+  border-color: beige;
+  border-style: dashed;
+  border-radius: 5px;
+  outline: 0px;
+}
+
+.noteImage{
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.upDownImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.upDownImage:hover{
+  padding: 4px;
+}
+
+.inputImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.inputImage:hover{
+  padding: 4px;
+}
+
+.noteContainerBlue{background-color: #035a9c;}
+.noteContainerRed{background-color: rgb(189, 32, 32);}
+.noteContainerGreen{background-color: rgb(64, 121, 64);}
+.noteContainerWhite{background-color: #D8AE7E;}
+.noteContainerNoTheme{background-color: $blue-darker-darker}
+
+.noteTextBlue{color: beige,}
+.noteTextRed{color: beige,}
+.noteTextGreen{color: beige,}
+.noteTextWhite{color: black,}
+.noteTextNoTheme{color: beige,}

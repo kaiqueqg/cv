@@ -1,18 +1,16 @@
 import React from 'react'
 import './Loading.scss'
+import { ReactComponent as Icon } from '../assets/refresh.svg';
 
 interface LoadingProps{
-  IsBlack?: boolean
+  IsBlack?: boolean,
 }
 
 const Loading: React.FC<LoadingProps> = ({ IsBlack = false }) => {
   return(
     <React.Fragment>
-      {IsBlack?
-        <img src={process.env.PUBLIC_URL + '/refresh-white.png'} className="loading-image rotate-icon" alt='a'></img>
-        :
-        <img src={process.env.PUBLIC_URL + '/refresh-white.png'} className="loading-image rotate-icon" alt='a'></img>
-      }
+      {IsBlack && <Icon id='normalBlack' width="30px" height="30px"/>}
+      {!IsBlack && <Icon id='normalBeige' width="30px" height="30px"/>}
     </React.Fragment>
   );
 }

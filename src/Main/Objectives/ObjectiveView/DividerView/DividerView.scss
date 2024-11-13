@@ -1,0 +1,123 @@
+@import '../../../../global.scss';
+
+.dividerContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  margin-bottom: 2px;
+
+  align-items: center;
+  text-align: start;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: rgb(0, 0, 0, 0);
+  border-style: solid;
+}
+
+.dividerContainer:hover{
+  // border-color: red;
+}
+
+.dividerContainerSelected{
+  border-color: red;
+  border-style: dashed;
+}
+
+.dividerContainerSeletedEnding{
+  border-style: solid;
+}
+
+.dividerContainerEmptyTitle{
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.titleLineContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+}
+
+.dividerTitleLine{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  color: red;
+  font-weight: bold;
+  margin: 0px 5px 0px 10px;
+}
+
+.dividerInput{
+  width: 100%;
+  padding: 0px 10px 0px 10px;
+  margin-right: 5px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 1px;
+  border-color: beige;
+  border-style: dashed;
+  border-radius: 5px;
+  outline: 0px;
+}
+
+.dividerImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+}
+
+.dividerImage:hover{
+  padding: 4px;
+}
+
+.dividerNewItemContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+}
+
+.dividerNewItemImageContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+
+.dividerNewItemImage{
+  max-width: 30px;
+  max-height: 30px;
+  padding: 5px;
+}
+
+.dividerNewItemImage:hover{
+  padding: 2px;
+}
+
+.dividerContainerBlue{background-color: #035a9c;}
+.dividerContainerRed{background-color: #F55E5E;}
+.dividerContainerGreen{background-color: rgb(114, 196, 114);}
+.dividerContainerWhite{background-color: #E0DCB6;}
+.dividerContainerNoTheme{background-color: $blue-darker-darker}
+
+.dividerTextBlue{color: beige,}
+.dividerTextRed{color: beige,}
+.dividerTextGreen{color: beige,}
+.dividerTextWhite{color: black,}
+.dividerTextNoTheme{color: beige,}

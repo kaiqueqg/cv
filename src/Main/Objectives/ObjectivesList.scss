@@ -1,0 +1,193 @@
+@import '../../global.scss';
+
+.needLogin{
+  display: flex;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 100%;
+  max-width: 700px;
+  min-height: 40px;
+  margin-top: 10px;
+  background-color: $blue-dark;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.loadingListContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 300px;
+}
+
+.objectivesContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.objectivesListContainer{
+  display: flex;
+  flex-direction: column;
+
+  @media(min-width: 700px){
+    flex-direction: row;
+  }
+}
+
+.objectivesListSideContainer{
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 5px;
+  padding: 5px;
+
+  border-width: 1px;
+  border-radius: 5px;
+  border-color: $beige-dark;
+  border-style: solid;
+
+}
+
+.objectivesSidePanelOpened{
+  height: 100%;
+}
+
+.objectivesSidePanelClosed{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  @media(min-width: 700px){
+    flex-direction: column;
+  }
+}
+
+.objectivesListMainContainer{
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 5px;
+  padding: 5px;
+
+  min-width: 100px;
+  @media(min-width: 700px){
+    min-width: 700px;
+  }
+}
+
+.objectivesSettings{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  min-height: 40px;
+  background-color: $blue-dark;
+
+  margin: 10px 0px 10px 0px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.objectivesSettingsRow{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 30px;
+  margin: 5px 10px 5px 10px;
+
+  border-width: 1px;
+  border-color: red;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.objectiveRow{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 2px;
+  margin: 3px 0px 0px 0px;
+}
+
+.objectiveRowSelected{
+  border-width: 1px;
+  border-color: red;
+  border-style: dashed;
+  border-radius: 5px;
+}
+
+.objectiveRowSelectedEnding{
+  border-style: solid;
+}
+
+.objectiveRow.isEditing:hover {
+  cursor: pointer;
+}
+
+.objectivesImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  padding: 6px;
+}
+
+.objectivesImage:hover{
+  padding: 4px;
+}
+
+.btnbtn{
+  cursor: pointer;
+  padding: 5px;
+}
+
+@keyframes toUnchecked{
+  0%{
+    //width: 137px;
+    transform: translate(30px, 40px);
+  }
+  100%{
+    //width: 0px;
+    transform: translate(167px, 40px);
+  }
+}
+
+.checkedToUnchecked{
+  width: 35px;
+  height: 35px;
+}
+
+.checkedToUnchecked:hover #hideCheck{
+  animation: toUnchecked 0.5s linear;
+  animation-fill-mode: forwards;
+}
+
+// @keyframes toChecked{
+//   0%{
+//     width: 0px;
+//   }
+//   100%{
+//     width: 137px;
+//   }
+// }
+
+// #uncheckedToChecked:hover #hideCheck {
+//   width: 0px;
+//   animation: toChecked 0.3s linear;
+//   animation-fill-mode: forwards;
+// }

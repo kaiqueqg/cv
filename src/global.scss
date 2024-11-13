@@ -1,23 +1,43 @@
 @import 'react-toastify/dist/ReactToastify.css';
 
 $screen-max-width: 700px;
+$blue-light: #98C1D9;
 $blue: #004cff;
 $bluey: #415073;
-$blue-b: #282C34;
 $blue-darky: #2A3455;
-$blue-dark: #21242B;
-$blue-darker: #1D1D1D;
-$blue-light: #98C1D9;
+$blue-dark: #282C34;
+$blue-darker: #21242B;
+$blue-darker-darker: #1D1D1D;
+
 $beige: #F5F5DC;
 $beige-light-dark: #afafaf;
 $beige-dark: #4B4B46;
 $beige-darker: #32322D;
+
 $red: #EE6C4D;
+$red-bright: #FF2400;
+$red-dark: #8d2c2c;
+
 $green: #89db89;
 $green-dark: #5DA15D;
-$blue-light: #98C1D9;
-$placeholder-TextColor: grey;
-$grey: grey;
+
 $grey-light: rgb(201, 201, 201);
+$grey: grey;
+$grey-dark: rgb(61, 61, 61);
+
 $placeholder-dark: grey;
-$cv-blue: #0A66C2; 
+$placeholder-TextColor: grey;
+
+$cv-blue: #0A66C2;
+
+.beige-darker{
+  filter: brightness(40%);
+}
+
+.text-bold{
+  font-weight: bold;
+}
+
+.obj{
+
+}

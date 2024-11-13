@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './Contexts/UserContext';
+import './global.scss';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -21,5 +21,3 @@ root.render(
     </div>
   </React.StrictMode>
 );
-
-reportWebVitals();

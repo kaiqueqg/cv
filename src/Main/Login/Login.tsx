@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Login.scss'
-import { CreateUserModel, DBUser, MenuOption, Response } from '../../Types'
+import { CreateUserModel, ResponseUser, MenuOption, Response } from '../../Types'
 import Loading from '../../Loading/Loading';
 import { toast } from 'react-toastify';
 import { useUserContext } from '../../Contexts/UserContext';
@@ -8,6 +8,7 @@ import storage from '../../Storage/Storage';
 import log from '../../Log/Log';
 import { identityApi } from '../../Requests/RequestFactory';
 import { useNavigate } from 'react-router-dom';
+import UserView from './UserView/UserView';
 
 interface LoginProps{
 }
@@ -33,8 +34,6 @@ const Login: React.FC<LoginProps> = (props) => {
   const [typeAnPasswordCreate, setTypeAnPasswordCreate] = useState<boolean>(false);
   const [typeAnUsernameCreate, setTypeAnUsernameCreate] = useState<boolean>(false);
   const [typeReasonCreate, setTypeReasonCreate] = useState<boolean>(false);
-
-  const [userList, setUserList] = useState<DBUser[]>([]);
 
   const { user, setUser, testServer, isServerUp } = useUserContext();
   const navigate = useNavigate();
@@ -68,7 +67,7 @@ const Login: React.FC<LoginProps> = (props) => {
 
       setIsLogging(false);
       if(response !== undefined && response.status == 200) {
-        const responseData: DBUser = await response.json();
+        const responseData: ResponseUser = await response.json();
         if(responseData !== undefined){
           storage.setUser(responseData);
           setUser(responseData);
@@ -81,7 +80,7 @@ const Login: React.FC<LoginProps> = (props) => {
     }, 1000); 
   }
 
-  interface LoginData { User: DBUser, Token: string }
+  interface LoginData { User: ResponseUser, Token: string }
   const login = async () => {
     //check username
     if(email.trim() === "" || password.trim() === ""){
@@ -98,69 +97,25 @@ const Login: React.FC<LoginProps> = (props) => {
       return;
     }
 
-    const user: DBUser = {
+    const user = {
       Email: email,
       Password: password,
     };
 
     setIsLogging(true);
     try {
-      const response = await identityApi.login(JSON.stringify(user), () => {testServer();});
-
-      //! Problem with reaching server
-      if(response !== undefined && response !== null){
-        const responseLogin: Response<LoginData> = await response.json();
-        //!Problem with response data or missing
-        if(responseLogin.WasAnError || responseLogin.Data === null || responseLogin.Data === undefined){
-          log.pop(responseLogin.Message);
-        }
-        //*Happy path
-        else{
-          storage.setToken(responseLogin.Data.Token);
-          storage.setUser(responseLogin.Data.User);
-          setUser(responseLogin.Data.User);
-          setIsLogged(true);
-        }
+      const data = await identityApi.login(JSON.stringify(user), () => {testServer();});
+      if(data && data.User){
+        storage.setToken(data.Token);
+        storage.setUser(data.User);
+        setUser(data.User);
+        setIsLogged(true);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
     }
 
     setIsLogging(false);
-  }
-
-  const getUserList = () => {
-    if(user?.Role === 'Admin'){
-      const fetchData = async () => {
-        try {
-          setIsLogging(true);
-          const response = await identityApi.getUserList(undefined, () => {
-            setIsLogging(false);
-            toast.warning("Error trying to get user list!");
-            testServer();
-          });
-  
-          setIsLogging(false);
-          
-          const responseLogin: Response<DBUser[]> = await response.json();
-            
-          if(responseLogin.WasAnError || responseLogin.Data === null || responseLogin.Data === undefined){
-            log.pop(responseLogin.Message);
-          }
-          else {
-
-          }
-        } 
-        catch (error) {
-  
-        }
-        setTimeout(() => {
-          setIsLogging(false);
-        }, 1000); 
-      };
-
-      fetchData();
-    }
   }
 
   const changeEmail = (event: any) => {
@@ -266,22 +221,17 @@ const Login: React.FC<LoginProps> = (props) => {
 
     try {
       setIsLogging(true);
-      const response = await identityApi.askToCreate(JSON.stringify(createUser), () => {
+      const data = await identityApi.askToCreate(JSON.stringify(createUser), () => {
         toast.warning("Error trying to create user!");
         testServer();
       });
 
       setIsLogging(false);
       
-      const responseLogin: Response<LoginData> = await response.json();
-      
-      if(responseLogin.WasAnError || responseLogin.Data === null || responseLogin.Data === undefined){
-        log.pop(responseLogin.Message);
-      }
-      else {
-        storage.setToken(responseLogin.Data.Token);
-        storage.setUser(responseLogin.Data.User);
-        setUser(responseLogin.Data.User);
+      if(data){
+        storage.setToken(data.Token);
+        storage.setUser(data.User);
+        setUser(data.User);
         setIsLogged(true);
       }
     } catch (error) {
@@ -312,15 +262,11 @@ const Login: React.FC<LoginProps> = (props) => {
     }
   }
 
-  const changeToGroceryList = () => {
-    navigate('/knowledgeshowcase')
-  }
-
   return(
     <div className='login-container'>
       {isServerUp?
         (isLogging?
-          <Loading IsBlack={true}></Loading>
+          <Loading></Loading>
           :
           (!isLogged?
             <div className=''>
@@ -339,7 +285,7 @@ const Login: React.FC<LoginProps> = (props) => {
                   <button className="btn-base btn-login" type="button" onClick={login}>Login</button>
                 </div>
               </div>
-              <div className=" login-box">
+              {/* <div className=" login-box">
                 <div style={{width: '100%', height:'1px', margin: '40px 0px', backgroundColor: 'black'}}></div>
                 <h3 style={{margin: '40px 0px 30px 0px'}}>Do you want to test my project?</h3>
                 <div className="login-row">
@@ -370,29 +316,10 @@ const Login: React.FC<LoginProps> = (props) => {
                 <div className="login-row">
                   <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
                 </div>
-              </div>
+              </div> */}
             </div>
             :
-            <div className="logged-container">
-              <div className="logged-info-box">
-                <div className="logged-box">
-                  <div className="userRow"><b>Username:</b> </div>
-                  <div className="userRow"><b>Email:</b> </div>
-                  <div className="userRow"><b>Role:</b> </div>
-                  <div className="userRow"><b>Status:</b> </div>
-                </div>
-                <div className="logged-box">
-                  <div className="userData">{user?.Username}</div>
-                  <div className="userData">{user?.Email}</div>
-                  <div className="userData">{user?.Role}</div>
-                  <div className="userData">{user?.Status}</div>
-                </div>
-              </div>
-              <div className="logout-row">
-                <button className="btn-base btn-logout" type="button"  onClick={logout}>Logout</button>
-                <button className="btn-base btn-togrocerylist" type="button"  onClick={changeToGroceryList}>To Grocery List</button>
-              </div>
-            </div>
+            <UserView setIsLogged={setIsLogged}></UserView>
             )
           )
         :

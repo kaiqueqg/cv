@@ -1,7 +1,7 @@
 import './TopMenu.scss';
 import { MenuOption } from '../../Types';
 import { useEffect, useState } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate  } from 'react-router-dom';
+import { useLocation, useNavigate  } from 'react-router-dom';
 
 
 interface TopMenuProps{
@@ -10,21 +10,30 @@ interface TopMenuProps{
 const TopMenu: React.FC<TopMenuProps> = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [ currentMenuOption, setCurrentMenuOption ] = useState<MenuOption>(MenuOption.Curriculum);
+  const [ currentMenuOption, setCurrentMenuOption ] = useState<MenuOption>(MenuOption.Main);
 
   useEffect(() => {
     switch (location.pathname) {
+      case '':
+        setCurrentMenuOption(MenuOption.Main);
+        break;
+      case '/':
+        setCurrentMenuOption(MenuOption.Main);
+        break;
       case '/login':
         setCurrentMenuOption(MenuOption.Login);
         break;
       case '/cv':
         setCurrentMenuOption(MenuOption.Curriculum);
         break;
-      case '/knowledgeshowcase':
-        setCurrentMenuOption(MenuOption.GroceryList);
+      // case '/grocerylist':
+      //   setCurrentMenuOption(MenuOption.GroceryList);
+      //   break;
+      case '/objectiveslist':
+        setCurrentMenuOption(MenuOption.ObjectivesList);
         break;
       default:
-        setCurrentMenuOption(MenuOption.Curriculum);
+        setCurrentMenuOption(MenuOption.Main);
         break;
     }
   }, [location.pathname]);
@@ -37,8 +46,11 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
       <div key='cvBtn' className={MenuOption.Curriculum === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.Curriculum); navigate("/cv");}}>
         <div className={MenuOption.Curriculum === currentMenuOption? 'text textSelected': 'text'}>Curriculum</div>
       </div>
-      <div key='groceryBtn' className={MenuOption.GroceryList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.GroceryList); navigate("/knowledgeshowcase")}}>
-        <div className={MenuOption.GroceryList === currentMenuOption? 'text textSelected': 'text'}>Showcase</div>
+      {/* <div key='groceryBtn' className={MenuOption.GroceryList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.GroceryList); navigate("/grocerylist")}}>
+        <div className={MenuOption.GroceryList === currentMenuOption? 'text textSelected': 'text'}>Grocery List</div>
+      </div> */}
+      <div key='objectiveBtn' className={MenuOption.ObjectivesList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.ObjectivesList); navigate("/objectiveslist")}}>
+        <div className={MenuOption.ObjectivesList === currentMenuOption? 'text textSelected': 'text'}>Objectives</div>
       </div>
       {/* <div key='sleepDeviceBtn' className={MenuOption.SleepDevice === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.SleepDevice); navigate("/sleepDevice")}}>
         <div className={MenuOption.SleepDevice === currentMenuOption? 'text textSelected': 'text'}>Sleep Device</div>

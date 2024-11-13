@@ -1,17 +1,19 @@
 import { toast } from 'react-toastify';
-import { DBUser } from '../Types';
+import { ResponseUser, DBUserPrefs } from '../Types';
 
 
 type StorageKeys = {
   JwtToken: string,
   User: string,
   BaseUrl: string,
+  DBUserPrefs: string,
 };
 
 const keys: StorageKeys = {
   JwtToken: '@kaiqueqgcv:jwt',
   User: '@kaiqueqgcv:user',
   BaseUrl: '@kaiqueqgcv:baseurl',
+  DBUserPrefs: '@kaiqueqgcv:dBUserPrefs',
 };
 
 const storage = {
@@ -25,11 +27,11 @@ const storage = {
   deleteToken(){
     localStorage.removeItem(keys.JwtToken);
   },
-  getUser(): DBUser|null{
+  getUser(): ResponseUser|null{
     const userJson = localStorage.getItem(keys.User);
     return userJson ? JSON.parse(userJson) : null;
   },
-  setUser(user: DBUser){
+  setUser(user: ResponseUser){
     localStorage.setItem(keys.User, JSON.stringify(user));
   },
   deleteUser(){
@@ -46,6 +48,13 @@ const storage = {
   setBaseUrl(baseUrl: string) {
     toast.warning(baseUrl);
     localStorage.setItem(keys.BaseUrl, baseUrl);
+  },
+  getDBUserPrefs(): DBUserPrefs {
+    const prefs = localStorage.getItem(keys.DBUserPrefs);
+    return prefs ? JSON.parse(prefs) : { checkedUncheckedBoth: 'both', hideQuantity: true, locked: false, shouldCreateNewItemWhenCreateNewCategory: false, theme: 'dark' };
+  },
+  setDBUserPrefs(prefs: DBUserPrefs) {
+    localStorage.setItem(keys.DBUserPrefs, JSON.stringify(prefs));
   },
 }
 

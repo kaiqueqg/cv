@@ -1,0 +1,114 @@
+@import '../../../../global.scss';
+
+.questionContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+
+  align-items: center;
+  text-align: start;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.questionContainer:hover{
+  // border-color: red;
+}
+
+.questionContainerSelected{
+  border-color: red;
+  border-style: dashed;
+  padding: 5px;
+}
+
+.questionContainerSelectedEnding{
+  border-style: solid;
+}
+
+.statementLineContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+}
+
+.statementLine{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  color: beige;
+  font-weight: bold;
+  margin: 0px 5px 0px 10px;
+}
+
+.answerLineContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+}
+
+.answerLine{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  color: beige;
+  margin: 0px 5px 0px 10px;
+}
+
+.questionInput{
+  width: 100%;
+  padding: 0px 10px 0px 10px;
+  margin-right: 5px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 1px;
+  border-color: beige;
+  border-style: dashed;
+  border-radius: 5px;
+  outline: 0px;
+}
+
+.answerImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+.answerImage:hover{
+  padding: 4px;
+}
+
+.questionContainerBlue{background-color: #3881b9;}
+.questionContainerRed{background-color: rgb(204, 77, 77);}
+.questionContainerGreen{background-color: rgb(74, 153, 74)}
+.questionContainerWhite{background-color: #E0DCB6;}
+.questionContainerNoTheme{background-color: $blue-darker;}
+
+.questionTextBlue{color: beige,}
+.questionTextRed{color: beige,}
+.questionTextGreen{color: beige,}
+.questionTextWhite{color: black,}
+.questionTextNoTheme{color: beige,}
+
+.questionTextFadeBlue{color: lightblue,}
+.questionTextFadeRed{color: rgb(245, 184, 184),}
+.questionTextFadeGreen{color: lightgreen,}
+.questionTextFadeWhite{color: rgb(189, 182, 144),}
+.questionTextFadeNoTheme{color: rgb(65, 65, 65),}

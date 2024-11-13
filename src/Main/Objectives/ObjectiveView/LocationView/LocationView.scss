@@ -1,0 +1,145 @@
+@import '../../../../global.scss';
+
+.locationContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+
+  align-items: center;
+  text-align: start;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.locationContainer:hover{
+  // border-color: red;
+}
+
+.locationContainerSelected{
+  border-color: red;
+  border-style: dashed;
+}
+
+.locationContainerSelectedEnding{
+  border-style: solid;
+}
+
+.locationEditingContainer{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  // border-width: 1px;
+  // border-color: red;
+  // border-style: solid;
+}
+
+.locationLeftContainer{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0px 5px;
+
+  // border-width: 1px;
+  // border-color: green;
+  // border-style: solid;
+}
+
+.locationRightContainer{
+  display: flex;
+  flex-direction: column;
+  width: 10%;
+  justify-content: center;
+  align-items: center;
+
+  // border-width: 1px;
+  // border-color: purple;
+  // border-style: solid;
+}
+
+.titleLine{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  color: beige;
+  font-weight: bold;
+  margin: 0px 5px 0px 10px;
+}
+
+.urlLineContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+}
+
+.urlLine{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  color: beige;
+  margin: 0px 5px 0px 10px;
+}
+
+.locationInput{
+  width: 100%;
+  padding: 0px 10px 0px 10px;
+  margin: 0px 5px 5px 0px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 1px;
+  border-color: beige;
+  border-style: dashed;
+  border-radius: 2px;
+  outline: 0px;
+}
+
+.urlImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.urlImage:hover{
+  padding: 4px;
+}
+
+.upDownImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.upDownImage:hover{
+  padding: 4px;
+}
+
+.locationContainerBlue{background-color: #035a9c;}
+.locationContainerRed{background-color: rgb(189, 32, 32);}
+.locationContainerGreen{background-color: rgb(64, 121, 64);}
+.locationContainerWhite{background-color: #D8AE7E;}
+.locationContainerNoTheme{background-color: #1D1D1D;}
+
+.locationTextBlue{color: beige,}
+.locationTextRed{color: beige,}
+.locationTextGreen{color: beige,}
+.locationTextWhite{color: black,}
+.locationTextNoTheme{color: beige,}

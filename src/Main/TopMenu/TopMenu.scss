@@ -9,7 +9,6 @@
   border-width: 0px 0px 1px 0px;
   justify-content: center;
   padding: 20px 0px 0px 0px;
-  //border: 1px solid red;
 
   @media screen and (max-width: $screen-max-width){
     width: 100%;
@@ -17,7 +16,7 @@
 }
 
 .menuButton{
-  min-width: 100px;
+  display: flex;
   padding: 10px;
   margin-left: 5px;
   display: flex;
@@ -27,6 +26,7 @@
   border-style: solid;
   border-color: transparent;
   border-width: 1px 1px 4px 1px;
+  cursor: pointer;
 }
 
 .menuButton:hover{
@@ -38,7 +38,7 @@
 .menuSelected{
   border-style: solid;
   border-color: $beige;
-  background-color: $cv-blue;
+  background-color: $bluey;
 }
 
 .text{

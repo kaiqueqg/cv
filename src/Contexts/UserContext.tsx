@@ -2,15 +2,13 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { toast } from 'react-toastify';
 import { identityApi } from '../Requests/RequestFactory';
-import { DBUser } from '../Types';
+import { ResponseUser, DBUserPrefs } from '../Types';
 
 interface UserContextType {
-  user: DBUser|null,
-  setUser: React.Dispatch<React.SetStateAction<DBUser|null>>,
-  hideQuantity: boolean,
-  setHideQuantity: React.Dispatch<React.SetStateAction<boolean>>,
-  shouldCreateNewItemWhenCreateNewCategory: boolean,
-  setShouldCreateNewItemWhenCreateNewCategory: React.Dispatch<React.SetStateAction<boolean>>,
+  user: ResponseUser|null,
+  setUser: React.Dispatch<React.SetStateAction<ResponseUser|null>>,
+  prefs: DBUserPrefs,
+  setPrefs: React.Dispatch<React.SetStateAction<DBUserPrefs>>,
   isServerUp: boolean, 
   setIsServerUp : React.Dispatch<React.SetStateAction<boolean>>,
   theme: string,
@@ -25,11 +23,18 @@ interface UserProviderProps {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<DBUser|null>(null);
-  const [hideQuantity, setHideQuantity] = useState<boolean>(false);
-  const [shouldCreateNewItemWhenCreateNewCategory, setShouldCreateNewItemWhenCreateNewCategory,] = useState<boolean>(false);
+  const [user, setUser] = useState<ResponseUser|null>(null);
   const [isServerUp, setIsServerUp] = useState<boolean>(true);
   const [theme, setTheme] = useState<string>('light');
+  const [prefs, setPrefs] = useState<DBUserPrefs>(
+    { 
+      checkedUncheckedBoth: 'both', 
+      hideQuantity: true, 
+      locked: false, 
+      shouldCreateNewItemWhenCreateNewCategory: false, 
+      showOnlyItemText: false, 
+      theme: 'dark',
+    });
 
   const testServer = async () => {
     await identityApi.isUp(undefined, () => {
@@ -43,8 +48,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       value={{
         user,
         setUser,
-        hideQuantity, setHideQuantity, 
-        shouldCreateNewItemWhenCreateNewCategory, setShouldCreateNewItemWhenCreateNewCategory,
+        prefs,
+        setPrefs,
         isServerUp, setIsServerUp,
         theme, setTheme,
         testServer,

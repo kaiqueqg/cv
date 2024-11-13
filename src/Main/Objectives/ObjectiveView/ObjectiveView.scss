@@ -1,0 +1,205 @@
+@import '../../../global.scss';
+.objContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #113a58;
+  width: 100%;
+  max-width: 700px;
+  padding: 5px 10px 5px 10px;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.objContainerSelected{
+  // border-color: red;
+}
+
+.objTopContainer{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.objTitleContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: beige;
+  min-height: 40px;
+  width: 40%;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: rgb(0, 0, 0, 0);
+  border-style: solid;
+}
+
+.objTitle{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  min-height: 40px;
+  font-weight: bold;
+  word-wrap: 'break-word';   // Allows the text to wrap and break within the container
+  overflow-wrap: 'break-word';
+  white-space: 'normal';
+}
+
+.objTitle:hover{
+  font-size: 19px;
+}
+
+.objInput{
+  width: 100%;
+  height: 26px;
+  padding: 0px 10px 0px 10px;
+  margin-right: 5px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 1px;
+  border-color: beige;
+  border-style: dashed;
+  border-radius: 5px;
+  outline: 0px;
+}
+
+.objTitleLeft{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 30%;
+  height: 50px;
+}
+
+.objTitleRight{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 30%;
+  height: 50px;
+}
+
+.objMenuImageContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 40px;
+}
+
+.objectiveImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  padding: 6px;
+}
+
+.objectiveImage:hover{
+  padding: 4px;
+}
+
+.objectiveNewItemContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+}
+
+.objectiveMenuContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+}
+
+.objectiveNewItemImageContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+
+.objectiveNewItemImage {
+  max-width: 30px;
+  max-height: 30px;
+  padding: 5px;
+}
+
+.objectiveNewItemImage:hover{
+  padding: 2px;
+}
+
+.objectiveColorContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+}
+
+.objectiveColorButton{
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  margin: 7px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  border-radius: 20px;
+}
+
+.objectiveItemsContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.objItemRow{
+  display: flex;
+}
+
+.objDragImageContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+}
+
+.objDragImage{
+  width: 20px;
+  height: 20px;
+}
+
+.objObjectiveBlue{background-color: #113a58;}
+.objObjectiveRed{background-color: #8F1414;}
+.objObjectiveGreen{background-color: rgb(44, 82, 44);}
+.objObjectiveWhite{background-color: beige;}
+.objObjectiveNoTheme{background-color: $blue-dark;}
+
+.objectiveColorButtonBlue{background-color: #2D9BF0;}
+.objectiveColorButtonRed{background-color: red;}
+.objectiveColorButtonGreen{background-color: lightgreen;}
+.objectiveColorButtonWhite{background-color: beige;}
+.objectiveColorButtonNoTheme{background-color: $blue-dark;}
+
+.objTextBlue{color: beige;}
+.objTextRed{color: beige;}
+.objTextGreen{color: beige;}
+.objTextWhite{color: black;}

@@ -4,23 +4,31 @@
   margin: 5px;
 }
 
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.rotate-icon {
-  animation: rotate 0.75s infinite linear;
-}
-
 .loading-cell{
   text-align: 'center';
 }
 
 .loading-items{
   vertical-align: 'middle';
+}
+
+@keyframes loop {
+  0% {
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}
+
+#normalBeige #loop path{ stroke: beige;}
+#normalBlack #loop path{ stroke: black;}
+
+#normalBeige #loop{
+  animation: loop 1s ease-in-out infinite;
+  transform-origin: center;
+}
+#normalBlack #loop{
+  animation: loop 1s ease-in-out infinite;
+  transform-origin: center;
 }

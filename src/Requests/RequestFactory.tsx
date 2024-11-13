@@ -1,7 +1,8 @@
 import {  toast } from 'react-toastify';
 import log from '../Log/Log';
 import storage from '../Storage/Storage';
-import { Category, Item } from '../Types';
+import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices } from '../Types';
+import { ObjectiveList, Item as ObjectiveItem, Objective } from '../TypesObjectives';
 
 const errors = [400, 401, 404, 409, 500, 503]
 
@@ -19,7 +20,6 @@ const request = async (url: string, endpoint: string, method: string, body?: str
       body,
     };
 
-    //log.dev('request', url + endpoint, payload, body);
     const response = await fetch(url + endpoint, payload);
 
     if(response !== undefined && errors.includes(response.status)){
@@ -41,60 +41,99 @@ export const identityApi = {
   async isUp(body?: string, fError?: () => void): Promise<any>{
     return this.requestIdentity('/IsUp', 'GET', body, fError);
   },
-  async login(body?: string, fError?: () => void): Promise<any>{
-    return this.requestIdentity('/Login', 'POST', body, fError);
+  async login(body?: string, fError?: () => void): Promise<LoginModel|null>{
+    return this.requestIdentity<LoginModel|null>('/Login', 'POST', body, fError);
   },
   async getUser(body?: string, fError?: () => void): Promise<any>{
     return this.requestIdentity('/GetUser', 'GET', body, fError);
   },
-  async getUserList(body?: string, fError?: () => void): Promise<any>{
-    return this.requestIdentity('/GetUserList', 'GET', body, fError);
+  async getUserList(fError?: () => void): Promise<ResponseUser[]|null>{
+    return await this.requestIdentity<ResponseUser[]>('/GetUserList', 'GET', undefined, fError);
   },
   async askToCreate(body?: string, fError?: () => void): Promise<any>{
     return this.requestIdentity('/AskToCreate', 'POST', body, fError);
   },
-  async requestIdentity(endpoint: string, method: string, body?: string, fError?: () => void): Promise<any>{
-    return request('https://68m8rbceac.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
+  async changeUserStatus(request?: ChangeUserStatusRequest, fError?: () => void): Promise<ResponseUser|null>{
+    return await this.requestIdentity<ResponseUser>('/ChangeUserStatus', 'POST', JSON.stringify(request), fError);
+  },
+  async getIdentityServiceStatus(fError?: () => void): Promise<ResponseServices|null>{
+    return await this.requestIdentity<ResponseServices>('/GetServiceStatus', 'GET', undefined, fError);
+  },
+  async putIdentityServiceStatus(service: ResponseServices, fError?: () => void): Promise<ResponseServices|null>{
+    return await this.requestIdentity<ResponseServices>('/PutServiceStatus', 'PUT', JSON.stringify(service), fError);
+  },
+  async requestIdentity<T>(endpoint: string, method: string, body?: string, fError?: () => void): Promise<T|null>{
+    try {
+      const resp = await request('https://68m8rbceac.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
+
+      if(resp){
+        const respData: Response<T> = await resp.json();
+        if(!respData.WasAnError && respData.Data){
+          return respData.Data;
+        }
+        else{
+          log.alert(respData.Message);
+        }
+      }
+    } catch (err) {
+      log.err('Error: ', endpoint, err);
+    }
+    return null;
   },
 }
 
-export const grocerylistApi = {
-  async getCategoryList(fError?: () => void): Promise<any>{
-    //log.dev('getCategoryList', 'started');
-    return this.requestGroceryList('/GetCategoryList', 'GET', undefined, fError);
+export const objectiveslistApi = {
+  async isUpObjective(fError?: () => void): Promise<any>{
+    return this.requestObjectivesList('/IsUpObjective', 'GET', undefined, fError);
   },
-  async getCategoryItemList(categoryId: string, fError?: () => void): Promise<any>{
-    //log.dev('getCategoryItemList', 'started');
-    return this.requestGroceryList('/GetCategoryItemList', 'POST', JSON.stringify({CategoryId: categoryId}), fError);
+  async getObjectiveList(fError?: () => void): Promise<Objective[]|null>{
+    return this.requestObjectivesList<Objective[]>('/GetObjectiveList', 'GET', undefined, fError);
   },
-  async getCategory(categoryId: string, fError?: () => void): Promise<any>{
-    return this.requestGroceryList('/GetCategory', 'POST', JSON.stringify({CategoryId: categoryId}), fError);
+  async getObjectiveItemList(objectiveId: string, fError?: () => void): Promise<ObjectiveItem[]|null>{
+    return this.requestObjectivesList<ObjectiveItem[]>('/GetObjectiveItemList', 'POST', JSON.stringify({ObjectiveId: objectiveId}), fError);
   },
-  async putCategory(category: Category, fError?: () => void): Promise<any>{
-    //log.dev('putCategory', 'started');
-    return this.requestGroceryList('/PutCategory', 'PUT', JSON.stringify(category), fError);
+  async getObjective(objectiveId: string, fError?: () => void): Promise<Objective|null>{
+    return this.requestObjectivesList<Objective>('/GetObjective', 'POST', JSON.stringify({ObjectiveId: objectiveId}), fError);
   },
-  async deleteCategory(categoryId: string, fError?: () => void): Promise<any>{
-    //log.dev('deleteCategory', 'started');
-    return this.requestGroceryList('/DeleteCategory', 'DELETE', JSON.stringify({CategoryId: categoryId}), fError);
+  async putObjective(objective: Objective, fError?: () => void): Promise<Objective|null>{
+    return this.requestObjectivesList<Objective>('/PutObjective', 'PUT', JSON.stringify(objective), fError);
   },
-  async getItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<any>{
-    return this.requestGroceryList('/GetItem', 'POST', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
+  async putObjectives(objectives: Objective[], fError?: () => void): Promise<Objective[]|null>{
+    return this.requestObjectivesList<Objective[]>('/PutObjectives', 'PUT', JSON.stringify(objectives), fError);
   },
-  async putItem(item: Item, fError?: () => void): Promise<any>{
-    //log.dev('putItem', 'started');
-    return this.requestGroceryList('/PutItem', 'PUT', JSON.stringify(item), fError);
+  async deleteObjective(objective: Objective, fError?: () => void): Promise<Objective|null>{
+    return this.requestObjectivesList<Objective>('/DeleteObjective', 'DELETE', JSON.stringify(objective), fError);
   },
-  async deleteItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<any>{
-    //log.dev('deleteItem', 'started');
-    return this.requestGroceryList('/DeleteItem', 'DELETE', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
+  async getObjectiveItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<ObjectiveItem|null>{
+    return this.requestObjectivesList<ObjectiveItem>('/GetObjectiveItem', 'POST', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
   },
-  async getGroceryList(fError?: () => void): Promise<any>{
-    log.dev('getGroceryList', 'started');
-    return this.requestGroceryList('/GetGroceryList', 'GET', undefined, fError);
+  async putObjectiveItem(item: ObjectiveItem, fError?: () => void): Promise<ObjectiveItem|null>{
+    return this.requestObjectivesList<ObjectiveItem>('/PutObjectiveItem', 'PUT', JSON.stringify(item), fError);
   },
+  async putObjectiveItems(item: ObjectiveItem[], fError?: () => void): Promise<ObjectiveItem[]|null>{
+    return this.requestObjectivesList<ObjectiveItem[]>('/PutObjectiveItems', 'PUT', JSON.stringify(item), fError);
+  },
+  async deleteObjectiveItem(item: ObjectiveItem, fError?: () => void): Promise<ObjectiveItem|null>{
+    return this.requestObjectivesList<ObjectiveItem>('/DeleteObjectiveItem', 'DELETE', JSON.stringify(item), fError);
+  },
+  async syncObjectivesList(objectivesList: ObjectiveList, fError?: () => void): Promise<ObjectiveList>{
+    return this.requestObjectivesList<ObjectiveList>('/SyncObjectivesList', 'PUT', JSON.stringify(objectivesList), fError);
+  },
+  async requestObjectivesList<T>(endpoint: string, method: string, body?: string, fError?: () => void): Promise<any>{
+    try {
+      const resp = await request('https://0z58mhwlhf.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
 
-  async requestGroceryList(endpoint: string, method: string, body?: string, fError?: () => void): Promise<any>{
-    return request('https://soi7x4bjkc.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
+      if(resp){
+        const respData: Response<T> = await resp.json();
+        if(!respData.WasAnError && respData.Data){
+          return respData.Data;
+        }
+        else{
+        }
+      }
+    } catch (err) {
+      log.err('Error: ', endpoint, err);
+    }
+    return null;
   },
 }
