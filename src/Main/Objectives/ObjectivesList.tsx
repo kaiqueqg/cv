@@ -20,7 +20,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [isAddingNewObjective, setIsAddingNewObjective] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(true);
   const [isRequestingObjectives, setIsRequestingObjectives] = useState<boolean>(false);
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(true);
 
   const [isEditingPos, setIsEditingPos] = useState<boolean>(false);
   const [objsSelected, setObjsSelected] = useState<Objective[]>([]);
@@ -212,10 +212,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         </div>
         :
         (<div className='objectivesListContainer'>
-          <div className='objectivesListSideContainer'> 
+          <div className={'objectivesListSideContainer ' + (!isSidePanelOpen?'objectivesListSideContainerClosed':'')}> 
             {isSidePanelOpen ? 
               <div className='objectivesSidePanelOpened'>
-                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(false)}} src={process.env.PUBLIC_URL + '/arrow-left-filled.png'}></img>
+                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(false)}} src={process.env.PUBLIC_URL + '/show.png'}></img>
                 {!isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
                 {isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
                 {(isEditingPos && !isEndingPos) && 
@@ -237,7 +237,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
               </div>
               :
               <div className='objectivesSidePanelClosed'>
-                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(true)}} src={process.env.PUBLIC_URL + '/arrow-right-filled.png'}></img>
+                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(true)}} src={process.env.PUBLIC_URL + '/hide.png'}></img>
                 {!isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
                 {isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
                 {(isEditingPos && !isEndingPos) && 
