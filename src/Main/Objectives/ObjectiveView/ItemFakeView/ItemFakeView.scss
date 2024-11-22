@@ -1,0 +1,43 @@
+@import '../../../../global.scss';
+
+.itemFakeContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 35px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+
+  align-items: center;
+  text-align: start;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: dashed;
+}
+
+.itemFakeTitle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  min-height: 35px;
+  padding: 0px 10px 0px 10px;
+}
+
+.itemFakeContainerClear{background-color: #1d1d1d00;}
+
+.itemFakeTextBlue{color: beige,}
+.itemFakeTextRed{color: beige,}
+.itemFakeTextGreen{color: beige,}
+.itemFakeTextWhite{color: black,}
+.itemFakeTextNoTheme{color: beige,}
+
+.itemFakeBorderBlue{border-color: beige,}
+.itemFakeBorderRed{border-color: beige,}
+.itemFakeBorderGreen{border-color: beige,}
+.itemFakeBorderWhite{border-color: black,}
+.itemFakeBorderNoTheme{border-color: beige,}

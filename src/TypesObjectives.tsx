@@ -27,7 +27,7 @@ export interface ItemViewProps{
   putItemInDisplay: (item?: Item, remove?: boolean) => void,
 }
 
-export enum ItemType{ Step, Wait, Question, Note, Location, Divider, Grocery }
+export enum ItemType{ Step, Wait, Question, Note, Location, Divider, Grocery, Medicine, ItemFake }
 
 export interface Item {
   ItemId: string,
@@ -70,4 +70,13 @@ export interface Grocery extends Item {
   Quantity?: number,
   Unit?: string,
   GoodPrice?: string,
+}
+
+export interface Medicine extends Item{
+  Title: string,
+  IsChecked: boolean,
+  Quantity?: number,
+  Unit?: string,
+  Purpose?: string,
+  Components?: string[],
 }

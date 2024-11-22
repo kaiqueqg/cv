@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import './ObjectiveView.scss';
 import { useUserContext } from "../../../Contexts/UserContext";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine } from "../../../TypesObjectives";
 import StepView from "./StepView/StepView";
 import QuestionView from "./QuestionView/QuestionView";
 import WaitView from "./WaitView/WaitView";
@@ -13,6 +13,8 @@ import NoteView from "./NoteView/NoteView";
 import LocationView from "./LocationView/LocationView";
 import DividerView from "./DividerView/DividerView";
 import GroceryView from "./GroceryView/GroceryView";
+import MedicineView from "./MedicineView/MedicineView";
+import ItemFakeView from "./ItemFakeView/ItemFakeView";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -500,6 +502,56 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsSavingNewItem(false);
   }
 
+  const addNewMedicine = async (pos?:number) => {
+    setIsSavingNewItem(true);
+    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
+
+    if(!objective.IsOpen) onChangeObjectiveIsOpen();
+    
+    try {
+      const emptyItem: Medicine = {
+        ItemId: '',
+        UserIdObjectiveId: objective.ObjectiveId,
+        Pos: items.length,
+        Title: '',
+        IsChecked: false,
+        Quantity: 1,
+        Unit: '',
+        Components: [],
+        Purpose: '',
+        Type: ItemType.Medicine,
+        LastModified: new Date().toISOString(),
+      }
+  
+      let sending:Item[] = [];
+      if(pos) {
+        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
+        const before = newList.slice(0, pos+1);
+        const after = newList.slice(pos+1);
+
+        let ajustedList = [...before, ...[emptyItem], ...after];
+
+        for(let i = 0; i < ajustedList.length; i++){
+          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
+        }
+      }
+      else{
+        sending.push(emptyItem);
+      }
+
+      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
+      if(data){
+        data.forEach(element => {
+          putItemInDisplay(element);
+        });
+      }
+    } catch (err) {
+      log.err(JSON.stringify(err));
+    }
+
+    setIsSavingNewItem(false);
+  }
+
   const onChangeObjectiveIsOpen = async () => {
     setIsSavingMenu(true);
     try {
@@ -842,6 +894,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         addNewStep={addNewStep}
         addNewDivider={addNewDivider}
         addNewGrocery={addNewGrocery}
+        addNewMedicine={addNewMedicine}
         addNewLocation={addNewLocation}
         addNewNote={addNewNote}
         addNewQuestion={addNewQuestion}
@@ -857,6 +910,16 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
         putItemInDisplay={putItemInDisplay}></GroceryView>
+    }
+    else if(item.Type === ItemType.Medicine){
+      rtnItem = <MedicineView 
+        key={item.ItemId}
+        theme={objective.Theme}
+        medicine={item as Medicine}
+        isSelected={isSelected}
+        isEndingPos={isEndingPos}
+        isEditingPos={isEditingPos || isObjsEditingPos}
+        putItemInDisplay={putItemInDisplay}></MedicineView>
     }
     else{
       rtnItem = <div key={item.ItemId}>Can't render</div>
@@ -893,6 +956,21 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
 
     let rtn: React.ReactNode[] = [];
+    if(isEditingPos && isEndingPos) {
+      const fakeItem = {ItemId:'---', LastModified:'', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---'};
+      const a = <ItemFakeView 
+      key={'asd'}
+      theme={objective.Theme}
+      isSelected={false}
+      isEndingPos={isEndingPos}
+      isEditingPos={isEditingPos || isObjsEditingPos}
+      putItemInDisplay={putItemInDisplay}></ItemFakeView>
+      rtn.push(
+      <div className='objItemRow' onClick={() => {isEditingPos && (isEndingPos? endChangingPos(fakeItem) : addingRemovingItem(fakeItem))}}>
+        {a}
+      </div>);
+    }
+
     filteredItems.forEach((item, index)=>{
       rtn.push(getItemView(item));
     })
@@ -987,6 +1065,9 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
             </div>
             <div onClick={()=>{addNewGrocery()}} className='objectiveNewItemImageContainer'>
               <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor() + '.png'}></img>
+            </div>
+            <div onClick={()=>{addNewMedicine()}} className='objectiveNewItemImageContainer'>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
             </div>
             <div onClick={()=>{addNewLocation()}} className='objectiveNewItemImageContainer'>
               <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location' + getTintColor() + '.png'}></img>

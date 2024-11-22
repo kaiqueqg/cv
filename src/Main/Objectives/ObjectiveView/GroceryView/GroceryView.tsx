@@ -6,11 +6,11 @@ import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
 
-interface QuestionViewProps extends ItemViewProps{
+interface GroceryViewProps extends ItemViewProps{
   grocery: Grocery,
 }
 
-const QuestionView: React.FC<QuestionViewProps> = (props) => {
+const QuestionView: React.FC<GroceryViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { grocery, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
 
@@ -256,9 +256,9 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
                 (grocery.IsChecked?
-                  <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/checked-grey.png'}></img>
+                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/checked-grey.png'}></img>
                   :
-                  <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/unchecked' + getTintColor() + '.png'}></img>
+                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/unchecked' + getTintColor() + '.png'}></img>
                 )
               )
             }

@@ -11,6 +11,7 @@ interface LocationViewProps extends ItemViewProps{
   orderDividerItems: (item: Item)=>Promise<void>,
   addNewDivider: (pos?:number)=>{},
   addNewGrocery: (pos?:number)=>{},
+  addNewMedicine: (pos?:number)=>{},
   addNewLocation: (pos?:number)=>{},
   addNewNote: (pos?:number)=>{},
   addNewQuestion: (pos?:number)=>{},
@@ -21,7 +22,7 @@ interface LocationViewProps extends ItemViewProps{
 const LocationView: React.FC<LocationViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { divider, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, 
-    addNewStep, addNewDivider, addNewGrocery, addNewLocation, addNewNote, addNewQuestion, addNewWait,
+    addNewStep, addNewDivider, addNewGrocery, addNewMedicine, addNewLocation, addNewNote, addNewQuestion, addNewWait,
     orderDividerItems } = props;
 
   const [newTitle, setNewTitle] = useState<string>(divider.Title);
@@ -214,8 +215,11 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewGrocery(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor() + '.png'}></img>
           </div>
+          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewMedicine(divider.Pos);}}>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
+          </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewLocation(divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/google-maps.png'}></img>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/location' + getTintColor() + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewQuestion(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/question' + getTintColor() + '.png'}></img>

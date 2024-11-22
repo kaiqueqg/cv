@@ -75,7 +75,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         ObjectiveId: '',
         IsOpen: true,
         IsShowing: true,
-        Title: '',
+        Title: 'Title',
         Theme: 'darkBlue',
         UserId: '',
         Done: false,

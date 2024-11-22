@@ -1,6 +1,6 @@
 @import '../../../../global.scss';
 
-.groceryContainer{
+.medicineContainer{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,34 +17,40 @@
   border-style: solid;
 }
 
-.groceryContainer:hover{
+.medicineContainer:hover{
   cursor: pointer;
 }
 
-.groceryContainer:hover{
+.medicineContainer:hover{
   // border-color: red;
 }
 
-.groceryContainerSelected{
+.medicineContainerSelected{
   border-color: red;
   border-style: dashed;
 }
 
-.groceryContainerSelectedEnding{
+.medicineContainerSelectedEnding{
   border-style: solid;
 }
 
-.groceryDisplayContainer{
+.medicineDisplayContainer{
   display: flex;
   width: 100%;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
-.groceryLine{
+.medicineLine{
   display: flex;
   width: 100%;
+}
+
+.medicineText{
+  display: flex;
   align-items: center;
-  padding-left: 10px;
+  padding: 0px 0px 0px 5px;
 }
 
 .inputsContainer{
@@ -67,7 +73,7 @@
   align-items: center;
 }
 
-.groceryInput{
+.medicineInput{
   width: 100%;
   min-height: 30px;
   padding: 0px 10px 0px 10px;
@@ -81,33 +87,33 @@
   outline: 0px;
 }
 
-.groceryImage{
+.medicineImage{
   cursor: pointer;
   max-width: 35px;
   max-height: 35px;
   padding: 7px;
 }
 
-.groceryImage:hover{
+.medicineImage:hover{
   padding: 4px;
 }
 
-.groceryContainerBlue{background-color: #035a9c;}
-.groceryContainerRed{background-color: rgb(189, 32, 32);}
-.groceryContainerGreen{background-color: rgb(64, 121, 64);}
-.groceryContainerWhite{background-color: #D8AE7E;}
-.groceryContainerNoTheme{background-color: #1D1D1D;}
+.medicineContainerBlue{background-color: #035a9c;}
+.medicineContainerRed{background-color: rgb(189, 32, 32);}
+.medicineContainerGreen{background-color: rgb(64, 121, 64);}
+.medicineContainerWhite{background-color: #D8AE7E;}
+.medicineContainerNoTheme{background-color: #1D1D1D;}
 
-.groceryContainerClear{background-color: #3881b900;}
+.medicineContainerClear{background-color: #3881b900;}
 
-.groceryTextBlue{color: beige,}
-.groceryTextRed{color: beige,}
-.groceryTextGreen{color: beige,}
-.groceryTextWhite{color: black,}
-.groceryTextNoTheme{color: beige,}
+.medicineTextBlue{color: beige,}
+.medicineTextRed{color: beige,}
+.medicineTextGreen{color: beige,}
+.medicineTextWhite{color: black,}
+.medicineTextNoTheme{color: beige,}
 
-.groceryTextFadeBlue{color: lightblue,}
-.groceryTextFadeRed{color: rgb(245, 184, 184),}
-.groceryTextFadeGreen{color: lightgreen,}
-.groceryTextFadeWhite{color: rgb(73, 73, 73),}
-.groceryTextFadeNoTheme{color: rgb(65, 65, 65),}
+.medicineTextFadeBlue{color: lightblue,}
+.medicineTextFadeRed{color: rgb(245, 184, 184),}
+.medicineTextFadeGreen{color: lightgreen,}
+.medicineTextFadeWhite{color: rgb(73, 73, 73),}
+.medicineTextFadeNoTheme{color: rgb(65, 65, 65),}
