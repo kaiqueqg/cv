@@ -52,7 +52,7 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
   }
 
   const doneEdit = async () => {
-    const newWait: Wait = {...wait, Title: newTitle, LastModified: new Date().toISOString()};
+    const newWait: Wait = {...wait, Title: newTitle.trim(), LastModified: new Date().toISOString()};
 
     if(newWait.Title !== wait.Title || newWait.Pos !== wait.Pos) {
       setIsSavingTitle(true);
@@ -70,6 +70,7 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
     }
     else{
       setIsEditingTitle(false);
+      setNewTitle(wait.Title);
     }
   }
 
@@ -130,6 +131,30 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
       return '';
   }
 
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'waitInputBlue waitTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'waitInputRed waitTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'waitInputGreen waitTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'waitInputWhite waitTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'waitInputNoTheme waitTextNoTheme'
+    }
+    else{
+      v+= 'waitInputNoTheme waitTextNoTheme';
+    }
+
+    return 'waitInput ' + v;
+  }
+
   return (
     <div className={getTheme()}>
       {isSavingTitle?
@@ -143,8 +168,9 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
               <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
             }
             <input 
-              className={'waitInput' + getTextColor()}
+              className={getInputColor()}
               type='text'
+              placeholder='Wait text'
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>

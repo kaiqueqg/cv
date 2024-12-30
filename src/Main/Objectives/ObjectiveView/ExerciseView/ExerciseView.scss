@@ -1,0 +1,165 @@
+@import '../../../../global.scss';
+
+.exerciseContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
+  width: 100%;
+  min-height: 40px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+}
+
+.exerciseContainer:hover{
+  cursor: pointer;
+}
+
+.exerciseContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
+}
+.exerciseContainerClear:hover{
+  border-color: black;
+}
+
+.exerciseContainerSelected{
+  border-color: red;
+  border-style: dashed;
+}
+
+.exerciseContainerSelectedEnding{
+  border-style: solid;
+}
+
+.exerciseDisplayContainer{
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.exerciseLine{
+  display: flex;
+  width: 100%;
+  min-height: 35px;
+}
+
+.exerciseText{
+  display: flex;
+  align-items: center;
+  margin: 0px 0px 0px 10px;
+}
+
+.inputsContainer{
+  display: flex;
+  width: 100%;
+}
+
+.inputLeft{
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0px 5px;
+}
+
+.inputRight{
+  display: flex;
+  flex-direction: column;
+  width: 10%;
+  justify-content: center;
+  align-items: center;
+}
+
+.exerciseInput{
+  width: 100%;
+  min-height: 30px;
+  padding: 0px 10px 0px 10px;
+  margin: 5px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 0px 0px 1px 0px;
+  border-color: beige;
+  border-style: solid;
+  outline: 0px;
+}
+
+.exerciseWeekdaysContainer{
+  cursor: default;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 30px;
+  padding: 0px 10px 0px 10px;
+  margin: 5px;  
+}
+
+.exerciseWeekdaysButton{
+  cursor: pointer;
+  margin: 5px 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: grey;
+
+  border-width: 1px;
+  border-color: grey;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.exerciseWeekdaysButtonSelected{
+  cursor: pointer;
+  margin: 5px 10px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: beige;
+
+  border-width: 1px;
+  border-color: beige;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.exerciseImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.exerciseImage:hover{
+  padding: 4px;
+}
+
+.exerciseContainerBlue{background-color: #035a9c;}
+.exerciseContainerRed{background-color: rgb(189, 32, 32);}
+.exerciseContainerGreen{background-color: rgb(64, 121, 64);}
+.exerciseContainerWhite{background-color: #D8AE7E;}
+.exerciseContainerNoTheme{background-color: #1D1D1D;}
+
+.exerciseTextBlue{color: beige,}
+.exerciseTextRed{color: beige,}
+.exerciseTextGreen{color: beige,}
+.exerciseTextWhite{color: black,}
+.exerciseTextNoTheme{color: beige,}
+
+.exerciseTextFadeBlue{color: lightblue,}
+.exerciseTextFadeRed{color: rgb(245, 184, 184),}
+.exerciseTextFadeGreen{color: lightgreen,}
+.exerciseTextFadeWhite{color: rgb(73, 73, 73),}
+.exerciseTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}
+
+.exerciseInputBlue{border-color: beige;}
+.exerciseInputRed{border-color: beige;}
+.exerciseInputGreen{border-color: beige;}
+.exerciseInputWhite{border-color: black;}
+.exerciseInputNoTheme{border-color: beige;}

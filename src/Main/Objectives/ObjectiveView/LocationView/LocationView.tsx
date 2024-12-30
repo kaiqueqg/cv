@@ -53,7 +53,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     setIsSavingLocation(true);
     const newLocation: Location = {
       ...location, 
-      Title: newTitle, 
+      Title: newTitle.trim(), 
       Url: newUrl,
       LastModified: new Date().toISOString()};
 
@@ -75,6 +75,8 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     }
     else{
       setIsEditingLocation(false);
+      setNewTitle(location.Title);
+      setNewUrl(location.Url);
     }
 
     setIsSavingLocation(false);
@@ -144,10 +146,34 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
   }
 
   const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
+    let tint = '';
+    if(theme === 'darkWhite') tint += '-black';
+    return tint;
+  }
+
+
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'locationInputBlue locationTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'locationInputRed locationTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'locationInputGreen locationTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'locationInputWhite locationTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'locationInputNoTheme locationTextNoTheme'
+    }
+    else{
+      v+= 'locationInputNoTheme locationTextNoTheme';
+    }
+
+    return 'locationInput ' + v;
   }
 
   return (
@@ -159,7 +185,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
           <div className='locationEditingContainer'>
             <div className='locationLeftContainer'>
               <input 
-                className={'locationInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleInputChange}
@@ -167,7 +193,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 placeholder='Title'>
               </input>
               <input 
-                className={'locationInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newUrl}
                 onChange={handleUrlInputChange}
@@ -189,7 +215,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
           <div className={'titleLine' + getTextColor()} onClick={() => {if(!isEditingPos)setIsEditingLocation(true)}}>{location.Title}</div>
         )
       }
-      {!isEditingLocation && <img className='urlImage' onClick={() => {if(!isEditingPos)window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + getTintColor() + '.png'}></img>}
+      {!isEditingLocation && <img className={'urlImage ' + ((location.Url && location.Url.trim()) !== ''?'':'urlImageNoPointer')} onClick={() => {if(!isEditingPos && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + getTintColor() + '.png'}></img>}
     </div>
   );
 }

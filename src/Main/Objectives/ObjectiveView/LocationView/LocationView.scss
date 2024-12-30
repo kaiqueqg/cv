@@ -100,13 +100,12 @@
 .locationInput{
   width: 100%;
   padding: 0px 10px 0px 10px;
-  margin: 0px 5px 5px 0px;
+  margin: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 2px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -115,6 +114,10 @@
   max-width: 35px;
   max-height: 35px;
   padding: 7px;
+}
+
+.urlImageNoPointer{
+  cursor: default;
 }
 
 .urlImage:hover{
@@ -143,3 +146,9 @@
 .locationTextGreen{color: beige,}
 .locationTextWhite{color: black,}
 .locationTextNoTheme{color: beige,}
+
+.locationInputBlue{border-color: beige;}
+.locationInputRed{border-color: beige;}
+.locationInputGreen{border-color: beige;}
+.locationInputWhite{border-color: black;}
+.locationInputNoTheme{border-color: beige;}

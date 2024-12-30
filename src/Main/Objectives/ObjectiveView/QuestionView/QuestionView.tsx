@@ -53,7 +53,11 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
 
   const doneEditStatement = async () => {
     setIsSavingStatement(true);
-    const newQuestion: Question = {...question, Statement: newStatement, LastModified: new Date().toISOString()};
+    const newQuestion: Question = {
+      ...question, 
+      Statement: newStatement.trim(), 
+      LastModified: new Date().toISOString()
+    };
 
     if(newQuestion.Statement !== question.Statement
       || newQuestion.Answer !== question.Answer 
@@ -73,6 +77,7 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
     }
     else{
       setIsEditingStatement(false);
+      setNewStatement(question.Statement);
     }
 
     setIsSavingStatement(false);
@@ -85,7 +90,10 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
 
   const doneEditAnswer = async () => {
     setIsSavingAnswer(true);
-    const newQuestion: Question = {...question, Answer: newAnswer, LastModified: new Date().toISOString()};
+    const newQuestion: Question = {
+      ...question, 
+      Answer: newAnswer.trim(),
+      LastModified: new Date().toISOString()};
 
     if(newQuestion.Statement !== question.Statement
       || newQuestion.Answer !== question.Answer 
@@ -105,6 +113,7 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
     }
     else{
       setIsEditingAnswer(false);
+      setNewAnswer(question.Answer);
     }
 
     setIsSavingAnswer(false);
@@ -200,6 +209,30 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
       return '';
   }
 
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'questionInputBlue questionTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'questionInputRed questionTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'questionInputGreen questionTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'questionInputWhite questionTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'questionInputNoTheme questionTextNoTheme'
+    }
+    else{
+      v+= 'questionInputNoTheme questionTextNoTheme';
+    }
+
+    return 'questionInput ' + v;
+  }
+
   return (
     <div className={getTheme()}>
       <div className='statementLineContainer'>
@@ -214,9 +247,10 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
               }
               <input 
-                className={'questionInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newStatement}
+                placeholder='Statement'
                 onChange={handleStatementInputChange}
                 onKeyDown={handleStatementKeyDown} autoFocus></input>
                 <img className='inputImage' onClick={cancelEditStatement} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
@@ -235,8 +269,9 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
             <>
               <img className='answerImage' src={process.env.PUBLIC_URL + '/arow-down-right-thicker' + getTintColor() + '.png'}></img>
               <input 
-                className={'questionInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
+                placeholder='Question'
                 value={newAnswer}
                 onChange={handleAnswerInputChange}
                 onKeyDown={handleAnswerKeyDown} autoFocus></input>

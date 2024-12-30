@@ -17,10 +17,6 @@
   border-style: solid;
 }
 
-.waitContainer:hover{
-  // border-color: red;
-}
-
 .waitContainerSelected{
   border-color: red;
   border-style: dashed;
@@ -58,10 +54,9 @@
   margin-right: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 5px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -104,3 +99,9 @@
 .waitTextGreen{color: beige,}
 .waitTextWhite{color: black,}
 .waitTextNoTheme{color: beige,}
+
+.waitInputBlue{border-color: beige;}
+.waitInputRed{border-color: beige;}
+.waitInputGreen{border-color: beige;}
+.waitInputWhite{border-color: black;}
+.waitInputNoTheme{border-color: beige;}

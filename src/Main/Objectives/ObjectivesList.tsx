@@ -9,26 +9,26 @@ import ObjectiveView from "./ObjectiveView/ObjectiveView";
 import Loading from "../../Loading/Loading";
 import ObjectiveClosedView from "./ObjectiveClosedView/ObjectiveClosedView";
 
-import { ReactComponent as Checked} from '../../assets/checked.svg';
-
 interface ObjectivesListProps{}
 
 const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const { user, setUser, testServer } = useUserContext();
 
   const [objectives, setObjectives] = useState<Objective[]>([]);
+  const [isUpdatingObjectives, setIsUpdatingObjectives] = useState<boolean>(false);
   const [isAddingNewObjective, setIsAddingNewObjective] = useState<boolean>(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(true);
-  const [isRequestingObjectives, setIsRequestingObjectives] = useState<boolean>(false);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(true);
 
   const [isEditingPos, setIsEditingPos] = useState<boolean>(false);
   const [objsSelected, setObjsSelected] = useState<Objective[]>([]);
   const [isEndingPos, setIsEndingPos] = useState<any>(false);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     verifyLogin();
-    getObjectives();
+    updateObjectives(true);
   }, []);
 
   let objsToChangePos:Objective[] = [];
@@ -58,13 +58,48 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   }
 
-  const getObjectives = async () => {
+  const updateObjectives = async (updateSelectedTags?:boolean) => {
+    setIsUpdatingObjectives(true);
 
     const data = await objectiveslistApi.syncObjectivesList({});
     if(data && data.Objectives){
       const sorted = data.Objectives.sort((a: Objective, b: Objective) => a.Pos-b.Pos);
       setObjectives(sorted);
+
+      const tagSet = new Set<string>();
+      for (const obj of sorted) {
+        for (const tag of obj.Tags) {
+          tagSet.add(tag);
+        }
+      }
+
+      setAvailableTags(Array.from(tagSet));
+      if(updateSelectedTags) setSelectedTags(Array.from(tagSet));
     }
+
+    setIsUpdatingObjectives(false);
+  }
+
+  const loadSelectedTags = async () => {
+    const v: string[]|null = await storage.getSelectedTags();
+
+    if(v){
+      setSelectedTags(v);
+    }
+    else{
+      setSelectedTags([]);
+    }
+  }
+
+  const updateAvailableTags = (newTags:string[]) => {
+    const tagSet = new Set<string>();
+    for (const obj of availableTags) {
+      for (const tag of newTags) {
+        tagSet.add(tag);
+      }
+    }
+
+    setAvailableTags(Array.from(tagSet))
   }
 
   const addNewObjective = async () => {
@@ -83,11 +118,14 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         LastModified: new Date().toISOString(),
         IsShowingCheckedGrocery: true,
         IsShowingCheckedStep: true,
+        IsShowingCheckedExercise: true,
+        IsShowingCheckedMedicine: true,
+        Tags: [],
       }
       
       const data = await objectiveslistApi.putObjective(emptyObjective, () => {testServer();});
       if(data){
-        await getObjectives();
+        await updateObjectives();
         setIsAddingNewObjective(false);
       }
     } catch (err) {
@@ -112,10 +150,25 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           }
         }
         const sorted = newObjs.sort((a, b) => a.Pos - b.Pos);
+
+        const tagSet = new Set<string>();
+        for (const obj of sorted) {
+          for (const tag of obj.Tags) {
+            tagSet.add(tag);
+          }
+        }
+        setAvailableTags(Array.from(tagSet))
+
+        const avSet = new Set<string>(selectedTags);
+        for (const tag of obj.Tags) {
+          avSet.add(tag);
+        }
+        setSelectedTags(Array.from(avSet));
+
         return sorted;
       });
     } else {
-      await getObjectives();
+      await updateObjectives();
     }
   }
 
@@ -160,7 +213,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
 
     try{
-      setIsRequestingObjectives(true);
+      setIsUpdatingObjectives(true);
       const data = await objectiveslistApi.putObjectives(finalList, () => {testServer();});
       if(data) {
         setObjectives(data);
@@ -171,7 +224,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
     catch(err){}
 
-    setIsRequestingObjectives(false);
+    setIsUpdatingObjectives(false);
     cancelEditingPos();
   }
 
@@ -179,13 +232,15 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     return (
       <ObjectiveClosedView objective={objective} putObjectiveInDisplay={putObjectiveInDisplay}></ObjectiveClosedView>
     )
-  };
+  }
 
   const getObjectiveList = () => {
     let rtnView: JSX.Element[] = [];
 
     for(let i = 0; i < objectives.length; i++){
-      if(objectives[i].IsOpen) {
+      const hasTagSelected = objectives[i].Tags.length>0? selectedTags.some((item)=>objectives[i].Tags.includes(item)): true;
+
+      if(objectives[i].IsOpen && hasTagSelected) {
         const isSelected = objsSelected.includes(objectives[i]);
         rtnView.push(
           <div className={'objectiveRow ' + (isEditingPos ? 'isEditing' : '') + (isSelected?' objectiveRowSelected':'') + (isEndingPos&&isSelected?' objectiveRowSelectedEnding':'')} onClick={() => {isEditingPos && (isEndingPos? endEnditingPos(objectives[i]) : addingRemovingItem(objectives[i]))}}>
@@ -202,63 +257,111 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
     return rtnView;
   }
+
+  const getObjectiveArchivedList = () => {
+    let rtnView: JSX.Element[] = [];
+
+    for(let i = 0; i < objectives.length; i++){
+      const hasTagSelected = objectives[i].Tags.length>0? selectedTags.some((item)=>objectives[i].Tags.includes(item)): true;
+
+      if(!objectives[i].IsOpen && hasTagSelected) {
+        rtnView.push(getSideObjective(objectives[i]))
+      }
+    }
+
+    return rtnView;
+  }
+  
+  const changeSelectedTag = (tag:string) => {
+    if(selectedTags.includes(tag)){
+      const newSelectedTags = selectedTags.filter((item)=>item!==tag);
+      setSelectedTags(newSelectedTags);
+    }
+    else{
+      const newSelectedTags = [...selectedTags, tag];
+      setSelectedTags(newSelectedTags);
+    }
+  }
+
+  const getTagView = (tag:string) => {
+    let classname = 'objectivesListMainTag';
+    if(selectedTags.includes(tag)){
+      classname += ' objectivesListMainTagSelected';
+    }
+
+    return  <div className={classname} onClick={()=>changeSelectedTag(tag)}>{tag}</div>
+  }
+
+  const getSideMenuOpen = () => {
+    return(
+      <div className='objectivesSidePanelOpened'>
+        <div className='objectivesSidePanelOpenedButtons'>
+          {!isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
+          {isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
+          {(isEditingPos && !isEndingPos) && 
+            ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
+            <img className='objectivesImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}></img>
+            :
+            <div className='objectivesImage'></div>)
+          }
+          {!isEditingPos &&
+            (isAddingNewObjective?
+              <Loading></Loading>
+              :
+              <img className="objectivesImage" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={addNewObjective}></img>
+            )
+          }
+        </div>
+        {getObjectiveArchivedList()}
+      </div>
+    )
+  }
+
+  const getSideMenuClosed = () => {
+    return(
+      <div className='objectivesSidePanelClosed'>
+        {!isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
+        {isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
+        {(isEditingPos && !isEndingPos) && 
+          ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
+          <img className='objectivesImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}></img>
+          :
+          <div className='objectivesImage'></div>)
+        }
+        {!isEditingPos &&
+          (isAddingNewObjective?
+            <Loading></Loading>
+            :
+            <img className="objectivesImage" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={addNewObjective}></img>
+          )
+        }
+      </div>
+    )
+  }
   
   return (
     <div className='objectivesContainer'>
       {user && user.Status==='Active' ?
-        isRequestingObjectives?
+        isUpdatingObjectives?
         <div className='loadingListContainer'>
           <Loading></Loading>
         </div>
         :
         (<div className='objectivesListContainer'>
           <div className={'objectivesListSideContainer ' + (!isSidePanelOpen?'objectivesListSideContainerClosed':'')}> 
-            {isSidePanelOpen ? 
-              <div className='objectivesSidePanelOpened'>
-                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(false)}} src={process.env.PUBLIC_URL + '/show.png'}></img>
-                {!isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
-                {isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
-                {(isEditingPos && !isEndingPos) && 
-                  ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
-                  <img className='objectivesImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}></img>
-                  :
-                  <div className='objectivesImage'></div>)
-                }
-                {!isEditingPos &&
-                  (isAddingNewObjective?
-                    <Loading></Loading>
-                    :
-                    <img className="objectivesImage" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={addNewObjective}></img>
-                  )
-                }
-                {objectives.map((objective: Objective)=>(
-                  !objective.IsOpen && getSideObjective(objective)
-                ))}
-              </div>
-              :
-              <div className='objectivesSidePanelClosed'>
-                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(true)}} src={process.env.PUBLIC_URL + '/hide.png'}></img>
-                {!isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
-                {isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
-                {(isEditingPos && !isEndingPos) && 
-                  ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
-                  <img className='objectivesImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}></img>
-                  :
-                  <div className='objectivesImage'></div>)
-                }
-                {!isEditingPos &&
-                  (isAddingNewObjective?
-                    <Loading></Loading>
-                    :
-                    <img className="objectivesImage" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={addNewObjective}></img>
-                  )
-                }
-              </div>
-            }
+            {isSidePanelOpen && getSideMenuOpen() }
+            <div className='objectivesListSideContainerArrow'>
+              {isSidePanelOpen?
+                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(false)}} src={process.env.PUBLIC_URL + '/arrow-left-filled.png'}></img>
+                :
+                <img className='objectivesImage' onClick={()=>{setIsSidePanelOpen(true)}} src={process.env.PUBLIC_URL + '/arrow-right-filled.png'}></img>
+              }
+            </div>
           </div>
           <div className='objectivesListMainContainer'>
+            <div className='objectivesListMainTags'>{ availableTags.map((tag:string) => getTagView(tag)) }</div>
             {getObjectiveList()}
-            <div style={{height: '700px'}}></div>
+            {/* <div style={{height: '700px'}}></div> */}
           </div>
         </div>)
        :

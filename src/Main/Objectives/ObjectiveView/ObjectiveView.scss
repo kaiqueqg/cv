@@ -46,7 +46,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60%;
   min-height: 40px;
   font-weight: bold;
   word-wrap: 'break-word';   // Allows the text to wrap and break within the container
@@ -65,10 +64,9 @@
   margin-right: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 5px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -190,7 +188,7 @@
 .objObjectiveBlue{background-color: #113a58;}
 .objObjectiveRed{background-color: #8F1414;}
 .objObjectiveGreen{background-color: rgb(44, 82, 44);}
-.objObjectiveWhite{background-color: beige;}
+.objObjectiveWhite{background-color: rgb(255, 255, 255);}
 .objObjectiveNoTheme{background-color: $blue-dark;}
 
 .objectiveColorButtonBlue{background-color: #2D9BF0;}
@@ -203,3 +201,10 @@
 .objTextRed{color: beige;}
 .objTextGreen{color: beige;}
 .objTextWhite{color: black;}
+.objTextNoTheme{color: beige;}
+
+.objInputBlue{border-color: beige;}
+.objInputRed{border-color: beige;}
+.objInputGreen{border-color: beige;}
+.objInputWhite{border-color: black;}
+.objInputNoTheme{border-color: beige;}

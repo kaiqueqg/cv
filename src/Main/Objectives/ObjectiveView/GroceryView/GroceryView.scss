@@ -21,8 +21,12 @@
   cursor: pointer;
 }
 
-.groceryContainer:hover{
-  // border-color: red;
+.groceryContainerClear{
+  background-color: $transparent; 
+  border-color: $transparent;
+}
+.groceryContainerClear:hover{
+  border-color: black;
 }
 
 .groceryContainerSelected{
@@ -74,10 +78,9 @@
   margin: 5px 0px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 2px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -98,8 +101,6 @@
 .groceryContainerWhite{background-color: #D8AE7E;}
 .groceryContainerNoTheme{background-color: #1D1D1D;}
 
-.groceryContainerClear{background-color: #3881b900;}
-
 .groceryTextBlue{color: beige,}
 .groceryTextRed{color: beige,}
 .groceryTextGreen{color: beige,}
@@ -110,4 +111,10 @@
 .groceryTextFadeRed{color: rgb(245, 184, 184),}
 .groceryTextFadeGreen{color: lightgreen,}
 .groceryTextFadeWhite{color: rgb(73, 73, 73),}
-.groceryTextFadeNoTheme{color: rgb(65, 65, 65),}
+.groceryTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}
+
+.groceryInputBlue{border-color: beige;}
+.groceryInputRed{border-color: beige;}
+.groceryInputGreen{border-color: beige;}
+.groceryInputWhite{border-color: black;}
+.groceryInputNoTheme{border-color: beige;}

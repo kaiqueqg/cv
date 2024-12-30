@@ -78,10 +78,9 @@
   margin-right: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 5px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -112,3 +111,9 @@
 .questionTextFadeGreen{color: lightgreen,}
 .questionTextFadeWhite{color: rgb(189, 182, 144),}
 .questionTextFadeNoTheme{color: rgb(65, 65, 65),}
+
+.questionInputBlue{border-color: beige;}
+.questionInputRed{border-color: beige;}
+.questionInputGreen{border-color: beige;}
+.questionInputWhite{border-color: black;}
+.questionInputNoTheme{border-color: beige;}

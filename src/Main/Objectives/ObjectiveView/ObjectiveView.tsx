@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import './ObjectiveView.scss';
 import { useUserContext } from "../../../Contexts/UserContext";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays } from "../../../TypesObjectives";
 import StepView from "./StepView/StepView";
 import QuestionView from "./QuestionView/QuestionView";
 import WaitView from "./WaitView/WaitView";
@@ -15,6 +15,8 @@ import DividerView from "./DividerView/DividerView";
 import GroceryView from "./GroceryView/GroceryView";
 import MedicineView from "./MedicineView/MedicineView";
 import ItemFakeView from "./ItemFakeView/ItemFakeView";
+import ExerciseView from "./ExerciseView/ExerciseView";
+import TagsView from "./TagsView/TagsView";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -33,6 +35,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const [isAddingNewItem, setIsAddingNewItem] = useState<boolean>(false);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
   const [isChangingColor, setIsChangingColor] = useState<boolean>(false);
+  const [isChangingTags, setIsChangingTags] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isObjectiveMenuOpen, setIsObjectiveMenuOpen] = useState<boolean>(false);
 
@@ -162,6 +165,30 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const cancelEdit = () => {
     setNewTitle(objective.Title);
     setIsEditingTitle(false);
+  }
+
+  const doneEditTags = async (newTags: string[]) => {
+    setIsChangingTags(false);
+    setIsSavingMenu(true);
+    const newObjective: Objective = {...objective, Tags: newTags, LastModified: new Date().toISOString()};
+
+    if(newObjective.Tags !== objective.Tags) {
+      const data = await objectiveslistApi.putObjective(newObjective);
+
+      if(data){
+        putObjective(data);
+      }
+
+      setTimeout(() => {
+        setIsSavingTitle(false);
+      }, 200); 
+    }
+
+    setIsSavingMenu(false);
+  }
+
+  const cancelEditTags = () => {
+    setIsChangingTags(false);
   }
 
   //Responsable for open, close and lock icon and menu.
@@ -552,6 +579,60 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsSavingNewItem(false);
   }
 
+  const addNewExercise = async (pos?:number) => {
+    setIsSavingNewItem(true);
+    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
+
+    if(!objective.IsOpen) onChangeObjectiveIsOpen();
+    
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    try {
+      const emptyItem: Exercise = {
+        ItemId: '',
+        UserIdObjectiveId: objective.ObjectiveId,
+        Pos: items.length,
+        Title: '',
+        Reps: 1,
+        Series: 1,
+        IsDone: false,
+        MaxWeight: '',
+        Description: '',
+        Weekdays: [ Weekdays.Monday, Weekdays.Tuesday, Weekdays.Wednesday, Weekdays.Thursday, Weekdays.Friday, Weekdays.Saturday, Weekdays.Sunday ],
+        LastDone: yesterday.toISOString(),
+        Type: ItemType.Exercise,
+        LastModified: new Date().toISOString(),
+      }
+  
+      let sending:Item[] = [];
+      if(pos) {
+        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
+        const before = newList.slice(0, pos+1);
+        const after = newList.slice(pos+1);
+
+        let ajustedList = [...before, ...[emptyItem], ...after];
+
+        for(let i = 0; i < ajustedList.length; i++){
+          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
+        }
+      }
+      else{
+        sending.push(emptyItem);
+      }
+
+      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
+      if(data){
+        data.forEach(element => {
+          putItemInDisplay(element);
+        });
+      }
+    } catch (err) {
+      log.err(JSON.stringify(err));
+    }
+
+    setIsSavingNewItem(false);
+  }
+
   const onChangeObjectiveIsOpen = async () => {
     setIsSavingMenu(true);
     try {
@@ -575,9 +656,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   const onChangeObjectiveIsShowing = async () => {
     setIsSavingMenu(true);
+    
     try {
       const data = await objectiveslistApi.putObjective({...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()}, () => {testServer();});
-  
+      
       if(data){
         putObjective(data);
         if(data.IsOpen && data.IsShowing){
@@ -590,12 +672,15 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     } catch (err) {
       log.err(JSON.stringify(err));
     }
-
     setIsSavingMenu(false);
   }
 
   const changeColor = async () => {
     setIsChangingColor(!isChangingColor);
+  }
+
+  const changeTags = async (v?:boolean) => {
+    setIsChangingTags(v??!isChangingTags);
   }
 
   const changeObjColor = async (theme: string) => {
@@ -660,11 +745,28 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
   }
 
-  const getTintColor = () => {
-    if(objective.Theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
+  const getInputColor = () => {
+    let v = '';
+    if(objective.Theme === 'darkBlue'){
+      v+= 'objInputBlue objTextBlue'
+    }
+    else if(objective.Theme === 'darkRed'){
+      v+= 'objInputRed objTextRed'
+    }
+    else if(objective.Theme === 'darkGreen'){
+      v+= 'objInputGreen objTextGreen'
+    }
+    else if(objective.Theme === 'darkWhite'){
+      v+= 'objInputWhite objTextWhite'
+    }
+    else if(objective.Theme === 'noTheme'){
+      v+= 'objInputNoTheme objTextNoTheme'
+    }
+    else{
+      v+= 'objInputNoTheme objTextNoTheme';
+    }
+
+    return 'objInput ' + v;
   }
 
   const onChangeObjectiveMenuOpen = () => {
@@ -672,10 +774,31 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsObjectiveMenuOpen(!isObjectiveMenuOpen);
   }
 
+  const onChangeIsShowingItems  = async () => {
+    setIsObjectiveMenuOpen(false);
+    setIsChangingColor(false);
+    setIsSavingNewItem(true);
+    const newObjective: Objective = {
+      ...objective, 
+      IsShowingCheckedGrocery: !objective.IsShowingCheckedGrocery, 
+      IsShowingCheckedExercise: !objective.IsShowingCheckedGrocery,
+      IsShowingCheckedMedicine: !objective.IsShowingCheckedGrocery,
+      IsShowingCheckedStep: !objective.IsShowingCheckedGrocery, //for now, to all be the same
+      LastModified: new Date().toISOString()};
+
+    const data = await objectiveslistApi.putObjective(newObjective);
+
+    if(data){
+      putObjective(data);
+    }
+
+    setIsSavingNewItem(false);
+  }
+
   const onChangeIsShowingChecked = async () => {
     setIsObjectiveMenuOpen(false);
     setIsChangingColor(false);
-    setIsSavingMenu(true);
+    setIsSavingNewItem(true);
     const newObjective: Objective = {...objective, IsShowingCheckedGrocery: !objective.IsShowingCheckedGrocery, LastModified: new Date().toISOString()};
 
     const data = await objectiveslistApi.putObjective(newObjective);
@@ -684,13 +807,13 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       putObjective(data);
     }
 
-    setIsSavingMenu(false);
+    setIsSavingNewItem(false);
   }
 
   const onChangeIsShowingStep = async () => {
     setIsObjectiveMenuOpen(false);
     setIsChangingColor(false);
-    setIsSavingMenu(true);
+    setIsSavingNewItem(true);
     const newObjective: Objective = {...objective, IsShowingCheckedStep: !objective.IsShowingCheckedStep, LastModified: new Date().toISOString()};
 
     const data = await objectiveslistApi.putObjective(newObjective);
@@ -699,7 +822,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       putObjective(data);
     }
 
-    setIsSavingMenu(false);
+    setIsSavingNewItem(false);
   }
 
   const startChangePos = () => {
@@ -790,6 +913,9 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
     if (item.Type === ItemType.Note) {
       return (item as Note).Text.toLowerCase();
+    }
+    if (item.Type === ItemType.Exercise) {
+      return (item as Exercise).Title.toLowerCase();
     }
     return "";
   }
@@ -899,6 +1025,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         addNewNote={addNewNote}
         addNewQuestion={addNewQuestion}
         addNewWait={addNewWait}
+        addNewExercise={addNewExercise}
         putItemInDisplay={putItemInDisplay}></DividerView>
     }
     else if(item.Type === ItemType.Grocery){
@@ -921,6 +1048,16 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isEditingPos={isEditingPos || isObjsEditingPos}
         putItemInDisplay={putItemInDisplay}></MedicineView>
     }
+    else if(item.Type === ItemType.Exercise){
+      rtnItem = <ExerciseView 
+        key={item.ItemId}
+        theme={objective.Theme}
+        exercise={item as Exercise}
+        isSelected={isSelected}
+        isEndingPos={isEndingPos}
+        isEditingPos={isEditingPos || isObjsEditingPos}
+        putItemInDisplay={putItemInDisplay}></ExerciseView>
+    }
     else{
       rtnItem = <div key={item.ItemId}>Can't render</div>
     }
@@ -938,6 +1075,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       let current = items[i];
       let shouldAddStep = true;
       let shouldAddGrocery = true;
+      let shouldAddExercise = true;
+      let shouldAddMedicine = true;
 
       if(current.Type === ItemType.Divider) { //new divider
         filteredItems.push(current); //if exist and has items, add last divider
@@ -946,8 +1085,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       else{
         if(current.Type === ItemType.Step && !objective.IsShowingCheckedStep) shouldAddStep = !(current as Step).Done;
         if(current.Type === ItemType.Grocery && !objective.IsShowingCheckedGrocery) shouldAddGrocery = !(current as Grocery).IsChecked;
+        if(current.Type === ItemType.Exercise && !objective.IsShowingCheckedExercise) shouldAddExercise = !(current as Exercise).IsDone;
+        if(current.Type === ItemType.Medicine && !objective.IsShowingCheckedMedicine) shouldAddMedicine = !(current as Medicine).IsChecked;
   
-        if(isDividerOpen && shouldAddStep && shouldAddGrocery){
+        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine){
           filteredItems.push(current);
         }
         else{
@@ -981,33 +1122,32 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   return (
     <div className={getTheme()}>
         <div className='objTopContainer'>
-          <div className='objTitleLeft'>
-            {!isEditingPos &&
-              (isSavingMenu?
-                <div onClick={onChangeObjectiveIsOpen} className='objectiveNewItemImageContainer'>
-                  <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
-                </div>
-                :
-                <>
-                  <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsOpen()}} className='objectiveNewItemImageContainer'>
-                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'}></img>
+          {!isEditingTitle && 
+            <div className='objTitleLeft'>
+              {!isEditingPos &&
+                (isSavingMenu?
+                  <div onClick={onChangeObjectiveIsOpen} className='objectiveNewItemImageContainer'>
+                    <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
                   </div>
-                  <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} className='objectiveNewItemImageContainer'>
-                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'}></img>
-                  </div>
-                  <div onClick={()=>{if(!isObjsEditingPos)changeColor()}} className='objectiveNewItemImageContainer'>
-                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'}></img>
-                  </div>
-                  <div onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingChecked()}} className='objectiveNewItemImageContainer'>
-                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedGrocery? getTintColor():'-grey') + '.png'}></img>
-                  </div>
-                  <div onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingStep()}} className='objectiveNewItemImageContainer'>
-                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled'+ (objective.IsShowingCheckedStep? getTintColor():'-grey') + '.png'}></img>
-                  </div>
-                </>
-              )
-            }
-          </div>
+                  :
+                  <>
+                    <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsOpen()}} className='objectiveNewItemImageContainer'>
+                      <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/archive.png'}></img>
+                    </div>
+                    <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} className='objectiveNewItemImageContainer'>
+                      <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide')+ '.png'}></img>
+                    </div>
+                    <div onClick={()=>{if(!isObjsEditingPos)changeColor()}} className='objectiveNewItemImageContainer'>
+                      <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/palette.png'}></img>
+                    </div>
+                    <div onClick={()=>{if(!isObjsEditingPos)changeTags()}} className='objectiveNewItemImageContainer'>
+                      <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/tag.png'}></img>
+                    </div>
+                  </>
+                )
+              }
+            </div>
+          }
           <div className='objTitleContainer'>
             {isSavingTitle?
               <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
@@ -1020,81 +1160,94 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
                     <img className='inputImage' onClick={displayConfirmDeleteRow} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
                   }
                   <input
-                    className={'objInput'+getTextColor()}
+                    className={getInputColor()}
                     type='text'
                     value={newTitle}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown} autoFocus></input>
-                  <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-                  <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+                  <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'}></img>
+                  <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'}></img>
                 </>
                 :
                 <div className={'objTitle'+getTextColor()} onClick={()=>{if(!isObjsEditingPos)setIsEditingTitle(true);}}>{objective.Title}</div>
               )
             }
           </div>
-          <div className='objTitleRight'>
-            { //! ICON CHANGE POS
-              <div className='objMenuImageContainer'>
-                {!isEditingPos && <img className='objectiveImage' onClick={startChangePos} src={process.env.PUBLIC_URL + '/updown' + getTintColor() + '.png'}></img>}
-                {isEditingPos && <img className='objectiveImage' onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>}
-                {isEditingPos && itemsSelected.length !== items.length && itemsSelected.length > 0 && 
-                  <img className='objectiveImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'}></img>
-                }
-              </div>
-            }
-            { //! ICON NEW ITEM
-            objective.IsOpen && !isEditingPos && 
-              (isSavingNewItem ?
+          {!isEditingTitle && 
+            <div className='objTitleRight'>
+              {isSavingNewItem?
                 <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
                 :
-                <div className='objMenuImageContainer'>
-                  <img className='objectiveImage' onClick={()=>{if(!isObjsEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/add-lock':'/add') + getTintColor() + '.png'}></img>
-                </div>
-              )
-            }
-          </div>
+                <>
+                  <div onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} className='objectiveNewItemImageContainer'>
+                    <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-grey') + '.png'}></img>
+                  </div>
+                  { //! ICON CHANGE POS
+                    <div className='objMenuImageContainer'>
+                      {!isEditingPos && <img className='objectiveImage' onClick={startChangePos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
+                      {isEditingPos && <img className='objectiveImage' onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
+                      {isEditingPos && itemsSelected.length !== items.length && itemsSelected.length > 0 && 
+                        <img className='objectiveImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}></img>
+                      }
+                    </div>
+                  }
+                  {//! ICON NEW ITEM
+                    objective.IsOpen && !isEditingPos && 
+                    <div className='objMenuImageContainer'>
+                      <img className='objectiveImage' onClick={()=>{if(!isObjsEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add') + '.png'}></img>
+                    </div>
+                  }
+                </>
+              }
+            </div>
+          }
         </div>
         {objective.IsOpen && !isChangingColor && isAddingNewItem &&
           <div className='objectiveNewItemContainer'>
             <div onClick={()=>{addNewWait()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait.png'}></img>
+            </div>
+            <div onClick={()=>{addNewExercise()}} className='objectiveNewItemImageContainer'>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled.png'}></img>
             </div>
             <div onClick={()=>{addNewDivider()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/minus' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/minus.png'}></img>
             </div>
             <div onClick={()=>{addNewGrocery()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled.png'}></img>
             </div>
             <div onClick={()=>{addNewMedicine()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled.png'}></img>
             </div>
             <div onClick={()=>{addNewLocation()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location-filled.png'}></img>
             </div>
             <div onClick={()=>{addNewQuestion()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question.png'}></img>
             </div>
             <div onClick={()=>{addNewNote()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/note' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/note.png'}></img>
             </div>
             <div onClick={()=>{addNewStep()}} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled.png'}></img>
             </div>
           </div>
         }
-        {objective.IsOpen && !isChangingColor && isObjectiveMenuOpen&&
+        {objective.IsOpen && !isChangingColor && isObjectiveMenuOpen &&
           <div className='objectiveMenuContainer'>
             <div onClick={changeColor} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/palette.png'}></img>
             </div>
             <div onClick={onChangeIsShowingChecked} className='objectiveNewItemImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedGrocery? getTintColor():'-grey') + '.png'}></img>
+              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/checked-grey.png'}></img>
             </div>
-            <div onClick={onChangeIsShowingStep} className='objectiveNewItemImageContainer'>
+            {/* <div onClick={onChangeIsShowingStep} className='objectiveNewItemImageContainer'>
               <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled'+ (objective.IsShowingCheckedStep? getTintColor():'-grey') + '.png'}></img>
-            </div>
+            </div> */}
           </div>
+        }
+        {objective.IsOpen && !isChangingColor && !isAddingNewItem && isChangingTags &&
+          <TagsView theme={objective.Theme} tags={objective.Tags} doneEditTags={doneEditTags} cancelEditTags={cancelEditTags}></TagsView>
         }
         {objective.IsOpen && isChangingColor &&
           <div className='objectiveColorContainer'>

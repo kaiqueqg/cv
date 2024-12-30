@@ -6,7 +6,7 @@ import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
 
-interface LocationViewProps extends ItemViewProps{
+interface DividerProps extends ItemViewProps{
   divider: Divider,
   orderDividerItems: (item: Item)=>Promise<void>,
   addNewDivider: (pos?:number)=>{},
@@ -17,12 +17,13 @@ interface LocationViewProps extends ItemViewProps{
   addNewQuestion: (pos?:number)=>{},
   addNewStep: (pos?:number)=>{},
   addNewWait: (pos?:number)=>{},
+  addNewExercise: (pos?:number)=>{},
 }
 
-const LocationView: React.FC<LocationViewProps> = (props) => {
+const LocationView: React.FC<DividerProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { divider, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, 
-    addNewStep, addNewDivider, addNewGrocery, addNewMedicine, addNewLocation, addNewNote, addNewQuestion, addNewWait,
+    addNewStep, addNewDivider, addNewGrocery, addNewMedicine, addNewLocation, addNewNote, addNewQuestion, addNewWait, addNewExercise,
     orderDividerItems } = props;
 
   const [newTitle, setNewTitle] = useState<string>(divider.Title);
@@ -54,7 +55,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
 
   const doneEditTitle = async () => {
     setIsSavingTitle(true);
-    const newDivider: Divider = {...divider, Title: newTitle, LastModified: new Date().toISOString()};
+    const newDivider: Divider = {...divider, Title: newTitle.trim(), LastModified: new Date().toISOString()};
 
     if(newDivider.Title !== divider.Title
       || newDivider.Pos !== divider.Pos) {
@@ -65,6 +66,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
       if(data){
         setIsEditingTitle(false);
         putItemInDisplay(data);
+        setNewTitle(newDivider.Title);
       }
 
       setTimeout(() => {
@@ -73,6 +75,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     }
     else{
       setIsEditingTitle(false);
+      setNewTitle(divider.Title);
     }
 
     setIsSavingTitle(false);
@@ -108,27 +111,37 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    return 'dividerContainer' + (divider.Title === ''? ' dividerContainerEmptyTitle':'') + (isSelected? ' dividerContainerSelected':'') + (isEndingPos&&isSelected? ' dividerContainerSeletedEnding':'');
+    let rtnTheme = 'dividerContainer';
+
+    if(divider.Title.trim() === '') rtnTheme += ' dividerContainerEmptyTitle';
+    if(isSelected) rtnTheme += ' dividerContainerSelected';
+    if(isEndingPos && isSelected) rtnTheme += ' dividerContainerSeletedEnding';
+    return rtnTheme;
   }
 
   const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' dividerTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' dividerTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' dividerTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' dividerTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' dividerTextNoTheme'
+    if(divider.Title.trim() === ''){
+        return ' dividerTextPlaceholder';
     }
     else{
-      return ' dividerTextNoTheme';
+      if(theme === 'darkBlue'){
+        return ' dividerTextBlue'
+      }
+      else if(theme === 'darkRed'){
+        return ' dividerTextRed'
+      }
+      else if(theme === 'darkGreen'){
+        return ' dividerTextGreen'
+      }
+      else if(theme === 'darkWhite'){
+        return ' dividerTextWhite'
+      }
+      else if(theme === 'noTheme'){
+        return ' dividerTextNoTheme'
+      }
+      else{
+        return ' dividerTextNoTheme';
+      }
     }
   }
 
@@ -137,6 +150,30 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
       return '-black';
     else
       return '';
+  }
+
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'dividerInputBlue dividerTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'dividerInputRed dividerTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'dividerInputGreen dividerTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'dividerInputWhite dividerTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'dividerInputNoTheme dividerTextNoTheme'
+    }
+    else{
+      v+= 'dividerInputNoTheme dividerTextNoTheme';
+    }
+
+    return 'dividerInput ' + v;
   }
 
   const addingNewItem = async () => {
@@ -162,16 +199,23 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     setIsOrderingAToZ(false);
   }
 
+  const getTitle = () => {
+    const rtnTitle = divider.Title.trim() === ''?'add title':divider.Title;
+    return <div className={'dividerTitleLine' + getTextColor()} onClick={() => {if(!isEditingPos)setIsEditingTitle(true)}}>{rtnTitle}</div>;
+  }
+
   return (
     <div className={getTheme()}>
       <div className='titleLineContainer'>
-        {isSavingIsOpen?
-          <Loading IsBlack={theme==='darkWhite'}></Loading>
-          :
-          (divider.IsOpen?
-            <img className='dividerImage' onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + getTintColor() + '.png'}></img>
+        {!isEditingTitle && 
+          (isSavingIsOpen?
+            <Loading IsBlack={theme==='darkWhite'}></Loading>
             :
-            <img className='dividerImage' onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + getTintColor() + '.png'}></img>
+            (divider.IsOpen?
+              <img className='dividerImage' onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + getTintColor() + '.png'}></img>
+              :
+              <img className='dividerImage' onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + getTintColor() + '.png'}></img>
+            )
           )
         }
         {isSavingTitle?
@@ -185,7 +229,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 <img className='dividerImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
               }
               <input 
-                className={'dividerInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newTitle}
                 onChange={onTitleInputChange}
@@ -194,20 +238,25 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 <img className='dividerImage' onClick={doneEditTitle} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
             </>
             :
-            <div className={'dividerTitleLine' + getTextColor()} onClick={() => {if(!isEditingPos)setIsEditingTitle(true)}}>{divider.Title}</div>
+            getTitle()
           )
         }
-        {isOrderingAToZ?
-          <Loading  IsBlack={theme==='darkWhite'}></Loading>
-          :
-          <img className='dividerImage' onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'}></img>
+        {!isEditingTitle && 
+          (isOrderingAToZ?
+            <Loading  IsBlack={theme==='darkWhite'}></Loading>
+            :
+            <img className='dividerImage' onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'}></img>
+          )
         }
-        <img className='dividerImage' onClick={()=>{if(!isEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/add-lock':'/add') + getTintColor() + '.png'}></img>
+        {!isEditingTitle && <img className='dividerImage' onClick={()=>{if(!isEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ getTintColor()) + '.png'}></img>}
       </div>
       {isAddingNewItem &&
         <div className='dividerNewItemContainer'>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewWait(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>
+          </div>
+          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewExercise(divider.Pos);}}>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor() + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewDivider(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/minus' + getTintColor() + '.png'}></img>
@@ -216,10 +265,10 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor() + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewMedicine(divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled' + getTintColor() + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewLocation(divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/location' + getTintColor() + '.png'}></img>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + getTintColor() + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewQuestion(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/question' + getTintColor() + '.png'}></img>

@@ -21,8 +21,12 @@
   cursor: pointer;
 }
 
-.medicineContainer:hover{
-  // border-color: red;
+.medicineContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
+}
+.medicineContainerClear:hover{
+  border-color: black;
 }
 
 .medicineContainerSelected{
@@ -45,6 +49,7 @@
 .medicineLine{
   display: flex;
   width: 100%;
+  min-height: 35px;
 }
 
 .medicineText{
@@ -77,13 +82,12 @@
   width: 100%;
   min-height: 30px;
   padding: 0px 10px 0px 10px;
-  margin: 5px 0px;
+  margin: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 2px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -104,7 +108,6 @@
 .medicineContainerWhite{background-color: #D8AE7E;}
 .medicineContainerNoTheme{background-color: #1D1D1D;}
 
-.medicineContainerClear{background-color: #3881b900;}
 
 .medicineTextBlue{color: beige,}
 .medicineTextRed{color: beige,}
@@ -116,4 +119,10 @@
 .medicineTextFadeRed{color: rgb(245, 184, 184),}
 .medicineTextFadeGreen{color: lightgreen,}
 .medicineTextFadeWhite{color: rgb(73, 73, 73),}
-.medicineTextFadeNoTheme{color: rgb(65, 65, 65),}
+.medicineTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}
+
+.medicineInputBlue{border-color: beige;}
+.medicineInputRed{border-color: beige;}
+.medicineInputGreen{border-color: beige;}
+.medicineInputWhite{border-color: black;}
+.medicineInputNoTheme{border-color: beige;}

@@ -14,12 +14,15 @@
 
   border-radius: 5px;
   border-width: 1px;
-  border-color: rgb(0, 0, 0, 0);
+  border-color: $transparent;
   border-style: solid;
 }
 
-.dividerContainer:hover{
-  // border-color: red;
+.dividerContainerEmptyTitle{
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
 }
 
 .dividerContainerSelected{
@@ -28,13 +31,6 @@
 }
 
 .dividerContainerSeletedEnding{
-  border-style: solid;
-}
-
-.dividerContainerEmptyTitle{
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
   border-style: solid;
 }
 
@@ -65,10 +61,9 @@
   margin-right: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 5px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -116,8 +111,15 @@
 .dividerContainerWhite{background-color: #E0DCB6;}
 .dividerContainerNoTheme{background-color: $blue-darker-darker}
 
+.dividerTextPlaceholder{color: rgb(136, 136, 136),}
 .dividerTextBlue{color: beige,}
 .dividerTextRed{color: beige,}
 .dividerTextGreen{color: beige,}
 .dividerTextWhite{color: black,}
 .dividerTextNoTheme{color: beige,}
+
+.dividerInputBlue{border-color: beige;}
+.dividerInputRed{border-color: beige;}
+.dividerInputGreen{border-color: beige;}
+.dividerInputWhite{border-color: black;}
+.dividerInputNoTheme{border-color: beige;}

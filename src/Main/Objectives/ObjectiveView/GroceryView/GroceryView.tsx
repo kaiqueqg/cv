@@ -65,7 +65,12 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
 
   const doneEditGrocery = async () => {
     setIsSavingGrocery(true);
-    const newItem: Grocery = {...newGrocery, LastModified: new Date().toISOString()};
+    const newItem: Grocery = {
+      ...newGrocery,
+      Title: newGrocery.Title.trim(),
+      GoodPrice: newGrocery.GoodPrice?.trim(),
+      Unit: newGrocery.Unit?.trim(),
+      LastModified: new Date().toISOString()};
 
     if(newGrocery.Title !== grocery.Title
       || newItem.Quantity !== grocery.Quantity
@@ -79,6 +84,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
       if(data){
         setIsEditingGrocery(false);
         putItemInDisplay(data);
+        setNewGrocery(newGrocery);
       }
 
       setTimeout(() => {
@@ -87,6 +93,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
     }
     else{
       setIsEditingGrocery(false);
+      setNewGrocery(grocery);
     }
 
     setIsSavingGrocery(false);
@@ -110,27 +117,36 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'groceryContainer groceryContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'groceryContainer groceryContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'groceryContainer groceryContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'groceryContainer groceryContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'groceryContainer groceryContainerNoTheme';
+    let rtnTheme = 'groceryContainer';
+
+    if(grocery.IsChecked){
+      rtnTheme += ' groceryContainerClear';
     }
     else{
-      rtnTheme = 'groceryContainer groceryContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' groceryContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' groceryContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' groceryContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' groceryContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' groceryContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' groceryContainerNoTheme';
+      }
     }
 
-    return rtnTheme + (isSelected? ' groceryContainerSelected':'') + (isEndingPos&&isSelected? ' groceryContainerSelectedEnding':'');
+    if(isSelected) rtnTheme += ' groceryContainerSelected';
+    if(isEndingPos && isSelected) rtnTheme += ' groceryContainerSelectedEnding';
+
+    return rtnTheme;
   }
 
   const getTextColor = () => {
@@ -182,16 +198,39 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
       return '';
   }
 
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'groceryInputBlue groceryTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'groceryInputRed groceryTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'groceryInputGreen groceryTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'groceryInputWhite groceryTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'groceryInputNoTheme groceryTextNoTheme'
+    }
+    else{
+      v+= 'groceryInputNoTheme groceryTextNoTheme';
+    }
+
+    return 'groceryInput ' + v;
+  }
+
   const getDisplayText = () => {
     let rtn = '';
     if(grocery.Quantity && grocery.Quantity > 1) rtn += grocery.Quantity.toString()+'x ';
     rtn += grocery.Title;
-    if(grocery.GoodPrice){
-      rtn += ' (' + grocery.GoodPrice;
+    if(grocery.GoodPrice || grocery.Unit) rtn += ' (';
+    if(grocery.GoodPrice){ rtn += grocery.GoodPrice;}
 
-      if(grocery.Unit) rtn += ' - ' + grocery.Unit;
-      rtn += ')';
-    }
+    if(grocery.Unit) rtn += (grocery.GoodPrice?' - ':'') + grocery.Unit;
+    if(grocery.GoodPrice || grocery.Unit) rtn += ')';
 
     return rtn;
   }
@@ -205,7 +244,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
           <div className='inputsContainer'>
             <div className='inputLeft'>
               <input 
-                className={'groceryInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newGrocery.Title}
                 onChange={handleTitleInputChange}
@@ -213,7 +252,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={'groceryInput' + getTextColor()}
+                className={getInputColor()}
                 type='number'
                 value={newGrocery.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -221,14 +260,14 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={'groceryInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newGrocery.GoodPrice?? ''}
                 onChange={handleGoodPriceInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Good price"></input>
-                <input 
-                className={'groceryInput' + getTextColor()}
+              <input 
+                className={getInputColor()}
                 type='text'
                 value={newGrocery.Unit?? ''}
                 onChange={handleUnitInputChange}
@@ -236,8 +275,8 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Unit"></input>
             </div>
             <div className='inputRight'>
-              <img className='inputImage' onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done.png'}></img>
-              <img className='inputImage' onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel.png'}></img>
+              <img className='inputImage' onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+              <img className='inputImage' onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
@@ -256,9 +295,9 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
                 (grocery.IsChecked?
-                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/checked-grey.png'}></img>
+                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}></img>
                   :
-                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/unchecked' + getTintColor() + '.png'}></img>
+                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + getTintColor() + '.png'}></img>
                 )
               )
             }

@@ -38,7 +38,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
   }
 
   const onEditMedicine = () => {
-    if(!isEditingPos)setIsEditingMedicine(true);
+    if(!isEditingPos)setIsEditingMedicine(!isEditingMedicine);
   }
 
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -69,13 +69,19 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
 
   const doneEditMedicine = async () => {
     setIsSavingMedicine(true);
-    const newItem: Medicine = {...newMedicine, LastModified: new Date().toISOString()};
+    const newItem: Medicine = {
+      ...newMedicine,
+      Title: newMedicine.Title.trim(),
+      Unit: newMedicine.Unit?.trim(),
+      Purpose: newMedicine.Purpose?.trim(),
+      LastModified: new Date().toISOString()
+    };
 
-    if(newMedicine.Title !== medicine.Title
+    if(newMedicine.Title !== medicine.Title.trim()
       || newItem.Quantity !== medicine.Quantity
-      || newItem.Unit !== medicine.Unit
+      || newItem.Unit !== medicine.Unit?.trim()
       || newItem.Pos !== medicine.Pos
-      || newItem.Purpose !== medicine.Purpose) {
+      || newItem.Purpose !== medicine.Purpose?.trim()) {
       setIsEditingMedicine(true);
 
       const data = await objectiveslistApi.putObjectiveItem(newItem);
@@ -91,6 +97,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
     }
     else{
       setIsEditingMedicine(false);
+      setNewMedicine(medicine);
     }
 
     setIsSavingMedicine(false);
@@ -114,27 +121,36 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'medicineContainer medicineContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'medicineContainer medicineContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'medicineContainer medicineContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'medicineContainer medicineContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'medicineContainer medicineContainerNoTheme';
+    let rtnTheme = 'medicineContainer';
+    
+    if(medicine.IsChecked){
+      rtnTheme += ' medicineContainerClear';
     }
     else{
-      rtnTheme = 'medicineContainer medicineContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' medicineContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' medicineContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' medicineContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' medicineContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' medicineContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' medicineContainerNoTheme';
+      }
     }
 
-    return rtnTheme + (isSelected? ' medicineContainerSelected':'') + (isEndingPos&&isSelected? ' medicineContainerSelectedEnding':'');
+    if(isSelected) rtnTheme += ' medicineContainerSelected';
+    if(isEndingPos && isSelected) rtnTheme += ' medicineContainerSelectedEnding';
+
+    return rtnTheme;
   }
 
   const getTextColor = () => {
@@ -186,6 +202,30 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
       return '';
   }
 
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'medicineInputBlue medicineTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'medicineInputRed medicineTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'medicineInputGreen medicineTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'medicineInputWhite medicineTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'medicineInputNoTheme medicineTextNoTheme'
+    }
+    else{
+      v+= 'medicineInputNoTheme medicineTextNoTheme';
+    }
+
+    return 'medicineInput ' + v;
+  }
+
   const getDisplayText = () => {
     let rtn = '';
     if(medicine.Quantity && medicine.Quantity > 1) rtn += medicine.Quantity.toString()+'x ';
@@ -203,7 +243,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
           <div className='inputsContainer'>
             <div className='inputLeft'>
               <input 
-                className={'medicineInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newMedicine.Title}
                 onChange={handleTitleInputChange}
@@ -211,7 +251,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={'medicineInput' + getTextColor()}
+                className={getInputColor()}
                 type='number'
                 value={newMedicine.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -219,14 +259,14 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={'medicineInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newMedicine.Unit?? ''}
                 onChange={handleUnitInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Unit"></input>
               <input 
-                className={'medicineInput' + getTextColor()}
+                className={getInputColor()}
                 type='text'
                 value={newMedicine.Purpose?? ''}
                 onChange={handlePurposeInputChange}
@@ -234,8 +274,8 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Purpose"></input>
             </div>
             <div className='inputRight'>
-              <img className='inputImage' onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done.png'}></img>
-              <img className='inputImage' onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel.png'}></img>
+              <img className='inputImage' onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+              <img className='inputImage' onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
@@ -244,9 +284,8 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
             </div>
           </div>
           :
-          <div className='medicineDisplayContainer'>
+          <div className={'medicineDisplayContainer'}>
             <div className='medicineLine' onClick={onEditMedicine}>
-              <img className={'medicineImage'} src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
               <div className={'medicineText' + (medicine.IsChecked? getTextFadeColor():getTextColor())}> {getDisplayText()}</div>
               {medicine.Unit && <div className={'medicineText' + (medicine.IsChecked? getTextFadeColor():getTextColor())}>{medicine.Unit}</div>}
               {medicine.Purpose && <div className={'medicineText ' + getTextFadeColor()}>{'('+medicine.Purpose+')'}</div>}
@@ -256,9 +295,9 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
                 (medicine.IsChecked?
-                  <img className='medicineImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/checked-grey.png'}></img>
+                  <img className='medicineImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}></img>
                   :
-                  <img className='medicineImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/unchecked' + getTintColor() + '.png'}></img>
+                  <img className='medicineImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
                 )
               )
             }

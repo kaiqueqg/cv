@@ -12,14 +12,6 @@
   min-height: 40px;
   margin-top: 10px;
   background-color: $blue-dark;
-  // border-radius: 5px;
-  // border-width: 1px;
-  // border-color: black;
-  // border-style: solid;
-
-  border-width: 1px;
-  border-color: red;
-  border-style: solid;
 }
 
 .loadingListContainer{
@@ -49,19 +41,28 @@
 }
 
 .objectivesListSideContainer{
-  flex-direction: column;
-  align-items: center;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
   margin: 10px 5px;
-  padding: 5px;
 
-  border-width: 1px;
-  border-radius: 5px;
+  border-width: 0px 1px 0px 0px ;
+  border-radius: 0px;
   border-color: $beige-dark;
   border-style: solid;
 
   @media(min-width: 700px){
     min-width: 200px;
   }
+}
+
+.objectivesListSideContainerArrow{
+  display: flex;
+  min-height: 300px;
+  max-height: 700px;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
 }
 
 .objectivesListSideContainerClosed{
@@ -71,7 +72,17 @@
 }
 
 .objectivesSidePanelOpened{
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 20px;
+}
+
+.objectivesSidePanelOpenedButtons{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
 .objectivesSidePanelClosed{
@@ -86,8 +97,10 @@
 }
 
 .objectivesListMainContainer{
+  display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   width: 100%;
   margin: 10px 5px;
   padding: 5px;
@@ -96,6 +109,30 @@
   @media(min-width: 700px){
     min-width: 400px;
   }
+}
+
+.objectivesListMainTags{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+}
+
+.objectivesListMainTag{
+  cursor:pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px 5px;
+  padding: 2px 5px;
+  color: grey;
+}
+
+.objectivesListMainTagSelected{
+  border-color: beige;
+  color: beige;
+  font-weight: bold;
 }
 
 .objectivesSettings{

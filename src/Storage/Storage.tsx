@@ -7,6 +7,7 @@ type StorageKeys = {
   User: string,
   BaseUrl: string,
   DBUserPrefs: string,
+  SelectedTags: string,
 };
 
 const keys: StorageKeys = {
@@ -14,6 +15,7 @@ const keys: StorageKeys = {
   User: '@kaiqueqgcv:user',
   BaseUrl: '@kaiqueqgcv:baseurl',
   DBUserPrefs: '@kaiqueqgcv:dBUserPrefs',
+  SelectedTags: '@kaiqueqgcv:selectedTags',
 };
 
 const storage = {
@@ -55,6 +57,13 @@ const storage = {
   },
   setDBUserPrefs(prefs: DBUserPrefs) {
     localStorage.setItem(keys.DBUserPrefs, JSON.stringify(prefs));
+  },
+  setSelectedTags(tags: string[]){
+    localStorage.setItem(keys.SelectedTags, JSON.stringify(tags));
+  },
+  getSelectedTags(): string[]|null{
+    const value = localStorage.getItem(keys.SelectedTags);
+    return value ? JSON.parse(value) : null;
   },
 }
 

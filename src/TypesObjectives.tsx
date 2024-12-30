@@ -17,6 +17,9 @@ export interface Objective {
   Pos: number,
   IsShowingCheckedGrocery?: boolean,
   IsShowingCheckedStep?: boolean,
+  IsShowingCheckedMedicine?: boolean,
+  IsShowingCheckedExercise?: boolean,
+  Tags: string[],
 }
 
 export interface ItemViewProps{
@@ -27,7 +30,12 @@ export interface ItemViewProps{
   putItemInDisplay: (item?: Item, remove?: boolean) => void,
 }
 
-export enum ItemType{ Step, Wait, Question, Note, Location, Divider, Grocery, Medicine, ItemFake }
+export interface DisplayTag{
+  tag: string,
+  show: boolean
+}
+
+export enum ItemType{ Step, Wait, Question, Note, Location, Divider, Grocery, Medicine, Exercise, ItemFake }
 
 export interface Item {
   ItemId: string,
@@ -36,6 +44,7 @@ export interface Item {
   Pos: number,
   LastModified: string,
 }
+
 export interface Step extends Item {
   Title: string,
   Done: boolean,
@@ -79,4 +88,17 @@ export interface Medicine extends Item{
   Unit?: string,
   Purpose?: string,
   Components?: string[],
+}
+
+export enum Weekdays{ Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday }
+
+export interface Exercise extends Item{
+  Title: string,
+  IsDone: boolean,
+  Reps: number,
+  Series: number,
+  MaxWeight: string,
+  Description: string,
+  Weekdays: Weekdays[],
+  LastDone: string,
 }

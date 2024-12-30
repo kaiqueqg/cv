@@ -18,8 +18,12 @@
   border-style: solid;
 }
 
-.stepContainer:hover{
-  // border-color: red;
+.stepContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
+}
+.stepContainerClear:hover{
+  border-color: black;
 }
 
 .stepContainerSelected{
@@ -48,6 +52,7 @@
   padding: 0px 10px 0px 10px;
   color: beige;
 }
+
 .stepTitle:hover{
   cursor: pointer;
   font-weight: bold;
@@ -60,10 +65,9 @@
   margin-right: 5px;
   color: beige;
   background-color: #00000000;
-  border-width: 1px;
+  border-width: 0px 0px 1px 0px;
   border-color: beige;
-  border-style: dashed;
-  border-radius: 5px;
+  border-style: solid;
   outline: 0px;
 }
 
@@ -89,22 +93,26 @@
   padding: 4px;
 }
 
-.stepContainerBlue{background-color: #035a9c;}
-.stepContainerRed{background-color: rgb(189, 32, 32);}
-.stepContainerGreen{background-color: rgb(64, 121, 64);}
-.stepContainerWhite{background-color: #D8AE7E;}
-.stepContainerNoTheme{background-color: #1D1D1D;}
-
-.stepContainerClear{background-color: #1d1d1d00;}
-
 .stepTextBlue{color: beige,}
 .stepTextRed{color: beige,}
 .stepTextGreen{color: beige,}
 .stepTextWhite{color: black,}
 .stepTextNoTheme{color: beige,}
 
+.stepContainerBlue{background-color: #035a9c;}
+.stepContainerRed{background-color: rgb(189, 32, 32);}
+.stepContainerGreen{background-color: rgb(64, 121, 64);}
+.stepContainerWhite{background-color: #D8AE7E;}
+.stepContainerNoTheme{background-color: #1D1D1D;}
+
+.stepInputBlue{border-color: beige;}
+.stepInputRed{border-color: beige;}
+.stepInputGreen{border-color: beige;}
+.stepInputWhite{border-color: black;}
+.stepInputNoTheme{border-color: beige;}
+
 .stepTextFadeBlue{color: lightblue,}
 .stepTextFadeRed{color: rgb(245, 184, 184),}
 .stepTextFadeGreen{color: lightgreen,}
 .stepTextFadeWhite{color: rgb(73, 73, 73),}
-.stepTextFadeNoTheme{color: rgb(65, 65, 65),}
+.stepTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}

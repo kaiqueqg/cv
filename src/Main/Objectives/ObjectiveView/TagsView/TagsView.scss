@@ -1,0 +1,96 @@
+@import '../../../../global.scss';
+
+.tagsContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 12px;
+}
+
+.tagsInputLine{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.tagInput{
+  width: 100%;
+  height: 26px;
+  padding: 0px 10px 0px 2px;
+  margin: 5px 10px;
+  color: beige;
+  background-color: #00000000;
+  border-width: 0px 0px 1px 0px;
+  border-color: beige;
+  border-style: solid;
+  outline: 0px;
+  font-family: cursive;
+}
+
+.tagInputImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  padding: 6px;
+}
+
+.tagInputImage:hover{
+  padding: 4px;
+}
+
+.tagImage{
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  margin: 2px;
+  padding: 2px;
+}
+
+.tagImage:hover{
+  padding: 4px;
+}
+
+.tagsList{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+
+.tagContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px 2px;
+  padding: 2px 5px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0,0,0,0);
+  border-radius: 5px;
+  
+  font-family: cursive;
+}
+
+.tagContainer:hover{
+  font-weight: bold;
+}
+
+.tagBlue{color: beige;}
+.tagRed{color: beige;}
+.tagGreen{color: beige;}
+.tagWhite{color: black;}
+.tagNoTheme{color: beige;}
+
+.tagInputBlue{color: beige;border-color: beige;}
+.tagInputRed{color: beige;border-color: beige;}
+.tagInputGreen{color: beige;border-color: beige;}
+.tagInputWhite{color: black;border-color: black;}
+.tagInputNoTheme{color: beige;border-color: beige;}

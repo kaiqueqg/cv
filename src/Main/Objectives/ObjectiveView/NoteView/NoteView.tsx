@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import './NoteView.scss';
 import { useUserContext } from "../../../../Contexts/UserContext";
 import { Item, ItemViewProps, Note } from "../../../../TypesObjectives";
@@ -18,19 +18,35 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
   const [newText, setNewText] = useState<string>(note.Text);
   const [isEditingText, setIsEditingText] = useState<boolean>(false);
   const [isSavingText, setIsSavingTitle] = useState<boolean>(false);
+  const [isAutoUpdating, setIsAutoUpdating] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [isSavingUp, setIsSavingUp] = useState<boolean>(false);
-  const [isSavingDown, setIsSavingDown] = useState<boolean>(false);
+  const [shouldAutoSave, setShouldAutoSave] = useState<boolean>(false);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
   }, []);
+
+  const resetTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+  }
 
   const onChangeEditTitle = () => {
     setIsEditingText(!isEditingText);
   }
 
   const handleTextInputChange = (event: any) => {
-    setNewText(event.target.value);
+    const newValue = event.target.value;
+    setNewText(newValue);
+
+    if(shouldAutoSave) {
+      resetTimer();
+      timerRef.current = setTimeout(async () => {
+        await saveNote(newValue);
+      }, 3000);
+    }
   }
 
   const handleKeyDown = async (event: any) => {
@@ -52,7 +68,7 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
   }
 
   const doneEdit = async () => {
-    const newNote: Note = {...note, Text: newText, LastModified: new Date().toISOString()};
+    const newNote: Note = {...note, Text: newText.trim(), LastModified: new Date().toISOString()};
 
     if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
       setIsSavingTitle(true);
@@ -70,6 +86,27 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
     }
     else{
       setIsEditingText(false);
+      setNewText(note.Text);
+    }
+  }
+
+  const saveNote = async (newValue: string) => {
+    console.log('Saving')
+    const newNote: Note = {...note, Text: newValue.trim(), LastModified: new Date().toISOString()};
+
+    if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
+      setIsAutoUpdating(true);
+
+      const data = await objectiveslistApi.putObjectiveItem(newNote);
+
+      if(data){
+        setIsEditingText(false);
+        putItemInDisplay(data);
+      }
+
+      setTimeout(() => {
+        setIsAutoUpdating(false);
+      }, 500); 
     }
   }
 
@@ -137,19 +174,30 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
         :
         (isEditingText?
           <div className='noteTitleContainer'>
-            {isDeleting?
-              <Loading IsBlack={theme==='darkWhite'}></Loading>
-              :
-              <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
-            }
-            <textarea 
-              className={'noteTextArea' + getTextColor()}
-              value={newText}
-              onChange={handleTextInputChange}
-              onKeyDown={handleKeyDown} 
-              autoFocus></textarea>
-            <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-            <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+            <div className='sideTitleContainer'>
+              {isDeleting?
+                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                :
+                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              }
+            </div>
+            <div className='centerTitleContainer'>
+              <textarea 
+                className={'noteTextArea' + getTextColor()}
+                value={newText}
+                onChange={handleTextInputChange}
+                onKeyDown={handleKeyDown} 
+                autoFocus></textarea>
+            </div>
+            <div className='sideTitleContainer'>
+              {isAutoUpdating?
+                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                :
+                <img className='inputImage' onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + getTintColor() + '.png'):'/save-grey.png')}></img>
+              }
+              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+            </div>
           </div>
           :
           <div className={'noteTitle' + getTextColor()} onClick={() => {if(!isEditingPos)onChangeEditTitle()}}>{note.Text}</div>

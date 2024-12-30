@@ -72,7 +72,11 @@ const StepView: React.FC<StepViewProps> = (props) => {
   }
 
   const doneEdit = async () => {
-    const newStep: Step = {...step, Title: newTitle, LastModified: new Date().toISOString()};
+    const newStep: Step = {
+      ...step,
+      Title: newTitle.trim(), 
+      LastModified: new Date().toISOString()
+    };
 
     if(newStep.Title !== step.Title || newStep.Done !== step.Done || newStep.Pos !== step.Pos) {
       setIsSavingTitle(true);
@@ -90,6 +94,7 @@ const StepView: React.FC<StepViewProps> = (props) => {
     }
     else{
       setIsEditingTitle(false);
+      setNewTitle(step.Title);
     }
   }
 
@@ -99,27 +104,36 @@ const StepView: React.FC<StepViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'stepContainer stepContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'stepContainer stepContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'stepContainer stepContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'stepContainer stepContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'stepContainer stepContainerNoTheme';
+    let rtnTheme = 'stepContainer';
+
+    if(step.Done){
+      rtnTheme += ' stepContainerClear';
     }
     else{
-      rtnTheme = 'stepContainer stepContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' stepContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' stepContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' stepContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' stepContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' stepContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' stepContainerNoTheme';
+      }
     }
 
-    return rtnTheme + (isSelected? ' stepContainerSelected':'') + (isEndingPos&&isSelected?' stepContainerSelectedEnding':'');
+    if(isSelected) rtnTheme += ' stepContainerSelected';
+    if(isEndingPos && isSelected) rtnTheme += ' stepContainerSelectedEnding';
+
+    return rtnTheme;
   }
 
   const getTextColor = () => {
@@ -141,6 +155,30 @@ const StepView: React.FC<StepViewProps> = (props) => {
     else{
       return ' stepTextBlue';
     }
+  }
+
+  const getInputColor = () => {
+    let v = '';
+    if(theme === 'darkBlue'){
+      v+= 'stepInputBlue stepTextBlue'
+    }
+    else if(theme === 'darkRed'){
+      v+= 'stepInputRed stepTextRed'
+    }
+    else if(theme === 'darkGreen'){
+      v+= 'stepInputGreen stepTextGreen'
+    }
+    else if(theme === 'darkWhite'){
+      v+= 'stepInputWhite stepTextWhite'
+    }
+    else if(theme === 'noTheme'){
+      v+= 'stepInputNoTheme stepTextNoTheme'
+    }
+    else{
+      v+= 'stepInputNoTheme stepTextNoTheme';
+    }
+
+    return 'stepInput ' + v;
   }
 
   const getTextFadeColor = () => {
@@ -183,9 +221,10 @@ const StepView: React.FC<StepViewProps> = (props) => {
               :
               <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
             }
-            <input 
-              className={'stepInput' + getTextColor()}
+            <input
+              className={getInputColor()}
               type='text'
+              placeholder='Step text'
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
