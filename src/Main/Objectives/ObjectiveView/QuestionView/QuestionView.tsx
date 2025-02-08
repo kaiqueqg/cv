@@ -154,10 +154,13 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
       rtnTheme = 'questionContainer questionContainerNoTheme';
     }
     else{
-      rtnTheme = 'questionContainer questionContainerNoTheme';
+      rtnTheme = 'questionContainer';
     }
+    rtnTheme += isSelected? ' questionContainerSelected':'';
+    rtnTheme += isEndingPos&&isSelected? ' questionContainerSelectedEnding':'';
+    rtnTheme += (question.Answer.trim() !== '' && question.Statement.trim() !== '')? ' questionContainerNoBackground':'';
 
-    return rtnTheme + (isSelected? ' questionContainerSelected':'') + (isEndingPos&&isSelected? ' questionContainerSelectedEnding':'');
+    return rtnTheme;
   }
 
   const getTextColor = () => {

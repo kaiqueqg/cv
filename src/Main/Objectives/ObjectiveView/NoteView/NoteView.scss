@@ -16,6 +16,10 @@
   border-style: solid;
 }
 
+.noteContainer:hover{
+  border-color: black;
+}
+
 .noteContainerSelected{
   border-color: red;
   border-style: dashed;
@@ -31,10 +35,6 @@
   align-items: center;
   width: 100%;
   height: 100%;
-
-  border-width: 1px;
-  border-color: red;
-  border-style: solid;
 }
 
 .sideTitleContainer{
@@ -44,10 +44,6 @@
   flex-direction: column;
   height: 100%;
   width: 10%;
-
-  border-width: 1px;
-  border-color: green;
-  border-style: solid;
 }
 
 .centerTitleContainer{
@@ -56,10 +52,6 @@
   align-items: center;
   width: 80%;
   height: 100%;
-
-  border-width: 1px;
-  border-color: purple;
-  border-style: solid;
 }
 
 .noteTitle{
@@ -123,7 +115,8 @@
 .noteContainerRed{background-color: rgb(189, 32, 32);}
 .noteContainerGreen{background-color: rgb(64, 121, 64);}
 .noteContainerWhite{background-color: #D8AE7E;}
-.noteContainerNoTheme{background-color: $blue-darker-darker}
+.noteContainerNoTheme{background-color: $blue-darker-darker};
+.noteContainerNoBackground{background-color: $transparent; border-color: $transparent;};
 
 .noteTextBlue{color: beige,}
 .noteTextRed{color: beige,}

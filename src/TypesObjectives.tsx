@@ -11,7 +11,7 @@ export interface Objective {
   Title: string,
   Done: boolean,
   Theme: string,
-  IsOpen: boolean,
+  IsArchived: boolean,
   IsShowing: boolean,
   LastModified: string,
   Pos: number,
@@ -35,7 +35,21 @@ export interface DisplayTag{
   show: boolean
 }
 
-export enum ItemType{ Step, Wait, Question, Note, Location, Divider, Grocery, Medicine, Exercise, ItemFake }
+export interface ImageInfo {
+  itemId: string;
+  fileName: string;
+  fileType: string;
+}
+export interface PresignedUrl { url: string }
+
+export enum ItemType{
+  Step,
+  Wait,
+  Question,
+  Note,
+  Location,
+  Divider,
+  Grocery, Medicine, Exercise, Links, ItemFake, Image }
 
 export interface Item {
   ItemId: string,
@@ -45,9 +59,19 @@ export interface Item {
   LastModified: string,
 }
 
+export enum StepImportance {
+  None,
+  Low,
+  Medium,
+  High,
+  Question,
+  Waiting,
+  InProgress 
+}
 export interface Step extends Item {
   Title: string,
   Done: boolean,
+  Importance: StepImportance,
 }
 
 export interface Wait extends Item {
@@ -101,4 +125,23 @@ export interface Exercise extends Item{
   Description: string,
   Weekdays: Weekdays[],
   LastDone: string,
+}
+
+export interface Link{
+  Title: string,
+  Url: string,
+}
+
+export interface Links extends Item{
+  Title: string,
+  Links: Link[],
+}
+
+export interface Image extends Item{
+  Title: string;
+  Name: string,
+  Size: number,
+  Width: number,
+  Height: number,
+  IsDisplaying: boolean;
 }

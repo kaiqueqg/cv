@@ -6,17 +6,13 @@
   align-items: center;
   background-color: #113a58;
   width: 100%;
-  max-width: 700px;
   padding: 5px 10px 5px 10px;
+  margin: 2px;
 
   border-radius: 5px;
   border-width: 1px;
   border-color: black;
   border-style: solid;
-}
-
-.objContainerSelected{
-  // border-color: red;
 }
 
 .objTopContainer{
@@ -33,7 +29,7 @@
   align-items: center;
   color: beige;
   min-height: 40px;
-  width: 40%;
+  width: 100%;
 
   border-radius: 5px;
   border-width: 1px;
@@ -47,8 +43,9 @@
   justify-content: center;
   align-items: center;
   min-height: 40px;
+  width: 100%;
   font-weight: bold;
-  word-wrap: 'break-word';   // Allows the text to wrap and break within the container
+  word-wrap: 'break-word';
   overflow-wrap: 'break-word';
   white-space: 'normal';
 }
@@ -93,6 +90,17 @@
   align-items: center;
 
   height: 40px;
+  width: 40px;
+}
+
+.objMenuLoadingImageContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 40px;
+  width: 160px;
 }
 
 .objectiveImage{
@@ -121,15 +129,6 @@
   justify-content: start;
   align-items: center;
   width: 100%;
-}
-
-.objectiveNewItemImageContainer{
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
 }
 
 .objectiveNewItemImage {
@@ -188,7 +187,7 @@
 .objObjectiveBlue{background-color: #113a58;}
 .objObjectiveRed{background-color: #8F1414;}
 .objObjectiveGreen{background-color: rgb(44, 82, 44);}
-.objObjectiveWhite{background-color: rgb(255, 255, 255);}
+.objObjectiveWhite{background-color: beige}
 .objObjectiveNoTheme{background-color: $blue-dark;}
 
 .objectiveColorButtonBlue{background-color: #2D9BF0;}

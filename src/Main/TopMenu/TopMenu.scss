@@ -4,17 +4,19 @@
   display: flex;
   width: 100%;
   flex-direction: column;
-  // border-color: $beige;
-  // border-style: solid;
-  // border-width: 0px 0px 1px 0px;
+  border-color: $beige-dark;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
   justify-content: center;
-  padding: 20px 0px 0px 0px;
-
+  padding: 20px 0px 20px 0px;
+  margin: 0px;
+  
   @media screen and (max-width: $screen-max-width){
     width: 100%;
   }
-
+  
   @media(min-width: 700px){
+    margin: 0px 0px 20px 0px;
     flex-direction: row;
   }
 }

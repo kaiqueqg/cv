@@ -241,7 +241,14 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
         :
         (isEditingMedicine?
           <div className='inputsContainer'>
-            <div className='inputLeft'>
+            <div className='medicineSideContainer'>
+              {isDeleting?
+                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                :
+                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              }
+            </div>
+            <div className='medicineCenterContainer'>
               <input 
                 className={getInputColor()}
                 type='text'
@@ -273,14 +280,9 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 onKeyDown={handleKeyDown}
                 placeholder="Purpose"></input>
             </div>
-            <div className='inputRight'>
+            <div className='medicineSideContainer'>
               <img className='inputImage' onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
               <img className='inputImage' onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-              {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
-                :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
-              }
             </div>
           </div>
           :

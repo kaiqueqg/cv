@@ -19,10 +19,6 @@
   border-style: solid;
 }
 
-.locationContainer:hover{
-  // border-color: red;
-}
-
 .locationContainerSelected{
   border-color: red;
   border-style: dashed;
@@ -38,33 +34,22 @@
   width: 100%;
   justify-content: center;
   align-items: center;
-
-  // border-width: 1px;
-  // border-color: red;
-  // border-style: solid;
 }
 
-.locationLeftContainer{
+.locationCenterContainer{
   display: flex;
   flex-direction: column;
-  width: 90%;
-  margin: 0px 5px;
-
-  // border-width: 1px;
-  // border-color: green;
-  // border-style: solid;
+  width: 100%;
 }
 
-.locationRightContainer{
+.locationSideContainer{
   display: flex;
   flex-direction: column;
-  width: 10%;
   justify-content: center;
   align-items: center;
 
-  // border-width: 1px;
-  // border-color: purple;
-  // border-style: solid;
+  width: 10%;
+  margin: 0px 2px;
 }
 
 .titleLine{
@@ -98,7 +83,6 @@
 }
 
 .locationInput{
-  width: 100%;
   padding: 0px 10px 0px 10px;
   margin: 5px;
   color: beige;
@@ -140,6 +124,7 @@
 .locationContainerGreen{background-color: rgb(64, 121, 64);}
 .locationContainerWhite{background-color: #D8AE7E;}
 .locationContainerNoTheme{background-color: #1D1D1D;}
+.locationContainerNoBackground{background-color: $transparent; border-color: $transparent;}
 
 .locationTextBlue{color: beige,}
 .locationTextRed{color: beige,}

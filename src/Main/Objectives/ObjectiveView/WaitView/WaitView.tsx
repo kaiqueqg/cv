@@ -99,8 +99,11 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
     else{
       rtnTheme = 'waitContainer waitContainerNoTheme';
     }
+    rtnTheme += isSelected? ' waitContainerSelected':'';
+    rtnTheme += isEndingPos&&isSelected? ' waitContainerSelectedEnding':'';
+    rtnTheme += wait.Title.trim() !== ''? ' waitContainerNoBackground':'';
 
-    return rtnTheme + (isSelected? ' waitContainerSelected':'') + (isEndingPos&&isSelected?' waitContainerSelectedEnding':'');
+    return rtnTheme;
   }
 
   const getTextColor = () => {

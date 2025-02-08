@@ -56,6 +56,14 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     setNewExercise({...newExercise, Description: event.target.value});
   }
 
+  const allWeekdayChange = () => {
+    setNewExercise({...newExercise, Weekdays: [Weekdays.Monday, Weekdays.Tuesday, Weekdays.Wednesday, Weekdays.Thursday, Weekdays.Friday, Weekdays.Saturday, Weekdays.Sunday]});
+  }
+
+  const noneWeekdayChange = () => {
+    setNewExercise({...newExercise, Weekdays: []});
+  }
+
   const weekdayChange = (weekday: Weekdays) => {
     const includes = newExercise.Weekdays.includes(weekday);
   
@@ -270,13 +278,15 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const getWeekdaysButtons = () => {
     return(
       <div className='exerciseWeekdaysContainer'>
-        <div className={getWeekButtonColor(Weekdays.Monday)} onClick={()=>weekdayChange(Weekdays.Monday)}>Monday</div>
-        <div className={getWeekButtonColor(Weekdays.Tuesday)} onClick={()=>weekdayChange(Weekdays.Tuesday)}>Tuesday</div>
-        <div className={getWeekButtonColor(Weekdays.Wednesday)} onClick={()=>weekdayChange(Weekdays.Wednesday)}>Wednesday</div>
-        <div className={getWeekButtonColor(Weekdays.Thursday)} onClick={()=>weekdayChange(Weekdays.Thursday)}>Thursday</div>
-        <div className={getWeekButtonColor(Weekdays.Friday)} onClick={()=>weekdayChange(Weekdays.Friday)}>Friday</div>
-        <div className={getWeekButtonColor(Weekdays.Saturday)} onClick={()=>weekdayChange(Weekdays.Saturday)}>Saturday</div>
-        <div className={getWeekButtonColor(Weekdays.Sunday)} onClick={()=>weekdayChange(Weekdays.Sunday)}>Sunday</div>
+        <div className={'exerciseWeekdaysButtonAllNone'} onClick={allWeekdayChange}>All</div>
+        <div className={'exerciseWeekdaysButtonAllNone'} onClick={noneWeekdayChange}>None</div>
+        <div className={getWeekButtonColor(Weekdays.Monday)} onClick={()=>weekdayChange(Weekdays.Monday)}>Mon</div>
+        <div className={getWeekButtonColor(Weekdays.Tuesday)} onClick={()=>weekdayChange(Weekdays.Tuesday)}>Tue</div>
+        <div className={getWeekButtonColor(Weekdays.Wednesday)} onClick={()=>weekdayChange(Weekdays.Wednesday)}>Wed</div>
+        <div className={getWeekButtonColor(Weekdays.Thursday)} onClick={()=>weekdayChange(Weekdays.Thursday)}>Thu</div>
+        <div className={getWeekButtonColor(Weekdays.Friday)} onClick={()=>weekdayChange(Weekdays.Friday)}>Fri</div>
+        <div className={getWeekButtonColor(Weekdays.Saturday)} onClick={()=>weekdayChange(Weekdays.Saturday)}>Sat</div>
+        <div className={getWeekButtonColor(Weekdays.Sunday)} onClick={()=>weekdayChange(Weekdays.Sunday)}>Sun</div>
       </div>
     )
   }
@@ -305,7 +315,14 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
         :
         (isEditingExercise?
           <div className='inputsContainer'>
-            <div className='inputLeft'>
+            <div className='exerciseSideContainer'>
+              {isDeleting?
+                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                :
+                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              }
+            </div>
+            <div className='exerciseCenterContainer'>
               <input 
                 className={getInputColor()}
                 type='text'
@@ -344,14 +361,9 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 placeholder="Description"></input>
               {getWeekdaysButtons()}
             </div>
-            <div className='inputRight'>
+            <div className='exerciseSideContainer'>
               <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
               <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-              {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
-                :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
-              }
             </div>
           </div>
           :

@@ -20,7 +20,7 @@
 }
 
 .questionContainer:hover{
-  // border-color: red;
+  border-color: black;
 }
 
 .questionContainerSelected{
@@ -94,11 +94,12 @@
   padding: 4px;
 }
 
-.questionContainerBlue{background-color: #3881b9;}
-.questionContainerRed{background-color: rgb(204, 77, 77);}
-.questionContainerGreen{background-color: rgb(74, 153, 74)}
-.questionContainerWhite{background-color: #E0DCB6;}
-.questionContainerNoTheme{background-color: $blue-darker;}
+.questionContainerBlue{background-color: #035a9c;}
+.questionContainerRed{background-color: rgb(189, 32, 32);}
+.questionContainerGreen{background-color: rgb(64, 121, 64)}
+.questionContainerWhite{background-color: #D8AE7E;}
+.questionContainerNoTheme{background-color: #1D1D1D;}
+.questionContainerNoBackground{background-color: #00000000; border-color: #00000000;}
 
 .questionTextBlue{color: beige,}
 .questionTextRed{color: beige,}

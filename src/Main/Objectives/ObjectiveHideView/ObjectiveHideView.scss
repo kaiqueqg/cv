@@ -1,0 +1,47 @@
+@import '../../../global.scss';
+
+$bor: false;
+
+.objectiveClosedContainer{
+  cursor: pointer;
+  display: flex;
+  min-height: 40px;
+  margin: 2px;
+  padding: 3px 6px;
+  align-items: center;
+  width: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: white;
+    border-style: solid;
+  }
+}
+
+.objectiveClosedContainer:hover{
+  justify-content: center;
+}
+
+.objectiveClosedText{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.objectiveClosedImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+}
+
+.objObjectiveBlue{background-color: #113a58;}
+.objObjectiveRed{background-color: #8F1414;}
+.objObjectiveGreen{background-color: rgb(44, 82, 44);}
+.objObjectiveWhite{background-color: beige;}
+.objObjectiveNoTheme{background-color: $blue-dark;}
+
+.objTextBlue{color: beige;}
+.objTextRed{color: beige;}
+.objTextGreen{color: beige;}
+.objTextWhite{color: black;}

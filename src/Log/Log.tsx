@@ -71,7 +71,7 @@ const log = {
     log.dev(texts, "color:red;")
   },
   b(...texts: any[]){
-    log.dev(texts, "color:blue;")
+    log.dev(texts, "color:lightblue;")
   },
   g(...texts: any[]){
     log.dev(texts, "color:green;")

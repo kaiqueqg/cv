@@ -2,7 +2,7 @@ import {  toast } from 'react-toastify';
 import log from '../Log/Log';
 import storage from '../Storage/Storage';
 import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices } from '../Types';
-import { ObjectiveList, Item as ObjectiveItem, Objective } from '../TypesObjectives';
+import { ObjectiveList, Item as ObjectiveItem, Objective, ImageInfo, PresignedUrl } from '../TypesObjectives';
 
 const errors = [400, 401, 404, 409, 500, 503]
 
@@ -119,6 +119,16 @@ export const objectiveslistApi = {
   async syncObjectivesList(objectivesList: ObjectiveList, fError?: () => void): Promise<ObjectiveList>{
     return this.requestObjectivesList<ObjectiveList>('/SyncObjectivesList', 'PUT', JSON.stringify(objectivesList), fError);
   },
+  async generateGetPresignedUrl(fileInfo: ImageInfo, fError?: () => void): Promise<PresignedUrl>{
+    return this.requestObjectivesList<ImageInfo>('/GenerateGetPresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);
+  },
+  async generatePutPresignedUrl(fileInfo: ImageInfo, fError?: () => void): Promise<PresignedUrl>{
+    return this.requestObjectivesList<ImageInfo>('/GeneratePutPresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);
+  },
+  async generateDeletePresignedUrl(fileInfo: ImageInfo, fError?: () => void): Promise<PresignedUrl>{
+
+    return this.requestObjectivesList<ImageInfo>('/GenerateDeletePresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);
+  },
   async requestObjectivesList<T>(endpoint: string, method: string, body?: string, fError?: () => void): Promise<any>{
     try {
       const resp = await request('https://0z58mhwlhf.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
@@ -135,5 +145,84 @@ export const objectiveslistApi = {
       log.err('Error: ', endpoint, err);
     }
     return null;
+  },
+}
+
+export const s3Api = {
+  async getImage(imageInfo: ImageInfo, fError?: () => void): Promise<File | null> {
+    const presignedUrlReturn = await objectiveslistApi.generateGetPresignedUrl(imageInfo);
+    try {
+        const fetchResponse = await fetch(presignedUrlReturn?.url, {
+          method: 'GET',
+        });
+
+        if (fetchResponse.ok) {
+          const blob = await fetchResponse.blob();
+          const downloadedFile = new File([blob], imageInfo.fileName, { type: imageInfo.fileType });
+          return downloadedFile;
+        }
+
+        return null; // Request failed
+    } catch (err) {
+        if (fError !== undefined) fError();
+        else log.err('Error getting image from S3', err);
+
+        return null;
+    }
+  },
+  async sendImage(itemId:string, file: File, fError?: () => void): Promise<boolean>{
+    const imageInfo: ImageInfo = { itemId: itemId, fileName: file.name, fileType: file.type };
+    const presignedUrlReturn:PresignedUrl = await objectiveslistApi.generatePutPresignedUrl(imageInfo);
+    try {
+      const uploadResponse = await fetch(presignedUrlReturn?.url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
+
+      if(uploadResponse.ok){
+        return true;
+      }
+
+      return false;
+    } catch (err) {
+      if(fError !== undefined) fError();
+      else log.err('Error sending image to S3', err);
+
+      return false;
+    }
+  },
+  async deleteImage(itemId:string, file: File, fError?: () => void): Promise<boolean>{
+    log.b('delete');
+    const imageInfo: ImageInfo = { itemId: itemId, fileName: file.name, fileType: file.type };
+    log.b('imageInfo', imageInfo);
+    const presignedUrlReturn:PresignedUrl = await objectiveslistApi.generateDeletePresignedUrl(imageInfo);
+    log.b('presignedUrlReturn', presignedUrlReturn);
+
+    if(presignedUrlReturn.url === null){
+      log.r('Delete presigned url.');
+      return false;
+    }
+
+    try {
+      const uploadResponse = await fetch(presignedUrlReturn?.url, {
+        method: 'DELETE',
+      });
+
+      log.b('uploadResponse', uploadResponse);
+
+      if(uploadResponse.ok){
+        return true;
+      }
+
+      return false;
+    } catch (err) {
+      if(fError !== undefined) fError();
+      else log.err('Error deleting image from S3', err);
+
+      return false;
+    }
   },
 }

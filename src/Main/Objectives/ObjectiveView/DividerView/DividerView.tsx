@@ -18,12 +18,14 @@ interface DividerProps extends ItemViewProps{
   addNewStep: (pos?:number)=>{},
   addNewWait: (pos?:number)=>{},
   addNewExercise: (pos?:number)=>{},
+  addNewLinks: (pos?:number)=>{},
+  addNewImage: (pos?:number)=>{},
 }
 
 const LocationView: React.FC<DividerProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { divider, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, 
-    addNewStep, addNewDivider, addNewGrocery, addNewMedicine, addNewLocation, addNewNote, addNewQuestion, addNewWait, addNewExercise,
+    addNewStep, addNewDivider, addNewGrocery, addNewMedicine, addNewLocation, addNewNote, addNewQuestion, addNewWait, addNewExercise, addNewLinks, addNewImage,
     orderDividerItems } = props;
 
   const [newTitle, setNewTitle] = useState<string>(divider.Title);
@@ -36,9 +38,6 @@ const LocationView: React.FC<DividerProps> = (props) => {
 
   const [isAddingNewItem, setIsAddingNewItem] = useState<boolean>(false);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
-
-  useEffect(() => {
-  }, []);
 
   const onTitleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
@@ -255,6 +254,9 @@ const LocationView: React.FC<DividerProps> = (props) => {
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewWait(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>
           </div>
+          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewLinks(divider.Pos);}}>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/link' + getTintColor() + '.png'}></img>
+          </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewExercise(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor() + '.png'}></img>
           </div>
@@ -278,6 +280,9 @@ const LocationView: React.FC<DividerProps> = (props) => {
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewStep(divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + getTintColor() + '.png'}></img>
+          </div>
+          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); addNewImage(divider.Pos);}}>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/image-filled' + getTintColor() + '.png'}></img>
           </div>
         </div>
       }

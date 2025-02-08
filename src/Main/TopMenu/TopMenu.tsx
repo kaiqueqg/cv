@@ -26,9 +26,6 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
       case '/cv':
         setCurrentMenuOption(MenuOption.Curriculum);
         break;
-      // case '/grocerylist':
-      //   setCurrentMenuOption(MenuOption.GroceryList);
-      //   break;
       case '/objectiveslist':
         setCurrentMenuOption(MenuOption.ObjectivesList);
         break;
@@ -46,9 +43,6 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
       <div key='cvBtn' className={MenuOption.Curriculum === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.Curriculum); navigate("/cv");}}>
         <div className={MenuOption.Curriculum === currentMenuOption? 'text textSelected': 'text'}>Curriculum</div>
       </div>
-      {/* <div key='groceryBtn' className={MenuOption.GroceryList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.GroceryList); navigate("/grocerylist")}}>
-        <div className={MenuOption.GroceryList === currentMenuOption? 'text textSelected': 'text'}>Grocery List</div>
-      </div> */}
       <div key='objectiveBtn' className={MenuOption.ObjectivesList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.ObjectivesList); navigate("/objectiveslist")}}>
         <div className={MenuOption.ObjectivesList === currentMenuOption? 'text textSelected': 'text'}>Objectives</div>
       </div>

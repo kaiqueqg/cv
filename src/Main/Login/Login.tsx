@@ -21,6 +21,7 @@ const Login: React.FC<LoginProps> = (props) => {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [createEmail, setCreateEmail] = useState<string>('');
   const [createPassword, setCreatePassword] = useState<string>('');
@@ -272,17 +273,28 @@ const Login: React.FC<LoginProps> = (props) => {
             <div className=''>
               <div className='login-box'>
                 <h3 style={{margin: '10px 0px'}}>Login</h3>
-                <div className="login-row">
+                <div className="email-column">
                   <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email"></input>
                   {typeAnEmail && <span className="alert-message concert-one-regular">Type an email.</span>}
                   {typeAnValidEmail && <span className="alert-message concert-one-regular">Type a valid email.</span>}
                 </div>
-                <div className="login-row">
-                  <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
+                <div className="pass-column">
+                  <div className="pass-row">
+                    {showPassword?
+                      <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
+                      :
+                      <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
+                    }
+                    {showPassword?
+                      <img className="loginImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>{setShowPassword(false)}}></img>
+                      :
+                      <img className="loginImage" src={process.env.PUBLIC_URL + '/show.png'} alt='meaningfull text' onClick={()=>{setShowPassword(true)}}></img>
+                    }
+                  </div>
                   {typeAnPassword && <span className="alert-message concert-one-regular">Type a password.</span>}
                 </div>
                 <div className="login-row">
-                  <button className="btn-base btn-login" type="button" onClick={login}>Login</button>
+                  <button className="btn-login" type="button" onClick={login}>Login</button>
                 </div>
               </div>
               {/* <div className=" login-box">

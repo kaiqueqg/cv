@@ -121,7 +121,10 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
       rtnTheme = 'locationContainer locationContainerNoTheme';
     }
 
-    return rtnTheme + (isSelected? ' locationContainerSelected':'') + (isEndingPos&&isSelected? ' locationContainerSelectedEnding':'');
+    rtnTheme += isSelected? ' locationContainerSelected':'';
+    rtnTheme += isEndingPos&&isSelected? ' locationContainerSelectedEnding':'';
+    rtnTheme += (location.Title.trim() !== '' && location.Url.trim() !== '')? ' locationContainerNoBackground':'';
+    return rtnTheme;
   }
 
   const getTextColor = () => {
@@ -150,7 +153,6 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     if(theme === 'darkWhite') tint += '-black';
     return tint;
   }
-
 
   const getInputColor = () => {
     let v = '';
@@ -183,7 +185,14 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
         :
         (isEditingLocation?
           <div className='locationEditingContainer'>
-            <div className='locationLeftContainer'>
+            <div className='locationSideContainer'>
+              {isDeleting?
+                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                :
+                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              }
+            </div>
+            <div className='locationCenterContainer'>
               <input 
                 className={getInputColor()}
                 type='text'
@@ -201,14 +210,9 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 placeholder="Google maps URL"
                 autoFocus></input>
             </div>
-            <div className='locationRightContainer'>
+            <div className='locationSideContainer'>
               <img className='inputImage' onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
               <img className='inputImage' onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-              {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
-                :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
-              }
             </div>
           </div>
           :

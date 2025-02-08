@@ -1,5 +1,6 @@
 import { toast } from 'react-toastify';
 import { ResponseUser, DBUserPrefs } from '../Types';
+import log from '../Log/Log';
 
 
 type StorageKeys = {
@@ -7,6 +8,7 @@ type StorageKeys = {
   User: string,
   BaseUrl: string,
   DBUserPrefs: string,
+  AvailableTags: string,
   SelectedTags: string,
 };
 
@@ -15,6 +17,7 @@ const keys: StorageKeys = {
   User: '@kaiqueqgcv:user',
   BaseUrl: '@kaiqueqgcv:baseurl',
   DBUserPrefs: '@kaiqueqgcv:dBUserPrefs',
+  AvailableTags: '@kaiqueqgcv:AvailableTags',
   SelectedTags: '@kaiqueqgcv:selectedTags',
 };
 
@@ -58,12 +61,54 @@ const storage = {
   setDBUserPrefs(prefs: DBUserPrefs) {
     localStorage.setItem(keys.DBUserPrefs, JSON.stringify(prefs));
   },
-  setSelectedTags(tags: string[]){
-    localStorage.setItem(keys.SelectedTags, JSON.stringify(tags));
+  //^-------------------- TAGS
+  async writeAvailableTags(tags: string[]): Promise<void> {
+    try {
+      await localStorage.setItem(keys.AvailableTags, JSON.stringify(tags));
+    } catch (err) {
+      // log.err('stg writeAvailableTags', '[catch] writing available tags.');
+    }
   },
-  getSelectedTags(): string[]|null{
-    const value = localStorage.getItem(keys.SelectedTags);
-    return value ? JSON.parse(value) : null;
+  async readAvailableTags(): Promise<string[]|null> {
+    try {
+      const data = await localStorage.getItem(keys.AvailableTags);
+      if(data !== null){
+        try {
+          const parsedData: string[] = JSON.parse(data);
+          return parsedData;
+        } catch (err) {
+          // log.err('stg readAvailableTags', 'Error parsing json');
+        }
+      }
+      return null;
+    } catch (err) {
+      // log.err('stg readAvailableTags', '[catch] reading available tags.');
+      return null;
+    }
+  },
+  async writeSelectedTags(tags: string[]): Promise<void> {
+    try {
+      await localStorage.setItem(keys.SelectedTags, JSON.stringify(tags));
+    } catch (err) {
+      // log.err('stg writeSelectedTags', '[catch] writing selected tags.');
+    }
+  },
+  async readSelectedTags(): Promise<string[]|null> {
+    try {
+      const data = await localStorage.getItem(keys.SelectedTags);
+      if(data !== null){
+        try {
+          const parsedData: string[] = JSON.parse(data);
+          return parsedData;
+        } catch (err) {
+          // log.err('stg readSelectedTags', 'Error parsing json');
+        }
+      }
+      return null;
+    } catch (err) {
+      // log.err('stg readSelectedTags', '[catch] reading selected tags.');
+      return null;
+    }
   },
 }
 

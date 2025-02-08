@@ -17,6 +17,10 @@
   border-style: solid;
 }
 
+.waitContainer:hover{
+  border-color: black;
+}
+
 .waitContainerSelected{
   border-color: red;
   border-style: dashed;
@@ -93,6 +97,7 @@
 .waitContainerGreen{background-color: rgb(64, 121, 64);}
 .waitContainerWhite{background-color: #D8AE7E;}
 .waitContainerNoTheme{background-color: $blue-darker-darker}
+.waitContainerNoBackground{background-color: $transparent; border-color: $transparent;}
 
 .waitTextBlue{color: beige,}
 .waitTextRed{color: beige,}

@@ -17,15 +17,46 @@ $bor: false;
   @if $bor {border: 1px solid red;}
 }
 
-.login-row{
+.email-row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 10px;
   @if $bor {border: 1px solid purple;}
+}
+
+.email-column{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 0px 10px 0px;
+  @if $bor {border: 1px solid rgb(68, 38, 68);}
+}
+
+.pass-row{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  @if $bor {border: 1px solid rgb(167, 76, 167);}
+}
+
+.pass-column{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 0px 10px 0px;
+
+  @if $bor {border: 1px solid rgb(68, 38, 68);}
 }
 
 .alert-message {
   display: block;
   color: crimson;
   margin: 5px 0px;
+
+  @if $bor {border: 1px solid rgb(72, 29, 172);}
 }
 
 .focus-message {
@@ -36,40 +67,43 @@ $bor: false;
 
 .input-base:focus + .focus-message {
   display: block;
+
+  @if $bor {border: 1px solid rgb(29, 172, 36);}
 }
 
 .input-base{
   color: beige;
   background-color: #282C34;
-  border-radius: 0%;
-  border: 0px solid black;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: $transparent;
+  border-style: solid;
   padding: 5px;
+  width: 100%;
+  outline: none;
 }
 
-.input-base:active{
-  border-radius: 0%;
-  border: 0px solid black;
+.input-base:focus{
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: beige;
+  border-style: solid;
   padding: 5px;
+  outline: none;
 }
 
 .input-base::placeholder{
   color: $placeholder-dark;
 }
 
-.btn-base{
+.btn-login{
   color: black;
-  background-color: lightgray;
+  background-color: beige;
   padding: 7px 14px;
   margin: 1px 5px;
   font-weight: bold;
+  border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0);
-}
-
-.btn-base:hover{
-}
-
-.btn-login{
-  background-color: $green;
 }
 
 .btn-login:hover{ 
@@ -79,4 +113,12 @@ $bor: false;
 .btn-create{
   background-color: $cv-blue;
   color: white;
+}
+
+.loginImage{
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  padding: 6px;
 }

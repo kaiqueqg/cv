@@ -32,7 +32,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
       doneEditTags(newTags);
     } else if (event.key === 'Enter') {
         if(newTag.trim() !== ''){
-          setNewTags((prevTags) => [...prevTags, newTag]);
+          setNewTags((prevTags) => [...prevTags, newTag.trim()]);
           setNewTag('');
         }
     } else if (event.key === 'Escape') {
@@ -92,7 +92,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getTagsView = (tag: string, isBeingHover: boolean):React.ReactNode => {
     return (
-      <div id={tag} className={getTheme()} onClick={()=>{removeTag(tag)}}>{tag}</div>
+      <div key={'tagview'+tag} className={getTheme()} onClick={()=>{removeTag(tag)}}>{tag}</div>
     )
   }
 

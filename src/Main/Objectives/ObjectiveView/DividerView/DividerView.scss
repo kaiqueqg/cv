@@ -18,6 +18,10 @@
   border-style: solid;
 }
 
+.dividerContainer:hover{
+  border-color: black;
+}
+
 .dividerContainerEmptyTitle{
   border-radius: 5px;
   border-width: 1px;

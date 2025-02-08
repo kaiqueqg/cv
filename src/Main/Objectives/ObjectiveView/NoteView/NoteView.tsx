@@ -50,7 +50,10 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
   }
 
   const handleKeyDown = async (event: any) => {
-    if(event.key === 'Escape'){
+    if(event.key === 'Enter' && event.shiftKey){
+      doneEdit();
+    }
+    else if(event.key === 'Escape'){
       cancelEdit();
     }
   }
@@ -135,8 +138,11 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
     else{
       rtnTheme = 'noteContainer noteContainerNoTheme';
     }
+    rtnTheme += (isSelected? ' noteContainerSelected':'');
+    rtnTheme += (isSelected&&isEndingPos?' noteContainerSelectedEnding':'');
+    rtnTheme += note.Text.trim() !== ''? ' noteContainerNoBackground':'';
 
-    return rtnTheme + (isSelected? ' noteContainerSelected':'') + (isSelected&&isEndingPos?' noteContainerSelectedEnding':'');
+    return rtnTheme;
   }
 
   const getTextColor = () => {

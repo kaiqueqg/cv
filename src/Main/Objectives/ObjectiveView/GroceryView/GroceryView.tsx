@@ -69,7 +69,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
       ...newGrocery,
       Title: newGrocery.Title.trim(),
       GoodPrice: newGrocery.GoodPrice?.trim(),
-      Unit: newGrocery.Unit?.trim(),
+      Unit: newGrocery.Unit,
       LastModified: new Date().toISOString()};
 
     if(newGrocery.Title !== grocery.Title
@@ -224,13 +224,9 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
 
   const getDisplayText = () => {
     let rtn = '';
-    if(grocery.Quantity && grocery.Quantity > 1) rtn += grocery.Quantity.toString()+'x ';
+    if(grocery.Quantity && grocery.Quantity > 1) rtn += grocery.Quantity.toString()+grocery.Unit+' ';
     rtn += grocery.Title;
-    if(grocery.GoodPrice || grocery.Unit) rtn += ' (';
-    if(grocery.GoodPrice){ rtn += grocery.GoodPrice;}
-
-    if(grocery.Unit) rtn += (grocery.GoodPrice?' - ':'') + grocery.Unit;
-    if(grocery.GoodPrice || grocery.Unit) rtn += ')';
+    if(grocery.GoodPrice){ rtn += ' (' + grocery.GoodPrice + ')'}
 
     return rtn;
   }
@@ -242,7 +238,14 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
         :
         (isEditingGrocery?
           <div className='inputsContainer'>
-            <div className='inputLeft'>
+            <div className='grocerySideContainer'>
+              {isDeleting?
+                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                :
+                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              }
+            </div>
+            <div className='groceryCenterContainer'>
               <input 
                 className={getInputColor()}
                 type='text'
@@ -274,14 +277,9 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 onKeyDown={handleKeyDown}
                 placeholder="Unit"></input>
             </div>
-            <div className='inputRight'>
+            <div className='grocerySideContainer'>
               <img className='inputImage' onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
               <img className='inputImage' onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-              {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
-                :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
-              }
             </div>
           </div>
           :

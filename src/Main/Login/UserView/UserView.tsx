@@ -17,7 +17,6 @@ const UserView: React.FC<UserViewProps> = (props) => {
   const navigate = useNavigate();
   const [userList, setUserList] = useState<ResponseUser[]>([]);
   const [identityServiceStatus, setIdentityServiceStatus] = useState<ResponseServices>();
-  const [groceryListServiceStatus, setGroceryListServiceStatus] = useState<ResponseServices>();
   const [isGettingUserList, setIsGettingUserList] = useState<boolean>();
   const [isGettingServicesList, setIsGettingServicesList] = useState<boolean>();
 

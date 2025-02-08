@@ -1,32 +1,35 @@
 import { useEffect, useState } from "react";
-import './ObjectiveClosedView.scss';
+import './ObjectiveHideView.scss';
 import { objectiveslistApi } from "../../../Requests/RequestFactory";
 import log from "../../../Log/Log";
 import { Objective } from "../../../TypesObjectives";
 import Loading from "../../../Loading/Loading";
 
-interface ObjectiveClosedViewProps{
+interface ObjectiveHideViewProps{
   objective: Objective,
   putObjectiveInDisplay: (obj?: Objective, remove?: boolean) => void,
+  isObjsEditingPos: boolean,
 }
 
-const ObjectiveClosedView: React.FC<ObjectiveClosedViewProps> = (props) => {
-  const { objective, putObjectiveInDisplay } = props;
+const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
+  const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
 
   const [isOpening, setIsOpening] = useState<boolean>(false);
   const [isBeingHover, setIsBeingHover] = useState<boolean>(false);
 
-  const onChangeObjectiveOpen = async (objective: Objective) => {
+  const onChangeObjectiveShowing = async (objective: Objective) => {
     setIsOpening(true);
     try {
-      const data = await objectiveslistApi.putObjective({...objective, IsOpen: !objective.IsOpen, LastModified: new Date().toISOString()}, () => {});
+      const data = await objectiveslistApi.putObjective({...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()}, () => {});
   
       if(data){
-        putObjectiveInDisplay(data)
+        putObjectiveInDisplay(data);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
     }
+    
+    setIsOpening(false);
   }
 
   const getTheme = () => {
@@ -78,15 +81,15 @@ const ObjectiveClosedView: React.FC<ObjectiveClosedViewProps> = (props) => {
   return (
     <div 
       className={'objectiveClosedContainer' + getTheme()} 
-      onClick={()=>onChangeObjectiveOpen(objective)}
-      onMouseEnter={()=>{setIsBeingHover(true)}}
+      onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveShowing(objective)}}
+      onMouseEnter={()=>{if(!isObjsEditingPos)setIsBeingHover(true)}}
       onMouseLeave={()=>{setIsBeingHover(false)}}
       >
       { isOpening ?
         <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
         :
         (isBeingHover?
-          <img className="objectiveClosedImage" src={process.env.PUBLIC_URL + '/unarchive' + getTintColor() + '.png'} alt='meaningfull text'></img>
+          <img className="objectiveClosedImage" src={process.env.PUBLIC_URL + '/show' + getTintColor() + '.png'} alt='meaningfull text'></img>
           :
           <div className={'objectiveClosedText' + getTextColor()}>{objective.Title}</div>
         )
@@ -95,4 +98,4 @@ const ObjectiveClosedView: React.FC<ObjectiveClosedViewProps> = (props) => {
   )
 }
 
-export default ObjectiveClosedView;
+export default ObjectiveHideView;
