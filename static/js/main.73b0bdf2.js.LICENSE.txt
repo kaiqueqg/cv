@@ -59,7 +59,3 @@
  *
  * @license MIT
  */
-
-//! ICON CHANGE POS
-
-//! ICON NEW ITEM
