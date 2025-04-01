@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import './ObjectiveView.scss';
 import { useUserContext } from "../../../Contexts/UserContext";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Links, Image } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Links, Image, ItemNew } from "../../../TypesObjectives";
 import StepView from "./StepView/StepView";
 import QuestionView from "./QuestionView/QuestionView";
 import WaitView from "./WaitView/WaitView";
 import log from "../../../Log/Log";
 import { objectiveslistApi } from "../../../Requests/RequestFactory";
-import { toast } from "react-toastify";
 import Loading from "../../../Loading/Loading";
 import NoteView from "./NoteView/NoteView";
 import LocationView from "./LocationView/LocationView";
@@ -19,6 +18,23 @@ import ExerciseView from "./ExerciseView/ExerciseView";
 import TagsView from "./TagsView/TagsView";
 import LinksView from "./LinksView/LinksView";
 import ImageView from "./ImageView/ImageView";
+import { useLogContext } from "../../../Contexts/LogContext";
+import { MessageType } from "../../../Types";
+
+import {New as WaitNew} from "./WaitView/WaitView";
+import {New as QuestionNew} from "./QuestionView/QuestionView";
+import {New as StepNew} from "./StepView/StepView";
+import {New as NoteNew} from "./NoteView/NoteView";
+import {New as LocationNew} from "./LocationView/LocationView";
+import {New as DividerNew} from "./DividerView/DividerView";
+import {New as GroceryNew} from "./GroceryView/GroceryView";
+import {New as MedicineNew} from "./MedicineView/MedicineView";
+import {New as ItemFakeNew} from "./ItemFakeView/ItemFakeView";
+import {New as ExerciseNew} from "./ExerciseView/ExerciseView";
+import {New as LinksNew} from "./LinksView/LinksView";
+import {New as ImageNew} from "./ImageView/ImageView";
+import storage from "../../../Storage/Storage";
+import PressImage from "../../../PressImage/PressImage";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -29,6 +45,7 @@ interface ObjectiveViewProps{
 const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const { testServer, putSelectedTags } = useUserContext();
   const { objective, putObjective, isObjsEditingPos } = props;
+  const { popMessage } = useLogContext();
   
   const [items, setItems] = useState<(Item)[]>([]);
   const [newTitle, setNewTitle] = useState<string>(props.objective.Title);
@@ -36,6 +53,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [isAddingNewItem, setIsAddingNewItem] = useState<boolean>(false);
+  const [amountOfItemsToAdd, setAmountOfItemsToAdd] = useState<number>(1);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
   const [isChangingColor, setIsChangingColor] = useState<boolean>(false);
   const [isChangingTags, setIsChangingTags] = useState<boolean>(false);
@@ -99,7 +117,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const putItemInDisplay = async (item?: Item, remove?: boolean) => {
-    if (item) {
+    if(item) {
       let sorted: Item[] = [];
       setItems((prevItems) => {
         let newItems = [];
@@ -120,20 +138,6 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       if(objective.IsShowing) {
         await downloadItemList();
       }
-    }
-  }
-
-  const displayConfirmDeleteRow = () => {
-    if(items.length > 0){
-      toast.warning('Are you sure?', {
-        closeButton: <button className='btn btn-warning' onClick={deleteObjective} style={{marginTop: '5px', marginBottom: '5px'}}>YES</button>,
-        autoClose: 5000,
-        draggable: false,
-        pauseOnHover: false,
-      });
-    }
-    else{
-      deleteObjective();
     }
   }
 
@@ -218,11 +222,12 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   //Responsable for open, close and lock icon and menu.
-  const addingNewItem = async () => {
+  const addingNewItem = async () => {    
     if(isAddingNewItem){
       if(isAddingNewItemLocked){ //turn all off
         setIsAddingNewItemLocked(false);
         setIsAddingNewItem(false);
+        setAmountOfItemsToAdd(1);
       }
       else{//adding but now lock
         setIsAddingNewItemLocked(true);
@@ -235,504 +240,87 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     if(isChangingColor) setIsChangingColor(false);
   }
 
-  const addNewStep = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-    try {
-      const emptyItem: Step = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: pos? pos:items.length,
-        Title: '',
-        Type: ItemType.Step,
-        Done: false,
-        Importance: StepImportance.None,
-        LastModified: new Date().toISOString(),
-      }
-      
-      let sending:Item[] = [];
-      if(pos !== undefined && pos !== null) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
+  const addNewItem = async (addItems: Item[], pos?:number) => {
+    let sending:Item[] = [];
+    if(pos !== undefined && pos !== null) {
+      const newList = items.filter((i: Item) => !itemsSelected.includes(i));
+      const after = newList.slice(pos+1);
 
-        let ajustedList = [...before, ...[emptyItem], ...after];
+      let adjustedList = [...addItems, ...after];
 
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
+      for (let i = pos; i < pos + adjustedList.length; i++) {
+        sending.push({...adjustedList[i - pos], Pos: i, LastModified: new Date().toISOString() });
       }
-      else{
-        sending.push(emptyItem);
+    }
+    else{
+      for(let i = 0; i < addItems.length; i++){
+        sending.push({...addItems[i], Pos: items.length+i});
       }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
     }
 
-    setIsSavingNewItem(false);
+    log.arr(items);
+    const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
+    if(data){
+      data.forEach(element => {
+        putItemInDisplay(element);
+      });
+    }
   }
 
-  const addNewQuestion = async (pos?:number) => {
-    setIsSavingNewItem(true);
+  const choseNewItemToAdd = async (type: ItemType, pos?:number) => {
     if(!isAddingNewItemLocked) setIsAddingNewItem(false);
 
-    try {
-      const emptyItem: Question = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Statement: '',
-        Answer: '',
-        Type: ItemType.Question,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewWait = async (pos?:number) => {
     setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
 
-    try {
-      const emptyItem: Wait = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        Type: ItemType.Wait,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
+    const baseItem:Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length);
+    let typeItem:any = {};
 
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
+    switch (type) {
+      case ItemType.Divider:
+        typeItem = {...baseItem, ...DividerNew()};
+        break;
+      case ItemType.Step:
+        typeItem = {...baseItem, ...StepNew()};
+        break;
+      case ItemType.Question:
+        typeItem = {...baseItem, ...QuestionNew()};
+        break;
+      case ItemType.Wait:
+        typeItem = {...baseItem, ...WaitNew()};
+        break;
+      case ItemType.Note:
+        typeItem = {...baseItem, ...NoteNew()};
+        break;
+      case ItemType.Location:
+        typeItem = {...baseItem, ...LocationNew()};
+        break;
+      case ItemType.Grocery:
+        typeItem = {...baseItem, ...GroceryNew()};
+        break;
+      case ItemType.Medicine:
+        typeItem = {...baseItem, ...MedicineNew()};
+        break;
+      case ItemType.Exercise:
+        typeItem = {...baseItem, ...ExerciseNew()};
+        break;
+      case ItemType.ItemFake:
+        typeItem = {...baseItem, ...ItemFakeNew()};
+        break;
+      case ItemType.Links:
+        typeItem = {...baseItem, ...LinksNew()};
+        break;
+      case ItemType.Image:
+        typeItem = {...baseItem, ...ImageNew()};
+        break;
+      default:
+        break;
     }
 
-    setIsSavingNewItem(false);
-  }
-
-  const addNewNote = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-
-    try {
-      const emptyItem: Note = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Text: '',
-        Type: ItemType.Note,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
+    const itemList:Item[] = [];
+    for(let i = 0; i < amountOfItemsToAdd; i++){
+      itemList.push(typeItem);
     }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewLocation = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-
-    try {
-      const emptyItem: Location = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        Url: '',
-        Type: ItemType.Location,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewDivider = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-
-    try {
-      const emptyItem: Divider = {
-        Type: ItemType.Divider,
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        IsOpen: true,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewGrocery = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-    
-    try {
-      const emptyItem: Grocery = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        IsChecked: false,
-        GoodPrice: '',
-        Quantity: 1,
-        Unit: '',
-        Type: ItemType.Grocery,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewMedicine = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-
-    try {
-      const emptyItem: Medicine = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        IsChecked: false,
-        Quantity: 1,
-        Unit: '',
-        Components: [],
-        Purpose: '',
-        Type: ItemType.Medicine,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewExercise = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    try {
-      const emptyItem: Exercise = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        Reps: 1,
-        Series: 1,
-        IsDone: false,
-        MaxWeight: '',
-        Description: '',
-        Weekdays: [ Weekdays.Monday, Weekdays.Tuesday, Weekdays.Wednesday, Weekdays.Thursday, Weekdays.Friday, Weekdays.Saturday, Weekdays.Sunday ],
-        LastDone: yesterday.toISOString(),
-        Type: ItemType.Exercise,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewLinks = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    try {
-      const emptyItem: Links = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: items.length,
-        Title: '',
-        Links: [],
-        Type: ItemType.Links,
-        LastModified: new Date().toISOString(),
-      }
-  
-      let sending:Item[] = [];
-      if(pos) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const addNewImage = async (pos?:number) => {
-    setIsSavingNewItem(true);
-    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
-    try {
-      const emptyItem: Image = {
-        ItemId: '',
-        UserIdObjectiveId: objective.ObjectiveId,
-        Pos: pos? pos:items.length,
-        Title: '',
-        Type: ItemType.Image,
-        Size: 0,
-        IsDisplaying: true,
-        Name: '',
-        Height: 0,
-        Width: 0,
-        LastModified: new Date().toISOString(),
-      }
-      
-      let sending:Item[] = [];
-      if(pos !== undefined && pos !== null) {
-        const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-        const before = newList.slice(0, pos+1);
-        const after = newList.slice(pos+1);
-
-        let ajustedList = [...before, ...[emptyItem], ...after];
-
-        for(let i = 0; i < ajustedList.length; i++){
-          sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
-        }
-      }
-      else{
-        sending.push(emptyItem);
-      }
-
-      const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
-      if(data){
-        data.forEach(element => {
-          putItemInDisplay(element);
-        });
-      }
-    } catch (err) {
-      log.err(JSON.stringify(err));
-    }
+    await addNewItem(itemList, pos)
 
     setIsSavingNewItem(false);
   }
@@ -805,72 +393,53 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsSavingMenu(false);
   }
 
-  const getTheme = () => {
+  const getObjTheme = (): string => {
     if(objective.Theme === 'darkBlue'){
-      return 'objContainer objObjectiveBlue';
+      return ' objObjectiveBlue';
     }
     else if(objective.Theme === 'darkRed'){
-      return 'objContainer objObjectiveRed';
+      return ' objObjectiveRed';
     }
     else if(objective.Theme === 'darkGreen'){
-      return 'objContainer objObjectiveGreen';
+      return ' objObjectiveGreen';
     }
     else if(objective.Theme === 'darkWhite'){
-      return 'objContainer objObjectiveWhite';
+      return ' objObjectiveWhite';
     }
     else if(objective.Theme === 'noTheme'){
-      return 'objContainer objObjectiveNoTheme';
+      return ' objObjectiveNoTheme';
     }
+
+    return ' objObjectiveNoTheme';
+  }
+  
+  const itemGetTheme = (paramTheme: string): string => {
+    let rtnTheme = '';
+    if(paramTheme === 'darkBlue'){
+      rtnTheme += ' itemBackgroundBlue';
+    }
+    else if(paramTheme === 'darkRed'){
+      rtnTheme += ' itemBackgroundRed';
+    }
+    else if(paramTheme === 'darkGreen'){
+      rtnTheme += ' itemBackgroundGreen';
+    }
+    else if(paramTheme === 'darkWhite'){
+      rtnTheme += ' itemBackgroundWhite';
+    }
+    else if(paramTheme === 'noTheme'){
+      rtnTheme += ' itemBackgroundNoTheme';
+    }
+
+    return rtnTheme;
   }
 
-  const getTextColor = () => {
-    if(objective.Theme === 'darkBlue'){
-      return ' objTextBlue'
-    }
-    else if(objective.Theme === 'darkRed'){
-      return ' objTextRed'
-    }
-    else if(objective.Theme === 'darkGreen'){
-      return ' objTextGreen'
-    }
-    else if(objective.Theme === 'darkWhite'){
-      return ' objTextWhite'
-    }
-    else if(objective.Theme === 'noTheme'){
-      return ' objTextNoTheme'
-    }
-    else{
-      return ' objTextBlue';
-    }
+  const getTextColor = (theme: string): string => {
+    return ' textColor' + (theme === 'darkWhite'?'White':'');
   }
 
-  const getInputColor = () => {
-    let v = '';
-    if(objective.Theme === 'darkBlue'){
-      v+= 'objInputBlue objTextBlue'
-    }
-    else if(objective.Theme === 'darkRed'){
-      v+= 'objInputRed objTextRed'
-    }
-    else if(objective.Theme === 'darkGreen'){
-      v+= 'objInputGreen objTextGreen'
-    }
-    else if(objective.Theme === 'darkWhite'){
-      v+= 'objInputWhite objTextWhite'
-    }
-    else if(objective.Theme === 'noTheme'){
-      v+= 'objInputNoTheme objTextNoTheme'
-    }
-    else{
-      v+= 'objInputNoTheme objTextNoTheme';
-    }
-
-    return 'objInput ' + v;
-  }
-
-  const onChangeObjectiveMenuOpen = () => {
-    setIsChangingColor(false);
-    setIsObjectiveMenuOpen(!isObjectiveMenuOpen);
+  const getInputColor = (theme: string): string => {
+    return ' input ' + (theme === 'darkWhite'?'darkWhite':'');
   }
 
   const onChangeIsShowingItems  = async () => {
@@ -884,36 +453,6 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       IsShowingCheckedMedicine: !objective.IsShowingCheckedGrocery,
       IsShowingCheckedStep: !objective.IsShowingCheckedGrocery, //for now, to all be the same
       LastModified: new Date().toISOString()};
-
-    const data = await objectiveslistApi.putObjective(newObjective);
-
-    if(data){
-      putObjective(data);
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const onChangeIsShowingChecked = async () => {
-    setIsObjectiveMenuOpen(false);
-    setIsChangingColor(false);
-    setIsSavingNewItem(true);
-    const newObjective: Objective = {...objective, IsShowingCheckedGrocery: !objective.IsShowingCheckedGrocery, LastModified: new Date().toISOString()};
-
-    const data = await objectiveslistApi.putObjective(newObjective);
-
-    if(data){
-      putObjective(data);
-    }
-
-    setIsSavingNewItem(false);
-  }
-
-  const onChangeIsShowingStep = async () => {
-    setIsObjectiveMenuOpen(false);
-    setIsChangingColor(false);
-    setIsSavingNewItem(true);
-    const newObjective: Objective = {...objective, IsShowingCheckedStep: !objective.IsShowingCheckedStep, LastModified: new Date().toISOString()};
 
     const data = await objectiveslistApi.putObjective(newObjective);
 
@@ -1051,6 +590,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
   }
 
+  const increaseAmountItemsToAdd = () => {
+    setAmountOfItemsToAdd(amountOfItemsToAdd+1);
+  }
+
   const getItemView = (item: Item): React.ReactNode => {
     let rtnItem;
     const isSelected = itemsSelected.includes(item);
@@ -1063,7 +606,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></StepView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></StepView>
     }
     else if(item.Type === ItemType.Question){
       rtnItem = <QuestionView 
@@ -1073,7 +619,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></QuestionView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></QuestionView>
     }
     else if(item.Type === ItemType.Wait){
       rtnItem = <WaitView 
@@ -1083,7 +632,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></WaitView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></WaitView>
     }
     else if(item.Type === ItemType.Note){
       rtnItem = <NoteView 
@@ -1093,7 +645,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></NoteView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></NoteView>
     }
     else if(item.Type === ItemType.Location){
       rtnItem = <LocationView 
@@ -1103,7 +658,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
         location={item as Location}
-        putItemInDisplay={putItemInDisplay}></LocationView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></LocationView>
     }
     else if(item.Type === ItemType.Divider){
       rtnItem = <DividerView 
@@ -1114,18 +672,11 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
         orderDividerItems={orderDividerItems}
-        addNewStep={addNewStep}
-        addNewDivider={addNewDivider}
-        addNewGrocery={addNewGrocery}
-        addNewMedicine={addNewMedicine}
-        addNewLocation={addNewLocation}
-        addNewNote={addNewNote}
-        addNewQuestion={addNewQuestion}
-        addNewWait={addNewWait}
-        addNewExercise={addNewExercise}
-        addNewLinks={addNewLinks}
-        addNewImage={addNewImage}
-        putItemInDisplay={putItemInDisplay}></DividerView>
+        choseNewItemToAdd={choseNewItemToAdd}
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></DividerView>
     }
     else if(item.Type === ItemType.Grocery){
       rtnItem = <GroceryView 
@@ -1135,7 +686,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></GroceryView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></GroceryView>
     }
     else if(item.Type === ItemType.Medicine){
       rtnItem = <MedicineView 
@@ -1145,7 +699,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></MedicineView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></MedicineView>
     }
     else if(item.Type === ItemType.Exercise){
       rtnItem = <ExerciseView 
@@ -1155,7 +712,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></ExerciseView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></ExerciseView>
     }
     else if(item.Type === ItemType.Links){
       rtnItem = <LinksView 
@@ -1165,7 +725,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></LinksView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></LinksView>
     }
     else if(item.Type === ItemType.Image){
       rtnItem = <ImageView 
@@ -1175,14 +738,20 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}></ImageView>
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}></ImageView>
     }
     else{
       rtnItem = <div key={'cantrender'}>Can't render</div>
     }
 
     return (
-    <div key={item.ItemId} className='objItemRow' onClick={() => {isEditingPos && (isEndingPos? endChangingPos(item) : addingRemovingItem(item))}}>
+    <div 
+      key={item.ItemId}
+      className='objItemRow'
+      onClick={() => {isEditingPos && (isEndingPos? endChangingPos(item) : addingRemovingItem(item))}}>
       {rtnItem}
     </div>)
   }
@@ -1191,6 +760,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     let filteredItems:Item[] = [];
     let partialItems:Item[] = [];
 
+    let isAfterDivider = false;
     let isDividerOpen = true;
     for(let i = 0; i < items.length; i++){
       let current = items[i];
@@ -1200,8 +770,16 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       let shouldAddMedicine = true;
 
       if(current.Type === ItemType.Divider) {
+        isAfterDivider = true;
+        if(partialItems.length > 1 && !objective.IsShowingCheckedStep){
+          filteredItems.push(...partialItems);
+        }
+        partialItems = [];
         const divider = current as Divider;
-        filteredItems.push(divider);
+        if(objective.IsShowingCheckedStep)
+          filteredItems.push(divider);
+        else
+          partialItems.push(divider);
         isDividerOpen = divider.IsOpen;
       }
       else{
@@ -1209,13 +787,19 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         if(current.Type === ItemType.Grocery && !objective.IsShowingCheckedGrocery) shouldAddGrocery = !(current as Grocery).IsChecked;
         if(current.Type === ItemType.Exercise && !objective.IsShowingCheckedExercise) shouldAddExercise = !(current as Exercise).IsDone;
         if(current.Type === ItemType.Medicine && !objective.IsShowingCheckedMedicine) shouldAddMedicine = !(current as Medicine).IsChecked;
-  
         if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine){
-          filteredItems.push(current);
+          if(isAfterDivider && !objective.IsShowingCheckedStep)
+            partialItems.push(current);
+          else
+            filteredItems.push(current);
         }
         else{
         }
       }
+    }
+
+    if(partialItems.length > 1 && !objective.IsShowingCheckedStep){
+      filteredItems.push(...partialItems);
     }
 
     let rtn: React.ReactNode[] = [];
@@ -1227,7 +811,10 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       isSelected={false}
       isEndingPos={isEndingPos}
       isEditingPos={isEditingPos || isObjsEditingPos}
-      putItemInDisplay={putItemInDisplay}></ItemFakeView>
+      putItemInDisplay={putItemInDisplay}
+      itemGetTheme={itemGetTheme}
+      itemInputColor={getInputColor}
+      itemTextColor={getTextColor}></ItemFakeView>
       rtn.push(
       <div key={'fake'} className='objItemRow' onClick={() => {isEditingPos && (isEndingPos? endChangingPos(fakeItem) : addingRemovingItem(fakeItem))}}>
         {a}
@@ -1262,39 +849,42 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   const getNewItemMenu = () => {
     return(
-      <div className='objectiveNewItemContainer'>
-        <div onClick={()=>{addNewWait()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewLinks()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/link' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewExercise()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewDivider()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/minus' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewGrocery()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewMedicine()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewLocation()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewQuestion()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewNote()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/note' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewStep()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + getTintColor() + '.png'}></img>
-        </div>
-        <div onClick={()=>{addNewImage()}} className='objMenuImageContainer'>
-          <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/image-filled' + getTintColor() + '.png'}></img>
+      <div className={'objectiveNewItemContainer'}>
+        <div className={'objectiveNewItemAmount'} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+        <div className='objectiveNewItemImages'>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Wait)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Links)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/link' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Exercise)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Divider)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/minus' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Grocery)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Medicine)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Location)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Question)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Note)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/note' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Step)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Image)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/image-filled' + getTintColor() + '.png'}></img>
+          </div>
         </div>
       </div>
     )
@@ -1309,41 +899,21 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
           </div>
           :
           <>
-            {isEditingPos?
-              <div className='objMenuImageContainer'></div>
-              :
-              <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} className='objMenuImageContainer'>
-                <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'}></img>
-              </div>
-            }
-            {isEditingPos?
-              <div className='objMenuImageContainer'></div>
-              :
-              <div onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} className='objMenuImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'}></img>
-            </div>
-            }
-            {!objective.IsShowing || isEditingPos?
-              <div className='objMenuImageContainer'></div>
-              :
-              <div onClick={()=>{if(!isObjsEditingPos)changeColor()}} className='objMenuImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'}></img>
-            </div>
-            }
-            {!objective.IsShowing || isEditingPos?
-              <div className='objMenuImageContainer'></div>
-              :
-              <div onClick={()=>{if(!isObjsEditingPos)changeTags()}} className='objMenuImageContainer'>
-              <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'}></img>
-            </div>
-            }
+            <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos}/>
+            <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos}/>
+            <PressImage onClick={()=>{if(!isObjsEditingPos)changeColor()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos}/>
+            <PressImage onClick={()=>{if(!isObjsEditingPos)changeTags()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos}/>
           </>
         }
       </div>
     )
   }
 
-  const shouldShowEndingIcon = () => {
+  const shouldShowCancelMovingIcon = () => {
+    return isEditingPos;
+  }
+
+  const shouldShowEndingMovingIcon = () => {
     return isEditingPos && itemsSelected.length !== items.length && itemsSelected.length > 0;
   }
 
@@ -1356,44 +926,14 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
           </div>
           :
           <>
-            <div className='objMenuImageContainer'></div>
-            {!objective.IsShowing || isEditingPos?
-              <div className='objMenuImageContainer'></div>
-              :
-              <div onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} className='objMenuImageContainer'>
-                <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-grey') + getTintColor() + '.png'}></img>
-              </div>
-            }
-            { //! ICON CHANGE POS
-              !objective.IsShowing?
-              <div className='objMenuImageContainer'></div>
-              :
-              <>
-                {!isEditingPos && 
-                  <div className='objMenuImageContainer'>
-                    <img className='objectiveImage' onClick={startChangePos} src={process.env.PUBLIC_URL + '/updown' + getTintColor() + '.png'}></img>
-                  </div>
-                }
-                {isEditingPos && 
-                  <div className='objMenuImageContainer'>
-                    <img className='objectiveImage' onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>
-                  </div>
-                }
-                {shouldShowEndingIcon() && 
-                  <div className='objMenuImageContainer'>
-                    <img className='objectiveImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'}></img>
-                  </div>
-                }
-              </>
-            }
-            {//! ICON NEW ITEM
-              !objective.IsShowing || isEditingPos?
-              (shouldShowEndingIcon()?<></>:<div className='objMenuImageContainer'></div>) //so there's always only the right amount of empth divs... bad solution
-              :
-              <div className='objMenuImageContainer'>
-                <img className='objectiveImage' onClick={()=>{if(!isObjsEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'}></img>
-              </div>
-            }
+            <PressImage/>
+            {isEditingPos && <PressImage hide={isEndingPos}/>}
+            {isEditingPos && !shouldShowEndingMovingIcon() && <PressImage hide={isEndingPos}/>}
+            {!isEditingPos && <PressImage onClick={startChangePos} src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'} hide={items.length < 2}/>}
+            {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-grey') + getTintColor() + '.png'}/>}
+            {shouldShowCancelMovingIcon() && <PressImage onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'}/>}
+            {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'}/>}
+            {shouldShowEndingMovingIcon() && <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'}/>}
           </>
         }
       </div>
@@ -1411,19 +951,19 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={displayConfirmDeleteRow} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteObjective} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
               <input
-                className={getInputColor()}
+                className={getInputColor(objective.Theme)}
                 type='text'
                 value={newTitle}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown} autoFocus></input>
-              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'}></img>
-              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'}></img>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'}/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'}/>
             </>
             :
-            <div className={'objTitle'+getTextColor()} onClick={()=>{if(!isObjsEditingPos)setIsEditingTitle(true);}}>{objective.Title}</div>
+            <div className={'objTitle'+getTextColor(objective.Theme)} onClick={()=>{if(!isObjsEditingPos)setIsEditingTitle(true);}}>{objective.Title}</div>
           )
         }
       </div>
@@ -1431,7 +971,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   return (
-    <div className={getTheme()} onMouseEnter={()=>{setIsHovering(true);}} onMouseLeave={()=>{setIsHovering(false);}}>
+    <div className={'objContainer' + getObjTheme()} onMouseEnter={()=>{setIsHovering(true);}} onMouseLeave={()=>{setIsHovering(false);}}>
       <div className='objTopContainer'>
         {!isEditingTitle && getLeftMenuIcons()}
         {getObjectiveTitle()}

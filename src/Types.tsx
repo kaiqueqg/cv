@@ -57,4 +57,13 @@ export interface Response<T>{
 
 export enum Language{ PR_BR, EN, FR, IT };
 export enum MenuOption{ Main, Login, Curriculum, GroceryList, ObjectivesList, SleepDevice, WorldDefence };
-export enum LogLevel { Dev, Warn, Error, None  };
+export enum LogLevel { Dev, Warn, Error, None }
+
+export enum MessageType { Normal, Error, Alert, }
+
+export interface PopMessage { 
+  id: string,
+  text: string,
+  timeout: number,
+  type: MessageType,
+}

@@ -5,6 +5,25 @@ import { Item, ItemViewProps, Image, StepImportance, ImageInfo } from "../../../
 import log from "../../../../Log/Log";
 import { objectiveslistApi, s3Api } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Title: '',
+      IsDisplaying: true,
+      ItemId: '',
+      ItemImage: {
+        ItemId: '',
+        Name: '',
+        Size: 0,
+        Width: 0,
+        Height: 0,
+        ImageFile: '',
+      }
+    }
+  )
+}
 
 
 interface ImageViewProps extends ItemViewProps{

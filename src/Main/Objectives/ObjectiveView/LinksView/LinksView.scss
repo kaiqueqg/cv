@@ -21,6 +21,15 @@ $bor: false;
   border-style: solid;
 }
 
+.linksContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
+}
+
+.linksContainer:hover{
+  border-color: black;
+}
+
 .linksContainerSelected{
   border-color: red;
   border-style: dashed;
@@ -191,7 +200,7 @@ $bor: false;
 .linksContainerGreen{background-color: rgb(64, 121, 64);}
 .linksContainerWhite{background-color: #D8AE7E;}
 .linksContainerNoTheme{background-color: #1D1D1D;}
-.linksContainerNoBackground{background-color: $transparent; border-color: $transparent;}
+.linksContainerNoBackground{background-color: $transparent;}
 
 .linksTextBlue{color: beige,}
 .linksTextRed{color: beige,}

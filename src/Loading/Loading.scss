@@ -1,7 +1,24 @@
+$bor: false;
+$size: 25px;
+
 .loading-image{
-  width: 20px;
-  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: $size;
+  min-height: $size;
+  max-width: $size;
+  max-height: $size;
   margin: 5px;
+  padding: 2px;
+
+  animation: loop 0.7s linear infinite;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
 }
 
 .loading-cell{
@@ -19,16 +36,4 @@
   100%{
     transform: rotate(360deg);
   }
-}
-
-#normalBeige #loop path{ stroke: beige;}
-#normalBlack #loop path{ stroke: black;}
-
-#normalBeige #loop{
-  animation: loop 1s ease-in-out infinite;
-  transform-origin: center;
-}
-#normalBlack #loop{
-  animation: loop 1s ease-in-out infinite;
-  transform-origin: center;
 }

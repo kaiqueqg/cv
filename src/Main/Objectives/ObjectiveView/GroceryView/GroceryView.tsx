@@ -5,6 +5,19 @@ import { Grocery, Item, ItemViewProps } from "../../../../TypesObjectives";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Title: '',
+      IsChecked: false,
+      Quantity: 1,
+      Unit: '',
+      GoodPrice: '',
+    }
+  )
+}
 
 interface GroceryViewProps extends ItemViewProps{
   grocery: Grocery,
@@ -242,7 +255,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='groceryCenterContainer'>
@@ -278,8 +291,8 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Unit"></input>
             </div>
             <div className='grocerySideContainer'>
-              <img className='inputImage' onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <PressImage onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+              <PressImage onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
             </div>
           </div>
           :
@@ -293,9 +306,9 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
                 (grocery.IsChecked?
-                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}></img>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
                   :
-                  <img className='groceryImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + getTintColor() + '.png'}></img>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + getTintColor() + '.png'}/>
                 )
               )
             }

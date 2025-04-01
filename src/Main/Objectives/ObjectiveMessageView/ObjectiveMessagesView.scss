@@ -1,0 +1,24 @@
+@import '../../../global.scss';
+
+$bor: false;
+
+.objectiveMessagesContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 10px 0px;
+
+  position: fixed;
+  top: 0;
+  right: 10px;
+  z-index: 1000; // Garante que fique acima de outros elementos
+  padding: 10px; // Ajuste para espaçamento interno
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Opcional, melhora a visibilidade
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
+}

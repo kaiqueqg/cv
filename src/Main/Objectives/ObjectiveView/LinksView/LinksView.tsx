@@ -5,6 +5,16 @@ import { Item, ItemViewProps, Link, Links } from "../../../../TypesObjectives";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import { link } from "fs";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Title: '',
+      Links: [],
+    }
+  )
+}
 
 interface LinksViewProps extends ItemViewProps{
   links: Links,
@@ -50,11 +60,19 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
   }
 
   const handleUrlKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if(event.key === 'Enter'){
-      doneEditLinks();
+    if(event.shiftKey){
+      if(event.key === 'Enter'){
+        doneEditLinks();
+      }
     }
-    else if(event.key === 'Escape'){
-      cancelEditLinks();
+    else{
+      if(event.key === 'Enter'){
+        addLinkToLinks();
+      }
+      else if(event.key === 'Escape'){
+        setNewLinkTitle('');
+        setNewLinkUrl('');
+      }
     }
   }
 
@@ -110,22 +128,22 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
   }
 
   const addLinkToLinks = () => {
-    if(newLinkTitle.trim() === ''){
-      setNewLinkTitleWarning(true);
-      setTimeout(()=>{
-        setNewLinkTitleWarning(false);
-      }, 3000);
-    }
+    // if(newLinkTitle.trim() === ''){
+    //   setNewLinkTitleWarning(true);
+    //   setTimeout(()=>{
+    //     setNewLinkTitleWarning(false);
+    //   }, 3000);
+    // }
     if(newLinkUrl.trim() === ''){
       setNewLinkUrlWarning(true);
       setTimeout(()=>{
         setNewLinkUrlWarning(false);
       }, 3000);
     }
-    if(newLinkTitle.trim() !== '' && newLinkUrl.trim() !== ''){
+    if(newLinkUrl.trim() !== ''){
       const exist = newLinks.find((e)=>(e.Title === newLinkTitle.trim() && e.Url === newLinkUrl.trim()))
       if(!exist){
-        setNewLinks([...newLinks, {Title: newLinkTitle, Url: newLinkUrl}])
+        setNewLinks([...newLinks, {Title: newLinkTitle.trim()===''?links.Title:newLinkTitle.trim(), Url: newLinkUrl}])
       }
 
       setNewLinkTitle('');
@@ -153,24 +171,29 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'linksContainer linksContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'linksContainer linksContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'linksContainer linksContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'linksContainer linksContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'linksContainer linksContainerNoTheme';
+    let rtnTheme = 'linksContainer';
+    if(links.Title.trim() !== '' && links.Links.length > 0){
+      rtnTheme += ' linksContainerClear';
     }
     else{
-      rtnTheme = 'linksContainer linksContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' linksContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' linksContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' linksContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' linksContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' linksContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' linksContainerNoTheme';
+      }
     }
 
     rtnTheme += isSelected? ' linksContainerSelected':'';
@@ -256,7 +279,7 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='linksCenterContainer'>
@@ -276,7 +299,7 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
                   type='text'
                   value={newLinkTitle}
                   onChange={handleLinkTitleInputChange}
-                  onKeyDown={handleKeyDown} 
+                  onKeyDown={handleUrlKeyDown} 
                   placeholder='Link Title'>
                 </input>
                 <input 
@@ -284,7 +307,7 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
                   type='text'
                   value={newLinkUrl}
                   onChange={handleLinkUrlInputChange}
-                  onKeyDown={handleKeyDown} 
+                  onKeyDown={handleUrlKeyDown} 
                   placeholder='Url'>
                 </input>
                 <img className='inputImage' onClick={addLinkToLinks} src={process.env.PUBLIC_URL + '/add' + getTintColor() + '.png'}></img>
@@ -294,15 +317,17 @@ const LinksView: React.FC<LinksViewProps> = (props) => {
               </div>
             </div>
             <div className='linksSideContainer'>
-              <img className='inputImage' onClick={doneEditLinks} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEditLinks} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <PressImage onClick={doneEditLinks} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+              <PressImage onClick={cancelEditLinks} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
             </div>
           </div>
           :
           <div className={'titleLine' + getTextColor()} onClick={() => {if(!isEditingPos)setIsEditingLinks(true)}}>{links.Title}</div>
         )
       }
-      {!isEditingLinks && <img className={'linkImage ' + ((links.Links && links.Links.length > 0)?'':'linkImageNoPointer')} onClick={openLinks} src={process.env.PUBLIC_URL + '/link' + getTintColor() + '.png'}></img>}
+      {!isEditingLinks &&
+        <img className={'linkImage ' + ((links.Links && links.Links.length > 0)?'':'linkImageNoPointer')} onClick={openLinks} src={process.env.PUBLIC_URL + '/links' + getTintColor() + '.png'}></img>
+      }
     </div>
   );
 }

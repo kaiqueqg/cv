@@ -5,13 +5,27 @@ import { Item, ItemViewProps, Step, StepImportance } from "../../../../TypesObje
 import log from "../../../../Log/Log";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
+import { useLogContext } from "../../../../Contexts/LogContext";
+import { MessageType } from "../../../../Types";
+import PressImage from "../../../../PressImage/PressImage";
+import { Console } from "console";
 
+export const New = () => {
+  return(
+    {
+      Title: '',
+      Done: false,
+      Importance: StepImportance.None,
+    }
+  )
+}
 
 interface StepViewProps extends ItemViewProps{
   step: Step,
 }
 
 const StepView: React.FC<StepViewProps> = (props) => {
+  const { popMessage } = useLogContext();
   const { step, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -26,6 +40,19 @@ const StepView: React.FC<StepViewProps> = (props) => {
     setNewTitle(step.Title);
     setNewImportance(step.Importance??StepImportance.None);
   }, [step]);
+
+  //to test
+  useEffect(()=>{
+    if(!isEditingTitle) return;
+
+    const timeout = setTimeout(()=>{
+      if(step.Title === newTitle){
+        setIsEditingTitle(false);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [isEditingTitle, newTitle]);
 
   const onChangeDone = async () => {
     setIsSavingDone(true);
@@ -204,9 +231,6 @@ const StepView: React.FC<StepViewProps> = (props) => {
       else if(theme === 'noTheme'){
         rtnTheme += ' stepContainerNoTheme';
       }
-      else{
-        rtnTheme += ' stepContainerNoTheme';
-      }
     }
 
     if(isSelected) rtnTheme += ' stepContainerSelected';
@@ -290,49 +314,51 @@ const StepView: React.FC<StepViewProps> = (props) => {
 
   const getNewImportanceImage = () => {
     if(newImportance === StepImportance.Low){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/low.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/low.png'}/>
     }
     else if(newImportance === StepImportance.Medium){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/med.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/med.png'}/>
     }
     else if(newImportance === StepImportance.High){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/high.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/high.png'}/>
     }
     else if(newImportance === StepImportance.Question){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}/>
     }
     else if(newImportance === StepImportance.Waiting){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/wait'+getTintColor()+'.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/wait'+getTintColor()+'.png'}/>
     }
     else if(newImportance === StepImportance.InProgress){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+getTintColor()+'.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+getTintColor()+'.png'}/>
     }
     else{
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/cancel'+getTintColor()+'.png'}></img>;
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/cancel'+getTintColor()+'.png'}/>
     }
   }
 
   const getImportanceImage = () => {
-    if(step.Importance === StepImportance.Low){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/low.png'}></img>;
-    }
-    else if(step.Importance === StepImportance.Medium){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/med.png'}></img>;
-    }
-    else if(step.Importance === StepImportance.High){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/high.png'}></img>;
-    }
-    else if(newImportance === StepImportance.Question){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}></img>;
-    }
-    else if(newImportance === StepImportance.Waiting){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/wait'+getTintColor()+'.png'}></img>;
-    }
-    else if(newImportance === StepImportance.InProgress){
-      return <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+getTintColor()+'.png'}></img>;
-    }
-    else{
-      return <></>//<img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}></img>;
+    if(!step.Done) {
+      if(newImportance === StepImportance.Low){
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/low.png'} isLoading={isSavingImportance}/>
+      }
+      else if(newImportance === StepImportance.Medium){
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/med.png'} isLoading={isSavingImportance}/>
+      }
+      else if(newImportance === StepImportance.High){
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/high.png'} isLoading={isSavingImportance}/>
+      }
+      else if(newImportance === StepImportance.Question){
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'} isLoading={isSavingImportance}/>
+      }
+      else if(newImportance === StepImportance.Waiting){
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/wait'+getTintColor()+'.png'} isLoading={isSavingImportance}/>
+      }
+      else if(newImportance === StepImportance.InProgress){
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+getTintColor()+'.png'} isLoading={isSavingImportance}/>
+      }
+      else{
+        return <></>//<img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}></img>;
+      }
     }
   }
 
@@ -347,7 +373,7 @@ const StepView: React.FC<StepViewProps> = (props) => {
             {isDeleting?
               <Loading IsBlack={theme==='darkWhite'}></Loading>
               :
-              <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
             }
             <input
               className={getInputColor()}
@@ -356,30 +382,22 @@ const StepView: React.FC<StepViewProps> = (props) => {
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
-            <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-            <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
           </div>
           :
           <>
-            {isSavingImportance?
-              <Loading IsBlack={theme==='darkWhite'}></Loading>
-              :
-              (getImportanceImage())
-            }
+            {getImportanceImage()}
             <div className={'stepTitle' + (step.Done? getTextFadeColor():getTextColor())} onClick={() => {if(!isEditingPos)onChangeEditTitle();}}>{step.Title}</div>
           </>
         )
       }
       {!isEditingTitle &&
       <>
-        {isSavingDone?
-          <Loading IsBlack={theme==='darkWhite'}></Loading>
+        {step.Done?
+          <PressImage onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'} isLoading={isSavingDone}/>
           :
-          (step.Done?
-            <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'}></img>
-            :
-            <img className='stepImage' onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + getTintColor() + '.png'}></img>
-          )
+          <PressImage onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + getTintColor() + '.png'} isLoading={isSavingDone}/>
         }
       </>
       }

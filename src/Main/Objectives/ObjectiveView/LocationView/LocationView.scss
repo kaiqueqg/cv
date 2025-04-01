@@ -19,6 +19,15 @@
   border-style: solid;
 }
 
+.locationContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
+}
+
+.locationContainer:hover{
+  border-color: black;
+}
+
 .locationContainerSelected{
   border-color: red;
   border-style: dashed;
@@ -124,7 +133,7 @@
 .locationContainerGreen{background-color: rgb(64, 121, 64);}
 .locationContainerWhite{background-color: #D8AE7E;}
 .locationContainerNoTheme{background-color: #1D1D1D;}
-.locationContainerNoBackground{background-color: $transparent; border-color: $transparent;}
+.locationContainerNoBackground{background-color: $transparent; }
 
 .locationTextBlue{color: beige,}
 .locationTextRed{color: beige,}

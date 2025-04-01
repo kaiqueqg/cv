@@ -5,6 +5,20 @@ import { Medicine, ItemViewProps } from "../../../../TypesObjectives";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Title: '',
+      Purpose: '',
+      IsChecked: false,
+      Quantity: 0,
+      Unit: '',
+      Components: [],
+    }
+  )
+}
 
 interface MedicineViewProps extends ItemViewProps{
   medicine: Medicine,
@@ -245,7 +259,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='medicineCenterContainer'>
@@ -281,8 +295,8 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Purpose"></input>
             </div>
             <div className='medicineSideContainer'>
-              <img className='inputImage' onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <PressImage onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+              <PressImage onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
             </div>
           </div>
           :
@@ -297,9 +311,9 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
                 (medicine.IsChecked?
-                  <img className='medicineImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}></img>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>
                   :
-                  <img className='medicineImage' onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}></img>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}/>
                 )
               )
             }

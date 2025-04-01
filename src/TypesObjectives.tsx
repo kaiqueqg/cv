@@ -22,12 +22,25 @@ export interface Objective {
   Tags: string[],
 }
 
+export const ItemNew = (userId: string, objectiveId: string, itemId: string, type: ItemType, pos: number) => {
+  return({
+    UserIdObjectiveId: userId + objectiveId,
+    ItemId: itemId,
+    Pos: pos,
+    Type: type,
+    LastModified: (new Date()).toISOString(),
+  });
+}
+
 export interface ItemViewProps{
   theme: string,
   isEditingPos: boolean,
   isSelected: boolean,
   isEndingPos: boolean,
   putItemInDisplay: (item?: Item, remove?: boolean) => void,
+  itemGetTheme: (theme: string) => string,
+  itemTextColor: (theme: string) => string,
+  itemInputColor: (theme: string) => string,
 }
 
 export interface DisplayTag{

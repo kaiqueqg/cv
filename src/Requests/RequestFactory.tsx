@@ -1,4 +1,3 @@
-import {  toast } from 'react-toastify';
 import log from '../Log/Log';
 import storage from '../Storage/Storage';
 import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices } from '../Types';
@@ -31,7 +30,7 @@ const request = async (url: string, endpoint: string, method: string, body?: str
   } catch (error) {
     if(fError !== undefined) fError();
     else {
-      toast.error("Untreated error...", { autoClose: 5000 });
+      console.error("Untreated error...", { autoClose: 5000 });
     }
     return undefined;
   }
@@ -118,6 +117,12 @@ export const objectiveslistApi = {
   },
   async syncObjectivesList(objectivesList: ObjectiveList, fError?: () => void): Promise<ObjectiveList>{
     return this.requestObjectivesList<ObjectiveList>('/SyncObjectivesList', 'PUT', JSON.stringify(objectivesList), fError);
+  },
+  async backupData(fError?: () => void): Promise<boolean>{
+    return this.requestObjectivesList<ObjectiveList>('/BackupData', 'GET', undefined, fError);
+  },
+  async getBackupDataList(fError?: () => void): Promise<string[]>{
+    return this.requestObjectivesList<string[]>('/GetBackupDataList', 'GET', undefined, fError);
   },
   async generateGetPresignedUrl(fileInfo: ImageInfo, fError?: () => void): Promise<PresignedUrl>{
     return this.requestObjectivesList<ImageInfo>('/GenerateGetPresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);

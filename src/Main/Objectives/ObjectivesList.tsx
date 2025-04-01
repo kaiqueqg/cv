@@ -1,31 +1,38 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../../Contexts/UserContext";
 import storage from "../../Storage/Storage";
 import './ObjectivesList.scss';
 import { objectiveslistApi } from "../../Requests/RequestFactory";
 import log from "../../Log/Log";
-import { Item, Objective, Question, Step, Wait } from "../../TypesObjectives";
+import { Item, Objective, ObjectiveList, Question, Step, Wait } from "../../TypesObjectives";
 import ObjectiveView from "./ObjectiveView/ObjectiveView";
 import Loading from "../../Loading/Loading";
 import ObjectiveHideView from "./ObjectiveHideView/ObjectiveHideView";
 import { writeFile } from "fs";
 import ObjectiveArchivedView from "./ObjectiveArchivedView/ObjectiveArchivedView";
+import ObjectiveMessagesView from "./ObjectiveMessageView/ObjectiveMessagesView";
+import { useLogContext } from "../../Contexts/LogContext";
+import { MessageType } from "../../Types";
+import PressImage from "../../PressImage/PressImage";
+import ObjectiveBackSideView from "./ObjectiveBackupSideView/ObjectiveBackupSideView";
 
 interface ObjectivesListProps{}
 
-enum SidePanelView {Archived, Closed};
+enum SidePanelView {Archived, Closed, Backup};
 
 const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const { user, setUser, testServer, 
     availableTags, writeAvailableTags, removeAvailableTags,
     selectedTags, writeSelectedTags, putSelectedTags, removeSelectedTags
   } = useUserContext();
+  const { popMessage } = useLogContext();
 
   const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
   const [objectives, setObjectives] = useState<Objective[]>([]);
   const [isUpdatingObjectives, setIsUpdatingObjectives] = useState<boolean>(false);
   const [isAddingNewObjective, setIsAddingNewObjective] = useState<boolean>(false);
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(true);
+  const [isUploadingBackupData, setIsUploadingBackupData] = useState<boolean>(false);
+  const [isBackingUpData, setIsBackingUpData] = useState<boolean>(false);
   const [currentSidePanelView, setCurrentSidePanelView] = useState<SidePanelView>(SidePanelView.Closed);
 
   const [isEditingPos, setIsEditingPos] = useState<boolean>(false);
@@ -158,7 +165,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const startEditingPos = () => {
-    setIsEditingPos(!isEditingPos);
+    popMessage("Select items to change position.");
+    setIsEditingPos(true);
   }
 
   const cancelEditingPos = () => {
@@ -179,6 +187,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const onEditingPosTo = () => {
+    popMessage("Select position to put the items AFTER.");
     setIsEndingPos(true);
   }
 
@@ -238,7 +247,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     return rtnView;
   }
 
-  const getObjectiveArchivedList = () => {
+  const getObjectiveArchivedListView = () => {
     let rtnView: JSX.Element[] = [];
 
     for(let i = 0; i < objectives.length; i++){
@@ -260,7 +269,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     return rtnView;
   }
 
-  const getObjectiveClosedList = () => {
+  const getObjectiveClosedListView = () => {
     let rtnView: JSX.Element[] = [];
 
     for(let i = 0; i < objectives.length; i++){
@@ -328,59 +337,108 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     return <div key={'tag'+tag} className={classname} onMouseDown={(e) => changeSelectedTag(tag, e)}>{tag}</div>;
   }
 
+  const backupData = async () => {
+    setIsBackingUpData(true);
+    const data = await objectiveslistApi.backupData();
+    console.log(data);
+    if(data){
+      
+    }
+    setIsBackingUpData(false);
+  }
+
   const getSideMenu = () => {
     return(
       <div className='objectivesSidePanelOpened'>
         <div className='objectivesSidePanelOpenedButtons'>
-          {isSidePanelOpen && !isEditingPos && <img className='objectivesImage' onClick={startEditingPos} src={process.env.PUBLIC_URL + '/updown.png'}></img>}
-          {isSidePanelOpen && isEditingPos && <img className='objectivesImage' onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}></img>}
-          {(isSidePanelOpen && isEditingPos && !isEndingPos) && 
+          <input
+            type="file"
+            accept="application/json"
+            ref={fileInputRef}
+            multiple
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+          />
+          <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData}/>
+          <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData}/>
+          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} hide={objectives.length < 2}/>}
+          {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}/>}
+          {(isEditingPos && !isEndingPos) && 
             ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
-            <img className='objectivesImage' onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}></img>
+            <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}/>
             :
             <div className='objectivesImage'></div>)
           }
-          {isSidePanelOpen && !isEditingPos && currentSidePanelView === SidePanelView.Archived && 
-            <img className="objectivesImage" src={process.env.PUBLIC_URL + '/archived.png'} alt='meaningfull text' onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)}></img>
+          {!isEditingPos && currentSidePanelView === SidePanelView.Closed && 
+            <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)}/>
           }
-          {isSidePanelOpen && !isEditingPos && currentSidePanelView === SidePanelView.Closed && 
-            <img className="objectivesImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)}></img>
-          }
-          {isSidePanelOpen && !isEditingPos &&
+          {!isEditingPos &&
             (isAddingNewObjective?
-              <Loading></Loading>
+              <Loading/>
               :
-              <img className="objectivesImage" src={process.env.PUBLIC_URL + '/add.png'} alt='meaningfull text' onClick={addNewObjective}></img>
+              <PressImage src={process.env.PUBLIC_URL + '/plus-one.png'} onClick={addNewObjective}/>
             )
           }
-          {isSidePanelOpen?
-            <img 
-              className='objectivesImage'
-              onClick={()=>{setIsSidePanelOpen(false)}}
-              src={process.env.PUBLIC_URL + (isBelow700px?'/up-chevron.png':'/arrow-left-filled.png')}></img>
-            :
-            <img
-              className='objectivesImage'
-              onClick={()=>{setIsSidePanelOpen(true)}}
-              src={process.env.PUBLIC_URL + (isBelow700px?'/down-chevron.png':'/arrow-right-filled.png')}></img>
-          }
         </div>
-        {isSidePanelOpen && currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedList()}
-        {isSidePanelOpen && currentSidePanelView === SidePanelView.Closed && getObjectiveClosedList()}
+        {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>}
+        {currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}
+        {currentSidePanelView === SidePanelView.Closed && getObjectiveClosedListView()}
       </div>
     )
+  }
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if(event.target.files){
+      for(let i = 0; i < event.target.files.length;i++){
+        const file = event.target.files[i];
+        if (file && file.type === "application/json") {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const text = e.target?.result as string; // Força para string
+              const newObjectiveList:ObjectiveList = JSON.parse(text) as ObjectiveList;
+              uploadBackupData(newObjectiveList, file.name);
+            } catch (error) {
+              console.error("Erro ao parsear JSON:", error);
+            }
+          };
+          reader.readAsText(file);
+        } else {
+          alert("Por favor, selecione um arquivo JSON válido.");
+        }
+      }
+    }
+  };
+
+  const uploadBackupData = async (data: ObjectiveList, fileName: string) => {
+    setIsUpdatingObjectives(true);
+    await objectiveslistApi.syncObjectivesList(data);
+    setIsUpdatingObjectives(false);
+
+    if(data){
+      log.g('ok ' + fileName);
+    }
+    else{
+      log.r('not' + fileName);
+    }
   }
   
   return (
     <div className='objectivesContainer'>
+      <ObjectiveMessagesView></ObjectiveMessagesView>
       {user && user.Status==='Active' ?
         isUpdatingObjectives?
         <div className='loadingListContainer'>
-          <Loading></Loading>
+          <Loading/>
         </div>
         :
         (<div className='objectivesListContainer'>
-          <div className={isSidePanelOpen?'objectivesListSideContainer':'objectivesListSideContainerClosed'}> 
+          <div className={'objectivesListSideContainer'}> 
             {getSideMenu()}
           </div>
           <div className='objectivesListMainAndTagsContainer'>

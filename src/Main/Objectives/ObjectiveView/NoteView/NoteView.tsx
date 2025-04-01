@@ -6,6 +6,15 @@ import Loading from "../../../../Loading/Loading";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import log from "../../../../Log/Log";
 import { isEnumDeclaration } from "typescript";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Text: '',
+    }
+  )
+}
 
 interface NoteViewProps extends ItemViewProps{
   note: Note,
@@ -26,6 +35,18 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
 
   useEffect(() => {
   }, []);
+
+  useEffect(()=>{
+    if(!isEditingText) return;
+
+    const timeout = setTimeout(()=>{
+      if(note.Text === newText){
+        setIsEditingText(false);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [isEditingText, newText]);
 
   const resetTimer = () => {
     if (timerRef.current) {
@@ -119,25 +140,31 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'noteContainer noteContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'noteContainer noteContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'noteContainer noteContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'noteContainer noteContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'noteContainer noteContainerNoTheme';
+    let rtnTheme = 'noteContainer';
+    if(note.Text.trim() !== ''){
+      rtnTheme += ' noteContainerClear';
     }
     else{
-      rtnTheme = 'noteContainer noteContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' noteContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' noteContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' noteContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' noteContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' noteContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' noteContainerNoTheme';
+      }
     }
+    
     rtnTheme += (isSelected? ' noteContainerSelected':'');
     rtnTheme += (isSelected&&isEndingPos?' noteContainerSelectedEnding':'');
     rtnTheme += note.Text.trim() !== ''? ' noteContainerNoBackground':'';
@@ -184,7 +211,7 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='centerTitleContainer'>
@@ -199,10 +226,10 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
               {isAutoUpdating?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + getTintColor() + '.png'):'/save-grey.png')}></img>
+                <PressImage onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + getTintColor() + '.png'):'/save-grey.png')}/>
               }
-              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
             </div>
           </div>
           :

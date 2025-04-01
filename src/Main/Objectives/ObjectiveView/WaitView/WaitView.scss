@@ -6,6 +6,7 @@
   align-items: center;
   width: 100%;
   min-height: 35px;
+  border-radius: 5px;
   margin-bottom: 2px;
   
   align-items: center;
@@ -15,6 +16,11 @@
   border-width: 1px;
   border-color: black;
   border-style: solid;
+}
+
+.waitContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
 }
 
 .waitContainer:hover{
@@ -35,6 +41,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  min-height: 35px;
 }
 
 .waitTitle{
@@ -97,7 +104,7 @@
 .waitContainerGreen{background-color: rgb(64, 121, 64);}
 .waitContainerWhite{background-color: #D8AE7E;}
 .waitContainerNoTheme{background-color: $blue-darker-darker}
-.waitContainerNoBackground{background-color: $transparent; border-color: $transparent;}
+.waitContainerNoBackground{background-color: $transparent;}
 
 .waitTextBlue{color: beige,}
 .waitTextRed{color: beige,}

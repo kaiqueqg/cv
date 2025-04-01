@@ -4,6 +4,16 @@ import { useUserContext } from "../../../../Contexts/UserContext";
 import { Item, ItemViewProps, Location } from "../../../../TypesObjectives";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Title: '',
+      Url: '',
+    }
+  )
+}
 
 interface LocationViewProps extends ItemViewProps{
   location: Location,
@@ -101,29 +111,35 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'locationContainer locationContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'locationContainer locationContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'locationContainer locationContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'locationContainer locationContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'locationContainer locationContainerNoTheme';
+    let rtnTheme = 'locationContainer';
+
+    if(location.Url.trim() !== ''){
+      rtnTheme += ' locationContainerClear';
     }
     else{
-      rtnTheme = 'locationContainer locationContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' locationContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' locationContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' locationContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' locationContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' locationContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' locationContainerNoTheme';
+      }
     }
 
+    rtnTheme += (location.Title.trim() !== '' && location.Url.trim() !== '')? ' locationContainerNoBackground':'';
     rtnTheme += isSelected? ' locationContainerSelected':'';
     rtnTheme += isEndingPos&&isSelected? ' locationContainerSelectedEnding':'';
-    rtnTheme += (location.Title.trim() !== '' && location.Url.trim() !== '')? ' locationContainerNoBackground':'';
     return rtnTheme;
   }
 
@@ -189,7 +205,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='locationCenterContainer'>
@@ -211,8 +227,8 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 autoFocus></input>
             </div>
             <div className='locationSideContainer'>
-              <img className='inputImage' onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <PressImage onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+              <PressImage onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
             </div>
           </div>
           :

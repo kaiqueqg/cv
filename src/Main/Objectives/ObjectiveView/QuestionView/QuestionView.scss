@@ -1,5 +1,7 @@
 @import '../../../../global.scss';
 
+$bor: false;
+
 .questionContainer{
   display: flex;
   flex-direction: column;
@@ -17,71 +19,84 @@
   border-width: 1px;
   border-color: black;
   border-style: solid;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
 }
 
-.questionContainer:hover{
-  border-color: black;
-}
-
-.questionContainerSelected{
-  border-color: red;
-  border-style: dashed;
-  padding: 5px;
-}
-
-.questionContainerSelectedEnding{
-  border-style: solid;
-}
-
-.statementLineContainer{
+.questionEditingContainer{
   display: flex;
   flex-direction: row;
+  width: 100%;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  min-height: 35px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: cyan;
+    border-style: solid;
+  }
 }
 
-.statementLine{
+.questionCenterContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: purple;
+    border-style: solid;
+  }
+}
+
+.questionSideContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 10%;
+  margin: 0px 2px;
+}
+
+.questionDisplayContainer{
   cursor: pointer;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
-  min-height: 35px;
-  color: beige;
-  font-weight: bold;
-  margin: 0px 5px 0px 10px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: yellow;
+    border-style: solid;
+  }
 }
 
-.answerLineContainer{
+.questionDisplayLine{
+  display: flex;
+  width: 100%;
+  padding: 5px 10px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(0, 174, 255);
+    border-style: solid;
+  }
+}
+
+.questionAnswerContainer{
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  min-height: 35px;
-}
 
-.answerLine{
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-height: 35px;
-  color: beige;
-  margin: 0px 5px 0px 10px;
-}
-
-.questionInput{
-  width: 100%;
-  padding: 0px 10px 0px 10px;
-  margin-right: 5px;
-  color: beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(0, 255, 136);
+    border-style: solid;
+  }
 }
 
 .answerImage{
@@ -93,28 +108,3 @@
 .answerImage:hover{
   padding: 4px;
 }
-
-.questionContainerBlue{background-color: #035a9c;}
-.questionContainerRed{background-color: rgb(189, 32, 32);}
-.questionContainerGreen{background-color: rgb(64, 121, 64)}
-.questionContainerWhite{background-color: #D8AE7E;}
-.questionContainerNoTheme{background-color: #1D1D1D;}
-.questionContainerNoBackground{background-color: #00000000; border-color: #00000000;}
-
-.questionTextBlue{color: beige,}
-.questionTextRed{color: beige,}
-.questionTextGreen{color: beige,}
-.questionTextWhite{color: black,}
-.questionTextNoTheme{color: beige,}
-
-.questionTextFadeBlue{color: lightblue,}
-.questionTextFadeRed{color: rgb(245, 184, 184),}
-.questionTextFadeGreen{color: lightgreen,}
-.questionTextFadeWhite{color: rgb(189, 182, 144),}
-.questionTextFadeNoTheme{color: rgb(65, 65, 65),}
-
-.questionInputBlue{border-color: beige;}
-.questionInputRed{border-color: beige;}
-.questionInputGreen{border-color: beige;}
-.questionInputWhite{border-color: black;}
-.questionInputNoTheme{border-color: beige;}

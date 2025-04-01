@@ -1,0 +1,56 @@
+@import '../global.scss';
+
+$bor: false;
+$size: 25px;
+
+.pressImageContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: $size;
+  min-height: $size;
+  max-width: $size;
+  max-height: $size;
+  margin: 5px;
+  padding: 2px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
+}
+
+.pressImageContainer:hover{padding: 0px}
+
+.pressImageContainerHover{}
+
+.pressImageContainerHover:hover{
+  padding: 2px;
+}
+
+.pressImageImage{
+  width: 100%;
+  height: 100%;
+  @if($bor){
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
+}
+
+.pressImageDisable{
+
+}
+
+.pressImageConfirm{
+  
+}
+
+.pressImageText{
+  position: 'absolute';
+  color: red;
+  font-size: 12;
+  font-weight: 'bold';
+}

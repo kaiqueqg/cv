@@ -1,0 +1,13 @@
+@import '../../../global.scss';
+
+$bor: true;
+
+.backupViewContainer{
+  
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
+}

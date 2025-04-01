@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { LogLevel } from "../Types";
 import T from "../Text/T";
 
@@ -103,13 +102,13 @@ const log = {
     }
   },
   pop(text: string|null|undefined){
-    if(text !== '' && text !== null && text !== undefined) toast(text);
+    if(text !== '' && text !== null && text !== undefined) console.log(text);
   },
   poop(text: string|null|undefined){
-    if(text !== '' && text !== null && text !== undefined) toast.info(text);
+    if(text !== '' && text !== null && text !== undefined) console.log(text);
   },
   alert(text: string|null|undefined){
-    if(text !== '' && text !== null && text !== undefined) toast.warn(text);
+    if(text !== '' && text !== null && text !== undefined) console.log(text);
   },
 }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import './Loading.scss'
 import { ReactComponent as Icon } from '../assets/refresh.svg';
+import PressImage from '../PressImage/PressImage';
 
 interface LoadingProps{
   IsBlack?: boolean,
@@ -8,10 +9,10 @@ interface LoadingProps{
 
 const Loading: React.FC<LoadingProps> = ({ IsBlack = false }) => {
   return(
-    <React.Fragment>
-      {IsBlack && <Icon id='normalBlack' width="30px" height="30px"/>}
-      {!IsBlack && <Icon id='normalBeige' width="30px" height="30px"/>}
-    </React.Fragment>
+    IsBlack?
+      <img className={'loading-image normalBeige'} src={process.env.PUBLIC_URL + '/refresh-black.png'}/>
+      :
+      <img className={'loading-image normalBeige'} src={process.env.PUBLIC_URL + '/refresh.png'}/>
   );
 }
 

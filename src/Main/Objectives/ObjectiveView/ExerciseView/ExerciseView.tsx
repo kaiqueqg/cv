@@ -5,7 +5,22 @@ import { Item, ItemViewProps, Exercise, Weekdays } from "../../../../TypesObject
 import log from "../../../../Log/Log";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
+import PressImage from "../../../../PressImage/PressImage";
 
+export const New = () => {
+  return(
+    {
+      Title: '',
+      IsDone: false,
+      Reps: 1,
+      Series: 1,
+      MaxWeight: '',
+      Description: '',
+      Weekdays: [],
+      LastDone: '',
+    }
+  )
+}
 
 interface ExerciseViewProps extends ItemViewProps{
   exercise: Exercise,
@@ -319,7 +334,7 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='exerciseCenterContainer'>
@@ -362,8 +377,8 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               {getWeekdaysButtons()}
             </div>
             <div className='exerciseSideContainer'>
-              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
             </div>
           </div>
           :
@@ -378,9 +393,9 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
                 (exercise.IsDone?
-                  <img className='exerciseImage' onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}></img>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
                   :
-                  <img className='exerciseImage' onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + getTintColor() + '.png'}></img>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + getTintColor() + '.png'}/>
                 )
               )
             }

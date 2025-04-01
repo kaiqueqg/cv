@@ -16,6 +16,11 @@
   border-style: solid;
 }
 
+.noteContainerClear{
+  background-color: $transparent;
+  border-color: $transparent;
+}
+
 .noteContainer:hover{
   border-color: black;
 }
@@ -116,7 +121,7 @@
 .noteContainerGreen{background-color: rgb(64, 121, 64);}
 .noteContainerWhite{background-color: #D8AE7E;}
 .noteContainerNoTheme{background-color: $blue-darker-darker};
-.noteContainerNoBackground{background-color: $transparent; border-color: $transparent;};
+.noteContainerNoBackground{background-color: $transparent;};
 
 .noteTextBlue{color: beige,}
 .noteTextRed{color: beige,}

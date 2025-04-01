@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './Login.scss'
 import { CreateUserModel, ResponseUser, MenuOption, Response } from '../../Types'
 import Loading from '../../Loading/Loading';
-import { toast } from 'react-toastify';
 import { useUserContext } from '../../Contexts/UserContext';
 import storage from '../../Storage/Storage';
 import log from '../../Log/Log';
@@ -62,7 +61,6 @@ const Login: React.FC<LoginProps> = (props) => {
       setIsLogging(true);
       const response = await identityApi.getUser(undefined, () => {
         setIsLogging(false);
-        toast.warning("Error trying to get user!");
         testServer();
       });
 
@@ -223,7 +221,6 @@ const Login: React.FC<LoginProps> = (props) => {
     try {
       setIsLogging(true);
       const data = await identityApi.askToCreate(JSON.stringify(createUser), () => {
-        toast.warning("Error trying to create user!");
         testServer();
       });
 
@@ -267,7 +264,7 @@ const Login: React.FC<LoginProps> = (props) => {
     <div className='login-container'>
       {isServerUp?
         (isLogging?
-          <Loading></Loading>
+          <Loading/>
           :
           (!isLogged?
             <div className=''>

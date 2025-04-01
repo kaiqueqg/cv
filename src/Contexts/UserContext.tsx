@@ -1,6 +1,5 @@
 // UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import { identityApi } from '../Requests/RequestFactory';
 import { ResponseUser, DBUserPrefs } from '../Types';
 import storage from '../Storage/Storage';
@@ -49,7 +48,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const testServer = async () => {
     await identityApi.isUp(undefined, () => {
       setIsServerUp(false);
-      toast.error('Server probably down...');
     });
   };
 

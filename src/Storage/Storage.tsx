@@ -1,4 +1,3 @@
-import { toast } from 'react-toastify';
 import { ResponseUser, DBUserPrefs } from '../Types';
 import log from '../Log/Log';
 
@@ -45,13 +44,12 @@ const storage = {
   getBaseUrl() : string{
     const value = localStorage.getItem(keys.BaseUrl);
     if(value === null){
-      toast.error("No base url saved on local storage!");
+      console.error("No base url saved on local storage!");
       return 'https://ygwynyk5j6.execute-api.sa-east-1.amazonaws.com/dev/api'
     }
     else return value;
   },
   setBaseUrl(baseUrl: string) {
-    toast.warning(baseUrl);
     localStorage.setItem(keys.BaseUrl, baseUrl);
   },
   getDBUserPrefs(): DBUserPrefs {

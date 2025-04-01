@@ -40,6 +40,12 @@ $bor: false;
   @media(min-width: 700px){
     flex-direction: row;
   }
+
+  @if($bor){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .objectivesListSideContainer{
@@ -103,19 +109,18 @@ $bor: false;
 
 .objectivesSidePanelOpenedButtons{
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
-  flex-direction: row;
-}
-
-.objectivesSidePanelClosed{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 
   @media(min-width: 700px){
-    flex-direction: column;
+    flex-direction: row;
+  }
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
   }
 }
 
@@ -152,7 +157,7 @@ $bor: false;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  margin: 0px 0px 10px 0px;
+  margin: 10px 0px;
 }
 
 .objectivesListMainTag{

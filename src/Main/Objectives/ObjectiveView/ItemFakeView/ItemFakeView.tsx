@@ -2,6 +2,12 @@ import { useEffect } from "react";
 import './ItemFakeView.scss';
 import { ItemViewProps } from "../../../../TypesObjectives";
 
+export const New = () => {
+  return(
+    {
+    }
+  )
+}
 
 interface StepViewProps extends ItemViewProps{
 }

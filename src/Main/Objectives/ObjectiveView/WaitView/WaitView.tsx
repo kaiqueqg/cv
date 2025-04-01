@@ -5,6 +5,15 @@ import { Item, ItemViewProps, Wait } from "../../../../TypesObjectives";
 import Loading from "../../../../Loading/Loading";
 import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import log from "../../../../Log/Log";
+import PressImage from "../../../../PressImage/PressImage";
+
+export const New = () => {
+  return(
+    {
+      Title: '',
+    }
+  )
+}
 
 interface WaitViewProps extends ItemViewProps{
   wait: Wait,
@@ -80,24 +89,30 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    let rtnTheme;
-    if(theme === 'darkBlue'){
-      rtnTheme = 'waitContainer waitContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme = 'waitContainer waitContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme = 'waitContainer waitContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme = 'waitContainer waitContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme = 'waitContainer waitContainerNoTheme';
+    let rtnTheme = 'waitContainer';
+    
+    if(wait.Title.trim() !== ''){
+      rtnTheme += ' waitContainerClear';
     }
     else{
-      rtnTheme = 'waitContainer waitContainerNoTheme';
+      if(theme === 'darkBlue'){
+        rtnTheme += ' waitContainerBlue';
+      }
+      else if(theme === 'darkRed'){
+        rtnTheme += ' waitContainerRed';
+      }
+      else if(theme === 'darkGreen'){
+        rtnTheme += ' waitContainerGreen';
+      }
+      else if(theme === 'darkWhite'){
+        rtnTheme += ' waitContainerWhite';
+      }
+      else if(theme === 'noTheme'){
+        rtnTheme += ' waitContainerNoTheme';
+      }
+      else{
+        rtnTheme += ' waitContainerNoTheme';
+      }
     }
     rtnTheme += isSelected? ' waitContainerSelected':'';
     rtnTheme += isEndingPos&&isSelected? ' waitContainerSelectedEnding':'';
@@ -168,7 +183,7 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
             {isDeleting?
               <Loading IsBlack={theme==='darkWhite'}></Loading>
               :
-              <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+              <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
             }
             <input 
               className={getInputColor()}
@@ -177,8 +192,8 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
-            <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
-            <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
           </div>
           :
           <div className={'waitTitle' + getTextColor()} onClick={()=>{if(!isEditingPos)onChangeEditTitle()}}>{wait.Title}</div>
