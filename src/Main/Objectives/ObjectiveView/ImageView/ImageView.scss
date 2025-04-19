@@ -14,10 +14,11 @@ $bor: false;
   align-items: center;
   text-align: start;
 
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
 }
 
 .imageContainerClear{
@@ -39,10 +40,11 @@ $bor: false;
 
 .imageTitleContainer{
   display: flex;
-  justify-content: center;
   align-items: center;
   width: 100%;
   min-height: 35px;
+  margin-right: 5px;
+  padding: 0px 10px 0px 10px;
 }
 
 .imageDisplayContainer{
@@ -86,7 +88,6 @@ $bor: false;
 
 .imageTitle:hover{
   cursor: pointer;
-  font-weight: bold;
 }
 
 .inputsContainer{

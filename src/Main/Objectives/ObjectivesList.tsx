@@ -349,8 +349,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const getSideMenu = () => {
     return(
-      <div className='objectivesSidePanelOpened'>
-        <div className='objectivesSidePanelOpenedButtons'>
+      <div className='objectivesSidePanel'>
+        <div className='objectivesSidePanelButtons'>
           <input
             type="file"
             accept="application/json"
@@ -369,9 +369,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             :
             <div className='objectivesImage'></div>)
           }
-          {!isEditingPos && currentSidePanelView === SidePanelView.Closed && 
-            <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)}/>
-          }
+          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)}/>}
+          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)}/>}
           {!isEditingPos &&
             (isAddingNewObjective?
               <Loading/>
@@ -446,6 +445,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             <div className='objectivesListMainContainer'>
               {getObjectiveList()}
             </div>
+            <div style={{height: '700px'}}></div>
           </div>
         </div>)
        :

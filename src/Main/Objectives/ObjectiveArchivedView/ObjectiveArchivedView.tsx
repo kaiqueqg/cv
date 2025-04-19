@@ -20,10 +20,14 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
   const onChangeObjectiveArchived = async (objective: Objective) => {
     setIsUnarchiving(true);
     try {
-      const data = await objectiveslistApi.putObjective({...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()}, () => {});
+      const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
+      putObjectiveInDisplay(newObjective)
+      const data = await objectiveslistApi.putObjective(newObjective);
   
       if(data){
-        putObjectiveInDisplay(data)
+      }
+      else{
+        putObjectiveInDisplay(objective);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -45,30 +49,19 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
     else if(objective.Theme === 'darkWhite'){
       return ' objObjectiveWhite'
     }
+    else if(objective.Theme === 'darkCyan'){
+      return ' objObjectiveCyan'
+    }
+    else if(objective.Theme === 'darkPink'){
+      return ' objObjectivePink'
+    }
     else if(objective.Theme === 'noTheme'){
       return ' objObjectiveNoTheme'
     }
   }
 
   const getTextColor = () => {
-    if(objective.Theme === 'darkBlue'){
-      return ' objTextBlue'
-    }
-    else if(objective.Theme === 'darkRed'){
-      return ' objTextRed'
-    }
-    else if(objective.Theme === 'darkGreen'){
-      return ' objTextGreen'
-    }
-    else if(objective.Theme === 'darkWhite'){
-      return ' objTextWhite'
-    }
-    else if(objective.Theme === 'noTheme'){
-      return ' objTextNoTheme'
-    }
-    else{
-      return ' objTextBlue';
-    }
+    return ' textColor' + (objective.Theme === 'darkWhite' || objective.Theme === 'darkPink'?'White':'');
   }
 
   const getTintColor = () => {

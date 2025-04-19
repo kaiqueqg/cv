@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Login.scss'
-import { CreateUserModel, ResponseUser, MenuOption, Response } from '../../Types'
+import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType } from '../../Types'
 import Loading from '../../Loading/Loading';
 import { useUserContext } from '../../Contexts/UserContext';
 import storage from '../../Storage/Storage';
@@ -8,6 +8,7 @@ import log from '../../Log/Log';
 import { identityApi } from '../../Requests/RequestFactory';
 import { useNavigate } from 'react-router-dom';
 import UserView from './UserView/UserView';
+import { useLogContext } from '../../Contexts/LogContext';
 
 interface LoginProps{
 }
@@ -26,8 +27,10 @@ const Login: React.FC<LoginProps> = (props) => {
   const [createPassword, setCreatePassword] = useState<string>('');
 
   const [typeAnEmail, setTypeAnEmail] = useState<boolean>(false);
+  const [wrongEmail, setWrongEmail] = useState<boolean>(false);
   const [typeAnValidEmail, setTypeAnValidEmail] = useState<boolean>(false);
   const [typeAnPassword, setTypeAnPassword] = useState<boolean>(false);
+  const [wrongPassword, setWrongPassword] = useState<boolean>(false);
 
   const [typeAnEmailCreate, setTypeAnEmailCreate] = useState<boolean>(false);
   const [typeAnValidEmailCreate, setTypeAnValidEmailCreate] = useState<boolean>(false);
@@ -36,6 +39,7 @@ const Login: React.FC<LoginProps> = (props) => {
   const [typeReasonCreate, setTypeReasonCreate] = useState<boolean>(false);
 
   const { user, setUser, testServer, isServerUp } = useUserContext();
+  const { popMessage } = useLogContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -79,6 +83,11 @@ const Login: React.FC<LoginProps> = (props) => {
     }, 1000); 
   }
 
+  const loginError = (error: any) => {
+    if(error.Message === 'Wrong email.') setWrongEmail(true);
+    if(error.Message === 'Wrong password.') setWrongPassword(true);
+  }
+
   interface LoginData { User: ResponseUser, Token: string }
   const login = async () => {
     //check username
@@ -103,7 +112,7 @@ const Login: React.FC<LoginProps> = (props) => {
 
     setIsLogging(true);
     try {
-      const data = await identityApi.login(JSON.stringify(user), () => {testServer();});
+      const data = await identityApi.login(JSON.stringify(user), loginError);
       if(data && data.User){
         storage.setToken(data.Token);
         storage.setUser(data.User);
@@ -120,11 +129,13 @@ const Login: React.FC<LoginProps> = (props) => {
   const changeEmail = (event: any) => {
     setTypeAnEmail(false);
     setTypeAnValidEmail(false);
+    setWrongEmail(false);
     setEmail(event.target.value);
   }
   
   const changePassword = (event: any) => {
     setTypeAnPassword(false);
+    setWrongPassword(false);
     setPassword(event.target.value);
   }
 
@@ -274,6 +285,7 @@ const Login: React.FC<LoginProps> = (props) => {
                   <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email"></input>
                   {typeAnEmail && <span className="alert-message concert-one-regular">Type an email.</span>}
                   {typeAnValidEmail && <span className="alert-message concert-one-regular">Type a valid email.</span>}
+                  {wrongEmail && <span className="alert-message concert-one-regular">Wrong email.</span>}
                 </div>
                 <div className="pass-column">
                   <div className="pass-row">
@@ -289,6 +301,7 @@ const Login: React.FC<LoginProps> = (props) => {
                     }
                   </div>
                   {typeAnPassword && <span className="alert-message concert-one-regular">Type a password.</span>}
+                  {wrongPassword && <span className="alert-message concert-one-regular">Wrong password.</span>}
                 </div>
                 <div className="login-row">
                   <button className="btn-login" type="button" onClick={login}>Login</button>

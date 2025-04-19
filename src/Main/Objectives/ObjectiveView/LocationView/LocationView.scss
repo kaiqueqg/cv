@@ -12,11 +12,6 @@
 
   align-items: center;
   text-align: start;
-
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
 }
 
 .locationContainerClear{
@@ -61,14 +56,12 @@
   margin: 0px 2px;
 }
 
-.titleLine{
+.locationTitleLine{
   cursor: pointer;
   display: flex;
   align-items: center;
   width: 100%;
   min-height: 35px;
-  color: beige;
-  font-weight: bold;
   margin: 0px 5px 0px 10px;
 }
 
@@ -94,7 +87,6 @@
 .locationInput{
   padding: 0px 10px 0px 10px;
   margin: 5px;
-  color: beige;
   background-color: #00000000;
   border-width: 0px 0px 1px 0px;
   border-color: beige;

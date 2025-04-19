@@ -56,7 +56,7 @@ export interface Response<T>{
 }
 
 export enum Language{ PR_BR, EN, FR, IT };
-export enum MenuOption{ Main, Login, Curriculum, GroceryList, ObjectivesList, SleepDevice, WorldDefence };
+export enum MenuOption{ Main, Login, Curriculum, GroceryList, ObjectivesList, IoT, WorldDefence };
 export enum LogLevel { Dev, Warn, Error, None }
 
 export enum MessageType { Normal, Error, Alert, }
@@ -66,4 +66,29 @@ export interface PopMessage {
   text: string,
   timeout: number,
   type: MessageType,
+}
+
+export interface DeviceData{
+  UserId: string,
+  DataId: string,
+  DateAdded: string,
+  AmbientTemperature: string,
+  AmbientPressure: string,
+  AmbientHumidity: string,
+  AmbientLight: string,
+  UVLight: string,
+  IRTemperature: string,
+  WeakProbTemperature: string,
+  StrongProbTemperature: string,
+  AirQuality: string,
+  TotalAcel: string,
+  AccX: string,
+  AccY: string,
+  AccZ: string,
+  GyrX: string,
+  GyrY: string,
+  GyrZ: string,
+  MagX: string,
+  MagY: string,
+  MagZ: string,
 }

@@ -2,6 +2,7 @@ import './TopMenu.scss';
 import { MenuOption } from '../../Types';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate  } from 'react-router-dom';
+import { useUserContext } from '../../Contexts/UserContext';
 
 
 interface TopMenuProps{
@@ -10,6 +11,7 @@ interface TopMenuProps{
 const TopMenu: React.FC<TopMenuProps> = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useUserContext();
   const [ currentMenuOption, setCurrentMenuOption ] = useState<MenuOption>(MenuOption.Main);
 
   useEffect(() => {
@@ -46,9 +48,9 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
       <div key='objectiveBtn' className={MenuOption.ObjectivesList === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.ObjectivesList); navigate("/objectiveslist")}}>
         <div className={MenuOption.ObjectivesList === currentMenuOption? 'text textSelected': 'text'}>Objectives</div>
       </div>
-      {/* <div key='sleepDeviceBtn' className={MenuOption.SleepDevice === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.SleepDevice); navigate("/sleepDevice")}}>
-        <div className={MenuOption.SleepDevice === currentMenuOption? 'text textSelected': 'text'}>Sleep Device</div>
-      </div> */}
+      {user?.Role === 'Admin' && <div key='iotBtn' className={MenuOption.IoT === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.IoT); navigate("/iot")}}>
+        <div className={MenuOption.IoT === currentMenuOption? 'text textSelected': 'text'}>IoT</div>
+      </div>}
     </div>
   )
 }

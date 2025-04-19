@@ -96,7 +96,7 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
         if(text === undefined) return 'undefined';
         return text.Title;
       });
-      console.log(`\x1b[38;2;255;255;80m[DEV]`, ...formattedTexts);
+      console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 80, 80); font-weight: bold;');
       // putLog(...formattedTexts);
     },
     i(...texts: Item[]){
@@ -110,7 +110,7 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
           if(text.Type===ItemType.Step) return (text as Step).Title;
           if(text.Type===ItemType.Wait) return (text as Wait).Title;
         });
-        console.log(`\x1b[38;2;255;255;80m[DEV]`, ...formattedTexts);
+        console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 80, 80); font-weight: bold;');
         // putLog(...formattedTexts);
       }
     },
@@ -119,13 +119,13 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
         const formattedTexts = texts.map(text => {
           if(text === null) return 'null';
           if(text === undefined) return 'undefined';
-          if(text !== null && typeof text === 'object' && !Array.isArray(text)) {
+          if(typeof text === 'object' && !Array.isArray(text)) {
             return JSON.stringify(text, null, 2); //if object, prettyfy
           } else {
             return text;
           }
         });
-        console.log(`\x1b[38;2;255;255;80m[DEV]`, ...formattedTexts);
+        console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 255, 80); font-weight: bold;');
         // putLog(...formattedTexts);
       }
     },
@@ -134,13 +134,13 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
         const formattedTexts = texts.map(text => {
           if(text === null) return 'null';
           if(text === undefined) return 'undefined';
-          if (text !== null && typeof text === 'object' && !Array.isArray(text)) {
+          if(typeof text === 'object' && !Array.isArray(text)) {
             return JSON.stringify(text, null, 2); //if object, prettyfy
           } else {
             return text;
           }
         });
-        console.log(`\x1b[38;2;255;80;80m[DEV]`, ...formattedTexts);
+        console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 80, 80); font-weight: bold;');
         // putLog(...formattedTexts);
       }
     },
@@ -149,13 +149,13 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
         const formattedTexts = texts.map(text => {
           if(text === null) return 'null';
           if(text === undefined) return 'undefined';
-          if (text !== null && typeof text === 'object' && !Array.isArray(text)) {
+          if (typeof text === 'object' && !Array.isArray(text)) {
             return JSON.stringify(text, null, 2); //if object, prettyfy
           } else {
             return text;
           }
         });
-        console.log(`\x1b[38;2;80;80;255m[DEV]`, ...formattedTexts);
+        console.log('%c[DEV]' + formattedTexts, 'color: rgb(80, 80, 255); font-weight: bold;');
         //putLog(...formattedTexts);
       }
     },
@@ -164,13 +164,28 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
         const formattedTexts = texts.map(text => {
           if(text === null) return 'null';
           if(text === undefined) return 'undefined';
-          if (text !== null && typeof text === 'object' && !Array.isArray(text)) {
+          if (typeof text === 'object' && !Array.isArray(text)) {
             return JSON.stringify(text, null, 2); //if object, prettyfy
           } else {
             return text;
           }
         });
-        console.log(`\x1b[38;2;80;255;80m[DEV]`, ...formattedTexts);
+        console.log('%c[DEV]' + formattedTexts, 'color: rgb(80, 255, 80); font-weight: bold;');
+        // putLog(...formattedTexts);
+      }
+    },
+    w(...texts: any[]){
+      if (currentLogLevel <= LogLevel.Dev) {
+        const formattedTexts = texts.map(text => {
+          if(text === null) return 'null';
+          if(text === undefined) return 'undefined';
+          if (typeof text === 'object' && !Array.isArray(text)) {
+            return JSON.stringify(text, null, 2); //if object, prettyfy
+          } else {
+            return text;
+          }
+        });
+        console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 255,255); font-weight: bold;');
         // putLog(...formattedTexts);
       }
     },

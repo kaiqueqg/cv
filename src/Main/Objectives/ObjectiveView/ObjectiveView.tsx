@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import './ObjectiveView.scss';
 import { useUserContext } from "../../../Contexts/UserContext";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Links, Image, ItemNew } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House } from "../../../TypesObjectives";
 import StepView from "./StepView/StepView";
 import QuestionView from "./QuestionView/QuestionView";
 import WaitView from "./WaitView/WaitView";
@@ -16,8 +16,9 @@ import MedicineView from "./MedicineView/MedicineView";
 import ItemFakeView from "./ItemFakeView/ItemFakeView";
 import ExerciseView from "./ExerciseView/ExerciseView";
 import TagsView from "./TagsView/TagsView";
-import LinksView from "./LinksView/LinksView";
+import LinkView from "./LinkView/LinkView";
 import ImageView from "./ImageView/ImageView";
+import HouseView from "./HouseView/HouseView";
 import { useLogContext } from "../../../Contexts/LogContext";
 import { MessageType } from "../../../Types";
 
@@ -31,8 +32,9 @@ import {New as GroceryNew} from "./GroceryView/GroceryView";
 import {New as MedicineNew} from "./MedicineView/MedicineView";
 import {New as ItemFakeNew} from "./ItemFakeView/ItemFakeView";
 import {New as ExerciseNew} from "./ExerciseView/ExerciseView";
-import {New as LinksNew} from "./LinksView/LinksView";
+import {New as LinkNew} from "./LinkView/LinkView";
 import {New as ImageNew} from "./ImageView/ImageView";
+import {New as HouseNew} from "./HouseView/HouseView";
 import storage from "../../../Storage/Storage";
 import PressImage from "../../../PressImage/PressImage";
 
@@ -75,28 +77,6 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       downloadItemList();
     }
   }, []);
-
-  useEffect(()=>{
-    // const handleKeyUp = (event: KeyboardEvent) => {
-    //   if(isHovering){
-    //     if(event.key === "Escape"){
-    //       cancelChangePos();
-    //     }
-    //     else if(event.key.toLowerCase() === "m" && !isEditingPos && !isEndingPos){
-    //       startChangePos();
-    //     }
-    //     else if(event.key.toLowerCase() === "m" && isEditingPos && !isEndingPos && shouldShowEndingIcon()){
-    //       onEditingPosTo();
-    //     }
-    //   }
-    // };
-
-    // window.addEventListener("keyup", handleKeyUp);
-
-    // return () => {
-    //   window.removeEventListener("keyup", handleKeyUp);
-    // };
-  },[isHovering, isEditingPos, isEndingPos, itemsSelected])
 
   const downloadItemList = async () => {
     setIsRequestingItems(true);
@@ -306,11 +286,14 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       case ItemType.ItemFake:
         typeItem = {...baseItem, ...ItemFakeNew()};
         break;
-      case ItemType.Links:
-        typeItem = {...baseItem, ...LinksNew()};
+      case ItemType.Link:
+        typeItem = {...baseItem, ...LinkNew()};
         break;
       case ItemType.Image:
         typeItem = {...baseItem, ...ImageNew()};
+        break;
+      case ItemType.House:
+        typeItem = {...baseItem, ...HouseNew()};
         break;
       default:
         break;
@@ -329,10 +312,11 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsSavingMenu(true);
     
     try {
-      const data = await objectiveslistApi.putObjective({...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()}, () => {testServer();});
+      const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
+      putObjective(newObjective);
+      const data = await objectiveslistApi.putObjective(newObjective);
       
       if(data){
-        putObjective(data);
         if(data.IsShowing){
           downloadItemList();
         }
@@ -350,10 +334,11 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsSavingMenu(true);
     
     try {
-      const data = await objectiveslistApi.putObjective({...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()}, () => {testServer();});
+      const newObjective:Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
+      putObjective(newObjective); //change before confirm to be more practicle
+      const data = await objectiveslistApi.putObjective(newObjective, () => {testServer();});
       
       if(data){
-        putObjective(data);
         if(data.IsShowing){
           downloadItemList();
         }
@@ -406,6 +391,12 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     else if(objective.Theme === 'darkWhite'){
       return ' objObjectiveWhite';
     }
+    else if(objective.Theme === 'darkCyan'){
+      return ' objObjectiveCyan';
+    }
+    else if(objective.Theme === 'darkPink'){
+      return ' objObjectivePink';
+    }
     else if(objective.Theme === 'noTheme'){
       return ' objObjectiveNoTheme';
     }
@@ -413,33 +404,55 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     return ' objObjectiveNoTheme';
   }
   
-  const itemGetTheme = (paramTheme: string): string => {
-    let rtnTheme = '';
-    if(paramTheme === 'darkBlue'){
-      rtnTheme += ' itemBackgroundBlue';
+  const itemGetTheme = (paramTheme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean): string => {
+    let rtnTheme = ' itemContainer';
+    if(fade){
+      rtnTheme += ' itemBackgroundNoBackground';
     }
-    else if(paramTheme === 'darkRed'){
-      rtnTheme += ' itemBackgroundRed';
-    }
-    else if(paramTheme === 'darkGreen'){
-      rtnTheme += ' itemBackgroundGreen';
-    }
-    else if(paramTheme === 'darkWhite'){
-      rtnTheme += ' itemBackgroundWhite';
-    }
-    else if(paramTheme === 'noTheme'){
-      rtnTheme += ' itemBackgroundNoTheme';
+    else{
+      if(paramTheme === 'darkBlue'){
+        rtnTheme += ' itemBackgroundBlue';
+      }
+      else if(paramTheme === 'darkRed'){
+        rtnTheme += ' itemBackgroundRed';
+      }
+      else if(paramTheme === 'darkGreen'){
+        rtnTheme += ' itemBackgroundGreen';
+      }
+      else if(paramTheme === 'darkWhite'){
+        rtnTheme += ' itemBackgroundWhite';
+      }
+      else if(paramTheme === 'darkCyan'){
+        rtnTheme += ' itemBackgroundCyan';
+      }
+      else if(paramTheme === 'darkPink'){
+        rtnTheme += ' itemBackgroundPink';
+      }
+      else if(paramTheme === 'noTheme'){
+        rtnTheme += ' itemBackgroundNoTheme';
+      }
     }
 
+    if(isSelected) rtnTheme += ' itemContainerSelected';
+    if(isEndingPos) rtnTheme += ' itemContainerSelectedEnding';
     return rtnTheme;
   }
 
-  const getTextColor = (theme: string): string => {
-    return ' textColor' + (theme === 'darkWhite'?'White':'');
+  const getTextColor = (theme: string, fade?: boolean): string => {
+    if(fade){
+      if(theme === 'darkWhite')
+        return ' textColorWhiteFade';
+      else return ' textColorFade'
+    }
+    else{
+      if(theme === 'darkWhite' || theme === 'darkPink')
+        return ' textColorWhite';
+      else return ' textColor';
+    }
   }
 
-  const getInputColor = (theme: string): string => {
-    return ' input ' + (theme === 'darkWhite'?'darkWhite':'');
+  const getInputColor = (theme: string, fade?: boolean): string => {
+    return ' input' + (theme === 'darkWhite' || theme === 'darkPink'?'White':'');
   }
 
   const onChangeIsShowingItems  = async () => {
@@ -553,6 +566,23 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     if (item.Type === ItemType.Exercise) {
       return (item as Exercise).Title.toLowerCase();
     }
+    if (item.Type === ItemType.Medicine) {
+      return (item as Location).Title.toLowerCase();
+    }
+    if (item.Type === ItemType.Link) {
+      return (item as Link).Title.toLowerCase();
+    }
+    if (item.Type === ItemType.ItemFake) {
+      return "";
+    }
+    if (item.Type === ItemType.Image) {
+      return (item as Image).Title.toLowerCase();
+    }
+    if (item.Type === ItemType.House) {
+      const i = (item as House);
+      let rtnText = i.Address + i.Rating.toString() + i.MeterSquare + i.TotalPrice + i.Title;
+      return rtnText;
+    }
     return "";
   }
 
@@ -609,7 +639,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></StepView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></StepView>
     }
     else if(item.Type === ItemType.Question){
       rtnItem = <QuestionView 
@@ -622,7 +653,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></QuestionView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></QuestionView>
     }
     else if(item.Type === ItemType.Wait){
       rtnItem = <WaitView 
@@ -635,7 +667,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></WaitView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></WaitView>
     }
     else if(item.Type === ItemType.Note){
       rtnItem = <NoteView 
@@ -648,7 +681,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></NoteView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></NoteView>
     }
     else if(item.Type === ItemType.Location){
       rtnItem = <LocationView 
@@ -661,7 +695,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></LocationView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></LocationView>
     }
     else if(item.Type === ItemType.Divider){
       rtnItem = <DividerView 
@@ -676,7 +711,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></DividerView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></DividerView>
     }
     else if(item.Type === ItemType.Grocery){
       rtnItem = <GroceryView 
@@ -689,7 +725,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></GroceryView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></GroceryView>
     }
     else if(item.Type === ItemType.Medicine){
       rtnItem = <MedicineView 
@@ -702,7 +739,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></MedicineView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></MedicineView>
     }
     else if(item.Type === ItemType.Exercise){
       rtnItem = <ExerciseView 
@@ -715,20 +753,22 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></ExerciseView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></ExerciseView>
     }
-    else if(item.Type === ItemType.Links){
-      rtnItem = <LinksView 
+    else if(item.Type === ItemType.Link){
+      rtnItem = <LinkView 
         key={item.ItemId}
         theme={objective.Theme}
-        links={item as Links}
+        link={item as Link}
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></LinksView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></LinkView>
     }
     else if(item.Type === ItemType.Image){
       rtnItem = <ImageView 
@@ -741,7 +781,22 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         putItemInDisplay={putItemInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
-        itemTextColor={getTextColor}></ImageView>
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}></ImageView>
+    }
+    else if(item.Type === ItemType.House){
+      rtnItem = <HouseView 
+      key={item.ItemId}
+      theme={objective.Theme}
+      house={item as House}
+      isSelected={isSelected}
+      isEndingPos={isEndingPos}
+      isEditingPos={isEditingPos || isObjsEditingPos}
+      putItemInDisplay={putItemInDisplay}
+      itemGetTheme={itemGetTheme}
+      itemInputColor={getInputColor}
+      itemTextColor={getTextColor}
+      itemTintColor={getTintColor}></HouseView>
     }
     else{
       rtnItem = <div key={'cantrender'}>Can't render</div>
@@ -768,6 +823,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       let shouldAddGrocery = true;
       let shouldAddExercise = true;
       let shouldAddMedicine = true;
+      let shouldAddHouse = true;
 
       if(current.Type === ItemType.Divider) {
         isAfterDivider = true;
@@ -787,7 +843,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         if(current.Type === ItemType.Grocery && !objective.IsShowingCheckedGrocery) shouldAddGrocery = !(current as Grocery).IsChecked;
         if(current.Type === ItemType.Exercise && !objective.IsShowingCheckedExercise) shouldAddExercise = !(current as Exercise).IsDone;
         if(current.Type === ItemType.Medicine && !objective.IsShowingCheckedMedicine) shouldAddMedicine = !(current as Medicine).IsChecked;
-        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine){
+        if(current.Type === ItemType.House && !objective.IsShowingCheckedStep) shouldAddHouse = !(current as House).WasContacted;
+        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse){
           if(isAfterDivider && !objective.IsShowingCheckedStep)
             partialItems.push(current);
           else
@@ -814,7 +871,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       putItemInDisplay={putItemInDisplay}
       itemGetTheme={itemGetTheme}
       itemInputColor={getInputColor}
-      itemTextColor={getTextColor}></ItemFakeView>
+      itemTextColor={getTextColor}
+      itemTintColor={getTintColor}></ItemFakeView>
       rtn.push(
       <div key={'fake'} className='objItemRow' onClick={() => {isEditingPos && (isEndingPos? endChangingPos(fakeItem) : addingRemovingItem(fakeItem))}}>
         {a}
@@ -829,7 +887,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   };
 
   const getTintColor = () => {
-    if(objective.Theme === 'darkWhite')
+    if(objective.Theme === 'darkWhite' || objective.Theme === 'darkPink')
       return '-black';
     else
       return '';
@@ -842,6 +900,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         <div className='objectiveColorButton objectiveColorButtonRed' onClick={()=>changeObjColor('darkRed')}></div>
         <div className='objectiveColorButton objectiveColorButtonGreen' onClick={()=>changeObjColor('darkGreen')}></div>
         <div className='objectiveColorButton objectiveColorButtonWhite' onClick={()=>changeObjColor('darkWhite')}></div>
+        <div className='objectiveColorButton objectiveColorButtonCyan' onClick={()=>changeObjColor('darkCyan')}></div>
+        <div className='objectiveColorButton objectiveColorButtonPink' onClick={()=>changeObjColor('darkPink')}></div>
         <div className='objectiveColorButton objectiveColorButtonNoTheme' onClick={()=>changeObjColor('noTheme')}></div>
       </div>
     )
@@ -850,12 +910,15 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const getNewItemMenu = () => {
     return(
       <div className={'objectiveNewItemContainer'}>
-        <div className={'objectiveNewItemAmount'} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+        <div className={'objectiveNewItemAmount' + getTextColor(objective.Theme)} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
         <div className='objectiveNewItemImages'>
           <div onClick={()=>{choseNewItemToAdd(ItemType.Wait)}} className='objMenuImageContainer'>
             <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>
           </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Links)}} className='objMenuImageContainer'>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.House)}} className='objMenuImageContainer'>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/home' + getTintColor() + '.png'}></img>
+          </div>
+          <div onClick={()=>{choseNewItemToAdd(ItemType.Link)}} className='objMenuImageContainer'>
             <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/link' + getTintColor() + '.png'}></img>
           </div>
           <div onClick={()=>{choseNewItemToAdd(ItemType.Exercise)}} className='objMenuImageContainer'>
@@ -895,7 +958,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       <div className='objTitleLeft'>
         {isSavingMenu?
           <div className='objMenuLoadingImageContainer'>
-            <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+            <Loading IsBlack={objective.Theme==='darkWhite' || objective.Theme==='darkPink'}></Loading>
           </div>
           :
           <>
@@ -914,7 +977,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const shouldShowEndingMovingIcon = () => {
-    return isEditingPos && itemsSelected.length !== items.length && itemsSelected.length > 0;
+    return isEditingPos /*&& itemsSelected.length !== items.length*/ && itemsSelected.length > 0;
   }
 
   const getRightMenuIcons = () => {
@@ -922,7 +985,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       <div className='objTitleRight'>
         {isSavingNewItem?
           <div className='objMenuLoadingImageContainer'>
-            <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+            <Loading IsBlack={objective.Theme==='darkWhite' || objective.Theme==='darkPink'}></Loading>
           </div>
           :
           <>
@@ -944,12 +1007,12 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     return(
       <div className='objTitleContainer'>
         {isSavingTitle?
-          <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+          <Loading IsBlack={objective.Theme==='darkWhite' || objective.Theme==='darkPink'}></Loading>
           :
           (isEditingTitle?
             <>
               {isDeleting?
-                <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+                <Loading IsBlack={objective.Theme==='darkWhite' || objective.Theme==='darkPink'}></Loading>
                 :
                 <PressImage onClick={deleteObjective} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -983,7 +1046,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       }
       {objective.IsShowing && isChangingColor && getColorMenu()}
       {isRequestingItems?
-        <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+        <Loading IsBlack={objective.Theme==='darkWhite' || objective.Theme === 'darkPink'}></Loading>
         :
         (objective.IsShowing && 
           <div className='objectiveItemsContainer'>

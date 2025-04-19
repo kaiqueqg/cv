@@ -108,7 +108,7 @@ const log = {
     if(text !== '' && text !== null && text !== undefined) console.log(text);
   },
   alert(text: string|null|undefined){
-    if(text !== '' && text !== null && text !== undefined) console.log(text);
+    if(text !== '' && text !== null && text !== undefined) this.err(text);
   },
 }
 

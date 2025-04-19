@@ -11,11 +11,6 @@
 
   align-items: center;
   text-align: start;
-
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: $transparent;
-  border-style: solid;
 }
 
 .dividerContainer:hover{
@@ -54,7 +49,6 @@
   align-items: center;
   width: 100%;
   min-height: 35px;
-  color: red;
   font-weight: bold;
   margin: 0px 5px 0px 10px;
 }
@@ -108,22 +102,3 @@
 .dividerNewItemImage:hover{
   padding: 2px;
 }
-
-.dividerContainerBlue{background-color: #035a9c;}
-.dividerContainerRed{background-color: #F55E5E;}
-.dividerContainerGreen{background-color: rgb(114, 196, 114);}
-.dividerContainerWhite{background-color: #E0DCB6;}
-.dividerContainerNoTheme{background-color: $blue-darker-darker}
-
-.dividerTextPlaceholder{color: rgb(136, 136, 136),}
-.dividerTextBlue{color: beige,}
-.dividerTextRed{color: beige,}
-.dividerTextGreen{color: beige,}
-.dividerTextWhite{color: black,}
-.dividerTextNoTheme{color: beige,}
-
-.dividerInputBlue{border-color: beige;}
-.dividerInputRed{border-color: beige;}
-.dividerInputGreen{border-color: beige;}
-.dividerInputWhite{border-color: black;}
-.dividerInputNoTheme{border-color: beige;}

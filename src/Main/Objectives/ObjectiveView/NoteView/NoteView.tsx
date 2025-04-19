@@ -22,7 +22,7 @@ interface NoteViewProps extends ItemViewProps{
 
 const WaitView: React.FC<NoteViewProps> = (props) => {
   const { user, setUser } = useUserContext();
-  const { note, putItemInDisplay, theme, isSelected, isEditingPos, isEndingPos } = props;
+  const { note, putItemInDisplay, theme, isSelected, isEditingPos, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
 
   const [newText, setNewText] = useState<string>(note.Text);
   const [isEditingText, setIsEditingText] = useState<boolean>(false);
@@ -36,24 +36,6 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
   useEffect(() => {
   }, []);
 
-  useEffect(()=>{
-    if(!isEditingText) return;
-
-    const timeout = setTimeout(()=>{
-      if(note.Text === newText){
-        setIsEditingText(false);
-      }
-    }, 5000);
-
-    return () => clearTimeout(timeout);
-  }, [isEditingText, newText]);
-
-  const resetTimer = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-  }
-
   const onChangeEditTitle = () => {
     setIsEditingText(!isEditingText);
   }
@@ -63,7 +45,6 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
     setNewText(newValue);
 
     if(shouldAutoSave) {
-      resetTimer();
       timerRef.current = setTimeout(async () => {
         await saveNote(newValue);
       }, 3000);
@@ -139,69 +120,8 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
     setIsEditingText(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'noteContainer';
-    if(note.Text.trim() !== ''){
-      rtnTheme += ' noteContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' noteContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' noteContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' noteContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' noteContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' noteContainerNoTheme';
-      }
-      else{
-        rtnTheme += ' noteContainerNoTheme';
-      }
-    }
-    
-    rtnTheme += (isSelected? ' noteContainerSelected':'');
-    rtnTheme += (isSelected&&isEndingPos?' noteContainerSelectedEnding':'');
-    rtnTheme += note.Text.trim() !== ''? ' noteContainerNoBackground':'';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' noteTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' noteTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' noteTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' noteTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' noteTextNoTheme'
-    }
-    else{
-      return ' noteTextBlue';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
   return (
-    <div className={getTheme()}>
+    <div className={'noteContainer' + itemGetTheme(theme, isSelected, isEndingPos, note.Text.trim() !== '')}>
       {isSavingText?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -216,7 +136,7 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
             </div>
             <div className='centerTitleContainer'>
               <textarea 
-                className={'noteTextArea' + getTextColor()}
+                className={'noteTextArea' + itemTextColor(theme)}
                 value={newText}
                 onChange={handleTextInputChange}
                 onKeyDown={handleKeyDown} 
@@ -226,17 +146,17 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
               {isAutoUpdating?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <PressImage onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + getTintColor() + '.png'):'/save-grey.png')}/>
+                <PressImage onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')}/>
               }
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
-          <div className={'noteTitle' + getTextColor()} onClick={() => {if(!isEditingPos)onChangeEditTitle()}}>{note.Text}</div>
+          <div className={'noteTitle' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)onChangeEditTitle()}}>{note.Text}</div>
         )
       }
-    {note.Text === '' && !isEditingText && <img className='noteImage' src={process.env.PUBLIC_URL + '/note' + getTintColor() + '.png'}></img>}
+    {note.Text === '' && !isEditingText && <img className='noteImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>}
     </div>
   );
 }

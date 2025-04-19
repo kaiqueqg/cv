@@ -22,7 +22,7 @@ interface QuestionViewProps extends ItemViewProps{
 const QuestionView: React.FC<QuestionViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { question, theme, putItemInDisplay, isSelected, isEditingPos, isEndingPos,
-    itemGetTheme, itemTextColor, itemInputColor} = props;
+    itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
 
   const [newStatement, setNewStatement] = useState<string>(question.Statement);
   const [newAnswer, setNewAnswer] = useState<string>(question.Answer);
@@ -115,15 +115,8 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
     return question.Answer.trim() !== '' && question.Statement.trim() !== '';
   }
 
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
   return (
-    <div className={'questionContainer '+itemGetTheme(theme)}>
+    <div className={'questionContainer '+itemGetTheme(theme, isSelected, isEndingPos, (question.Statement.trim()!==''&&question.Answer.trim()!==''))}>
       {isSavingQuestion?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -155,16 +148,24 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 autoFocus></input>
             </div>
             <div className='locationSideContainer'>
-              <PressImage onClick={doneEditQuestion} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
-              <PressImage onClick={cancelEditQuestion} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+              <PressImage onClick={doneEditQuestion} src={process.env.PUBLIC_URL + '/done' +itemTintColor(theme) + '.png'}/>
+              <PressImage onClick={cancelEditQuestion} src={process.env.PUBLIC_URL + '/cancel' +itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
           <div className='questionDisplayContainer'>
-            <div className={'questionDisplayLine ' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingQuestion(true)}}>{question.Statement===''? 'Question':question.Statement}</div>
+            <div 
+              className={'questionDisplayLine ' + itemTextColor(theme, question.Statement.trim()==='')+' textBold'}
+              onClick={() => {if(!isEditingPos) setIsEditingQuestion(true)}}>
+                {question.Statement===''? 'Question':question.Statement}
+              </div>
             <div className='questionAnswerContainer'>
-              <PressImage onClick={()=>{}} hideHoverEffect={true} src={process.env.PUBLIC_URL + '/arow-down-right-thicker' + getTintColor() + '.png'}></PressImage>
-              <div className={'questionDisplayLine ' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingQuestion(true)}}>{question.Answer===''? 'Question':question.Answer}</div>
+              <PressImage onClick={()=>{}} hideHoverEffect={true} src={process.env.PUBLIC_URL + '/arow-down-right-thicker' +itemTintColor(theme) + '.png'}></PressImage>
+              <div
+                className={'questionDisplayLine ' + itemTextColor(theme, question.Answer.trim()==='')}
+                onClick={() => {if(!isEditingPos) setIsEditingQuestion(true)}}>
+                  {question.Answer===''? 'Answer':question.Answer}
+              </div>
             </div>
           </div>
         )

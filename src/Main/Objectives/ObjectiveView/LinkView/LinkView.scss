@@ -14,11 +14,6 @@ $bor: false;
 
   align-items: center;
   text-align: start;
-
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
 }
 
 .linksContainerClear{
@@ -81,8 +76,6 @@ $bor: false;
   align-items: center;
   width: 100%;
   min-height: 35px;
-  color: beige;
-  font-weight: bold;
   margin: 0px 5px 0px 10px;
 
   @if($bor){
@@ -113,7 +106,6 @@ $bor: false;
   align-items: center;
   width: 100%;
   min-height: 35px;
-  color: beige;
 
   border-radius: 5px;
   border-width: 1px;
@@ -138,26 +130,6 @@ $bor: false;
   margin: 0px 5px;
 }
 
-.linksInput{
-  padding: 0px 10px 0px 10px;
-  margin: 5px;
-  color: beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
-  width: 100%;
-
-  @if($bor){
-    border-width: 1px;
-    border-color: white;
-    border-style: dashed;
-  }
-}
-
-
-
 .linksListContainer{
   margin: 5px 5px;
   padding: 5px 2px;
@@ -176,7 +148,7 @@ $bor: false;
   padding: 7px;
 }
 
-.linkImageNoPointer{
+.linkImageNoCursor{
   cursor: default;
 }
 
@@ -194,25 +166,6 @@ $bor: false;
 .upDownImage:hover{
   padding: 4px;
 }
-
-.linksContainerBlue{background-color: #035a9c;}
-.linksContainerRed{background-color: rgb(189, 32, 32);}
-.linksContainerGreen{background-color: rgb(64, 121, 64);}
-.linksContainerWhite{background-color: #D8AE7E;}
-.linksContainerNoTheme{background-color: #1D1D1D;}
-.linksContainerNoBackground{background-color: $transparent;}
-
-.linksTextBlue{color: beige,}
-.linksTextRed{color: beige,}
-.linksTextGreen{color: beige,}
-.linksTextWhite{color: black,}
-.linksTextNoTheme{color: beige,}
-
-.linksInputBlue{border-color: beige;}
-.linksInputRed{border-color: beige;}
-.linksInputGreen{border-color: beige;}
-.linksInputWhite{border-color: black;}
-.linksInputNoTheme{border-color: beige;}
 
 .linksInputWarning{
   border-color: red;

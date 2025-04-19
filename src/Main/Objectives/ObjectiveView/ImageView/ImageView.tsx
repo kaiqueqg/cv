@@ -6,6 +6,7 @@ import log from "../../../../Log/Log";
 import { objectiveslistApi, s3Api } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import PressImage from "../../../../PressImage/PressImage";
+import { isEditable } from "@testing-library/user-event/dist/utils";
 
 export const New = () => {
   return(
@@ -31,7 +32,7 @@ interface ImageViewProps extends ItemViewProps{
 }
 
 const ImageView: React.FC<ImageViewProps> = (props) => {
-  const { image, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
+  const { image, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newImage, setNewImage] = useState<Image>(image);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -73,13 +74,16 @@ const ImageView: React.FC<ImageViewProps> = (props) => {
 
     try {
       const newItem: Image = { ...image, IsDisplaying: !image.IsDisplaying, LastModified: new Date().toISOString()};
+
+      putItemInDisplay(newItem);
+
       const data = await objectiveslistApi.putObjectiveItem(newItem);
 
       if(data){
-        putItemInDisplay(data);
         setIsSavingIsDisplaying(false);
       }
     } catch (err) {
+      putItemInDisplay(image);
       log.err(JSON.stringify(err));
     }
 
@@ -240,109 +244,8 @@ const ImageView: React.FC<ImageViewProps> = (props) => {
     setIsDeletingImage(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'imageContainer';
-
-    if(theme === 'darkBlue'){
-      rtnTheme += ' imageContainerBlue';
-    }
-    else if(theme === 'darkRed'){
-      rtnTheme += ' imageContainerRed';
-    }
-    else if(theme === 'darkGreen'){
-      rtnTheme += ' imageContainerGreen';
-    }
-    else if(theme === 'darkWhite'){
-      rtnTheme += ' imageContainerWhite';
-    }
-    else if(theme === 'noTheme'){
-      rtnTheme += ' imageContainerNoTheme';
-    }
-    else{
-      rtnTheme += ' imageContainerNoTheme';
-    }
-
-    if(isSelected) rtnTheme += ' imageContainerSelected';
-    if(isEndingPos && isSelected) rtnTheme += ' imageContainerSelectedEnding';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' imageTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' imageTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' imageTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' imageTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' imageTextNoTheme'
-    }
-    else{
-      return ' imageTextBlue';
-    }
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'imageInputBlue imageTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'imageInputRed imageTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'imageInputGreen imageTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'imageInputWhite imageTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'imageInputNoTheme imageTextNoTheme'
-    }
-    else{
-      v+= 'imageInputNoTheme imageTextNoTheme';
-    }
-
-    return 'imageInput ' + v;
-  }
-
-  const getTextFadeColor = () => {
-    if(theme === 'darkBlue'){
-      return ' imageTextFadeBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' imageTextFadeRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' imageTextFadeGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' imageTextFadeWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' imageTextFadeNoTheme'
-    }
-    else{
-      return ' imageTextFadeBlue';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
   return (
-    <div className={getTheme()}>
+    <div className={'imageContainer' + itemGetTheme(theme, isSelected, isEndingPos)}>
       {isSavingImage?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -358,22 +261,22 @@ const ImageView: React.FC<ImageViewProps> = (props) => {
             <div className='imageCenterContainer'>
               <div className='imageInfoContainer'>
                 <input
-                  className={getInputColor()}
+                  className={itemInputColor(theme)}
                   type='text'
                   placeholder='Title'
                   value={newImage.Title}
                   onChange={handleTextInputChange}
                   onKeyDown={handleKeyDown} autoFocus>
                 </input>
-                {imageFile && <img className='inputImage' onClick={saveImage} src={process.env.PUBLIC_URL + '/save'+getTintColor()+'.png'}></img>}
-                {(image.Name !== '') && <img className='inputImage' onClick={downloadImage} src={process.env.PUBLIC_URL + '/download'+getTintColor()+'.png'}></img>}
+                {imageFile && <img className='inputImage' onClick={saveImage} src={process.env.PUBLIC_URL + '/save'+itemTintColor(theme)+'.png'}></img>}
+                {(image.Name !== '') && <img className='inputImage' onClick={downloadImage} src={process.env.PUBLIC_URL + '/download'+itemTintColor(theme)+'.png'}></img>}
                 {!imageFile && 
                 (isUploadingImage?
                   <Loading IsBlack={theme==='darkWhite'}></Loading>
                   :
                   <>
-                    <img className='inputImage' onClick={() => fileInputRefCamera.current?.click()} src={process.env.PUBLIC_URL + '/camera' + getTintColor() + '.png'}></img>
-                    <img className='inputImage' onClick={() => fileInputRefGallery.current?.click()} src={process.env.PUBLIC_URL + '/upload' + getTintColor() + '.png'}></img>
+                    <img className='inputImage' onClick={() => fileInputRefCamera.current?.click()} src={process.env.PUBLIC_URL + '/camera' + itemTintColor(theme) + '.png'}></img>
+                    <img className='inputImage' onClick={() => fileInputRefGallery.current?.click()} src={process.env.PUBLIC_URL + '/upload' + itemTintColor(theme) + '.png'}></img>
                   </>
                 )}
                 
@@ -392,19 +295,18 @@ const ImageView: React.FC<ImageViewProps> = (props) => {
                 )}
             </div>
             <div className='imageSideContainer'>
-              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
-              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}></img>
+              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}></img>
             </div>
           </div>
           :
           <div className={'imageDisplayContainer'}>
             <div className='imageDisplayTitleContainer'>
-              <div className={'imageTitle ' + getTextColor()} onClick={() => {if(!isEditingPos)setIsEditingImage(!isEditingImage);}}>{image.Title}</div>
-              {imageFile && <img className='inputImage' onClick={saveImage} src={process.env.PUBLIC_URL + '/save'+getTintColor()+'.png'}></img>}
+              <div className={'imageTitle ' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingImage(!isEditingImage);}}>{image.Title}</div>
               {isSavingIsDisplaying?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
                 :
-                <img className='imageImage' onClick={() => {if(!isEditingPos)onChangeIsDisplaying()}} src={process.env.PUBLIC_URL + '/image' + ((imageFile)?'-filled':'') + (image.IsDisplaying?getTintColor():'-grey') + '.png'}></img>
+                <img className='imageImage' onClick={() => {if(!isEditingPos)onChangeIsDisplaying()}} src={process.env.PUBLIC_URL + '/image' + ((imageFile)?'-filled':'') + (image.IsDisplaying?itemTintColor(theme):'-grey') + '.png'}></img>
               }
             </div>
             <div className='previewImageContainer'>

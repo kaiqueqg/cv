@@ -9,11 +9,6 @@
   
   align-items: center;
   text-align: start;
-  
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
 }
 
 .noteContainerClear{
@@ -66,12 +61,10 @@
   min-height: 35px;
   margin-right: 5px;
   padding: 0px 10px 0px 10px;
-  color: beige;
   white-space: pre-line;
 }
 .noteTitle:hover{
   cursor: pointer;
-  font-weight: bold;
 }
 
 .noteTextArea{
@@ -79,13 +72,13 @@
   width: 100%;
   min-height: 300px;
   margin-right: 5px;
-  color: beige;
   background-color: #00000000;
   border-width: 1px;
-  border-color: beige;
+  border-color: black;
   border-style: dashed;
   border-radius: 5px;
   outline: 0px;
+  margin: 5px 0px;
 }
 
 .noteImage{
@@ -115,16 +108,3 @@
 .inputImage:hover{
   padding: 4px;
 }
-
-.noteContainerBlue{background-color: #035a9c;}
-.noteContainerRed{background-color: rgb(189, 32, 32);}
-.noteContainerGreen{background-color: rgb(64, 121, 64);}
-.noteContainerWhite{background-color: #D8AE7E;}
-.noteContainerNoTheme{background-color: $blue-darker-darker};
-.noteContainerNoBackground{background-color: $transparent;};
-
-.noteTextBlue{color: beige,}
-.noteTextRed{color: beige,}
-.noteTextGreen{color: beige,}
-.noteTextWhite{color: black,}
-.noteTextNoTheme{color: beige,}

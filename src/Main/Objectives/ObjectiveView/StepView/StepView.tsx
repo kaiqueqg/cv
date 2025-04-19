@@ -26,7 +26,7 @@ interface StepViewProps extends ItemViewProps{
 
 const StepView: React.FC<StepViewProps> = (props) => {
   const { popMessage } = useLogContext();
-  const { step, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
+  const { step, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [isSavingTitle, setIsSavingTitle] = useState<boolean>(false);
@@ -40,19 +40,6 @@ const StepView: React.FC<StepViewProps> = (props) => {
     setNewTitle(step.Title);
     setNewImportance(step.Importance??StepImportance.None);
   }, [step]);
-
-  //to test
-  useEffect(()=>{
-    if(!isEditingTitle) return;
-
-    const timeout = setTimeout(()=>{
-      if(step.Title === newTitle){
-        setIsEditingTitle(false);
-      }
-    }, 5000);
-
-    return () => clearTimeout(timeout);
-  }, [isEditingTitle, newTitle]);
 
   const onChangeDone = async () => {
     setIsSavingDone(true);
@@ -209,109 +196,6 @@ const StepView: React.FC<StepViewProps> = (props) => {
     setIsEditingTitle(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'stepContainer';
-
-    if(step.Done){
-      rtnTheme += ' stepContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' stepContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' stepContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' stepContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' stepContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' stepContainerNoTheme';
-      }
-    }
-
-    if(isSelected) rtnTheme += ' stepContainerSelected';
-    if(isEndingPos && isSelected) rtnTheme += ' stepContainerSelectedEnding';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' stepTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' stepTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' stepTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' stepTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' stepTextNoTheme'
-    }
-    else{
-      return ' stepTextBlue';
-    }
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'stepInputBlue stepTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'stepInputRed stepTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'stepInputGreen stepTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'stepInputWhite stepTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'stepInputNoTheme stepTextNoTheme'
-    }
-    else{
-      v+= 'stepInputNoTheme stepTextNoTheme';
-    }
-
-    return 'stepInput ' + v;
-  }
-
-  const getTextFadeColor = () => {
-    if(theme === 'darkBlue'){
-      return ' stepTextFadeBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' stepTextFadeRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' stepTextFadeGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' stepTextFadeWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' stepTextFadeNoTheme'
-    }
-    else{
-      return ' stepTextFadeBlue';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
   const getNewImportanceImage = () => {
     if(newImportance === StepImportance.Low){
       return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/low.png'}/>
@@ -323,16 +207,16 @@ const StepView: React.FC<StepViewProps> = (props) => {
       return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/high.png'}/>
     }
     else if(newImportance === StepImportance.Question){
-      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}/>
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}/>
     }
     else if(newImportance === StepImportance.Waiting){
-      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/wait'+getTintColor()+'.png'}/>
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'}/>
     }
     else if(newImportance === StepImportance.InProgress){
-      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+getTintColor()+'.png'}/>
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
     }
     else{
-      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/cancel'+getTintColor()+'.png'}/>
+      return <PressImage onClick={() => {if(!isEditingPos)onChangeNewImportance();}} src={process.env.PUBLIC_URL + '/cancel'+itemTintColor(theme)+'.png'}/>
     }
   }
 
@@ -348,22 +232,22 @@ const StepView: React.FC<StepViewProps> = (props) => {
         return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/high.png'} isLoading={isSavingImportance}/>
       }
       else if(newImportance === StepImportance.Question){
-        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'} isLoading={isSavingImportance}/>
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'} isLoading={isSavingImportance}/>
       }
       else if(newImportance === StepImportance.Waiting){
-        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/wait'+getTintColor()+'.png'} isLoading={isSavingImportance}/>
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'} isLoading={isSavingImportance}/>
       }
       else if(newImportance === StepImportance.InProgress){
-        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+getTintColor()+'.png'} isLoading={isSavingImportance}/>
+        return <PressImage onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'} isLoading={isSavingImportance}/>
       }
       else{
-        return <></>//<img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+getTintColor()+'.png'}></img>;
+        return <></>//<img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}></img>;
       }
     }
   }
 
   return (
-    <div className={getTheme()}>
+    <div className={'stepContainer'+itemGetTheme(theme, isSelected, isEndingPos, step.Done)}>
       {isSavingTitle?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -376,19 +260,19 @@ const StepView: React.FC<StepViewProps> = (props) => {
               <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
             }
             <input
-              className={getInputColor()}
+              className={itemInputColor(theme)}
               type='text'
               placeholder='Step text'
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
-            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
-            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
           </div>
           :
           <>
             {getImportanceImage()}
-            <div className={'stepTitle' + (step.Done? getTextFadeColor():getTextColor())} onClick={() => {if(!isEditingPos)onChangeEditTitle();}}>{step.Title}</div>
+            <div className={'stepTitle ' + itemTextColor(theme, step.Done)} onClick={() => {if(!isEditingPos)onChangeEditTitle();}}>{step.Title}</div>
           </>
         )
       }
@@ -397,7 +281,7 @@ const StepView: React.FC<StepViewProps> = (props) => {
         {step.Done?
           <PressImage onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'} isLoading={isSavingDone}/>
           :
-          <PressImage onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + getTintColor() + '.png'} isLoading={isSavingDone}/>
+          <PressImage onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone}/>
         }
       </>
       }

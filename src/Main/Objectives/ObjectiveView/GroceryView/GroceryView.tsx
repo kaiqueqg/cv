@@ -25,7 +25,7 @@ interface GroceryViewProps extends ItemViewProps{
 
 const QuestionView: React.FC<GroceryViewProps> = (props) => {
   const { user, setUser } = useUserContext();
-  const { grocery, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
+  const { grocery, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newGrocery, setNewGrocery] = useState<Grocery>(grocery);
   const [isEditingGrocery, setIsEditingGrocery] = useState<boolean>(false);
@@ -129,112 +129,6 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
     setIsDeleting(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'groceryContainer';
-
-    if(grocery.IsChecked){
-      rtnTheme += ' groceryContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' groceryContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' groceryContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' groceryContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' groceryContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' groceryContainerNoTheme';
-      }
-      else{
-        rtnTheme += ' groceryContainerNoTheme';
-      }
-    }
-
-    if(isSelected) rtnTheme += ' groceryContainerSelected';
-    if(isEndingPos && isSelected) rtnTheme += ' groceryContainerSelectedEnding';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' groceryTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' groceryTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' groceryTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' groceryTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' groceryTextNoTheme'
-    }
-    else{
-      return ' groceryTextBlue';
-    }
-  }
-
-  const getTextFadeColor = () => {
-    if(theme === 'darkBlue'){
-      return ' groceryTextFadeBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' groceryTextFadeRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' groceryTextFadeGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' groceryTextFadeWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' groceryTextFadeNoTheme'
-    }
-    else{
-      return ' groceryTextFadeBlue';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'groceryInputBlue groceryTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'groceryInputRed groceryTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'groceryInputGreen groceryTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'groceryInputWhite groceryTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'groceryInputNoTheme groceryTextNoTheme'
-    }
-    else{
-      v+= 'groceryInputNoTheme groceryTextNoTheme';
-    }
-
-    return 'groceryInput ' + v;
-  }
-
   const getDisplayText = () => {
     let rtn = '';
     if(grocery.Quantity && grocery.Quantity > 1) rtn += grocery.Quantity.toString()+grocery.Unit+' ';
@@ -245,7 +139,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
   }
 
   return (
-    <div className={getTheme()}>
+    <div className={'groceryContainer' + itemGetTheme(theme, isSelected, isEndingPos, grocery.IsChecked)}>
       {isSavingGrocery?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -260,7 +154,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
             </div>
             <div className='groceryCenterContainer'>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newGrocery.Title}
                 onChange={handleTitleInputChange}
@@ -268,7 +162,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='number'
                 value={newGrocery.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -276,14 +170,14 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newGrocery.GoodPrice?? ''}
                 onChange={handleGoodPriceInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Good price"></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newGrocery.Unit?? ''}
                 onChange={handleUnitInputChange}
@@ -291,16 +185,17 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Unit"></input>
             </div>
             <div className='grocerySideContainer'>
-              <PressImage onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
-              <PressImage onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+              <PressImage onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
           <div className='groceryDisplayContainer'>
             <div 
-              className={'groceryLine' + (grocery.IsChecked? getTextFadeColor():getTextColor())}
+              className={'groceryLine' + itemTextColor(theme, grocery.IsChecked)}
               onClick={() => {if(!isEditingPos)setIsEditingGrocery(true)}}>
-              {getDisplayText()}</div>
+              {getDisplayText()}
+            </div>
             {!isEditingGrocery &&
               (isSavingIsChecked?
                 <Loading IsBlack={theme==='darkWhite'}></Loading>
@@ -308,7 +203,7 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
                 (grocery.IsChecked?
                   <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
                   :
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + getTintColor() + '.png'}/>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

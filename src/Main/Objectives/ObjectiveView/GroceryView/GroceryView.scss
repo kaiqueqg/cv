@@ -10,11 +10,6 @@
   min-height: 40px;
   border-radius: 5px;
   margin-bottom: 2px;
-
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
 }
 
 .groceryContainer:hover{
@@ -72,18 +67,6 @@
   margin: 0px 2px;
 }
 
-.groceryInput{
-  min-height: 30px;
-  padding: 0px 10px 0px 10px;
-  margin: 5px 0px;
-  color: beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
-}
-
 .groceryImage{
   cursor: pointer;
   max-width: 35px;
@@ -94,27 +77,3 @@
 .groceryImage:hover{
   padding: 4px;
 }
-
-.groceryContainerBlue{background-color: #035a9c;}
-.groceryContainerRed{background-color: rgb(189, 32, 32);}
-.groceryContainerGreen{background-color: rgb(64, 121, 64);}
-.groceryContainerWhite{background-color: #D8AE7E;}
-.groceryContainerNoTheme{background-color: #1D1D1D;}
-
-.groceryTextBlue{color: beige,}
-.groceryTextRed{color: beige,}
-.groceryTextGreen{color: beige,}
-.groceryTextWhite{color: black,}
-.groceryTextNoTheme{color: beige,}
-
-.groceryTextFadeBlue{color: lightblue,}
-.groceryTextFadeRed{color: rgb(245, 184, 184),}
-.groceryTextFadeGreen{color: lightgreen,}
-.groceryTextFadeWhite{color: rgb(73, 73, 73),}
-.groceryTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}
-
-.groceryInputBlue{border-color: beige;}
-.groceryInputRed{border-color: beige;}
-.groceryInputGreen{border-color: beige;}
-.groceryInputWhite{border-color: black;}
-.groceryInputNoTheme{border-color: beige;}

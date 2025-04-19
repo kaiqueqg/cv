@@ -21,7 +21,7 @@ interface LocationViewProps extends ItemViewProps{
 
 const LocationView: React.FC<LocationViewProps> = (props) => {
   const { user, setUser } = useUserContext();
-  const { location, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
+  const { location, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(location.Title);
   const [newUrl, setNewUrl] = useState<string>(location.Url);
@@ -110,92 +110,8 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     setIsDeleting(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'locationContainer';
-
-    if(location.Url.trim() !== ''){
-      rtnTheme += ' locationContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' locationContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' locationContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' locationContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' locationContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' locationContainerNoTheme';
-      }
-      else{
-        rtnTheme += ' locationContainerNoTheme';
-      }
-    }
-
-    rtnTheme += (location.Title.trim() !== '' && location.Url.trim() !== '')? ' locationContainerNoBackground':'';
-    rtnTheme += isSelected? ' locationContainerSelected':'';
-    rtnTheme += isEndingPos&&isSelected? ' locationContainerSelectedEnding':'';
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' locationTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' locationTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' locationTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' locationTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' locationTextNoTheme'
-    }
-    else{
-      return ' locationTextNoTheme';
-    }
-  }
-
-  const getTintColor = () => {
-    let tint = '';
-    if(theme === 'darkWhite') tint += '-black';
-    return tint;
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'locationInputBlue locationTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'locationInputRed locationTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'locationInputGreen locationTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'locationInputWhite locationTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'locationInputNoTheme locationTextNoTheme'
-    }
-    else{
-      v+= 'locationInputNoTheme locationTextNoTheme';
-    }
-
-    return 'locationInput ' + v;
-  }
-
   return (
-    <div className={getTheme()}>
+    <div className={'locationContainer'+ itemGetTheme(theme, isSelected, isEndingPos, location.Url.trim()!=='')}>
       {isSavingLocation?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -210,7 +126,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
             </div>
             <div className='locationCenterContainer'>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleInputChange}
@@ -218,7 +134,7 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 placeholder='Title'>
               </input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newUrl}
                 onChange={handleUrlInputChange}
@@ -227,15 +143,15 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
                 autoFocus></input>
             </div>
             <div className='locationSideContainer'>
-              <PressImage onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
-              <PressImage onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+              <PressImage onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
-          <div className={'titleLine' + getTextColor()} onClick={() => {if(!isEditingPos)setIsEditingLocation(true)}}>{location.Title}</div>
+          <div className={'locationTitleLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingLocation(true)}}>{location.Title}</div>
         )
       }
-      {!isEditingLocation && <img className={'urlImage ' + ((location.Url && location.Url.trim()) !== ''?'':'urlImageNoPointer')} onClick={() => {if(!isEditingPos && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + getTintColor() + '.png'}></img>}
+      {!isEditingLocation && <img className={'urlImage ' + ((location.Url && location.Url.trim()) !== ''?'':'urlImageNoPointer')} onClick={() => {if(!isEditingPos && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + itemTintColor(theme) + '.png'}></img>}
     </div>
   );
 }

@@ -11,6 +11,11 @@ $bor: false;
   align-items: center;
   width: 100%;
 
+  border-width: 1px;
+  border-color: $black;
+  border-style: solid;
+  border-radius: 5px;
+
   @if($bor){
     border-width: 1px;
     border-color: white;
@@ -34,14 +39,3 @@ $bor: false;
   height: 30px;
   padding: 2px;
 }
-
-.objObjectiveBlue{background-color: #113a58;}
-// .objObjectiveRed{background-color: #8F1414;}
-.objObjectiveGreen{background-color: rgb(44, 82, 44);}
-.objObjectiveWhite{background-color: beige;}
-.objObjectiveNoTheme{background-color: $blue-dark;}
-
-.objTextBlue{color: beige;}
-.objTextRed{color: beige;}
-.objTextGreen{color: beige;}
-.objTextWhite{color: black;}

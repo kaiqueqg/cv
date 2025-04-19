@@ -26,7 +26,7 @@ interface MedicineViewProps extends ItemViewProps{
 
 const MedicineView: React.FC<MedicineViewProps> = (props) => {
   const { user, setUser } = useUserContext();
-  const { medicine, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
+  const { medicine, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newMedicine, setNewMedicine] = useState<Medicine>(medicine);
   const [isEditingMedicine, setIsEditingMedicine] = useState<boolean>(false);
@@ -134,112 +134,6 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
     setIsDeleting(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'medicineContainer';
-    
-    if(medicine.IsChecked){
-      rtnTheme += ' medicineContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' medicineContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' medicineContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' medicineContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' medicineContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' medicineContainerNoTheme';
-      }
-      else{
-        rtnTheme += ' medicineContainerNoTheme';
-      }
-    }
-
-    if(isSelected) rtnTheme += ' medicineContainerSelected';
-    if(isEndingPos && isSelected) rtnTheme += ' medicineContainerSelectedEnding';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' medicineTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' medicineTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' medicineTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' medicineTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' medicineTextNoTheme'
-    }
-    else{
-      return ' medicineTextBlue';
-    }
-  }
-
-  const getTextFadeColor = () => {
-    if(theme === 'darkBlue'){
-      return ' medicineTextFadeBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' medicineTextFadeRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' medicineTextFadeGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' medicineTextFadeWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' medicineTextFadeNoTheme'
-    }
-    else{
-      return ' medicineTextFadeBlue';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'medicineInputBlue medicineTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'medicineInputRed medicineTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'medicineInputGreen medicineTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'medicineInputWhite medicineTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'medicineInputNoTheme medicineTextNoTheme'
-    }
-    else{
-      v+= 'medicineInputNoTheme medicineTextNoTheme';
-    }
-
-    return 'medicineInput ' + v;
-  }
-
   const getDisplayText = () => {
     let rtn = '';
     if(medicine.Quantity && medicine.Quantity > 1) rtn += medicine.Quantity.toString()+'x ';
@@ -249,7 +143,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
   }
 
   return (
-    <div className={getTheme()}>
+    <div className={'medicineContainer' + itemGetTheme(theme, isSelected, isEndingPos, medicine.IsChecked)}>
       {isSavingMedicine?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -264,7 +158,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
             </div>
             <div className='medicineCenterContainer'>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newMedicine.Title}
                 onChange={handleTitleInputChange}
@@ -272,7 +166,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='number'
                 value={newMedicine.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -280,14 +174,14 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newMedicine.Unit?? ''}
                 onChange={handleUnitInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Unit"></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newMedicine.Purpose?? ''}
                 onChange={handlePurposeInputChange}
@@ -295,16 +189,16 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Purpose"></input>
             </div>
             <div className='medicineSideContainer'>
-              <PressImage onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
-              <PressImage onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+              <PressImage onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
           <div className={'medicineDisplayContainer'}>
             <div className='medicineLine' onClick={onEditMedicine}>
-              <div className={'medicineText' + (medicine.IsChecked? getTextFadeColor():getTextColor())}> {getDisplayText()}</div>
-              {medicine.Unit && <div className={'medicineText' + (medicine.IsChecked? getTextFadeColor():getTextColor())}>{medicine.Unit}</div>}
-              {medicine.Purpose && <div className={'medicineText ' + getTextFadeColor()}>{'('+medicine.Purpose+')'}</div>}
+              <div className={'medicineText' + itemTextColor(theme, medicine.IsChecked)}> {getDisplayText()}</div>
+              {medicine.Unit && <div className={'medicineText' + itemTextColor(theme, medicine.IsChecked)}>{medicine.Unit}</div>}
+              {medicine.Purpose && <div className={'medicineText ' + itemTextColor(theme, true)}>{'('+medicine.Purpose+')'}</div>}
             </div>
             {!isEditingMedicine &&
               (isSavingIsChecked?
@@ -313,7 +207,7 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 (medicine.IsChecked?
                   <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>
                   :
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + getTintColor() + '.png'}/>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

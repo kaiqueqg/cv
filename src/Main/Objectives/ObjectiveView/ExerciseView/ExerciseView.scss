@@ -10,11 +10,6 @@
   min-height: 40px;
   border-radius: 5px;
   margin-bottom: 2px;
-
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
 }
 
 .exerciseContainer:hover{
@@ -77,17 +72,6 @@
 
   width: 10%;
   margin: 0px 2px;
-}
-
-.exerciseInput{
-  padding: 0px 10px 0px 10px;
-  margin: 5px;
-  color: beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
 }
 
 .exerciseWeekdaysContainer{
@@ -153,27 +137,3 @@
 .exerciseImage:hover{
   padding: 4px;
 }
-
-.exerciseContainerBlue{background-color: #035a9c;}
-.exerciseContainerRed{background-color: rgb(189, 32, 32);}
-.exerciseContainerGreen{background-color: rgb(64, 121, 64);}
-.exerciseContainerWhite{background-color: #D8AE7E;}
-.exerciseContainerNoTheme{background-color: #1D1D1D;}
-
-.exerciseTextBlue{color: beige,}
-.exerciseTextRed{color: beige,}
-.exerciseTextGreen{color: beige,}
-.exerciseTextWhite{color: black,}
-.exerciseTextNoTheme{color: beige,}
-
-.exerciseTextFadeBlue{color: lightblue,}
-.exerciseTextFadeRed{color: rgb(245, 184, 184),}
-.exerciseTextFadeGreen{color: lightgreen,}
-.exerciseTextFadeWhite{color: rgb(73, 73, 73),}
-.exerciseTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}
-
-.exerciseInputBlue{border-color: beige;}
-.exerciseInputRed{border-color: beige;}
-.exerciseInputGreen{border-color: beige;}
-.exerciseInputWhite{border-color: black;}
-.exerciseInputNoTheme{border-color: beige;}

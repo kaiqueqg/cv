@@ -30,92 +30,65 @@ $bor: false;
   justify-content: center;
   align-items: center;
   width: 100%;
+  height: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(129, 110, 110);
+    border-style: dashed;
+  }
 }
 
 .objectivesListContainer{
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
 
   @media(min-width: 700px){
     flex-direction: row;
   }
 
   @if($bor){
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    border-width: 2px;
+    border-color: purple;
+    border-style: dashed;
   }
 }
 
 .objectivesListSideContainer{
   display: flex;
   flex-direction: column;
-  align-items: center;
   
-  border-width: 0px 0px 1px 0px ;
-  border-radius: 0px;
-  border-color: $beige-dark;
+  border-width: 0px 1px 0px 0px;
+  border-color: $beige-darker;
   border-style: solid;
   width: 100%;
+  padding: 5px;
   
   @media(min-width: 700px){
     align-items: flex-start;
     flex-direction: row;
-    border-width: 0px 1px 0px 0px ;
     min-width: 160px;
     width: 15%;
-    @if $bor {border: 1px solid blue;}
+    @if $bor {border: 3px solid blue;}
   }
   @if $bor {border: 1px solid blue;}
 }
 
-.objectivesListSideContainerClosed{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 10px 5px;
-
-  border-width: 0px 0px 1px 0px ;
-  border-radius: 0px;
-  border-color: $beige-dark;
-  border-style: solid;
-  
-  @media(min-width: 700px){
-    align-items: flex-start;
-    border-width: 0px 1px 0px 0px ;
-    @if $bor {border: 1px solid rgb(211, 37, 255);}
-  }
-
-  @if $bor {border: 1px solid rgb(37, 255, 237);}
-}
-
-.objectivesListSideContainerArrow{
-  display: flex;
-  // max-height: 700px;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  @media(min-width: 700px){
-    min-height: 0px;
-  }
-}
-
-.objectivesSidePanelOpened{
+.objectivesSidePanel{
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100%;
 }
 
-.objectivesSidePanelOpenedButtons{
+.objectivesSidePanelButtons{
   display: flex;
   justify-content: space-around;
   align-items: center;
-  flex-direction: column;
-
-  @media(min-width: 700px){
-    flex-direction: row;
-  }
+  flex-direction: row;
+  flex-wrap: wrap;
 
   @if($bor){
     border-width: 1px;
@@ -129,6 +102,7 @@ $bor: false;
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  padding: 5px;
   
   @media(min-width: 700px){
     width: 85%;
@@ -169,6 +143,7 @@ $bor: false;
   padding: 2px 10px;
   font-weight: bold;
   font-size: 13px;
+  color: $beige
 }
 
 .objectivesListMainTagNotSelected{
@@ -252,7 +227,6 @@ $bor: false;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
   @if($bor){
     border-width: 1px;
     border-color: red;

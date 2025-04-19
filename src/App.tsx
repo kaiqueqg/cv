@@ -8,6 +8,7 @@ import { UserProvider } from './Contexts/UserContext';
 import Login from './Main/Login/Login';
 import ObjectivesList from './Main/Objectives/ObjectivesList';
 import { LogProvider } from './Contexts/LogContext';
+import IoT from './Main/IoT/IoT';
 
 interface AppProps{
 }
@@ -31,7 +32,7 @@ const App: React.FC<AppProps> = () => {
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/cv" element={<Curriculum/>}/>
                 <Route path="/objectiveslist" element={<ObjectivesList/>}/>
-                {/* <Route path="/sleepdevice" element={<SleepDevice></SleepDevice>} /> */}
+                <Route path="/iot" element={<IoT></IoT>}/>
               </Routes>
             </HashRouter>
           </div>

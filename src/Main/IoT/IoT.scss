@@ -1,0 +1,49 @@
+$bor: false;
+
+.iotContainer{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 10px 20px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
+}
+
+.iotContainerLeft{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+  
+  @if($bor){
+    border-width: 1px;
+    border-color: yellow;
+    border-style: solid;
+  }
+}
+
+.iotContainerRight{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+  
+  @if($bor){
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
+}
+
+.iotDeviceTitle{
+  font-size: 40px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}

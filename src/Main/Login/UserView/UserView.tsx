@@ -105,6 +105,11 @@ const UserView: React.FC<UserViewProps> = (props) => {
     )
   }
 
+  const emergencyStop = async () => {
+    const result = await identityApi.getEmergencyStop();
+    log.r(result);
+  }
+
   return(
   <div className="logged-container">
     <div className='card-container'>
@@ -150,6 +155,7 @@ const UserView: React.FC<UserViewProps> = (props) => {
           <Loading/>
         ) : (
           <>
+            <div onClick={emergencyStop}>Emergency Stop</div>
             <div className='logged-title' onClick={() => {getServicesList()}}>Services:</div>
             <div className='admin-service-box'>
               <div className='admin-service-row'>

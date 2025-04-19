@@ -21,7 +21,7 @@ interface WaitViewProps extends ItemViewProps{
 }
 
 const WaitView: React.FC<WaitViewProps> = (props) => {
-  const { wait, putItemInDisplay, theme, isEditingPos, isSelected, isEndingPos } = props;
+  const { wait, putItemInDisplay, theme, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -88,93 +88,8 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
     setIsEditingTitle(false);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'waitContainer';
-    
-    if(wait.Title.trim() !== ''){
-      rtnTheme += ' waitContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' waitContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' waitContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' waitContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' waitContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' waitContainerNoTheme';
-      }
-      else{
-        rtnTheme += ' waitContainerNoTheme';
-      }
-    }
-    rtnTheme += isSelected? ' waitContainerSelected':'';
-    rtnTheme += isEndingPos&&isSelected? ' waitContainerSelectedEnding':'';
-    rtnTheme += wait.Title.trim() !== ''? ' waitContainerNoBackground':'';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' waitTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' waitTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' waitTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' waitTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' waitTextNoTheme'
-    }
-    else{
-      return ' waitTextNoTheme';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'waitInputBlue waitTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'waitInputRed waitTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'waitInputGreen waitTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'waitInputWhite waitTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'waitInputNoTheme waitTextNoTheme'
-    }
-    else{
-      v+= 'waitInputNoTheme waitTextNoTheme';
-    }
-
-    return 'waitInput ' + v;
-  }
-
   return (
-    <div className={getTheme()}>
+    <div className={'waitContainer' + itemGetTheme(theme, isSelected, isEndingPos)}>
       {isSavingTitle?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -186,20 +101,20 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
               <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
             }
             <input 
-              className={getInputColor()}
+              className={itemInputColor(theme)}
               type='text'
               placeholder='Wait text'
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
-            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
-            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
+            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
           </div>
           :
-          <div className={'waitTitle' + getTextColor()} onClick={()=>{if(!isEditingPos)onChangeEditTitle()}}>{wait.Title}</div>
+          <div className={'waitTitle' + itemTextColor(theme)} onClick={()=>{if(!isEditingPos)onChangeEditTitle()}}>{wait.Title}</div>
         )
       }
-    {!isEditingTitle && <img className='waitImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor() + '.png'}></img>}
+    {!isEditingTitle && <img className='waitImage' src={process.env.PUBLIC_URL + '/wait' + itemTintColor(theme) + '.png'}></img>}
     </div>
   );
 }

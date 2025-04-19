@@ -38,9 +38,10 @@ export interface ItemViewProps{
   isSelected: boolean,
   isEndingPos: boolean,
   putItemInDisplay: (item?: Item, remove?: boolean) => void,
-  itemGetTheme: (theme: string) => string,
-  itemTextColor: (theme: string) => string,
-  itemInputColor: (theme: string) => string,
+  itemGetTheme: (theme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean) => string,
+  itemTextColor: (theme: string, fade?: boolean) => string,
+  itemInputColor: (theme: string, fade?: boolean) => string,
+  itemTintColor: (theme: string, fade?: boolean) => string,
 }
 
 export interface DisplayTag{
@@ -62,7 +63,13 @@ export enum ItemType{
   Note,
   Location,
   Divider,
-  Grocery, Medicine, Exercise, Links, ItemFake, Image }
+  Grocery, 
+  Medicine, 
+  Exercise, 
+  Link, 
+  ItemFake, 
+  Image,
+  House }
 
 export interface Item {
   ItemId: string,
@@ -140,14 +147,9 @@ export interface Exercise extends Item{
   LastDone: string,
 }
 
-export interface Link{
+export interface Link extends Item{
   Title: string,
-  Url: string,
-}
-
-export interface Links extends Item{
-  Title: string,
-  Links: Link[],
+  Link: string,
 }
 
 export interface Image extends Item{
@@ -157,4 +159,42 @@ export interface Image extends Item{
   Width: number,
   Height: number,
   IsDisplaying: boolean;
+}
+
+export interface House extends Item{
+  Title: string,
+  Listing: string,
+  MapLink: string,
+  MeterSquare: string,
+  Rating: number,
+  Address: string,
+  TotalPrice: number,
+  WasContacted: boolean,
+  Details: string,
+  Attention: string,
+}
+
+export interface DeviceData{
+  UserId: string,
+  DataId: string,
+  DateAdded: string,
+  AmbientTemperature: string,
+  AmbientPressure: string,
+  AmbientHumidity: string,
+  AmbientLight: string,
+  UVLight: string,
+  IRTemperature: string,
+  WeakProbTemperature: string,
+  StrongProbTemperature: string,
+  AirQuality: string,
+  TotalAcel: string,
+  AccX: string,
+  AccY: string,
+  AccZ: string,
+  GyrX: string,
+  GyrY: string,
+  GyrZ: string,
+  MagX: string,
+  MagY: string,
+  MagZ: string,
 }

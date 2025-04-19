@@ -20,10 +20,14 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
   const onChangeObjectiveShowing = async (objective: Objective) => {
     setIsOpening(true);
     try {
-      const data = await objectiveslistApi.putObjective({...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()}, () => {});
-  
+      const newObjective: Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
+      putObjectiveInDisplay(newObjective);
+
+      const data = await objectiveslistApi.putObjective(newObjective);
       if(data){
-        putObjectiveInDisplay(data);
+      }
+      else{
+        putObjectiveInDisplay(objective); // is right?
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -45,34 +49,23 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
     else if(objective.Theme === 'darkWhite'){
       return ' objObjectiveWhite'
     }
+    else if(objective.Theme === 'darkCyan'){
+      return ' objObjectiveCyan'
+    }
+    else if(objective.Theme === 'darkPink'){
+      return ' objObjectivePink'
+    }
     else if(objective.Theme === 'noTheme'){
       return ' objObjectiveNoTheme'
     }
   }
 
   const getTextColor = () => {
-    if(objective.Theme === 'darkBlue'){
-      return ' objTextBlue'
-    }
-    else if(objective.Theme === 'darkRed'){
-      return ' objTextRed'
-    }
-    else if(objective.Theme === 'darkGreen'){
-      return ' objTextGreen'
-    }
-    else if(objective.Theme === 'darkWhite'){
-      return ' objTextWhite'
-    }
-    else if(objective.Theme === 'noTheme'){
-      return ' objTextNoTheme'
-    }
-    else{
-      return ' objTextBlue';
-    }
+    return ' textColor' + (objective.Theme === 'darkWhite' || objective.Theme === 'darkPink'?'White':'');
   }
 
   const getTintColor = () => {
-    if(objective.Theme === 'darkWhite')
+    if(objective.Theme === 'darkWhite' || objective.Theme === 'darkPink')
       return '-black';
     else
       return '';
@@ -86,7 +79,7 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
       onMouseLeave={()=>{setIsBeingHover(false)}}
       >
       { isOpening ?
-        <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+        <Loading IsBlack={objective.Theme==='darkWhite' || objective.Theme === 'darkPink'}></Loading>
         :
         (isBeingHover?
           <img className="objectiveClosedImage" src={process.env.PUBLIC_URL + '/show' + getTintColor() + '.png'} alt='meaningfull text'></img>

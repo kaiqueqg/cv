@@ -27,7 +27,7 @@ interface ExerciseViewProps extends ItemViewProps{
 }
 
 const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
-  const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos } = props;
+  const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [isSavingExercise, setIsSavingExercise] = useState<boolean>(false);
   const [isSavingIsDone, setIsSavingIsDone] = useState<boolean>(false);
@@ -179,112 +179,6 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     setNewExercise(exercise);
   }
 
-  const getTheme = () => {
-    let rtnTheme = 'exerciseContainer';
-
-    if(exercise.IsDone){
-      rtnTheme += ' exerciseContainerClear';
-    }
-    else{
-      if(theme === 'darkBlue'){
-        rtnTheme += ' exerciseContainerBlue';
-      }
-      else if(theme === 'darkRed'){
-        rtnTheme += ' exerciseContainerRed';
-      }
-      else if(theme === 'darkGreen'){
-        rtnTheme += ' exerciseContainerGreen';
-      }
-      else if(theme === 'darkWhite'){
-        rtnTheme += ' exerciseContainerWhite';
-      }
-      else if(theme === 'noTheme'){
-        rtnTheme += ' exerciseContainerNoTheme';
-      }
-      else{
-        rtnTheme += ' exerciseContainerNoTheme';
-      }
-    }
-
-    if(isSelected) rtnTheme += ' exerciseContainerSelected';
-    if(isEndingPos && isSelected) rtnTheme += ' exerciseContainerSelectedEnding';
-
-    return rtnTheme;
-  }
-
-  const getTextColor = () => {
-    if(theme === 'darkBlue'){
-      return ' exerciseTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' exerciseTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' exerciseTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' exerciseTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' exerciseTextNoTheme'
-    }
-    else{
-      return ' exerciseTextBlue';
-    }
-  }
-
-  const getTextFadeColor = () => {
-    if(theme === 'darkBlue'){
-      return ' exerciseTextFadeBlue'
-    }
-    else if(theme === 'darkRed'){
-      return ' exerciseTextFadeRed'
-    }
-    else if(theme === 'darkGreen'){
-      return ' exerciseTextFadeGreen'
-    }
-    else if(theme === 'darkWhite'){
-      return ' exerciseTextFadeWhite'
-    }
-    else if(theme === 'noTheme'){
-      return ' exerciseTextFadeNoTheme'
-    }
-    else{
-      return ' exerciseTextFadeBlue';
-    }
-  }
-
-  const getTintColor = () => {
-    if(theme === 'darkWhite')
-      return '-black';
-    else
-      return '';
-  }
-
-  const getInputColor = () => {
-    let v = '';
-    if(theme === 'darkBlue'){
-      v+= 'exerciseInputBlue exerciseTextBlue'
-    }
-    else if(theme === 'darkRed'){
-      v+= 'exerciseInputRed exerciseTextRed'
-    }
-    else if(theme === 'darkGreen'){
-      v+= 'exerciseInputGreen exerciseTextGreen'
-    }
-    else if(theme === 'darkWhite'){
-      v+= 'exerciseInputWhite exerciseTextWhite'
-    }
-    else if(theme === 'noTheme'){
-      v+= 'exerciseInputNoTheme exerciseTextNoTheme'
-    }
-    else{
-      v+= 'exerciseInputNoTheme exerciseTextNoTheme';
-    }
-
-    return 'exerciseInput ' + v;
-  }
-
   const getWeekButtonColor = (weekday: Weekdays) => {
     const isCont = newExercise.Weekdays.includes(weekday);
     return 'exerciseWeekdaysButton ' + (isCont?'exerciseWeekdaysButtonSelected':'');
@@ -324,7 +218,7 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   }
 
   return (
-    <div className={getTheme()}>
+    <div className={'exerciseContainer' + itemGetTheme(theme, isSelected, isEndingPos, exercise.IsDone)}>
       {isSavingExercise?
         <Loading IsBlack={theme==='darkWhite'}></Loading>
         :
@@ -339,7 +233,7 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
             </div>
             <div className='exerciseCenterContainer'>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newExercise.Title}
                 onChange={handleTitleInputChange}
@@ -347,28 +241,28 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='number'
                 value={newExercise.Series}
                 onChange={handleSeriesInputChange}
                 onKeyDown={handleKeyDown}
                 min={1}></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='number'
                 value={newExercise.Reps}
                 onChange={handleRepsInputChange}
                 onKeyDown={handleKeyDown}
                 min={1}></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newExercise.MaxWeight}
                 onChange={handleMaxHeightInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Max"></input>
               <input 
-                className={getInputColor()}
+                className={itemInputColor(theme)}
                 type='text'
                 value={newExercise.Description}
                 onChange={handleDescriptionInputChange}
@@ -377,14 +271,14 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               {getWeekdaysButtons()}
             </div>
             <div className='exerciseSideContainer'>
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}/>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
           <div className='exerciseDisplayContainer'>
             <div className='exerciseLine' onClick={onEditExercise}>
-              <div className={'exerciseText' + (exercise.IsDone? getTextFadeColor():getTextColor())}> {getTitle()}</div>
+              <div className={'exerciseText' + itemTextColor(theme, exercise.IsDone)}> {getTitle()}</div>
               {/* {medicine.Unit && <div className={'medicineText' + (exercise.IsDone? getTextFadeColor():getTextColor())}>{medicine.Unit}</div>} */}
               {/* {medicine.Purpose && <div className={'medicineText ' + getTextFadeColor()}>{'('+exercise.Purpose+')'}</div>} */}
             </div>
@@ -395,7 +289,7 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 (exercise.IsDone?
                   <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
                   :
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + getTintColor() + '.png'}/>
+                  <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }
