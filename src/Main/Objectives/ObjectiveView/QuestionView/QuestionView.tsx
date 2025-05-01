@@ -6,20 +6,18 @@ import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Statement: '',
-      Answer: '',
-    }
-  )
+export function questionNew(){
+  return {
+    Statement: '',
+    Answer: '',
+  }
 }
 
 interface QuestionViewProps extends ItemViewProps{
   question: Question,
 }
 
-const QuestionView: React.FC<QuestionViewProps> = (props) => {
+export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { question, theme, putItemInDisplay, isSelected, isEditingPos, isEndingPos,
     itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
@@ -136,7 +134,7 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 value={newStatement}
                 onChange={handleStatementInputChange}
                 onKeyDown={handleStatementKeyDown} 
-                placeholder='Statement'>
+                placeholder='Statement' autoFocus>
               </input>
               <input 
                 className={itemInputColor(theme)}
@@ -145,7 +143,7 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 onChange={handleAnswerInputChange}
                 onKeyDown={handleAnswerKeyDown} 
                 placeholder="Answer"
-                autoFocus></input>
+                ></input>
             </div>
             <div className='locationSideContainer'>
               <PressImage onClick={doneEditQuestion} src={process.env.PUBLIC_URL + '/done' +itemTintColor(theme) + '.png'}/>
@@ -173,5 +171,3 @@ const QuestionView: React.FC<QuestionViewProps> = (props) => {
     </div>
   );
 }
-
-export default QuestionView;

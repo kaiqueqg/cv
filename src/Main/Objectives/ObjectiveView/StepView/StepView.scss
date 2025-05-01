@@ -1,5 +1,7 @@
 @import '../../../../global.scss';
 
+$bor: false;
+
 .stepContainer{
   display: flex;
   justify-content: center;
@@ -35,8 +37,42 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   width: 100%;
-  min-height: 35px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
+}
+
+.stepTitleRowContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
+}
+
+.stepIconRowContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(255, 239, 14);
+    border-style: solid;
+  }
 }
 
 .stepTitle{
@@ -45,7 +81,11 @@
   width: 100%;
   min-height: 35px;
   margin-right: 5px;
-  padding: 0px 10px 0px 10px;
+  padding: 0px 5px 0px 10px;
+}
+
+.stepTitleWithImportance{
+  padding: 0px 5px 0px 0px;
 }
 
 .stepTitle:hover{

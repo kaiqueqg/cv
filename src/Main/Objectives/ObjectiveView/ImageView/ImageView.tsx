@@ -8,30 +8,27 @@ import Loading from "../../../../Loading/Loading";
 import PressImage from "../../../../PressImage/PressImage";
 import { isEditable } from "@testing-library/user-event/dist/utils";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      IsDisplaying: true,
+export function imageNew(){
+  return {
+    Title: '',
+    IsDisplaying: true,
+    ItemId: '',
+    ItemImage: {
       ItemId: '',
-      ItemImage: {
-        ItemId: '',
-        Name: '',
-        Size: 0,
-        Width: 0,
-        Height: 0,
-        ImageFile: '',
-      }
+      Name: '',
+      Size: 0,
+      Width: 0,
+      Height: 0,
+      ImageFile: '',
     }
-  )
+  }
 }
-
 
 interface ImageViewProps extends ItemViewProps{
   image: Image,
 }
 
-const ImageView: React.FC<ImageViewProps> = (props) => {
+export const ImageView: React.FC<ImageViewProps> = (props) => {
   const { image, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newImage, setNewImage] = useState<Image>(image);
@@ -339,5 +336,3 @@ const ImageView: React.FC<ImageViewProps> = (props) => {
     </div>
   );
 }
-
-export default ImageView;

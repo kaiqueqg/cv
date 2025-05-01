@@ -8,7 +8,7 @@ $bor: false;
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 5px 10px 5px 10px;
+  padding: 10px;
   margin: 2px;
 
   border-radius: 5px;
@@ -23,6 +23,16 @@ $bor: false;
   width: 100%;
   justify-content: center;
   align-items: center;
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
+}
+
+.objTopContainerWithItem{
+  margin-bottom: 10px;
 }
 
 .objTitleContainer{
@@ -45,31 +55,42 @@ $bor: false;
   justify-content: center;
   align-items: center;
   min-height: 40px;
-  width: 100%;
   font-weight: bold;
   word-wrap: 'break-word';
   overflow-wrap: 'break-word';
   white-space: 'normal';
-}
 
-.objTitle:hover{
-  font-size: 19px;
+  @if($bor) {
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
 }
 
 .objTitleLeft{
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  width: 30%;
-  height: 50px;
+  flex-direction: row;
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: yellow;
+    border-style: solid;
+  }
 }
 
 .objTitleRight{
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  width: 30%;
-  height: 50px;
+  flex-direction: row;
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: rgb(0, 195, 255);
+    border-style: solid;
+  }
 }
 
 .objMenuImageContainer{
@@ -104,6 +125,19 @@ $bor: false;
   padding: 4px;
 }
 
+.objectiveSearchContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+  padding: 10px 5px;
+  
+  @media(min-width: 700px){
+    flex-direction: row;
+  }
+}
+
 .objectiveNewItemContainer {
   display: flex;
   flex-direction: column;
@@ -125,10 +159,6 @@ $bor: false;
   height: 30px;
 
   font-weight: bold;
-  // border-width: 1px;
-  // border-color: beige;
-  // border-style: solid;
-  // border-radius: 5px;
 }
 
 .objectiveNewItemImages{
@@ -257,6 +287,10 @@ $objPink: #F9C5D5;
   border-color: black;
   border-style: solid;
   outline: 0px;
+}
+
+.inputAlert{
+  color: red;
 }
 
 .textColor{color: beige;}

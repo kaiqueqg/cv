@@ -7,24 +7,22 @@ import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      Purpose: '',
-      IsChecked: false,
-      Quantity: 0,
-      Unit: '',
-      Components: [],
-    }
-  )
+export function medicineNew(){
+  return {
+    Title: '',
+    Purpose: '',
+    IsChecked: false,
+    Quantity: 0,
+    Unit: '',
+    Components: [],
+  }
 }
 
 interface MedicineViewProps extends ItemViewProps{
   medicine: Medicine,
 }
 
-const MedicineView: React.FC<MedicineViewProps> = (props) => {
+export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { medicine, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
@@ -217,5 +215,3 @@ const MedicineView: React.FC<MedicineViewProps> = (props) => {
     </div>
   );
 }
-
-export default MedicineView;

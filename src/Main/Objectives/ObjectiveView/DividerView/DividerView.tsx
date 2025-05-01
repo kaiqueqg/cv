@@ -7,13 +7,11 @@ import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      IsOpen: true,
-    }
-  )
+export function dividerNew(){
+  return {
+    Title: '',
+    IsOpen: true,
+  }
 }
 
 interface DividerProps extends ItemViewProps{
@@ -22,7 +20,7 @@ interface DividerProps extends ItemViewProps{
   choseNewItemToAdd: (type: ItemType, pos?:number)=>void,
 }
 
-const LocationView: React.FC<DividerProps> = (props) => {
+export const DividerView: React.FC<DividerProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { divider, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, choseNewItemToAdd, orderDividerItems, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
@@ -230,5 +228,3 @@ const LocationView: React.FC<DividerProps> = (props) => {
     </div>
   );
 }
-
-export default LocationView;

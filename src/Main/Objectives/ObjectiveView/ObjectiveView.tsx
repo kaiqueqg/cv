@@ -2,39 +2,27 @@ import { useEffect, useState } from "react";
 import './ObjectiveView.scss';
 import { useUserContext } from "../../../Contexts/UserContext";
 import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House } from "../../../TypesObjectives";
-import StepView from "./StepView/StepView";
-import QuestionView from "./QuestionView/QuestionView";
-import WaitView from "./WaitView/WaitView";
 import log from "../../../Log/Log";
 import { objectiveslistApi } from "../../../Requests/RequestFactory";
 import Loading from "../../../Loading/Loading";
-import NoteView from "./NoteView/NoteView";
-import LocationView from "./LocationView/LocationView";
-import DividerView from "./DividerView/DividerView";
-import GroceryView from "./GroceryView/GroceryView";
-import MedicineView from "./MedicineView/MedicineView";
-import ItemFakeView from "./ItemFakeView/ItemFakeView";
-import ExerciseView from "./ExerciseView/ExerciseView";
+// import WaitView from "./WaitView/WaitView";
 import TagsView from "./TagsView/TagsView";
-import LinkView from "./LinkView/LinkView";
-import ImageView from "./ImageView/ImageView";
-import HouseView from "./HouseView/HouseView";
 import { useLogContext } from "../../../Contexts/LogContext";
 import { MessageType } from "../../../Types";
 
-import {New as WaitNew} from "./WaitView/WaitView";
-import {New as QuestionNew} from "./QuestionView/QuestionView";
-import {New as StepNew} from "./StepView/StepView";
-import {New as NoteNew} from "./NoteView/NoteView";
-import {New as LocationNew} from "./LocationView/LocationView";
-import {New as DividerNew} from "./DividerView/DividerView";
-import {New as GroceryNew} from "./GroceryView/GroceryView";
-import {New as MedicineNew} from "./MedicineView/MedicineView";
-import {New as ItemFakeNew} from "./ItemFakeView/ItemFakeView";
-import {New as ExerciseNew} from "./ExerciseView/ExerciseView";
-import {New as LinkNew} from "./LinkView/LinkView";
-import {New as ImageNew} from "./ImageView/ImageView";
-import {New as HouseNew} from "./HouseView/HouseView";
+import { ItemFakeView, itemFakeNew } from "./ItemFakeView/ItemFakeView";
+import { WaitView, waitNew} from "./WaitView/WaitView";
+import { QuestionView, questionNew } from "./QuestionView/QuestionView";
+import { StepView, stepNew } from "./StepView/StepView";
+import { NoteView, noteNew } from "./NoteView/NoteView";
+import { LocationView, locationNew } from "./LocationView/LocationView";
+import { DividerView, dividerNew } from "./DividerView/DividerView";
+import { GroceryView, groceryNew } from "./GroceryView/GroceryView";
+import { MedicineView, medicineNew } from "./MedicineView/MedicineView";
+import { ExerciseView, exerciseNew } from "./ExerciseView/ExerciseView";
+import { LinkView, linkNew } from "./LinkView/LinkView";
+import { ImageView, imageNew } from "./ImageView/ImageView";
+import { HouseView, houseNew } from "./HouseView/HouseView";
 import storage from "../../../Storage/Storage";
 import PressImage from "../../../PressImage/PressImage";
 
@@ -44,16 +32,22 @@ interface ObjectiveViewProps{
   isObjsEditingPos: boolean,
 }
 
-const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
+export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const { testServer, putSelectedTags } = useUserContext();
   const { objective, putObjective, isObjsEditingPos } = props;
   const { popMessage } = useLogContext();
   
   const [items, setItems] = useState<(Item)[]>([]);
+  const [itemSearchToShow, setItemsSearchToShow] = useState<string[]>([]);
   const [newTitle, setNewTitle] = useState<string>(props.objective.Title);
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
+
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>('');
+  const [wasNoSearchNoItemFound, setWasNoSearchNoItemFound] = useState<boolean>(false);
+
   const [isAddingNewItem, setIsAddingNewItem] = useState<boolean>(false);
   const [amountOfItemsToAdd, setAmountOfItemsToAdd] = useState<number>(1);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
@@ -136,11 +130,11 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsDeleting(false);
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
   }
 
-  const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleTitleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if(event.key === 'Enter'){
       doneEdit();
     }
@@ -202,7 +196,13 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   //Responsable for open, close and lock icon and menu.
-  const addingNewItem = async () => {    
+  const openNewItemMenu = async () => {
+    setIsChangingColor(false);
+    setIsEndingPos(false);
+    setIsEndingPos(false);
+    setIsChangingTags(false);
+    setIsSearching(false);
+
     if(isAddingNewItem){
       if(isAddingNewItemLocked){ //turn all off
         setIsAddingNewItemLocked(false);
@@ -257,43 +257,43 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
     switch (type) {
       case ItemType.Divider:
-        typeItem = {...baseItem, ...DividerNew()};
+        typeItem = {...baseItem, ...dividerNew()};
         break;
       case ItemType.Step:
-        typeItem = {...baseItem, ...StepNew()};
+        typeItem = {...baseItem, ...stepNew()};
         break;
       case ItemType.Question:
-        typeItem = {...baseItem, ...QuestionNew()};
+        typeItem = {...baseItem, ...questionNew()};
         break;
       case ItemType.Wait:
-        typeItem = {...baseItem, ...WaitNew()};
+        typeItem = {...baseItem, ...waitNew()};
         break;
       case ItemType.Note:
-        typeItem = {...baseItem, ...NoteNew()};
+        typeItem = {...baseItem, ...noteNew()};
         break;
       case ItemType.Location:
-        typeItem = {...baseItem, ...LocationNew()};
+        typeItem = {...baseItem, ...locationNew()};
         break;
       case ItemType.Grocery:
-        typeItem = {...baseItem, ...GroceryNew()};
+        typeItem = {...baseItem, ...groceryNew()};
         break;
       case ItemType.Medicine:
-        typeItem = {...baseItem, ...MedicineNew()};
+        typeItem = {...baseItem, ...medicineNew()};
         break;
       case ItemType.Exercise:
-        typeItem = {...baseItem, ...ExerciseNew()};
+        typeItem = {...baseItem, ...exerciseNew()};
         break;
       case ItemType.ItemFake:
-        typeItem = {...baseItem, ...ItemFakeNew()};
+        typeItem = {...baseItem, ...itemFakeNew()};
         break;
       case ItemType.Link:
-        typeItem = {...baseItem, ...LinkNew()};
+        typeItem = {...baseItem, ...linkNew()};
         break;
       case ItemType.Image:
-        typeItem = {...baseItem, ...ImageNew()};
+        typeItem = {...baseItem, ...imageNew()};
         break;
       case ItemType.House:
-        typeItem = {...baseItem, ...HouseNew()};
+        typeItem = {...baseItem, ...houseNew()};
         break;
       default:
         break;
@@ -352,11 +352,25 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsSavingMenu(false);
   }
 
-  const changeColor = async () => {
+  const openColorMenu = async () => {
+    setIsAddingNewItemLocked(false);
+    setIsAddingNewItem(false);
+    setIsEndingPos(false);
+    setIsEndingPos(false);
+    setIsChangingTags(false);
+    setIsSearching(false);
+
     setIsChangingColor(!isChangingColor);
   }
 
-  const changeTags = async (v?:boolean) => {
+  const openTagsMenu = async (v?:boolean) => {
+    setIsAddingNewItemLocked(false);
+    setIsAddingNewItem(false);
+    setIsChangingColor(false);
+    setIsEndingPos(false);
+    setIsEndingPos(false);
+    setIsSearching(false);
+
     setIsChangingTags(v??!isChangingTags);
   }
 
@@ -477,6 +491,12 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const startChangePos = () => {
+    setIsAddingNewItemLocked(false);
+    setIsAddingNewItem(false);
+    setIsEndingPos(false);
+    setIsEndingPos(false);
+    setIsChangingTags(false);
+    setIsSearching(false);
     setIsEditingPos(!isEditingPos);
   }
 
@@ -824,17 +844,20 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       let shouldAddExercise = true;
       let shouldAddMedicine = true;
       let shouldAddHouse = true;
+      let shouldAddIsInSearch = true;
+
+      if(itemSearchToShow.length && !itemSearchToShow.includes(current.ItemId)) shouldAddIsInSearch = false;
 
       if(current.Type === ItemType.Divider) {
         isAfterDivider = true;
-        if(partialItems.length > 1 && !objective.IsShowingCheckedStep){
+        if(partialItems.length > 1 && !objective.IsShowingCheckedStep && shouldAddIsInSearch){
           filteredItems.push(...partialItems);
         }
         partialItems = [];
         const divider = current as Divider;
-        if(objective.IsShowingCheckedStep)
+        if(objective.IsShowingCheckedStep && shouldAddIsInSearch)
           filteredItems.push(divider);
-        else
+        else if(shouldAddIsInSearch)
           partialItems.push(divider);
         isDividerOpen = divider.IsOpen;
       }
@@ -844,7 +867,7 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         if(current.Type === ItemType.Exercise && !objective.IsShowingCheckedExercise) shouldAddExercise = !(current as Exercise).IsDone;
         if(current.Type === ItemType.Medicine && !objective.IsShowingCheckedMedicine) shouldAddMedicine = !(current as Medicine).IsChecked;
         if(current.Type === ItemType.House && !objective.IsShowingCheckedStep) shouldAddHouse = !(current as House).WasContacted;
-        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse){
+        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse && shouldAddIsInSearch){
           if(isAfterDivider && !objective.IsShowingCheckedStep)
             partialItems.push(current);
           else
@@ -962,22 +985,14 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
           </div>
           :
           <>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos}/>
+            <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true}/>
             <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos}/>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)changeColor()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos}/>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)changeTags()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos}/>
+            <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos}/>
+            <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos}/>
           </>
         }
       </div>
     )
-  }
-
-  const shouldShowCancelMovingIcon = () => {
-    return isEditingPos;
-  }
-
-  const shouldShowEndingMovingIcon = () => {
-    return isEditingPos /*&& itemsSelected.length !== items.length*/ && itemsSelected.length > 0;
   }
 
   const getRightMenuIcons = () => {
@@ -989,16 +1004,135 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
           </div>
           :
           <>
-            <PressImage/>
-            {isEditingPos && <PressImage hide={isEndingPos}/>}
-            {isEditingPos && !shouldShowEndingMovingIcon() && <PressImage hide={isEndingPos}/>}
-            {!isEditingPos && <PressImage onClick={startChangePos} src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'} hide={items.length < 2}/>}
+            {moveIcons()}
+            {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'}/>}
             {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-grey') + getTintColor() + '.png'}/>}
-            {shouldShowCancelMovingIcon() && <PressImage onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'}/>}
-            {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'}/>}
-            {shouldShowEndingMovingIcon() && <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'}/>}
+            {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'}/>}
           </>
         }
+      </div>
+    )
+  }
+  
+  const moveIcons = () => {
+    return(
+      <>
+        {isEditingPos && <PressImage hide={isEndingPos}/>}
+        {isEditingPos && <PressImage hide={isEndingPos}/>}
+        {isEditingPos && !shouldShowEndingMovingIcon() && <PressImage hide={isEndingPos}/>}
+        {!isEditingPos && <PressImage onClick={startChangePos} src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'} hide={items.length < 2}/>}
+        {shouldShowCancelMovingIcon() && <PressImage onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'}/>}
+        {shouldShowEndingMovingIcon() && <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'}/>}
+      </>
+    )
+  }
+
+  const shouldShowCancelMovingIcon = () => {
+    return isEditingPos;
+  }
+
+  const shouldShowEndingMovingIcon = () => {
+    return isEditingPos /*&& itemsSelected.length !== items.length*/ && itemsSelected.length > 0;
+  }
+
+  const openSearchMenu = () => {
+    setIsAddingNewItemLocked(false);
+    setIsAddingNewItem(false);
+    setIsChangingColor(false);
+    setIsEndingPos(false);
+    setIsEndingPos(false);
+    setIsChangingTags(false);
+
+    setIsSearching(!isSearching);
+    setSearchText('');
+    setWasNoSearchNoItemFound(false);
+    setItemsSearchToShow([]);
+  }
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  }
+
+  const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if(event.key === 'Escape'){
+      cancelSearch();
+    }
+    else if(event.key === 'Enter'){
+      doSearchText();
+    }
+  }
+
+  const cancelSearch = () => {
+    setSearchText('');
+    setIsSearching(false);
+    setItemsSearchToShow([]);
+  }
+
+  const doSearchText = () => {
+    let newList: string[] = [];
+    items.forEach((item: Item)=>{
+      if(item.Type === ItemType.Step){
+        if(searchTextIgnoreCase((item as Step).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Question){
+        if(searchTextIgnoreCase((item as Question).Statement)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Wait){
+        if(searchTextIgnoreCase((item as Wait).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Note){
+        if(searchTextIgnoreCase((item as Note).Text)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Location){
+        if(searchTextIgnoreCase((item as Location).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Divider){
+        if(searchTextIgnoreCase((item as Divider).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Grocery){
+        if(searchTextIgnoreCase((item as Grocery).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Medicine){
+        if(searchTextIgnoreCase((item as Medicine).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Exercise){
+        if(searchTextIgnoreCase((item as Exercise).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Link){
+        if(searchTextIgnoreCase((item as Link).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.Image){
+        if(searchTextIgnoreCase((item as Image).Title)) newList.push(item.ItemId);
+      }
+      else if(item.Type === ItemType.House){
+        if(searchTextIgnoreCase((item as House).Title)) newList.push(item.ItemId);
+      }
+      else{
+      }
+    });
+
+    if(newList.length === 0) setWasNoSearchNoItemFound(true);
+    setItemsSearchToShow(newList);
+
+  }
+
+  const searchTextIgnoreCase = (text: string):boolean => {
+    return text.trim().toLowerCase().includes(searchText.trim().toLowerCase());
+  }
+
+  const getSearchingMenu = () => {
+    return(
+      <div className={'objectiveSearchContainer'}>
+        <input
+          className={getInputColor(objective.Theme) + (wasNoSearchNoItemFound? ' inputAlert':'')}
+          type='text'
+          value={searchText}
+          placeholder="search..."
+          onChange={handleSearchChange}
+          onKeyDown={handleSearchKeyDown} autoFocus>
+        </input>
+        <img className='tagInputImage' onClick={doSearchText} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+        <img className='tagInputImage' onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
       </div>
     )
   }
@@ -1020,8 +1154,8 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
                 className={getInputColor(objective.Theme)}
                 type='text'
                 value={newTitle}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyDown} autoFocus></input>
+                onChange={handleTitleChange}
+                onKeyDown={handleTitleKeyDown} autoFocus></input>
               <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'}/>
               <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'}/>
             </>
@@ -1035,12 +1169,13 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   return (
     <div className={'objContainer' + getObjTheme()} onMouseEnter={()=>{setIsHovering(true);}} onMouseLeave={()=>{setIsHovering(false);}}>
-      <div className='objTopContainer'>
+      <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
         {!isEditingTitle && getLeftMenuIcons()}
         {getObjectiveTitle()}
         {!isEditingTitle && getRightMenuIcons()}
       </div>
-      {objective.IsShowing && !isChangingColor && isAddingNewItem && getNewItemMenu() }
+      {objective.IsShowing && !isChangingColor && !isAddingNewItem && !isChangingTags && isSearching && getSearchingMenu()}
+      {objective.IsShowing && !isChangingColor && isAddingNewItem &&  getNewItemMenu() }
       {objective.IsShowing && !isChangingColor && !isAddingNewItem && isChangingTags &&
         <TagsView theme={objective.Theme} tags={objective.Tags} doneEditTags={doneEditTags} cancelEditTags={cancelEditTags}></TagsView>
       }
@@ -1057,5 +1192,3 @@ const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     </div>
   );
 }
-
-export default ObjectiveView;

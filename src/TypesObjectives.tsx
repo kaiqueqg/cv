@@ -86,7 +86,8 @@ export enum StepImportance {
   High,
   Question,
   Waiting,
-  InProgress 
+  InProgress,
+  Ladybug,
 }
 export interface Step extends Item {
   Title: string,

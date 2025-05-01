@@ -6,20 +6,18 @@ import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      Url: '',
-    }
-  )
+export function locationNew(){
+  return {
+    Title: '',
+    Url: '',
+  }
 }
 
 interface LocationViewProps extends ItemViewProps{
   location: Location,
 }
 
-const LocationView: React.FC<LocationViewProps> = (props) => {
+export const LocationView: React.FC<LocationViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { location, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
@@ -155,5 +153,3 @@ const LocationView: React.FC<LocationViewProps> = (props) => {
     </div>
   );
 }
-
-export default LocationView;

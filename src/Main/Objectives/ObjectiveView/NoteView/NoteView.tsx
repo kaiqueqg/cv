@@ -8,19 +8,17 @@ import log from "../../../../Log/Log";
 import { isEnumDeclaration } from "typescript";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Text: '',
-    }
-  )
+export function noteNew(){
+  return {
+    Text: '',
+  }
 }
 
 interface NoteViewProps extends ItemViewProps{
   note: Note,
 }
 
-const WaitView: React.FC<NoteViewProps> = (props) => {
+export const NoteView: React.FC<NoteViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { note, putItemInDisplay, theme, isSelected, isEditingPos, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
 
@@ -160,5 +158,3 @@ const WaitView: React.FC<NoteViewProps> = (props) => {
     </div>
   );
 }
-
-export default WaitView;

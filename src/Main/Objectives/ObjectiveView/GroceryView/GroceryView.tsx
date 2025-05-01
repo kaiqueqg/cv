@@ -7,23 +7,21 @@ import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      IsChecked: false,
-      Quantity: 1,
-      Unit: '',
-      GoodPrice: '',
-    }
-  )
+export function groceryNew(){
+  return {
+    Title: '',
+    IsChecked: false,
+    Quantity: 1,
+    Unit: '',
+    GoodPrice: '',
+  }
 }
 
 interface GroceryViewProps extends ItemViewProps{
   grocery: Grocery,
 }
 
-const QuestionView: React.FC<GroceryViewProps> = (props) => {
+export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { grocery, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
@@ -213,5 +211,3 @@ const QuestionView: React.FC<GroceryViewProps> = (props) => {
     </div>
   );
 }
-
-export default QuestionView;

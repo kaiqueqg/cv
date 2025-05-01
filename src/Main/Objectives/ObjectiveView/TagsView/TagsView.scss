@@ -1,5 +1,7 @@
 @import '../../../../global.scss';
 
+$bor: false;
+
 .tagsContainer{
   display: flex;
   flex-direction: column;
@@ -77,17 +79,29 @@
   border-radius: 5px;
   
   font-family: cursive;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+  }
 }
 
 .tagContainer:hover{
-  font-weight: bold;
+  border-width: 1px;
+  border-style: solid;
 }
 
 .tagBlue{color: beige;}
+.tagBlue:hover{border-color: beige;}
 .tagRed{color: beige;}
+.tagRed:hover{border-color: beige;}
 .tagGreen{color: beige;}
+.tagGreen:hover{border-color: beige;}
 .tagWhite{color: black;}
+.tagWhite:hover{border-color: black;}
 .tagNoTheme{color: beige;}
+.tagNoTheme:hover{border-color: beige;}
 
 .tagInputBlue{color: beige;border-color: beige;}
 .tagInputRed{color: beige;border-color: beige;}

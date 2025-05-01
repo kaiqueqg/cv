@@ -5,7 +5,7 @@ import './ObjectivesList.scss';
 import { objectiveslistApi } from "../../Requests/RequestFactory";
 import log from "../../Log/Log";
 import { Item, Objective, ObjectiveList, Question, Step, Wait } from "../../TypesObjectives";
-import ObjectiveView from "./ObjectiveView/ObjectiveView";
+import { ObjectiveView } from "./ObjectiveView/ObjectiveView";
 import Loading from "../../Loading/Loading";
 import ObjectiveHideView from "./ObjectiveHideView/ObjectiveHideView";
 import { writeFile } from "fs";

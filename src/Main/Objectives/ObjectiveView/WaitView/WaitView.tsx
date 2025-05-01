@@ -7,20 +7,14 @@ import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import log from "../../../../Log/Log";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-    }
-  )
-}
+export function waitNew() { return { Title: '' } }
 
 interface WaitViewProps extends ItemViewProps{
   wait: Wait,
   theme: string,
 }
 
-const WaitView: React.FC<WaitViewProps> = (props) => {
+export const WaitView: React.FC<WaitViewProps> = (props) => {
   const { wait, putItemInDisplay, theme, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>('');
@@ -118,5 +112,3 @@ const WaitView: React.FC<WaitViewProps> = (props) => {
     </div>
   );
 }
-
-export default WaitView;

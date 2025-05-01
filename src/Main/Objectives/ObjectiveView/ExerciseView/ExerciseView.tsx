@@ -7,26 +7,24 @@ import { objectiveslistApi } from "../../../../Requests/RequestFactory";
 import Loading from "../../../../Loading/Loading";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      IsDone: false,
-      Reps: 1,
-      Series: 1,
-      MaxWeight: '',
-      Description: '',
-      Weekdays: [],
-      LastDone: '',
-    }
-  )
+export function exerciseNew(){
+  return {
+    Title: '',
+    IsDone: false,
+    Reps: 1,
+    Series: 1,
+    MaxWeight: '',
+    Description: '',
+    Weekdays: [],
+    LastDone: '',
+  }
 }
 
 interface ExerciseViewProps extends ItemViewProps{
   exercise: Exercise,
 }
 
-const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
+export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [isSavingExercise, setIsSavingExercise] = useState<boolean>(false);
@@ -299,5 +297,3 @@ const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     </div>
   );
 }
-
-export default ExerciseView;

@@ -7,28 +7,26 @@ import Loading from "../../../../Loading/Loading";
 import log from "../../../../Log/Log";
 import PressImage from "../../../../PressImage/PressImage";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      Listing: '',
-      MapLink: '',
-      MeterSquare: '',
-      Rating: 0,
-      Address: '',
-      TotalPrice: 0,
-      Contacted: false,
-      Details: '',
-      Attention: '',
-    }
-  )
+export function houseNew(){
+  return {
+    Title: '',
+    Listing: '',
+    MapLink: '',
+    MeterSquare: '',
+    Rating: 0,
+    Address: '',
+    TotalPrice: 0,
+    Contacted: false,
+    Details: '',
+    Attention: '',
+  }
 }
 
 interface HouseViewProps extends ItemViewProps{
   house: House,
 }
 
-const QuestionView: React.FC<HouseViewProps> = (props) => {
+export const HouseView: React.FC<HouseViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { house, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
@@ -212,7 +210,7 @@ const QuestionView: React.FC<HouseViewProps> = (props) => {
                 onChange={handleListingInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Listing"
-                autoFocus></input>
+                ></input>
               <input 
                 className={itemInputColor(theme)}
                 type='text'
@@ -220,7 +218,7 @@ const QuestionView: React.FC<HouseViewProps> = (props) => {
                 onChange={handleMapLinkInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="MapLink"
-                autoFocus></input>
+                ></input>
               <input 
                 className={itemInputColor(theme)}
                 type='text'
@@ -228,7 +226,7 @@ const QuestionView: React.FC<HouseViewProps> = (props) => {
                 onChange={handleMeterSquareInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="m²"
-                autoFocus></input>
+                ></input>
               <input 
                 className={itemInputColor(theme)}
                 type='number'
@@ -244,7 +242,7 @@ const QuestionView: React.FC<HouseViewProps> = (props) => {
                 onChange={handleAddressInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Address"
-                autoFocus></input>
+                ></input>
               <input 
                 className={itemInputColor(theme)}
                 type='number'
@@ -259,14 +257,14 @@ const QuestionView: React.FC<HouseViewProps> = (props) => {
                 onChange={handleDetailsInputChange}
                 onKeyDown={handleLongTextKeyDown} 
                 placeholder='Details'
-                autoFocus></textarea>
+                ></textarea>
               <textarea 
                 className={'houseTextArea' + itemTextColor(theme)}
                 value={newHouse.Attention}
                 onChange={handleAttentionInputChange}
                 onKeyDown={handleLongTextKeyDown} 
                 placeholder='Attention'
-                autoFocus></textarea>
+                ></textarea>
             </div>
             <div className='houseSideContainer'>
               <PressImage onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
@@ -319,5 +317,3 @@ const QuestionView: React.FC<HouseViewProps> = (props) => {
     </div>
   );
 }
-
-export default QuestionView;

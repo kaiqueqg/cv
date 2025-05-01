@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import './ItemFakeView.scss';
 import { ItemViewProps } from "../../../../TypesObjectives";
 
-export const New = () => {
+export const itemFakeNew = () => {
   return(
     {
     }
@@ -12,7 +12,7 @@ export const New = () => {
 interface StepViewProps extends ItemViewProps{
 }
 
-const ItemFakeView: React.FC<StepViewProps> = (props) => {
+export const ItemFakeView: React.FC<StepViewProps> = (props) => {
   const { theme } = props;
 
 
@@ -67,5 +67,3 @@ const ItemFakeView: React.FC<StepViewProps> = (props) => {
     </div>
   );
 }
-
-export default ItemFakeView;

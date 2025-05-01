@@ -7,20 +7,18 @@ import Loading from "../../../../Loading/Loading";
 import PressImage from "../../../../PressImage/PressImage";
 import { useLogContext } from "../../../../Contexts/LogContext";
 
-export const New = () => {
-  return(
-    {
-      Title: '',
-      Link: '',
-    }
-  )
+export function linkNew(){
+  return {
+    Title: '',
+    Link: '',
+  }
 }
 
 interface LinkViewProps extends ItemViewProps{
   link: Link,
 }
 
-const LinkView: React.FC<LinkViewProps> = (props) => {
+export const LinkView: React.FC<LinkViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { log } = useLogContext();
   const { link, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
@@ -116,7 +114,7 @@ const LinkView: React.FC<LinkViewProps> = (props) => {
   }
 
   const openLink = () => {
-    window.open(link.Link, '_blank', 'noopener,noreferrer');
+    if(link.Link.trim() !== '') window.open(link.Link.trim(), '_blank', 'noopener,noreferrer');
   }
 
   return (
@@ -170,5 +168,3 @@ const LinkView: React.FC<LinkViewProps> = (props) => {
     </div>
   );
 }
-
-export default LinkView;
