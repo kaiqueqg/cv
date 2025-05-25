@@ -45,17 +45,23 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
   }
 
   const getInputColor = () => {
-    if(theme === 'darkBlue'){
+    if(theme === 'blue'){
       return 'tagInput tagInputBlue'
     }
-    else if(theme === 'darkRed'){
+    else if(theme === 'red'){
       return 'tagInput tagInputRed'
     }
-    else if(theme === 'darkGreen'){
+    else if(theme === 'green'){
       return 'tagInput tagInputGreen'
     }
-    else if(theme === 'darkWhite'){
+    else if(theme === 'white'){
       return 'tagInput tagInputWhite'
+    }
+    else if(theme === 'cyan'){
+      return 'tagInput tagInputCyan'
+    }
+    else if(theme === 'pink'){
+      return 'tagInput tagInputPink'
     }
     else if(theme === 'noTheme'){
       return 'tagInput tagInputNoTheme'
@@ -66,24 +72,30 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
   }
 
   const getTintColor = () => {
-    if(theme === 'darkWhite')
+    if(theme === 'white')
       return '-black';
     else
       return '';
   }
 
   const getTheme = () => {
-    if(theme === 'darkBlue'){
+    if(theme === 'blue'){
       return 'tagContainer tagBlue';
     }
-    else if(theme === 'darkRed'){
+    else if(theme === 'red'){
       return 'tagContainer tagRed';
     }
-    else if(theme === 'darkGreen'){
+    else if(theme === 'green'){
       return 'tagContainer tagGreen';
     }
-    else if(theme === 'darkWhite'){
+    else if(theme === 'white'){
       return 'tagContainer tagWhite';
+    }
+    else if(theme === 'cyan'){
+      return 'tagContainer tagCyan';
+    }
+    else if(theme === 'pink'){
+      return 'tagContainer tagPink';
     }
     else if(theme === 'noTheme'){
       return 'tagContainer tagNoTheme';

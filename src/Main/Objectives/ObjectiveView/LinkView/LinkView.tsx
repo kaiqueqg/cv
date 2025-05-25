@@ -120,13 +120,13 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
   return (
     <div className={'linksContainer' + itemGetTheme(theme, isSelected, isEndingPos, link.Link.trim() !== '')}>
       {isSavingLinks?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingLinks?
           <div className='linksEditingContainer'>
             <div className='linksSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }

@@ -121,13 +121,13 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   return (
     <div className={'noteContainer' + itemGetTheme(theme, isSelected, isEndingPos, note.Text.trim() !== '')}>
       {isSavingText?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingText?
           <div className='noteTitleContainer'>
             <div className='sideTitleContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -142,7 +142,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
             </div>
             <div className='sideTitleContainer'>
               {isAutoUpdating?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')}/>
               }

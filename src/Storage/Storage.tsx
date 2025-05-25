@@ -1,4 +1,4 @@
-import { ResponseUser, DBUserPrefs } from '../Types';
+import { ResponseUser, UserPrefs } from '../Types';
 import log from '../Log/Log';
 
 
@@ -6,7 +6,7 @@ type StorageKeys = {
   JwtToken: string,
   User: string,
   BaseUrl: string,
-  DBUserPrefs: string,
+  UserPrefs: string,
   AvailableTags: string,
   SelectedTags: string,
 };
@@ -15,7 +15,7 @@ const keys: StorageKeys = {
   JwtToken: '@kaiqueqgcv:jwt',
   User: '@kaiqueqgcv:user',
   BaseUrl: '@kaiqueqgcv:baseurl',
-  DBUserPrefs: '@kaiqueqgcv:dBUserPrefs',
+  UserPrefs: '@kaiqueqgcv:UserPrefs',
   AvailableTags: '@kaiqueqgcv:AvailableTags',
   SelectedTags: '@kaiqueqgcv:selectedTags',
 };
@@ -52,12 +52,12 @@ const storage = {
   setBaseUrl(baseUrl: string) {
     localStorage.setItem(keys.BaseUrl, baseUrl);
   },
-  getDBUserPrefs(): DBUserPrefs {
-    const prefs = localStorage.getItem(keys.DBUserPrefs);
-    return prefs ? JSON.parse(prefs) : { checkedUncheckedBoth: 'both', hideQuantity: true, locked: false, shouldCreateNewItemWhenCreateNewCategory: false, theme: 'dark' };
+  getUserPrefs(): UserPrefs {
+    const prefs = localStorage.getItem(keys.UserPrefs);
+    return prefs ? JSON.parse(prefs) : {  };
   },
-  setDBUserPrefs(prefs: DBUserPrefs) {
-    localStorage.setItem(keys.DBUserPrefs, JSON.stringify(prefs));
+  setUserPrefs(prefs: UserPrefs) {
+    localStorage.setItem(keys.UserPrefs, JSON.stringify(prefs));
   },
   //^-------------------- TAGS
   async writeAvailableTags(tags: string[]): Promise<void> {

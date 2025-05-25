@@ -20,16 +20,16 @@ export const ItemFakeView: React.FC<StepViewProps> = (props) => {
   }, []);
 
   const getBorderColor = () => {
-    if(theme === 'darkBlue'){
+    if(theme === 'blue'){
       return ' itemFakeBorderBlue'
     }
-    else if(theme === 'darkRed'){
+    else if(theme === 'red'){
       return ' itemFakeBorderRed'
     }
-    else if(theme === 'darkGreen'){
+    else if(theme === 'green'){
       return ' itemFakeBorderGreen'
     }
-    else if(theme === 'darkWhite'){
+    else if(theme === 'white'){
       return ' itemFakeBorderWhite'
     }
     else if(theme === 'noTheme'){
@@ -41,16 +41,16 @@ export const ItemFakeView: React.FC<StepViewProps> = (props) => {
   }
 
   const getTextColor = () => {
-    if(theme === 'darkBlue'){
+    if(theme === 'blue'){
       return ' itemFakeTextBlue'
     }
-    else if(theme === 'darkRed'){
+    else if(theme === 'red'){
       return ' itemFakeTextRed'
     }
-    else if(theme === 'darkGreen'){
+    else if(theme === 'green'){
       return ' itemFakeTextGreen'
     }
-    else if(theme === 'darkWhite'){
+    else if(theme === 'white'){
       return ' itemFakeTextWhite'
     }
     else if(theme === 'noTheme'){

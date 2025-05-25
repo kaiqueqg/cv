@@ -41,13 +41,9 @@ const Login: React.FC<LoginProps> = (props) => {
   const { user, setUser, testServer, isServerUp } = useUserContext();
   const { popMessage } = useLogContext();
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     verifyLogin();
-
-    if(user !== null && user !== undefined){
-      //getUser();
-    }
   }, []);
   
   const parseJwt = (token :string) => {
@@ -60,46 +56,34 @@ const Login: React.FC<LoginProps> = (props) => {
     return JSON.parse(jsonPayload);
   }
 
-  const getUser = async () =>{
-    try {
-      setIsLogging(true);
-      const response = await identityApi.getUser(undefined, () => {
-        setIsLogging(false);
-        testServer();
-      });
-
-      setIsLogging(false);
-      if(response !== undefined && response.status == 200) {
-        const responseData: ResponseUser = await response.json();
-        if(responseData !== undefined){
-          storage.setUser(responseData);
-          setUser(responseData);
-        }
-      }
-    } catch (error) {
-    }
-    setTimeout(() => {
-      setIsLogging(false);
-    }, 1000); 
-  }
-
   const loginError = (error: any) => {
-    if(error.Message === 'Wrong email.') setWrongEmail(true);
-    if(error.Message === 'Wrong password.') setWrongPassword(true);
+    if(error.Message === 'Wrong email.'){
+      setWrongEmail(true);
+      setPassword('');
+    }
+    if(error.Message === 'Wrong password.') {
+      setWrongPassword(true);
+      setPassword('');
+    }
   }
 
   interface LoginData { User: ResponseUser, Token: string }
   const login = async () => {
-    //check username
     if(email.trim() === "" || password.trim() === ""){
       if(email.trim() === ""){
+        setWrongEmail(false);
+        setWrongPassword(false);
         setTypeAnEmail(true);
       }
       else if(!isValidEmail(email.trim())){
+        setWrongEmail(false);
+        setWrongPassword(false);
         setTypeAnValidEmail(true);
       }
 
       if(password.trim() === ""){
+        setWrongEmail(false);
+        setWrongPassword(false);
         setTypeAnPassword(true);
       }
       return;
@@ -273,79 +257,75 @@ const Login: React.FC<LoginProps> = (props) => {
 
   return(
     <div className='login-container'>
-      {isServerUp?
-        (isLogging?
-          <Loading/>
-          :
-          (!isLogged?
-            <div className=''>
-              <div className='login-box'>
-                <h3 style={{margin: '10px 0px'}}>Login</h3>
-                <div className="email-column">
-                  <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email"></input>
-                  {typeAnEmail && <span className="alert-message concert-one-regular">Type an email.</span>}
-                  {typeAnValidEmail && <span className="alert-message concert-one-regular">Type a valid email.</span>}
-                  {wrongEmail && <span className="alert-message concert-one-regular">Wrong email.</span>}
-                </div>
-                <div className="pass-column">
-                  <div className="pass-row">
-                    {showPassword?
-                      <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
-                      :
-                      <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" ></input>
-                    }
-                    {showPassword?
-                      <img className="loginImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>{setShowPassword(false)}}></img>
-                      :
-                      <img className="loginImage" src={process.env.PUBLIC_URL + '/show.png'} alt='meaningfull text' onClick={()=>{setShowPassword(true)}}></img>
-                    }
-                  </div>
-                  {typeAnPassword && <span className="alert-message concert-one-regular">Type a password.</span>}
-                  {wrongPassword && <span className="alert-message concert-one-regular">Wrong password.</span>}
-                </div>
-                <div className="login-row">
-                  <button className="btn-login" type="button" onClick={login}>Login</button>
-                </div>
-              </div>
-              {/* <div className=" login-box">
-                <div style={{width: '100%', height:'1px', margin: '40px 0px', backgroundColor: 'black'}}></div>
-                <h3 style={{margin: '40px 0px 30px 0px'}}>Do you want to test my project?</h3>
-                <div className="login-row">
-                  <input className="input-base" type="text" onChange={changeCreateEmail} placeholder="Email" aria-label="Email"></input>
-                  {typeAnEmailCreate && <span className="alert-message concert-one-regular">Type an email.</span>}
-                  {typeAnValidEmailCreate && <span className="alert-message concert-one-regular">Type in a valid email style.</span>}
-                </div>
-                <div className="login-row">
-                  <input className="input-base" type="text" onChange={changeUsername} placeholder="Username" aria-label="Username"></input>
-                  {typeAnUsernameCreate && <span className="alert-message concert-one-regular">Type an username.</span>}
-                </div>
-                <div className="login-row">
-                  <input className="input-base"  type="password" onChange={changeCreatePaswword} placeholder="Password" aria-label="Server"></input>
-                  {typeAnPasswordCreate ?
-                    <span className="alert-message concert-one-regular">Type an password.</span>
-                    :
-                    <span className="focus-message concert-one-regular">For now isn't encrypted, put something silly!</span>
-                  }
-                </div>
-                <div className="login-row">
-                  <input className="input-base"  type="text" onChange={changeReason} onKeyUp={reasonEnter} placeholder="Reason" aria-label="Server"></input>
-                  {typeReasonCreate ?
-                    <span className="alert-message concert-one-regular">Write something, otherwise I'll refuse."</span>
-                    :
-                    <span className="focus-message concert-one-regular">e.g. "I saw your CV and want to test your project. I'm a recruter."</span>
-                  }
-                </div>
-                <div className="login-row">
-                  <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
-                </div>
-              </div> */}
+      {!isLogged?
+        <div className=''>
+          <div className='login-box'>
+            <h3 style={{margin: '10px 0px'}}>Login</h3>
+            <div className="email-column">
+              <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
+              {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
+              {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
+              {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}
             </div>
-            :
-            <UserView setIsLogged={setIsLogged}></UserView>
-            )
-          )
+            <div className="pass-column">
+              <div className="pass-row">
+                {showPassword?
+                  <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
+                  :
+                  <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
+                }
+                {showPassword?
+                  <img className="loginImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>{setShowPassword(false)}}></img>
+                  :
+                  <img className="loginImage" src={process.env.PUBLIC_URL + '/show.png'} alt='meaningfull text' onClick={()=>{setShowPassword(true)}}></img>
+                }
+              </div>
+              {typeAnPassword && <span className="warning-message concert-one-regular">Type a password</span>}
+              {wrongPassword && <span className="alert-message concert-one-regular">Wrong password</span>}
+            </div>
+            <div className="login-row">
+              {isLogging?
+                <Loading/>
+                :
+                <button className="btn-login" type="button" onClick={login}>Login</button>
+              }
+            </div>
+          </div>
+          {/* <div className=" login-box">
+            <div style={{width: '100%', height:'1px', margin: '40px 0px', backgroundColor: 'black'}}></div>
+            <h3 style={{margin: '40px 0px 30px 0px'}}>Do you want to test my project?</h3>
+            <div className="login-row">
+              <input className="input-base" type="text" onChange={changeCreateEmail} placeholder="Email" aria-label="Email"></input>
+              {typeAnEmailCreate && <span className="alert-message concert-one-regular">Type an email.</span>}
+              {typeAnValidEmailCreate && <span className="alert-message concert-one-regular">Type in a valid email style.</span>}
+            </div>
+            <div className="login-row">
+              <input className="input-base" type="text" onChange={changeUsername} placeholder="Username" aria-label="Username"></input>
+              {typeAnUsernameCreate && <span className="alert-message concert-one-regular">Type an username.</span>}
+            </div>
+            <div className="login-row">
+              <input className="input-base"  type="password" onChange={changeCreatePaswword} placeholder="Password" aria-label="Server"></input>
+              {typeAnPasswordCreate ?
+                <span className="alert-message concert-one-regular">Type an password.</span>
+                :
+                <span className="focus-message concert-one-regular">For now isn't encrypted, put something silly!</span>
+              }
+            </div>
+            <div className="login-row">
+              <input className="input-base"  type="text" onChange={changeReason} onKeyUp={reasonEnter} placeholder="Reason" aria-label="Server"></input>
+              {typeReasonCreate ?
+                <span className="alert-message concert-one-regular">Write something, otherwise I'll refuse."</span>
+                :
+                <span className="focus-message concert-one-regular">e.g. "I saw your CV and want to test your project. I'm a recruter."</span>
+              }
+            </div>
+            <div className="login-row">
+              <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
+            </div>
+          </div> */}
+        </div>
         :
-        <div>Server out</div>
+        <UserView setIsLogged={setIsLogged}></UserView>
       }
     </div>
   );

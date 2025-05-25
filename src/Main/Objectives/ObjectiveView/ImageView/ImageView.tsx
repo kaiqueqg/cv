@@ -244,13 +244,13 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
   return (
     <div className={'imageContainer' + itemGetTheme(theme, isSelected, isEndingPos)}>
       {isSavingImage?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingImage ?
           <div className='inputsContainer'>
             <div className='imageSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
               }
@@ -269,7 +269,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
                 {(image.Name !== '') && <img className='inputImage' onClick={downloadImage} src={process.env.PUBLIC_URL + '/download'+itemTintColor(theme)+'.png'}></img>}
                 {!imageFile && 
                 (isUploadingImage?
-                  <Loading IsBlack={theme==='darkWhite'}></Loading>
+                  <Loading IsBlack={theme==='white'}></Loading>
                   :
                   <>
                     <img className='inputImage' onClick={() => fileInputRefCamera.current?.click()} src={process.env.PUBLIC_URL + '/camera' + itemTintColor(theme) + '.png'}></img>
@@ -279,14 +279,14 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
                 
                 {imageFile && 
                   (isDeletingImage?
-                    <Loading IsBlack={theme==='darkWhite'}></Loading>
+                    <Loading IsBlack={theme==='white'}></Loading>
                     :
                     <img className='inputImage' onClick={deleteImage} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>)
                 }
               </div>
               {imageFile && 
                 (isDownloadingImage?
-                  <Loading IsBlack={theme==='darkWhite'}></Loading>
+                  <Loading IsBlack={theme==='white'}></Loading>
                   :
                   <img className={'previewImage'} src={URL.createObjectURL(imageFile)} alt="Preview" />
                 )}
@@ -301,7 +301,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
             <div className='imageDisplayTitleContainer'>
               <div className={'imageTitle ' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingImage(!isEditingImage);}}>{image.Title}</div>
               {isSavingIsDisplaying?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <img className='imageImage' onClick={() => {if(!isEditingPos)onChangeIsDisplaying()}} src={process.env.PUBLIC_URL + '/image' + ((imageFile)?'-filled':'') + (image.IsDisplaying?itemTintColor(theme):'-grey') + '.png'}></img>
               }
@@ -309,7 +309,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
             <div className='previewImageContainer'>
               {image.IsDisplaying && imageFile &&
                 (isDownloadingImage?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <img className={'previewImage'} src={URL.createObjectURL(imageFile)} onClick={() => {if(!isEditingPos)setIsEditingImage(!isEditingImage);}} alt="Preview" />
               )}

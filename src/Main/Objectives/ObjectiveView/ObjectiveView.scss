@@ -59,6 +59,7 @@ $bor: false;
   word-wrap: 'break-word';
   overflow-wrap: 'break-word';
   white-space: 'normal';
+  width: 100%;
 
   @if($bor) {
     border-width: 1px;
@@ -69,9 +70,11 @@ $bor: false;
 
 .objTitleLeft{
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
 
   @if($bor) {
     border-width: 1px;
@@ -82,9 +85,11 @@ $bor: false;
 
 .objTitleRight{
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
 
   @if($bor) {
     border-width: 1px;

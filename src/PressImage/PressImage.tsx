@@ -6,11 +6,15 @@ import Loading from "../Loading/Loading";
 export interface PressImageProps{
   id?: string,
   src?: string,
+
+  changeToSecondImage?: boolean,
+
   onClick?: () => void,
   onPressIn?: () => void,
   onPressOut?: () => void,
   hide?: boolean,
   disable?: boolean,
+  disableSrc?:string,
   confirm?: boolean,
   isLoading?: boolean,
   hideHoverEffect?: boolean,
@@ -24,6 +28,14 @@ const PressImage = (props: PressImageProps) => {
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
 
   const [text, setText] = useState<number>(2000);
+
+  const [imageClass, setImageClass] = useState<string>('spin fade-in');
+
+  // useEffect(() => {
+  //   if (props.changeToSecondImage) {
+      
+  //   }
+  // }, [props.changeToSecondImage]);
 
   const getHideImage = () => {
     return(
@@ -45,6 +57,7 @@ const PressImage = (props: PressImageProps) => {
   }
 
   const getNormalImage = () => {
+    const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
     return(
       <div
         id={props.id}
@@ -52,7 +65,7 @@ const PressImage = (props: PressImageProps) => {
         onClick={normalTouchEnd}
         onTouchEnd={normalTouchEnd}
         onTouchStart={props.onPressIn}>
-        {props.src && <img className={'pressImageImage'} src={props.src}></img>}
+        {props.src && <img className={'pressImageImage ' } src={imageSrc}></img>}
         {props.text && <div className={'pressImageText'}>{props.text}</div>}
       </div>
     )

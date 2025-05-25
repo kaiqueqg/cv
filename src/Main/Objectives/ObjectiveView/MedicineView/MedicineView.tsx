@@ -67,11 +67,11 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
 
     try {
       const newItem: Medicine = { ...medicine, IsChecked: !medicine.IsChecked, LastModified: new Date().toISOString()};
+      putItemInDisplay(newItem);
       const data = await objectiveslistApi.putObjectiveItem(newItem);
 
       if(data){
         setIsSavingIsChecked(false);
-        putItemInDisplay(data);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -143,13 +143,13 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   return (
     <div className={'medicineContainer' + itemGetTheme(theme, isSelected, isEndingPos, medicine.IsChecked)}>
       {isSavingMedicine?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingMedicine?
           <div className='inputsContainer'>
             <div className='medicineSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -200,7 +200,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
             </div>
             {!isEditingMedicine &&
               (isSavingIsChecked?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (medicine.IsChecked?
                   <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>

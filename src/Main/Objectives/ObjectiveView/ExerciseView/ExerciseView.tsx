@@ -95,10 +95,10 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       const newItem: Exercise = { 
         ...exercise, 
         IsDone: !exercise.IsDone, LastDone: !exercise.IsDone? new Date().toISOString():exercise.LastDone, LastModified: new Date().toISOString()};
+      putItemInDisplay(newItem);
       const data = await objectiveslistApi.putObjectiveItem(newItem);
 
       if(data){
-        putItemInDisplay(data);
         setIsSavingExercise(false);
       }
     } catch (err) {
@@ -218,13 +218,13 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   return (
     <div className={'exerciseContainer' + itemGetTheme(theme, isSelected, isEndingPos, exercise.IsDone)}>
       {isSavingExercise?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingExercise?
           <div className='inputsContainer'>
             <div className='exerciseSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -282,7 +282,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
             </div>
             {!isEditingExercise &&
               (isSavingIsDone?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (exercise.IsDone?
                   <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>

@@ -90,11 +90,11 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
       || newItem.Pos !== grocery.Pos) {
       setIsEditingGrocery(true);
 
+      putItemInDisplay(newItem);
       const data = await objectiveslistApi.putObjectiveItem(newItem);
 
       if(data){
         setIsEditingGrocery(false);
-        putItemInDisplay(data);
         setNewGrocery(newGrocery);
       }
 
@@ -139,13 +139,13 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   return (
     <div className={'groceryContainer' + itemGetTheme(theme, isSelected, isEndingPos, grocery.IsChecked)}>
       {isSavingGrocery?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingGrocery?
           <div className='inputsContainer'>
             <div className='grocerySideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -196,7 +196,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
             </div>
             {!isEditingGrocery &&
               (isSavingIsChecked?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (grocery.IsChecked?
                   <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>

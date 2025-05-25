@@ -85,12 +85,12 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
   return (
     <div className={'waitContainer' + itemGetTheme(theme, isSelected, isEndingPos)}>
       {isSavingTitle?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingTitle?
           <div className='waitTitleContainer'>
             {isDeleting?
-              <Loading IsBlack={theme==='darkWhite'}></Loading>
+              <Loading IsBlack={theme==='white'}></Loading>
               :
               <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
             }

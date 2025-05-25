@@ -183,13 +183,13 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   return (
     <div className={'houseContainer' + itemGetTheme(theme, isSelected, isEndingPos, house.WasContacted)}>
       {isSavingHouse?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingHouse?
           <div className='inputsContainer'>
             <div className='houseSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -293,7 +293,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
               {house.MapLink.trim() !== '' && <PressImage onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>}
               {!isEditingHouse &&
                 (isSavingWasContacted?
-                  <Loading IsBlack={theme==='darkWhite'||theme==='darkPink'}></Loading>
+                  <Loading IsBlack={theme==='white'||theme==='pink'}></Loading>
                   :
                   (house.WasContacted?
                     <PressImage onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>

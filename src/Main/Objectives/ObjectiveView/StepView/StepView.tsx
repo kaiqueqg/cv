@@ -43,10 +43,10 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
     try {
       const newItem: Step = { ...step, Done: !step.Done, LastModified: new Date().toISOString()};
+      putItemInDisplay(newItem);
       const data = await objectiveslistApi.putObjectiveItem(newItem);
 
       if(data){
-        putItemInDisplay(data);
         setIsSavingDone(false);
       }
     } catch (err) {
@@ -155,14 +155,14 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   return (
     <div className={'stepContainer'+itemGetTheme(theme, isSelected, isEndingPos, step.Done)}>
       {isSavingTitle?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingTitle?
           <div className='stepTitleContainer'>
             <div className='stepTitleRowContainer'>
               {getImportanceImage()}
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }

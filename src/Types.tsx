@@ -31,13 +31,11 @@ export interface LoginModel{
 
 export interface ChangeUserStatusRequest { Email: string, Status: string }
 
-export interface DBUserPrefs{
-  shouldCreateNewItemWhenCreateNewCategory: boolean,
-  hideQuantity: boolean,
-  showOnlyItemText: boolean,
-  checkedUncheckedBoth: string,
-  locked: boolean,
+export interface UserPrefs{
   theme: string,
+  allowLocation: boolean,
+  vibrate: boolean,
+  autoSync: boolean,
 }
 
 export interface CreateUserModel{

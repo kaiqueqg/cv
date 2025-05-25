@@ -143,7 +143,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       <div className='titleLineContainer'>
         {!isEditingTitle && 
           (isSavingIsOpen?
-            <Loading IsBlack={theme==='darkWhite'}></Loading>
+            <Loading IsBlack={theme==='white'}></Loading>
             :
             (divider.IsOpen?
               <PressImage onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
@@ -153,12 +153,12 @@ export const DividerView: React.FC<DividerProps> = (props) => {
           )
         }
         {isSavingTitle?
-          <Loading IsBlack={theme==='darkWhite'}></Loading>
+          <Loading IsBlack={theme==='white'}></Loading>
           :
           (isEditingTitle?
             <>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
@@ -177,7 +177,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
         }
         {!isEditingTitle && 
           (isOrderingAToZ?
-            <Loading  IsBlack={theme==='darkWhite'}></Loading>
+            <Loading  IsBlack={theme==='white'}></Loading>
             :
             <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'}/>
           )

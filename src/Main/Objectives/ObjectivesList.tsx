@@ -93,7 +93,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           tags.push(...sorted[i].Tags);
         }
         const uniqueTags = Array.from(new Set(tags));
-        writeAvailableTags(uniqueTags);
+        writeAvailableTags(['Pin', ...uniqueTags]);
       }
     }
 
@@ -121,10 +121,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         Tags: [],
       }
       
-      const data = await objectiveslistApi.putObjective(emptyObjective, () => {testServer();});
+      const data = await objectiveslistApi.putObjective(emptyObjective);
       if(data){
-        await updateObjectives();
-        setIsAddingNewObjective(false);
+        putObjectiveInDisplay(data);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -155,7 +154,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             tagSet.add(tag);
           }
         }
-        writeAvailableTags(Array.from(tagSet))
+        writeAvailableTags(['Pin', ...Array.from(tagSet)])
 
         return sorted;
       });
@@ -206,12 +205,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
     try{
       setIsUpdatingObjectives(true);
+      setObjectives(finalList);
       const data = await objectiveslistApi.putObjectives(finalList, () => {testServer();});
       if(data) {
-        setObjectives(data);
       }
       else{
-        // add warning
       }
     }
     catch(err){}
@@ -292,11 +290,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const changeToNoneTag = () => {
-    writeSelectedTags([]);
+    writeSelectedTags(['Pin']);
   }
 
   const changeToAllTag = () => {
-    writeSelectedTags([...availableTags]);
+    writeSelectedTags(['Pin', ...availableTags]);
   }
   
   const changeSelectedTag = (tag:string, event: React.MouseEvent) => {
@@ -314,7 +312,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       changeToAllTag();
     }
     else{
-      writeSelectedTags([tag]);
+      writeSelectedTags(['Pin', tag]);
     }
   }
 

@@ -116,13 +116,13 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   return (
     <div className={'questionContainer '+itemGetTheme(theme, isSelected, isEndingPos, (question.Statement.trim()!==''&&question.Answer.trim()!==''))}>
       {isSavingQuestion?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingQuestion?
           <div className='locationEditingContainer'>
             <div className='locationSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }

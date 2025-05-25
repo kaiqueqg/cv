@@ -111,13 +111,13 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
   return (
     <div className={'locationContainer'+ itemGetTheme(theme, isSelected, isEndingPos, location.Url.trim()!=='')}>
       {isSavingLocation?
-        <Loading IsBlack={theme==='darkWhite'}></Loading>
+        <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingLocation?
           <div className='locationEditingContainer'>
             <div className='locationSideContainer'>
               {isDeleting?
-                <Loading IsBlack={theme==='darkWhite'}></Loading>
+                <Loading IsBlack={theme==='white'}></Loading>
                 :
                 <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }

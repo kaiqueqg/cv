@@ -37,22 +37,22 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
   }
 
   const getTheme = () => {
-    if(objective.Theme === 'darkBlue'){
+    if(objective.Theme === 'blue'){
       return ' objObjectiveBlue'
     }
-    else if(objective.Theme === 'darkRed'){
+    else if(objective.Theme === 'red'){
       return ' objObjectiveRed'
     }
-    else if(objective.Theme === 'darkGreen'){
+    else if(objective.Theme === 'green'){
       return ' objObjectiveGreen'
     }
-    else if(objective.Theme === 'darkWhite'){
+    else if(objective.Theme === 'white'){
       return ' objObjectiveWhite'
     }
-    else if(objective.Theme === 'darkCyan'){
+    else if(objective.Theme === 'cyan'){
       return ' objObjectiveCyan'
     }
-    else if(objective.Theme === 'darkPink'){
+    else if(objective.Theme === 'pink'){
       return ' objObjectivePink'
     }
     else if(objective.Theme === 'noTheme'){
@@ -61,11 +61,11 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
   }
 
   const getTextColor = () => {
-    return ' textColor' + (objective.Theme === 'darkWhite' || objective.Theme === 'darkPink'?'White':'');
+    return ' textColor' + (objective.Theme === 'white' || objective.Theme === 'pink'?'White':'');
   }
 
   const getTintColor = () => {
-    if(objective.Theme === 'darkWhite')
+    if(objective.Theme === 'white')
       return '-black';
     else
       return '';
@@ -79,7 +79,7 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
       onMouseLeave={()=>{setIsBeingHover(false)}}
       >
       { isUnarchiving ?
-        <Loading IsBlack={objective.Theme==='darkWhite'}></Loading>
+        <Loading IsBlack={objective.Theme==='white'}></Loading>
         :
         (isBeingHover?
           <img className="objectiveArchivedImage" src={process.env.PUBLIC_URL + '/unarchive' + getTintColor() + '.png'} alt='meaningfull text'></img>

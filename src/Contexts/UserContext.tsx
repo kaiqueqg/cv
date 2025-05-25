@@ -1,7 +1,7 @@
 // UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { identityApi } from '../Requests/RequestFactory';
-import { ResponseUser, DBUserPrefs } from '../Types';
+import { ResponseUser, UserPrefs } from '../Types';
 import storage from '../Storage/Storage';
 import log from '../Log/Log';
 
@@ -15,18 +15,23 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<ResponseUser | null>(null);
   const [isServerUp, setIsServerUp] = useState<boolean>(true);
   const [theme, setTheme] = useState<string>('light');
-  const [prefs, setPrefs] = useState<DBUserPrefs>({
-    checkedUncheckedBoth: 'both',
-    hideQuantity: true,
-    locked: false,
-    shouldCreateNewItemWhenCreateNewCategory: false,
-    showOnlyItemText: false,
+  const [prefs, setPrefs] = useState<UserPrefs>({
     theme: 'dark',
+    allowLocation: false,
+    vibrate: true,
+    autoSync: false, 
   });
 
   useEffect(() => {
+    loadUserPrefs();
     loadSelectedTags();
   }, []);
+
+  const loadUserPrefs = async () => {
+    const userPrefs = await storage.getUserPrefs();
+
+
+  }
 
   const loadSelectedTags = async () => {
     const storageAvailableTags = await storage.readAvailableTags();
@@ -143,8 +148,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 interface UserContextType {
   user: ResponseUser|null,
   setUser: React.Dispatch<React.SetStateAction<ResponseUser|null>>,
-  prefs: DBUserPrefs,
-  setPrefs: React.Dispatch<React.SetStateAction<DBUserPrefs>>,
+  prefs: UserPrefs,
+  setPrefs: React.Dispatch<React.SetStateAction<UserPrefs>>,
   isServerUp: boolean, 
   setIsServerUp : React.Dispatch<React.SetStateAction<boolean>>,
   theme: string,

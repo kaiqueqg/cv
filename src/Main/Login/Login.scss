@@ -17,6 +17,14 @@ $bor: false;
   @if $bor {border: 1px solid red;}
 }
 
+.login-row{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @if $bor {border: 1px solid grey;}
+}
+
 .email-row{
   display: flex;
   justify-content: center;
@@ -54,6 +62,14 @@ $bor: false;
 .alert-message {
   display: block;
   color: crimson;
+  margin: 5px 0px;
+
+  @if $bor {border: 1px solid rgb(72, 29, 172);}
+}
+
+.warning-message {
+  display: block;
+  color: yellow;
   margin: 5px 0px;
 
   @if $bor {border: 1px solid rgb(72, 29, 172);}
