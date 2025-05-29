@@ -191,7 +191,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='houseCenterContainer'>
@@ -267,8 +267,8 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
                 ></textarea>
             </div>
             <div className='houseSideContainer'>
-              <PressImage onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={cancelEditHouse} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditHouse} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
@@ -289,16 +289,16 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
               {house.TotalPrice !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
                 {'$' + house.TotalPrice.toString()}
               </div>}
-              {house.Listing.trim() !== '' && <PressImage onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>}
-              {house.MapLink.trim() !== '' && <PressImage onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>}
+              {house.Listing.trim() !== '' && <PressImage isBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>}
+              {house.MapLink.trim() !== '' && <PressImage isBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>}
               {!isEditingHouse &&
                 (isSavingWasContacted?
                   <Loading IsBlack={theme==='white'||theme==='pink'}></Loading>
                   :
                   (house.WasContacted?
-                    <PressImage onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
+                    <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
                     :
-                    <PressImage onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
+                    <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
                   )
                 )
               }

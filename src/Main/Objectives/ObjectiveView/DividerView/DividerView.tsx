@@ -146,9 +146,9 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             <Loading IsBlack={theme==='white'}></Loading>
             :
             (divider.IsOpen?
-              <PressImage onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
               :
-              <PressImage onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + itemTintColor(theme) + '.png'}/>
             )
           )
         }
@@ -160,7 +160,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
               <input 
                 className={itemInputColor(theme)}
@@ -168,8 +168,8 @@ export const DividerView: React.FC<DividerProps> = (props) => {
                 value={newTitle}
                 onChange={onTitleInputChange}
                 onKeyDown={onTitleKeyDown} autoFocus></input>
-              <PressImage onClick={cancelEditTitle} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={doneEditTitle} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditTitle} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditTitle} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
             </>
             :
             getTitle()
@@ -179,7 +179,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
           (isOrderingAToZ?
             <Loading  IsBlack={theme==='white'}></Loading>
             :
-            <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'}/>
+            <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'}/>
           )
         }
         {!isEditingTitle && <img className='dividerImage' onClick={()=>{if(!isEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'}></img>}

@@ -357,25 +357,19 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             style={{ display: "none" }}
             onChange={handleFileUpload}
           />
-          <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData}/>
-          <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData}/>
-          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} hide={objectives.length < 2}/>}
-          {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'}/>}
+          <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isBlack={false}/>
+          <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isBlack={false}/>
+          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} hide={objectives.length < 2} isBlack={false}/>}
+          {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={false}/>}
           {(isEditingPos && !isEndingPos) && 
             ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
-            <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'}/>
+            <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'} isBlack={false}/>
             :
             <div className='objectivesImage'></div>)
           }
-          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)}/>}
-          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)}/>}
-          {!isEditingPos &&
-            (isAddingNewObjective?
-              <Loading/>
-              :
-              <PressImage src={process.env.PUBLIC_URL + '/plus-one.png'} onClick={addNewObjective}/>
-            )
-          }
+          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isBlack={false}/>}
+          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isBlack={false}/>}
+          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/plus-one.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isBlack={false}/>}
         </div>
         {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>}
         {currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}

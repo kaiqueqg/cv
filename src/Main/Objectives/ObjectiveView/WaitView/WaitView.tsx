@@ -92,7 +92,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
             {isDeleting?
               <Loading IsBlack={theme==='white'}></Loading>
               :
-              <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true} isLoading={isDeleting}/>
             }
             <input 
               className={itemInputColor(theme)}
@@ -101,8 +101,8 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
-            <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-            <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+            <PressImage isBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+            <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
           </div>
           :
           <div className={'waitTitle' + itemTextColor(theme)} onClick={()=>{if(!isEditingPos)onChangeEditTitle()}}>{wait.Title}</div>

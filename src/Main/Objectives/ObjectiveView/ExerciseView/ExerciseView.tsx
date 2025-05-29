@@ -226,7 +226,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='exerciseCenterContainer'>
@@ -269,8 +269,8 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               {getWeekdaysButtons()}
             </div>
             <div className='exerciseSideContainer'>
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
@@ -285,9 +285,9 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (exercise.IsDone?
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
                   :
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

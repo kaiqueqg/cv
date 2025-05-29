@@ -8,7 +8,6 @@ import Loading from "../../../Loading/Loading";
 // import WaitView from "./WaitView/WaitView";
 import TagsView from "./TagsView/TagsView";
 import { useLogContext } from "../../../Contexts/LogContext";
-import { MessageType } from "../../../Types";
 
 import { ItemFakeView, itemFakeNew } from "./ItemFakeView/ItemFakeView";
 import { WaitView, waitNew} from "./WaitView/WaitView";
@@ -23,7 +22,6 @@ import { ExerciseView, exerciseNew } from "./ExerciseView/ExerciseView";
 import { LinkView, linkNew } from "./LinkView/LinkView";
 import { ImageView, imageNew } from "./ImageView/ImageView";
 import { HouseView, houseNew } from "./HouseView/HouseView";
-import storage from "../../../Storage/Storage";
 import PressImage from "../../../PressImage/PressImage";
 
 interface ObjectiveViewProps{
@@ -33,9 +31,8 @@ interface ObjectiveViewProps{
 }
 
 export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
-  const { testServer, putSelectedTags } = useUserContext();
+  const { testServer, putSelectedTags, selectedTags } = useUserContext();
   const { objective, putObjective, isObjsEditingPos } = props;
-  const { popMessage } = useLogContext();
   
   const [items, setItems] = useState<(Item)[]>([]);
   const [itemSearchToShow, setItemsSearchToShow] = useState<string[]>([]);
@@ -689,7 +686,9 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></StepView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}
+        ></StepView>
     }
     else if(item.Type === ItemType.Question){
       rtnItem = <QuestionView 
@@ -703,7 +702,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></QuestionView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></QuestionView>
     }
     else if(item.Type === ItemType.Wait){
       rtnItem = <WaitView 
@@ -717,7 +717,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></WaitView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></WaitView>
     }
     else if(item.Type === ItemType.Note){
       rtnItem = <NoteView 
@@ -731,7 +732,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></NoteView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></NoteView>
     }
     else if(item.Type === ItemType.Location){
       rtnItem = <LocationView 
@@ -745,7 +747,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></LocationView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></LocationView>
     }
     else if(item.Type === ItemType.Divider){
       rtnItem = <DividerView 
@@ -761,7 +764,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></DividerView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></DividerView>
     }
     else if(item.Type === ItemType.Grocery){
       rtnItem = <GroceryView 
@@ -775,7 +779,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></GroceryView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></GroceryView>
     }
     else if(item.Type === ItemType.Medicine){
       rtnItem = <MedicineView 
@@ -789,7 +794,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></MedicineView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></MedicineView>
     }
     else if(item.Type === ItemType.Exercise){
       rtnItem = <ExerciseView 
@@ -803,7 +809,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></ExerciseView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></ExerciseView>
     }
     else if(item.Type === ItemType.Link){
       rtnItem = <LinkView 
@@ -817,7 +824,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></LinkView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></LinkView>
     }
     else if(item.Type === ItemType.Image){
       rtnItem = <ImageView 
@@ -831,21 +839,23 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
-        itemTintColor={getTintColor}></ImageView>
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></ImageView>
     }
     else if(item.Type === ItemType.House){
       rtnItem = <HouseView 
-      key={item.ItemId}
-      theme={objective.Theme}
-      house={item as House}
-      isSelected={isSelected}
-      isEndingPos={isEndingPos}
-      isEditingPos={isEditingPos || isObjsEditingPos}
-      putItemInDisplay={putItemInDisplay}
-      itemGetTheme={itemGetTheme}
-      itemInputColor={getInputColor}
-      itemTextColor={getTextColor}
-      itemTintColor={getTintColor}></HouseView>
+        key={item.ItemId}
+        theme={objective.Theme}
+        house={item as House}
+        isSelected={isSelected}
+        isEndingPos={isEndingPos}
+        isEditingPos={isEditingPos || isObjsEditingPos}
+        putItemInDisplay={putItemInDisplay}
+        itemGetTheme={itemGetTheme}
+        itemInputColor={getInputColor}
+        itemTextColor={getTextColor}
+        itemTintColor={getTintColor}
+        isLoadingBlack={isLoadingBlack()}></HouseView>
     }
     else{
       rtnItem = <div key={'cantrender'}>Can't render</div>
@@ -924,7 +934,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       itemGetTheme={itemGetTheme}
       itemInputColor={getInputColor}
       itemTextColor={getTextColor}
-      itemTintColor={getTintColor}></ItemFakeView>
+      itemTintColor={getTintColor}
+      isLoadingBlack={isLoadingBlack()}></ItemFakeView>
       rtn.push(
       <div key={'fake'} className='objItemRow' onClick={() => {isEditingPos && (isEndingPos? endChangingPos(fakeItem) : addingRemovingItem(fakeItem))}}>
         {a}
@@ -1008,26 +1019,26 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const getLeftMenuIcons = () => {
     return(
       <div className='objTitleLeft'>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true}/>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos}/>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor}/>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags}/>
+        <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true} isBlack={isLoadingBlack()}/>
+        <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos} isBlack={isLoadingBlack()}/>
+        <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor} isBlack={isLoadingBlack()}/>
+        <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags} isBlack={isLoadingBlack()}/>
       </div>
     )
   }
 
   const getRightMenuIcons = () => {
     const hasHidibleItems:Item|undefined = items.find((item)=>{
-      if(item.Type=== ItemType.Grocery||item.Type=== ItemType.Medicine||item.Type=== ItemType.Step||item.Type=== ItemType.Exercise) return item;
+      if(item.Type===ItemType.Grocery||item.Type=== ItemType.Medicine||item.Type=== ItemType.Step||item.Type=== ItemType.Exercise||item.Type=== ItemType.House) return item;
     });
     
     return(
       <div className='objTitleRight'>
-        {!isEditingPos && <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'} isLoading={isLoadingShorting} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'}/>}
-        {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'}/>}
+        {!isEditingPos && <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'} isLoading={isLoadingShorting} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'} isBlack={isLoadingBlack()}/>}
+        {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>}
         {moveIcons()}
-        {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'}/>}
-        {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'} isLoading={isLoadingAddingNewItem}/>}
+        {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'} isBlack={isLoadingBlack()}/>}
+        {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'} isLoading={isLoadingAddingNewItem} isBlack={isLoadingBlack()}/>}
       </div>
     )
   }
@@ -1035,12 +1046,12 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const moveIcons = () => {
     return(
       <>
-        {isEditingPos && <PressImage hide={isEndingPos}/>}
-        {isEditingPos && <PressImage hide={isEndingPos}/>}
-        {isEditingPos && !shouldShowEndingMovingIcon() && <PressImage hide={isEndingPos}/>}
-        {!isEditingPos && <PressImage onClick={startChangePos} src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoading={isLoadingEndingChangingPos}/>}
-        {shouldShowCancelMovingIcon() && <PressImage onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'}/>}
-        {shouldShowEndingMovingIcon() && <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'}/>}
+        {isEditingPos && <PressImage hide={isEndingPos} isBlack={isLoadingBlack()}/>}
+        {isEditingPos && <PressImage hide={isEndingPos} isBlack={isLoadingBlack()}/>}
+        {isEditingPos && !shouldShowEndingMovingIcon() && <PressImage hide={isEndingPos} isBlack={isLoadingBlack()}/>}
+        {!isEditingPos && <PressImage onClick={startChangePos} src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoading={isLoadingEndingChangingPos} isBlack={isLoadingBlack()}/>}
+        {shouldShowCancelMovingIcon() && <PressImage onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={isLoadingBlack()}/>}
+        {shouldShowEndingMovingIcon() && <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'} isBlack={isLoadingBlack()}/>}
       </>
     )
   }
@@ -1155,27 +1166,25 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     )
   }
 
+  const isLoadingBlack = () => { return objective.Theme==='white' || objective.Theme==='pink'}
+
   const getObjectiveTitle = () => {
     return(
       <div className='objTitleContainer'>
         {isSavingTitle?
-          <Loading IsBlack={objective.Theme==='white' || objective.Theme==='pink'}></Loading>
+          <Loading IsBlack={isLoadingBlack()}></Loading>
           :
           (isEditingTitle?
             <>
-              {isDeleting?
-                <Loading IsBlack={objective.Theme==='white' || objective.Theme==='pink'}></Loading>
-                :
-                <PressImage onClick={deleteObjective} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
-              }
+              <PressImage onClick={deleteObjective} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true} isBlack={isLoadingBlack()} isLoading={isDeleting}/>
               <input
                 className={getInputColor(objective.Theme)}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleChange}
                 onKeyDown={handleTitleKeyDown} autoFocus></input>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'}/>
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={isLoadingBlack()}/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isBlack={isLoadingBlack()}/>
             </>
             :
             <div className={'objTitle'+getTextColor(objective.Theme)} onClick={()=>{if(!isObjsEditingPos)setIsEditingTitle(true);}}>{objective.Title}</div>
@@ -1185,8 +1194,14 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     )
   }
 
+  const shouldShowPin = () => {
+    const as = selectedTags.filter(tag => objective.Tags.includes(tag));
+    return as.length === 1 && as[0] === 'Pin';
+  }
+
   return (
     <div className={'objContainer' + getObjTheme()} onMouseEnter={()=>{setIsHovering(true);}} onMouseLeave={()=>{setIsHovering(false);}}>
+      {shouldShowPin() && <img className='pinImage' src={process.env.PUBLIC_URL + '/pin.png'}></img>}
       <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
         {!isEditingTitle && getLeftMenuIcons()}
         {getObjectiveTitle()}

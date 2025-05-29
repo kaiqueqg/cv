@@ -119,7 +119,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='locationCenterContainer'>
@@ -141,8 +141,8 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
                 autoFocus></input>
             </div>
             <div className='locationSideContainer'>
-              <PressImage onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :

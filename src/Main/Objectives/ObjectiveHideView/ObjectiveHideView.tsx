@@ -4,6 +4,8 @@ import { objectiveslistApi } from "../../../Requests/RequestFactory";
 import log from "../../../Log/Log";
 import { Objective } from "../../../TypesObjectives";
 import Loading from "../../../Loading/Loading";
+import PressImage from "../../../PressImage/PressImage";
+import { useUserContext } from "../../../Contexts/UserContext";
 
 interface ObjectiveHideViewProps{
   objective: Objective,
@@ -13,9 +15,10 @@ interface ObjectiveHideViewProps{
 
 const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
   const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
-
   const [isOpening, setIsOpening] = useState<boolean>(false);
   const [isBeingHover, setIsBeingHover] = useState<boolean>(false);
+
+  const { selectedTags } = useUserContext();
 
   const onChangeObjectiveShowing = async (objective: Objective) => {
     setIsOpening(true);
@@ -71,6 +74,13 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
       return '';
   }
 
+  const isLoadingBlack = () => { return objective.Theme==='white' || objective.Theme==='pink'}
+
+  const shouldShowPin = () => {
+    const as = selectedTags.filter(tag => objective.Tags.includes(tag));
+    return as.length === 1 && as[0] === 'Pin';
+  }
+
   return (
     <div 
       className={'objectiveClosedContainer' + getTheme()} 
@@ -78,11 +88,12 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
       onMouseEnter={()=>{if(!isObjsEditingPos)setIsBeingHover(true)}}
       onMouseLeave={()=>{setIsBeingHover(false)}}
       >
-      { isOpening ?
-        <Loading IsBlack={objective.Theme==='white' || objective.Theme === 'pink'}></Loading>
+      {shouldShowPin() && <img className='hidePinImage' src={process.env.PUBLIC_URL + '/pin.png'}></img>}
+      {isOpening ?
+        <Loading IsBlack={isLoadingBlack()}></Loading>
         :
         (isBeingHover?
-          <img className="objectiveClosedImage" src={process.env.PUBLIC_URL + '/show' + getTintColor() + '.png'} alt='meaningfull text'></img>
+          <PressImage isBlack={isLoadingBlack()} src={process.env.PUBLIC_URL + '/show' + getTintColor() + '.png'}/>
           :
           <div className={'objectiveClosedText' + getTextColor()}>{objective.Title}</div>
         )

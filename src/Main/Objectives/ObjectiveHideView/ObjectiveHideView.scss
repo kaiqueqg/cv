@@ -4,6 +4,7 @@ $bor: false;
 
 .objectiveClosedContainer{
   cursor: pointer;
+  position: relative;
   display: flex;
   min-height: 40px;
   margin: 2px;
@@ -25,6 +26,16 @@ $bor: false;
 
 .objectiveClosedContainer:hover{
   justify-content: center;
+}
+
+.hidePinImage{
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-30%, -50%);
+  z-index: 9999; /* ensures it's on top of other elements */
+  width: 15px;
+  height: auto;
 }
 
 .objectiveClosedText{

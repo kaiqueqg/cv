@@ -124,7 +124,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='locationCenterContainer'>
@@ -146,8 +146,8 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 ></input>
             </div>
             <div className='locationSideContainer'>
-              <PressImage onClick={doneEditQuestion} src={process.env.PUBLIC_URL + '/done' +itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={cancelEditQuestion} src={process.env.PUBLIC_URL + '/cancel' +itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditQuestion} src={process.env.PUBLIC_URL + '/done' +itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditQuestion} src={process.env.PUBLIC_URL + '/cancel' +itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
@@ -158,7 +158,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 {question.Statement===''? 'Question':question.Statement}
               </div>
             <div className='questionAnswerContainer'>
-              <PressImage onClick={()=>{}} hideHoverEffect={true} src={process.env.PUBLIC_URL + '/arow-down-right-thicker' +itemTintColor(theme) + '.png'}></PressImage>
+              <PressImage isBlack={props.isLoadingBlack} onClick={()=>{}} hideHoverEffect={true} src={process.env.PUBLIC_URL + '/arow-down-right-thicker' +itemTintColor(theme) + '.png'}></PressImage>
               <div
                 className={'questionDisplayLine ' + itemTextColor(theme, question.Answer.trim()==='')}
                 onClick={() => {if(!isEditingPos) setIsEditingQuestion(true)}}>

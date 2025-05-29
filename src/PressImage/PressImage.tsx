@@ -10,8 +10,6 @@ export interface PressImageProps{
   changeToSecondImage?: boolean,
 
   onClick?: () => void,
-  onPressIn?: () => void,
-  onPressOut?: () => void,
   hide?: boolean,
   disable?: boolean,
   disableSrc?:string,
@@ -21,19 +19,18 @@ export interface PressImageProps{
   text?: string,
   wasOk?: ()=>void,
   wasWrong?: ()=>void,
+
+  isBlack: boolean,
 }
 
 const PressImage = (props: PressImageProps) => {
   const {log} = useLogContext();
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
-
   const [text, setText] = useState<number>(2000);
-
   const [imageClass, setImageClass] = useState<string>('spin fade-in');
 
   // useEffect(() => {
   //   if (props.changeToSecondImage) {
-      
   //   }
   // }, [props.changeToSecondImage]);
 
@@ -52,7 +49,6 @@ const PressImage = (props: PressImageProps) => {
         confirm();
       }
       else if(props.onClick) props.onClick();
-      else if(props.onPressOut) props.onPressOut();
     }
   }
 
@@ -62,9 +58,7 @@ const PressImage = (props: PressImageProps) => {
       <div
         id={props.id}
         className={'pressImageContainer ' + (props.hideHoverEffect?' pressImageContainerHover':'')}
-        onClick={normalTouchEnd}
-        onTouchEnd={normalTouchEnd}
-        onTouchStart={props.onPressIn}>
+        onClick={normalTouchEnd}>
         {props.src && <img className={'pressImageImage ' } src={imageSrc}></img>}
         {props.text && <div className={'pressImageText'}>{props.text}</div>}
       </div>
@@ -73,7 +67,7 @@ const PressImage = (props: PressImageProps) => {
 
   const getConfirmingImage = () => {
     return(
-      <div id={props.id} className={'pressImageContainer ' + (props.hideHoverEffect?' pressImageContainerHover':'')} onClick={props.onClick} onTouchEnd={props.onPressOut} onTouchStart={props.onPressIn}>
+      <div id={props.id} className={'pressImageContainer ' + (props.hideHoverEffect?' pressImageContainerHover':'')} onClick={props.onClick}>
         <img className={'pressImageImage'} src={process.env.PUBLIC_URL + '/done.png'}></img>
       </div>
     )
@@ -89,7 +83,7 @@ const PressImage = (props: PressImageProps) => {
   
   return(
     props.isLoading?
-    <Loading></Loading>
+    <Loading IsBlack={props.isBlack}></Loading>
     :
     (props.hide ?
       getHideImage()

@@ -3,6 +3,7 @@
 $bor: false;
 
 .objContainer{
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -17,12 +18,26 @@ $bor: false;
   border-style: solid;
 }
 
+.pinImage{
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  z-index: 9999; /* ensures it's on top of other elements */
+  width: 25px;
+  height: auto;
+}
+
 .objTopContainer{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   justify-content: center;
   align-items: center;
+  
+  @media(min-width: 700px){
+    flex-direction: row;
+  }
 
   @if($bor) {
     border-width: 1px;
@@ -70,11 +85,14 @@ $bor: false;
 
 .objTitleLeft{
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-around;
   align-items: center;
   flex-direction: row;
-  flex-wrap: wrap;
   width: 100%;
+  
+  @media(min-width: 700px){
+    justify-content: flex-start;
+  }
 
   @if($bor) {
     border-width: 1px;
@@ -85,11 +103,14 @@ $bor: false;
 
 .objTitleRight{
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   align-items: center;
   flex-direction: row;
-  flex-wrap: wrap;
   width: 100%;
+  
+  @media(min-width: 700px){
+    justify-content: flex-end;
+  }
 
   @if($bor) {
     border-width: 1px;

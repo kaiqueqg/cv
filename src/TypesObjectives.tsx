@@ -42,6 +42,7 @@ export interface ItemViewProps{
   itemTextColor: (theme: string, fade?: boolean) => string,
   itemInputColor: (theme: string, fade?: boolean) => string,
   itemTintColor: (theme: string, fade?: boolean) => string,
+  isLoadingBlack: boolean,
 }
 
 export interface DisplayTag{

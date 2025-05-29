@@ -128,7 +128,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='linksCenterContainer'>
@@ -150,8 +150,8 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
               </input>
             </div>
             <div className='linksSideContainer'>
-              <PressImage onClick={doneEditLinks} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={cancelEditLinks} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditLinks} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditLinks} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
@@ -160,9 +160,9 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
       }
       {!isEditingLinks &&
         (link.Link.trim() === ''?
-          <PressImage onClick={openLink} src={process.env.PUBLIC_URL + '/link-grey.png'}/>
+          <PressImage isBlack={props.isLoadingBlack} onClick={openLink} src={process.env.PUBLIC_URL + '/link-grey.png'}/>
           :
-          <PressImage onClick={openLink} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}/>
+          <PressImage isBlack={props.isLoadingBlack} onClick={openLink} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}/>
         )
       }
     </div>

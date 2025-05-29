@@ -147,7 +147,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='groceryCenterContainer'>
@@ -183,8 +183,8 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Unit"></input>
             </div>
             <div className='grocerySideContainer'>
-              <PressImage onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
             </div>
           </div>
           :
@@ -199,9 +199,9 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (grocery.IsChecked?
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
                   :
-                  <PressImage onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }
