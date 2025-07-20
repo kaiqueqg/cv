@@ -65,7 +65,7 @@ export const identityApi = {
   },
   async requestIdentity<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<T|null>{
     try {
-      const resp = await request('https://68m8rbceac.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
+      const resp = await request('https://2hbd2ck8gj.execute-api.sa-east-1.amazonaws.com/dev', endpoint, method, body, fError);
 
       if(resp){
         const respData: Response<T> = await resp.json();
