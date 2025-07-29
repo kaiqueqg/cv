@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Curriculum.scss'
+import './curriculum.scss'
 import { Language } from '../../Types';
 
 interface CurriculumProps{

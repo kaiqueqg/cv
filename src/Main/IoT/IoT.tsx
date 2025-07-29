@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import './IoT.scss'
+import './iot.scss'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
-import { objectiveslistApi } from '../../Requests/RequestFactory';
+import { objectiveslistApi } from '../../requests-sdk/requests-sdk';
 import { DeviceData } from '../../TypesObjectives';
 
 

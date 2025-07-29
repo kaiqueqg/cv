@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import './Login.scss'
+import './login.scss'
 import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType } from '../../Types'
-import Loading from '../../Loading/Loading';
-import { useUserContext } from '../../Contexts/UserContext';
-import storage from '../../Storage/Storage';
-import log from '../../Log/Log';
-import { identityApi } from '../../Requests/RequestFactory';
+import Loading from '../../loading/loading';
+import { useUserContext } from '../../contexts/user-context';
+import storage from '../../storage/storage';
+import log from '../../log/log';
+import { identityApi } from '../../requests-sdk/requests-sdk';
 import { useNavigate } from 'react-router-dom';
-import UserView from './UserView/UserView';
-import { useLogContext } from '../../Contexts/LogContext';
+import UserView from './user-view/user-view';
+import { useLogContext } from '../../contexts/log-context';
 
 interface LoginProps{
 }
@@ -56,14 +56,19 @@ const Login: React.FC<LoginProps> = (props) => {
     return JSON.parse(jsonPayload);
   }
 
-  const loginError = (error: any) => {
-    if(error.Message === 'Wrong email.'){
-      setWrongEmail(true);
-      setPassword('');
+  const loginError = (response: any) => {
+    if(response.Message === 'Wrong email.' || response.Message === 'Wrong password.'){
+      if(response.Message === 'Wrong email.'){
+        setWrongEmail(true);
+        setPassword('');
+      }
+      if(response.Message === 'Wrong password.') {
+        setWrongPassword(true);
+        setPassword('');
+      }
     }
-    if(error.Message === 'Wrong password.') {
-      setWrongPassword(true);
-      setPassword('');
+    else{
+      popMessage(response.Message, MessageType.Error, 10);
     }
   }
 

@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import App from './App';
-import { UserProvider } from './Contexts/UserContext';
+import App from './app';
+import { UserProvider } from './contexts/user-context';
 import './global.scss';
 
 const root = ReactDOM.createRoot(

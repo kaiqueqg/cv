@@ -1,7 +1,7 @@
 import React from 'react'
-import './Loading.scss'
+import './loading.scss'
 import { ReactComponent as Icon } from '../assets/refresh.svg';
-import PressImage from '../PressImage/PressImage';
+import PressImage from '../press-image/press-image';
 
 interface LoadingProps{
   IsBlack?: boolean,

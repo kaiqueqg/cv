@@ -1,0 +1,68 @@
+@import '../../global.scss';
+
+.topMenu{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: wrap;
+  border-color: $beige-dark;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
+  justify-content: center;
+  padding: 20px 0px 20px 0px;
+  margin: 0px;
+  
+  @media screen and (max-width: $screen-max-width){
+    width: 100%;
+  }
+}
+
+.buttonsContainer{
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.menuButton{
+  cursor: pointer;
+  display: flex;
+  padding: 5px 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  margin: 2px 7px;
+  min-width: 100px;
+
+  border-style: solid;
+  border-color: transparent;
+  border-width: 1px 1px 1px 1px;
+  border-radius: 5px;
+
+  @media(min-width: 700px){
+    margin: 2px 5px;
+  }
+}
+
+.menuButton:hover{
+  border-style: solid;
+  border-width: 1px;
+  border-color: $beige;
+}
+
+.menuSelected{
+  border-style: solid;
+  border-color: $beige;
+  background-color: $blue-dark;
+}
+
+.text{
+  font-size: 15px;
+  font-weight: bold;
+  color: $beige;
+}
+
+.textSelected{
+  color: $beige;
+}

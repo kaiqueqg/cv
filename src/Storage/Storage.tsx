@@ -1,5 +1,5 @@
 import { ResponseUser, UserPrefs } from '../Types';
-import log from '../Log/Log';
+import log from '../log/log';
 
 
 type StorageKeys = {

@@ -1,5 +1,5 @@
 import { LogLevel } from "../Types";
-import T from "../Text/T";
+import T from "../text/t";
 
 const currentLogLevel = LogLevel.Dev;
 
