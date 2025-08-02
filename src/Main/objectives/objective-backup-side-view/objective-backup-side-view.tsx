@@ -3,13 +3,15 @@ import { useUserContext } from "../../../contexts/user-context";
 import storage from "../../../storage/storage";
 import './objective-backup-side-view.scss';
 import Loading from "../../../loading/loading";
-import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
 import { useLogContext } from "../../../contexts/log-context";
+import { useRequestContext } from "../../../contexts/request-context";
 
 interface ObjectiveBackupSideViewProps{
 }
 
 const ObjectiveBackSideView: React.FC<ObjectiveBackupSideViewProps> = (props) => {
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const [backupDataList, setBackupDataList] = useState<string[]>([]);
   const [isGettingBackupData, setIsGettingBackupData] = useState<boolean>(false);
 

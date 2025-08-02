@@ -3,7 +3,7 @@ import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
 import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House } from "../../../TypesObjectives";
 import log from "../../../log/log";
-import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
 import Loading from "../../../loading/loading";
 // import WaitView from "./WaitView/WaitView";
 import TagsView from "./tags-view/tags-view";
@@ -23,6 +23,8 @@ import { LinkView, linkNew } from "./link-view/link-view";
 import { ImageView, imageNew } from "./image-view/image-view";
 import { HouseView, houseNew } from "./house-view/house-view";
 import PressImage from "../../../press-image/press-image";
+import { useRequestContext } from "../../../contexts/request-context";
+import { MessageType } from "../../../Types";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -31,7 +33,9 @@ interface ObjectiveViewProps{
 }
 
 export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
-  const { testServer, putSelectedTags, selectedTags } = useUserContext();
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
+  const { putSelectedTags, selectedTags } = useUserContext();
+  const { popMessage } = useLogContext();
   const { objective, putObjective, isObjsEditingPos } = props;
   
   const [items, setItems] = useState<(Item)[]>([]);
@@ -122,7 +126,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const deleteObjective = async () => {   
     setIsDeleting(true);
     try {
-      const data = await objectiveslistApi.deleteObjective(objective, () => {testServer();});
+      const data = await objectiveslistApi.deleteObjective(objective, (error:any) => popMessage(error.Message, MessageType.Error, 10));
   
       if(data){
         putObjective(objective, true);
@@ -242,7 +246,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     
     const data = await objectiveslistApi.putObjectiveItems(sending);
     if(data){
-      data.forEach(element => {
+      data.forEach((element: Item | undefined) => {
         putItemInDisplay(element);
       });
     }
@@ -634,9 +638,9 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
 
-    const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
+    const data = await objectiveslistApi.putObjectiveItems(sending, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     if(data){
-      data.forEach(element => {
+      data.forEach((element: Item | undefined) => {
         putItemInDisplay(element);
       });
     }
@@ -650,9 +654,9 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       sending.push({...itemsOrdered[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
 
-    const data = await objectiveslistApi.putObjectiveItems(sending, () => {testServer();});
+    const data = await objectiveslistApi.putObjectiveItems(sending, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     if(data){
-      data.forEach(element => {
+      data.forEach((element: Item | undefined) => {
         putItemInDisplay(element);
       });
     }

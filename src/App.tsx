@@ -23,8 +23,8 @@ const App: React.FC<AppProps> = () => {
   return (
     <React.StrictMode>
       <LogProvider>
-        <UserProvider>
-          <RequestProvider>
+        <RequestProvider>
+          <UserProvider>  
             <div className="appContainer">
               <HashRouter>
                 <TopMenu></TopMenu>
@@ -38,8 +38,8 @@ const App: React.FC<AppProps> = () => {
                 </Routes>
               </HashRouter>
             </div>
-          </RequestProvider>
-        </UserProvider>
+          </UserProvider>
+        </RequestProvider>
       </LogProvider>
     </React.StrictMode>
   )

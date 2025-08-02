@@ -3,9 +3,10 @@ import './wait-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Wait } from "../../../../TypesObjectives";
 import Loading from "../../../../loading/loading";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function waitNew() { return { Title: '' } }
 
@@ -15,6 +16,7 @@ interface WaitViewProps extends ItemViewProps{
 }
 
 export const WaitView: React.FC<WaitViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { wait, putItemInDisplay, theme, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>('');

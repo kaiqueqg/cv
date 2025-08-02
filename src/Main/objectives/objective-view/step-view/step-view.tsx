@@ -3,12 +3,13 @@ import './step-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Step, StepImportance } from "../../../../TypesObjectives";
 import log from "../../../../log/log";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import { useLogContext } from "../../../../contexts/log-context";
 import { MessageType } from "../../../../Types";
 import PressImage from "../../../../press-image/press-image";
 import { Console } from "console";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function stepNew(){
   return {
@@ -23,6 +24,7 @@ interface StepViewProps extends ItemViewProps{
 }
 
 export const StepView: React.FC<StepViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { popMessage } = useLogContext();
   const { step, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 

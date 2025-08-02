@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import './objective-hide-view.scss';
-import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
 import log from "../../../log/log";
 import { Objective } from "../../../TypesObjectives";
 import Loading from "../../../loading/loading";
 import PressImage from "../../../press-image/press-image";
 import { useUserContext } from "../../../contexts/user-context";
+import { useRequestContext } from "../../../contexts/request-context";
 
 interface ObjectiveHideViewProps{
   objective: Objective,
@@ -14,6 +15,7 @@ interface ObjectiveHideViewProps{
 }
 
 const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
   const [isOpening, setIsOpening] = useState<boolean>(false);
   const [isBeingHover, setIsBeingHover] = useState<boolean>(false);

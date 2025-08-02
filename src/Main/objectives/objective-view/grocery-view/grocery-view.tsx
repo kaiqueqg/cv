@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import './grocery-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Grocery, Item, ItemViewProps } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
+import { useLogContext } from "../../../../contexts/log-context";
+import { MessageType } from "../../../../Types";
 
 export function groceryNew(){
   return {
@@ -23,6 +26,8 @@ interface GroceryViewProps extends ItemViewProps{
 
 export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   const { user, setUser } = useUserContext();
+  const { popMessage } = useLogContext();
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const { grocery, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newGrocery, setNewGrocery] = useState<Grocery>(grocery);
@@ -62,7 +67,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
 
     try {
       const newItem: Grocery = { ...grocery, IsChecked: !grocery.IsChecked, LastModified: new Date().toISOString()};
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      const data = await objectiveslistApi.putObjectiveItem(newItem, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsSavingIsChecked(false);
@@ -91,11 +96,11 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
       setIsEditingGrocery(true);
 
       putItemInDisplay(newItem);
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      const data = await objectiveslistApi.putObjectiveItem(newItem, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsEditingGrocery(false);
-        setNewGrocery(newGrocery);
+        setNewGrocery(data);
       }
 
       setTimeout(() => {

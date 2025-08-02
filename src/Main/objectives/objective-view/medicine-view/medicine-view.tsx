@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import './medicine-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Medicine, ItemViewProps } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function medicineNew(){
   return {
@@ -23,6 +24,7 @@ interface MedicineViewProps extends ItemViewProps{
 }
 
 export const MedicineView: React.FC<MedicineViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { medicine, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 

@@ -5,10 +5,11 @@ import Loading from '../../loading/loading';
 import { useUserContext } from '../../contexts/user-context';
 import storage from '../../storage/storage';
 import log from '../../log/log';
-import { identityApi } from '../../requests-sdk/requests-sdk';
+// import { identityApi } from '../../requests-sdk/requests-sdk';
 import { useNavigate } from 'react-router-dom';
 import UserView from './user-view/user-view';
 import { useLogContext } from '../../contexts/log-context';
+import { useRequestContext } from '../../contexts/request-context';
 
 interface LoginProps{
 }
@@ -38,7 +39,8 @@ const Login: React.FC<LoginProps> = (props) => {
   const [typeAnUsernameCreate, setTypeAnUsernameCreate] = useState<boolean>(false);
   const [typeReasonCreate, setTypeReasonCreate] = useState<boolean>(false);
 
-  const { user, setUser, testServer, isServerUp } = useUserContext();
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
+  const { user, setUser, isServerUp } = useUserContext();
   const { popMessage } = useLogContext();
   const navigate = useNavigate();
   
@@ -175,9 +177,11 @@ const Login: React.FC<LoginProps> = (props) => {
     return false;
   }
 
-  const logout = () => {
+  const logout = async () => {
     storage.deleteToken();
     storage.deleteUser();
+    storage.deleteAvailableTags();
+    storage.deleteSelectedTags();
     setUser(null);
     setIsLogged(false);
   }
@@ -220,9 +224,7 @@ const Login: React.FC<LoginProps> = (props) => {
 
     try {
       setIsLogging(true);
-      const data = await identityApi.askToCreate(JSON.stringify(createUser), () => {
-        testServer();
-      });
+      const data = await identityApi.askToCreate(JSON.stringify(createUser));
 
       setIsLogging(false);
       

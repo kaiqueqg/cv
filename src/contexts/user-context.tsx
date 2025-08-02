@@ -1,6 +1,5 @@
 // UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { identityApi } from '../requests-sdk/requests-sdk';
 import { ResponseUser, UserPrefs } from '../Types';
 import storage from '../storage/storage';
 import log from '../log/log';
@@ -29,8 +28,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const loadUserPrefs = async () => {
     const userPrefs = await storage.getUserPrefs();
-
-
   }
 
   const loadSelectedTags = async () => {
@@ -48,12 +45,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     } else {
       //log.err('no selected tags');
     }
-  };
-
-  const testServer = async () => {
-    await identityApi.isUp(undefined, () => {
-      setIsServerUp(false);
-    });
   };
 
   const [availableTags, setAvailableTags] = useState<string[]>([]);
@@ -129,7 +120,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         setIsServerUp,
         theme,
         setTheme,
-        testServer,
         writeAvailableTags,
         putAvailableTags,
         removeAvailableTags,
@@ -154,7 +144,6 @@ interface UserContextType {
   setIsServerUp : React.Dispatch<React.SetStateAction<boolean>>,
   theme: string,
   setTheme: React.Dispatch<React.SetStateAction<string>>,
-  testServer : () => void,
   writeAvailableTags: (tags: string[]) => void,
   putAvailableTags: (tags: string[]) => void,
   removeAvailableTags: (tags: string[]) => void,

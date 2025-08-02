@@ -32,9 +32,9 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
         const response = await fetch(url + endpoint, payload);
 
         if(response !== undefined && errors.includes(response.status)){
-          popMessage(await response.text());
-          // const message = await response.text();
-          // log.err('request', message);
+          const message = await response.text();
+          popMessage(await message);
+          log.err('request', message);
         }
 
         return response;
@@ -47,15 +47,15 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     }
   }
   const IDENTITY_URLS = {
-    'BR': 'https://9av2l54pl0.execute-api.sa-east-1.amazonaws.com/dev',
-    // 'FR': 'https://kegq3ewts5.execute-api.eu-west-3.amazonaws.com/dev',
-    'default': 'https://9av2l54pl0.execute-api.sa-east-1.amazonaws.com/dev'
+    BR: process.env.REACT_APP_IDENTITY_URL_BR!,
+    FR: process.env.REACT_APP_IDENTITY_URL_FR!,
+    default: process.env.REACT_APP_IDENTITY_URL_DEFAULT!
   };
 
   const OBJECTIVELIST_URLS = {
-    'BR': 'https://lqfnurjgb5.execute-api.sa-east-1.amazonaws.com/dev',
-    // 'FR': 'https://vmucoxnsu0.execute-api.eu-west-3.amazonaws.com/dev',
-    'default': 'https://lqfnurjgb5.execute-api.sa-east-1.amazonaws.com/dev'
+    BR: process.env.REACT_APP_OBJECTIVELIST_URL_BR!,
+    FR: process.env.REACT_APP_OBJECTIVELIST_URL_FR!,
+    default: process.env.REACT_APP_OBJECTIVELIST_URL_DEFAULT!
   };
 
   const getIdentityUrl = async () => {
@@ -82,7 +82,6 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
       // if (country === 'BR') return OBJECTIVELIST_URLS['BR'];
       // // if (country === 'FR') return OBJECTIVELIST_URLS['FR'];
-
       return OBJECTIVELIST_URLS['default'];
     } catch (err) {
       console.error('Error getting region, using default', err);
@@ -129,6 +128,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
           }
           else{
             if(fError) {
+              log.err(respData.Message);
               fError(respData);
             }
             //alert(respData.Message);
@@ -207,6 +207,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
           }
           else{
             if(fError) {
+              log.err(respData.Message);
               fError(respData);
             }
             //alert(respData.Message);
@@ -219,12 +220,86 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
       return null;
     },
   }
+
+  const s3Api = {
+    async getImage(imageInfo: ImageInfo, fError?: () => void): Promise<File | null> {
+      const presignedUrlReturn = await objectiveslistApi.generateGetPresignedUrl(imageInfo);
+      try {
+          const fetchResponse = await fetch(presignedUrlReturn?.url, {
+            method: 'GET',
+          });
+
+          if (fetchResponse.ok) {
+            const blob = await fetchResponse.blob();
+            const downloadedFile = new File([blob], imageInfo.fileName, { type: imageInfo.fileType });
+            return downloadedFile;
+          }
+
+          return null; // Request failed
+      } catch (err) {
+          if (fError) fError();
+          else log.err('Error getting image from S3', err);
+
+          return null;
+      }
+    },
+    async sendImage(itemId:string, file: File, fError?: () => void): Promise<boolean>{
+      const imageInfo: ImageInfo = { itemId: itemId, fileName: file.name, fileType: file.type };
+      const presignedUrlReturn:PresignedUrl = await objectiveslistApi.generatePutPresignedUrl(imageInfo);
+      try {
+        const uploadResponse = await fetch(presignedUrlReturn?.url, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': file.type,
+          },
+          body: file,
+        });
+
+        if(uploadResponse.ok){
+          return true;
+        }
+
+        return false;
+      } catch (err) {
+        if(fError) fError();
+        else log.err('Error sending image to S3', err);
+
+        return false;
+      }
+    },
+    async deleteImage(itemId:string, file: File, fError?: () => void): Promise<boolean>{
+      const imageInfo: ImageInfo = { itemId: itemId, fileName: file.name, fileType: file.type };
+      const presignedUrlReturn:PresignedUrl = await objectiveslistApi.generateDeletePresignedUrl(imageInfo);
+
+      if(presignedUrlReturn.url === null){
+        return false;
+      }
+
+      try {
+        const uploadResponse = await fetch(presignedUrlReturn?.url, {
+          method: 'DELETE',
+        });
+
+        if(uploadResponse.ok){
+          return true;
+        }
+
+        return false;
+      } catch (err) {
+        if(fError) fError();
+        else log.err('Error deleting image from S3', err);
+
+        return false;
+      }
+    },
+  }
     
   return (
     <RequestContext.Provider 
     value={{
       identityApi,
       objectiveslistApi,
+      s3Api,
     }}>
     {children}
     </RequestContext.Provider>
@@ -234,6 +309,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 interface RequestContextType {
   identityApi: any,
   objectiveslistApi: any,
+  s3Api: any,
 }
 
 export const useRequestContext = () => {

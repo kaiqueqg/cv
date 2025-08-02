@@ -3,10 +3,11 @@ import './note-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Note } from "../../../../TypesObjectives";
 import Loading from "../../../../loading/loading";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import log from "../../../../log/log";
 import { isEnumDeclaration } from "typescript";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function noteNew(){
   return {
@@ -19,6 +20,7 @@ interface NoteViewProps extends ItemViewProps{
 }
 
 export const NoteView: React.FC<NoteViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { note, putItemInDisplay, theme, isSelected, isEditingPos, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
 

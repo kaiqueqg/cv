@@ -2,10 +2,11 @@ import { ReactNode, useEffect, useState } from "react";
 import './link-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Link } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { useLogContext } from "../../../../contexts/log-context";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function linkNew(){
   return {
@@ -19,6 +20,7 @@ interface LinkViewProps extends ItemViewProps{
 }
 
 export const LinkView: React.FC<LinkViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { log } = useLogContext();
   const { link, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;

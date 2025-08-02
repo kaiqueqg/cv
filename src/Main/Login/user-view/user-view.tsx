@@ -4,15 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import './user-view.scss';
 import { useEffect, useState } from "react";
 import { ResponseUser, Response, ResponseServices } from "../../../Types";
-import { identityApi } from "../../../requests-sdk/requests-sdk";
+// import { identityApi } from "../../../requests-sdk/requests-sdk";
 import log from "../../../log/log";
 import Loading from "../../../loading/loading";
+import { useRequestContext } from "../../../contexts/request-context";
 
 interface UserViewProps{
   setIsLogged: (value: boolean) => void,
 }
 
 const UserView: React.FC<UserViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const navigate = useNavigate();
   const [userList, setUserList] = useState<ResponseUser[]>([]);
@@ -52,6 +54,8 @@ const UserView: React.FC<UserViewProps> = (props) => {
   const logout = () => {
     storage.deleteToken();
     storage.deleteUser();
+    storage.deleteAvailableTags();
+    storage.deleteSelectedTags();
     setUser(null);
     props.setIsLogged(false);
   }

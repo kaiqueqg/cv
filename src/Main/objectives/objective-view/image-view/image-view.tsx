@@ -3,10 +3,11 @@ import './image-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Image, StepImportance, ImageInfo } from "../../../../TypesObjectives";
 import log from "../../../../log/log";
-import { objectiveslistApi, s3Api } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi, s3Api } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { isEditable } from "@testing-library/user-event/dist/utils";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function imageNew(){
   return {
@@ -29,6 +30,7 @@ interface ImageViewProps extends ItemViewProps{
 }
 
 export const ImageView: React.FC<ImageViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { image, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newImage, setNewImage] = useState<Image>(image);

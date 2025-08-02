@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import './objective-archived-view.scss';
-import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
 import log from "../../../log/log";
 import { Objective } from "../../../TypesObjectives";
 import Loading from "../../../loading/loading";
+import { useRequestContext } from "../../../contexts/request-context";
 
 interface ObjectiveArchivedViewProps{
   objective: Objective,
@@ -12,6 +13,7 @@ interface ObjectiveArchivedViewProps{
 }
 
 const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
 
   const [isUnarchiving, setIsUnarchiving] = useState<boolean>(false);

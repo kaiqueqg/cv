@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import './location-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Location } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function locationNew(){
   return {
@@ -18,6 +19,7 @@ interface LocationViewProps extends ItemViewProps{
 }
 
 export const LocationView: React.FC<LocationViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { location, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 

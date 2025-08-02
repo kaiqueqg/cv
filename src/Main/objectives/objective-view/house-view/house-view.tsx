@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import './house-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { House, Item, ItemViewProps } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function houseNew(){
   return {
@@ -28,6 +29,7 @@ interface HouseViewProps extends ItemViewProps{
 
 export const HouseView: React.FC<HouseViewProps> = (props) => {
   const { user, setUser } = useUserContext();
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const { house, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newHouse, setNewHouse] = useState<House>(house);

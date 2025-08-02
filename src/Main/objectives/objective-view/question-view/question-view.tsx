@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import './question-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Question } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function questionNew(){
   return {
@@ -18,6 +19,7 @@ interface QuestionViewProps extends ItemViewProps{
 }
 
 export const QuestionView: React.FC<QuestionViewProps> = (props) => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { question, theme, putItemInDisplay, isSelected, isEditingPos, isEndingPos,
     itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;

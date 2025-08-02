@@ -17,7 +17,7 @@ const keys: StorageKeys = {
   BaseUrl: '@kaiqueqgcv:baseurl',
   UserPrefs: '@kaiqueqgcv:UserPrefs',
   AvailableTags: '@kaiqueqgcv:AvailableTags',
-  SelectedTags: '@kaiqueqgcv:selectedTags',
+  SelectedTags: '@kaiqueqgcv:SelectedTags',
 };
 
 const storage = {
@@ -39,7 +39,7 @@ const storage = {
     localStorage.setItem(keys.User, JSON.stringify(user));
   },
   deleteUser(){
-    localStorage.removeItem(keys.User)
+    localStorage.removeItem(keys.User);
   },
   getBaseUrl() : string{
     const value = localStorage.getItem(keys.BaseUrl);
@@ -54,7 +54,12 @@ const storage = {
   },
   getUserPrefs(): UserPrefs {
     const prefs = localStorage.getItem(keys.UserPrefs);
-    return prefs ? JSON.parse(prefs) : {  };
+    return prefs ? JSON.parse(prefs) : {
+      theme: '',
+      allowLocation: false,
+      vibrate: false,
+      autoSync: false
+    };
   },
   setUserPrefs(prefs: UserPrefs) {
     localStorage.setItem(keys.UserPrefs, JSON.stringify(prefs));
@@ -84,6 +89,13 @@ const storage = {
       return null;
     }
   },
+
+  async deleteAvailableTags() {
+    log.r('deleting available');
+    await localStorage.removeItem(keys.AvailableTags);
+    log.g('done  available');
+  },
+
   async writeSelectedTags(tags: string[]): Promise<void> {
     try {
       await localStorage.setItem(keys.SelectedTags, JSON.stringify(tags));
@@ -107,6 +119,10 @@ const storage = {
       // log.err('stg readSelectedTags', '[catch] reading selected tags.');
       return null;
     }
+  },
+
+  async deleteSelectedTags() {
+    await localStorage.removeItem(keys.SelectedTags);
   },
 }
 

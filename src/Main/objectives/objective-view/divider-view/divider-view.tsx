@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import './divider-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, Divider, ItemViewProps, ItemType } from "../../../../TypesObjectives";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
 import { MessageType } from "../../../../Types";
 import { useLogContext } from "../../../../contexts/log-context";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function dividerNew(){
   return {
@@ -24,6 +25,7 @@ interface DividerProps extends ItemViewProps{
 
 export const DividerView: React.FC<DividerProps> = (props) => {
   const { user, setUser } = useUserContext();
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const { popMessage } = useLogContext();
   const { divider, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, choseNewItemToAdd, orderDividerItems, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
@@ -60,7 +62,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       || newDivider.Pos !== divider.Pos) {
       setIsEditingTitle(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newDivider, (error) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItem(newDivider, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsEditingTitle(false);
@@ -84,7 +86,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
     setIsSavingIsOpen(true);
     const newDivider: Divider = {...divider, IsOpen: divider.IsOpen? !divider.IsOpen:true, LastModified: new Date().toISOString()};
 
-    const data = await objectiveslistApi.putObjectiveItem(newDivider, (error) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.putObjectiveItem(newDivider, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     if(data){
       putItemInDisplay(data);
     }
@@ -100,7 +102,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(divider, (error) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.deleteObjectiveItem(divider, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
     if(data){
       putItemInDisplay(divider, true);

@@ -3,11 +3,11 @@ import './exercise-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Exercise, Weekdays } from "../../../../TypesObjectives";
 import log from "../../../../log/log";
-import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { useLogContext } from "../../../../contexts/log-context";
 import { MessageType } from "../../../../Types";
+import { useRequestContext } from "../../../../contexts/request-context";
 
 export function exerciseNew(){
   return {
@@ -28,6 +28,7 @@ interface ExerciseViewProps extends ItemViewProps{
 
 export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const { popMessage } = useLogContext();
+  const { identityApi, objectiveslistApi } = useRequestContext();
   const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [isSavingExercise, setIsSavingExercise] = useState<boolean>(false);
@@ -99,7 +100,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
         ...exercise, 
         IsDone: !exercise.IsDone, LastDone: !exercise.IsDone? new Date().toISOString():exercise.LastDone, LastModified: new Date().toISOString()};
       putItemInDisplay(newItem);
-      const data = await objectiveslistApi.putObjectiveItem(newItem, (error) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItem(newItem, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsSavingExercise(false);
@@ -124,7 +125,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
 
   const deleteItem = async () => {
     setIsDeleting(true);
-    const data = await objectiveslistApi.deleteObjectiveItem(exercise, (error) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.deleteObjectiveItem(exercise, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
     if(data){
       setIsEditingExercise(false);
@@ -153,7 +154,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       newItem.LastDone !== exercise.LastDone) {
       setIsSavingExercise(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newExercise, (error) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItem(newExercise, (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsEditingExercise(false);

@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './iot.scss'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
-import { objectiveslistApi } from '../../requests-sdk/requests-sdk';
+//import { objectiveslistApi } from '../../requests-sdk/requests-sdk';
 import { DeviceData } from '../../TypesObjectives';
+import { useRequestContext } from '../../contexts/request-context';
 
 
 interface IoTProps{
 }
 
 const IoT: React.FC<IoTProps> = () => {
+  const { objectiveslistApi } = useRequestContext();
 
   const [mobileDeviceData, setMobileDeviceData] = useState<DeviceData[]>([]);
   const [stationaryDeviceData, setStationaryDeviceData] = useState<DeviceData[]>([]);

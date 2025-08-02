@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../../contexts/user-context";
 import storage from "../../storage/storage";
 import './objectives-list.scss';
-import { objectiveslistApi } from "../../requests-sdk/requests-sdk";
+// import { objectiveslistApi } from "../../requests-sdk/requests-sdk";
 import log from "../../log/log";
 import { Item, Objective, ObjectiveList, Question, Step, Wait } from "../../TypesObjectives";
 import { ObjectiveView } from "./objective-view/objective-view";
@@ -13,17 +13,19 @@ import { useLogContext } from "../../contexts/log-context";
 import { MessageType } from "../../Types";
 import PressImage from "../../press-image/press-image";
 import ObjectiveBackSideView from "./objective-backup-side-view/objective-backup-side-view";
+import { useRequestContext } from "../../contexts/request-context";
 
 interface ObjectivesListProps{}
 
 enum SidePanelView {Archived, Closed, Backup};
 
 const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
-  const { user, setUser, testServer, 
+  const { user, setUser, 
     availableTags, writeAvailableTags, removeAvailableTags,
     selectedTags, writeSelectedTags, putSelectedTags, removeSelectedTags
   } = useUserContext();
   const { popMessage } = useLogContext();
+  const { identityApi, objectiveslistApi } = useRequestContext();
 
   const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
   const [objectives, setObjectives] = useState<Objective[]>([]);
@@ -79,7 +81,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const updateObjectives = async (updateSelectedTags?:boolean) => {
     setIsUpdatingObjectives(true);
 
-    const data = await objectiveslistApi.syncObjectivesList({}, (error) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.syncObjectivesList({}, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     if(data && data.Objectives){
       const sorted = data.Objectives.sort((a: Objective, b: Objective) => a.Pos-b.Pos);
       setObjectives(sorted);
@@ -92,6 +94,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         }
         const uniqueTags = Array.from(new Set(tags));
         writeAvailableTags(['Pin', ...uniqueTags]);
+
+        // if(updateSelectedTags && selectedTags && selectedTags.length === 0) writeSelectedTags(['Pin', ...uniqueTags]);
       }
     }
 
@@ -119,7 +123,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         Tags: [],
       }
       
-      const data = await objectiveslistApi.putObjective(emptyObjective, (error) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjective(emptyObjective, (error:any) => popMessage(error.Message, MessageType.Error, 10));
       if(data){
         putObjectiveInDisplay(data);
       }
@@ -204,7 +208,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     try{
       setIsUpdatingObjectives(true);
       setObjectives(finalList);
-      const data = await objectiveslistApi.putObjectives(finalList, (error) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectives(finalList, (error:any) => popMessage(error.Message, MessageType.Error, 10));
       if(data) {
       }
       else{
@@ -335,7 +339,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const backupData = async () => {
     setIsBackingUpData(true);
-    const data = await objectiveslistApi.backupData((error) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.backupData((error:any) => popMessage(error.Message, MessageType.Error, 10));
     console.log(data);
     if(data){
       
@@ -406,7 +410,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const uploadBackupData = async (data: ObjectiveList, fileName: string) => {
     setIsUpdatingObjectives(true);
-    await objectiveslistApi.syncObjectivesList(data, (error) => popMessage(error.Message, MessageType.Error, 10));
+    await objectiveslistApi.syncObjectivesList(data, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     setIsUpdatingObjectives(false);
 
     if(data){
