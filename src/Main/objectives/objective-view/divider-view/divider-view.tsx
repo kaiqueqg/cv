@@ -144,7 +144,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
   }
 
   return (
-    <div className={'dividerContainer' + itemGetTheme(theme, isSelected, isEndingPos, divider.Title.trim() !== '')}>
+    <div className={'dividerContainer' + itemGetTheme(theme, isSelected, isEndingPos, divider.Title.trim() !== '') + ' dividerLighten'}>
       <div className='titleLineContainer'>
         {!isEditingTitle && 
           (isSavingIsOpen?

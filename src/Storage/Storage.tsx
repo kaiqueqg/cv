@@ -5,6 +5,7 @@ import log from '../log/log';
 type StorageKeys = {
   JwtToken: string,
   User: string,
+  FirstLogin: string,
   BaseUrl: string,
   UserPrefs: string,
   AvailableTags: string,
@@ -14,6 +15,7 @@ type StorageKeys = {
 const keys: StorageKeys = {
   JwtToken: '@kaiqueqgcv:jwt',
   User: '@kaiqueqgcv:user',
+  FirstLogin: '@kaiqueqgcv:FirstLogin',
   BaseUrl: '@kaiqueqgcv:baseurl',
   UserPrefs: '@kaiqueqgcv:UserPrefs',
   AvailableTags: '@kaiqueqgcv:AvailableTags',
@@ -21,6 +23,7 @@ const keys: StorageKeys = {
 };
 
 const storage = {
+  //^-------------------- First Token
   getToken(): string|null{
     const token = localStorage.getItem(keys.JwtToken);
     return token;
@@ -31,6 +34,8 @@ const storage = {
   deleteToken(){
     localStorage.removeItem(keys.JwtToken);
   },
+
+  //^-------------------- User
   getUser(): ResponseUser|null{
     const userJson = localStorage.getItem(keys.User);
     return userJson ? JSON.parse(userJson) : null;
@@ -41,6 +46,20 @@ const storage = {
   deleteUser(){
     localStorage.removeItem(keys.User);
   },
+
+  //^-------------------- First Login
+  getFirstLogin(): boolean|null{
+    const firstLogin = localStorage.getItem(keys.FirstLogin);
+    return firstLogin ? JSON.parse(firstLogin) : null;
+  },
+  setFirstLogin(value: boolean){
+    localStorage.setItem(keys.FirstLogin, JSON.stringify(value));
+  },
+  deleteFirstLogin(){
+    localStorage.removeItem(keys.FirstLogin);
+  },
+
+  //^-------------------- Base Url
   getBaseUrl() : string{
     const value = localStorage.getItem(keys.BaseUrl);
     if(value === null){
@@ -52,6 +71,8 @@ const storage = {
   setBaseUrl(baseUrl: string) {
     localStorage.setItem(keys.BaseUrl, baseUrl);
   },
+
+  //^-------------------- User Prefs
   getUserPrefs(): UserPrefs {
     const prefs = localStorage.getItem(keys.UserPrefs);
     return prefs ? JSON.parse(prefs) : {
@@ -64,7 +85,8 @@ const storage = {
   setUserPrefs(prefs: UserPrefs) {
     localStorage.setItem(keys.UserPrefs, JSON.stringify(prefs));
   },
-  //^-------------------- TAGS
+
+  //^-------------------- Available Tags
   async writeAvailableTags(tags: string[]): Promise<void> {
     try {
       await localStorage.setItem(keys.AvailableTags, JSON.stringify(tags));
@@ -89,13 +111,12 @@ const storage = {
       return null;
     }
   },
-
+  
   async deleteAvailableTags() {
-    log.r('deleting available');
     await localStorage.removeItem(keys.AvailableTags);
-    log.g('done  available');
   },
-
+  
+  //^-------------------- Selected Tags
   async writeSelectedTags(tags: string[]): Promise<void> {
     try {
       await localStorage.setItem(keys.SelectedTags, JSON.stringify(tags));

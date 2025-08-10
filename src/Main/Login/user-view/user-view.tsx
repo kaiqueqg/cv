@@ -56,6 +56,7 @@ const UserView: React.FC<UserViewProps> = (props) => {
     storage.deleteUser();
     storage.deleteAvailableTags();
     storage.deleteSelectedTags();
+    storage.deleteFirstLogin();
     setUser(null);
     props.setIsLogged(false);
   }

@@ -14,18 +14,21 @@ import { MessageType } from "../../Types";
 import PressImage from "../../press-image/press-image";
 import ObjectiveBackSideView from "./objective-backup-side-view/objective-backup-side-view";
 import { useRequestContext } from "../../contexts/request-context";
+import { useNavigate } from 'react-router-dom';
 
 interface ObjectivesListProps{}
 
 enum SidePanelView {Archived, Closed, Backup};
 
 const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
-  const { user, setUser, 
+  const { user, setUser,
+    // firstLogin, writeFirstLogin,
     availableTags, writeAvailableTags, removeAvailableTags,
     selectedTags, writeSelectedTags, putSelectedTags, removeSelectedTags
   } = useUserContext();
   const { popMessage } = useLogContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
+  const navigate = useNavigate();
 
   const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
   const [objectives, setObjectives] = useState<Objective[]>([]);
@@ -41,7 +44,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   
   useEffect(() => {
     verifyLogin();
-    updateObjectives(true);
+    updateObjectives();
 
     const handleResize = () => {
       setIsBelow700px(window.innerWidth < 700);
@@ -78,10 +81,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   }
 
-  const updateObjectives = async (updateSelectedTags?:boolean) => {
+  const updateObjectives = async () => {
     setIsUpdatingObjectives(true);
 
-    const data = await objectiveslistApi.syncObjectivesList({}, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.syncObjectivesList({});
     if(data && data.Objectives){
       const sorted = data.Objectives.sort((a: Objective, b: Objective) => a.Pos-b.Pos);
       setObjectives(sorted);
@@ -94,8 +97,12 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         }
         const uniqueTags = Array.from(new Set(tags));
         writeAvailableTags(['Pin', ...uniqueTags]);
-
-        // if(updateSelectedTags && selectedTags && selectedTags.length === 0) writeSelectedTags(['Pin', ...uniqueTags]);
+        
+        const v = storage.getFirstLogin(); //I need a better solution
+        if(v) {
+          writeSelectedTags(['Pin', ...uniqueTags]);
+          storage.setFirstLogin(false);
+        }
       }
     }
 
@@ -443,7 +450,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         </div>)
        :
         <div className='needLogin'>
-          Need login
+          <button className="btn-base btn-togrocerylist" type="button"  onClick={()=>{navigate('/login')}}>Need to login</button>
         </div>
       }
     </div>

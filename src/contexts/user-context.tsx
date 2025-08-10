@@ -20,7 +20,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     vibrate: true,
     autoSync: false, 
   });
-
+  
   useEffect(() => {
     loadUserPrefs();
     loadSelectedTags();
@@ -28,7 +28,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const loadUserPrefs = async () => {
     const userPrefs = await storage.getUserPrefs();
-  }
+  };
 
   const loadSelectedTags = async () => {
     const storageAvailableTags = await storage.readAvailableTags();
@@ -47,7 +47,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   };
 
-  const [availableTags, setAvailableTags] = useState<string[]>([]);
+  const [availableTags, setAvailableTags] = useState<string[]>(['Pin']);
   const writeAvailableTags = async (availableTags: string[]) => {
     try {
       const uniqueTags = Array.from(new Set(availableTags));
@@ -78,7 +78,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     }
   };
 
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>(['Pin']);
   const removeSelectedTags = async (tags: string[]) => {
     try {
       const newTags = selectedTags.filter((t) => !tags.includes(t));
@@ -116,6 +116,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         setUser,
         prefs,
         setPrefs,
+        // firstLogin,
+        // writeFirstLogin,
         isServerUp,
         setIsServerUp,
         theme,
@@ -140,6 +142,8 @@ interface UserContextType {
   setUser: React.Dispatch<React.SetStateAction<ResponseUser|null>>,
   prefs: UserPrefs,
   setPrefs: React.Dispatch<React.SetStateAction<UserPrefs>>,
+  // firstLogin: boolean,
+  // writeFirstLogin: (value: boolean) => void,
   isServerUp: boolean, 
   setIsServerUp : React.Dispatch<React.SetStateAction<boolean>>,
   theme: string,

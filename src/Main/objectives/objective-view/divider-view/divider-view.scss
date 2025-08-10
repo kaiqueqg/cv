@@ -13,6 +13,11 @@
   text-align: start;
 }
 
+.dividerLighten {
+  background: transparentize(#000000, 0.9); 
+}
+
+
 .dividerContainer:hover{
   border-color: black;
 }

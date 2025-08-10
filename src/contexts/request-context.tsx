@@ -14,7 +14,7 @@ const RequestContext = createContext<RequestContextType | undefined>(undefined);
 
 export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) => {
   const { popMessage } = useLogContext();
-  const errors = [400, 401, 404, 409, 500, 503];
+  const errors = [204, 400, 401, 404, 409, 500, 503, 429];
 
   const request = async (url: string, endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<any> => {
     const headers: {[key: string]: string} = {};
@@ -33,7 +33,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
         if(response !== undefined && errors.includes(response.status)){
           const message = await response.text();
-          popMessage(await message);
+          // popMessage(await message);
           log.err('request', message);
         }
 
@@ -41,7 +41,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     } catch (error) {
         if(fError) fError(error);
         else {
-        console.error("Untreated error...", { autoClose: 5000 });
+          console.error("Untreated error...", { autoClose: 5000 });
         }
         return undefined;
     }

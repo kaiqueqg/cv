@@ -107,6 +107,7 @@ const Login: React.FC<LoginProps> = (props) => {
       if(data && data.User){
         storage.setToken(data.Token);
         storage.setUser(data.User);
+        storage.setFirstLogin(true);
         setUser(data.User);
         setIsLogged(true);
       }
@@ -182,6 +183,7 @@ const Login: React.FC<LoginProps> = (props) => {
     storage.deleteUser();
     storage.deleteAvailableTags();
     storage.deleteSelectedTags();
+    storage.deleteFirstLogin();
     setUser(null);
     setIsLogged(false);
   }
@@ -231,6 +233,7 @@ const Login: React.FC<LoginProps> = (props) => {
       if(data){
         storage.setToken(data.Token);
         storage.setUser(data.User);
+        storage.setFirstLogin(true);
         setUser(data.User);
         setIsLogged(true);
       }
