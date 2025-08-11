@@ -60,8 +60,29 @@ $bor: false;
 
   border-radius: 5px;
   border-width: 1px;
-  border-color: rgb(0, 0, 0, 0);
+  border-color: rgba(255, 255, 255, 0);
   border-style: solid;
+}
+
+.objTopMenu{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: beige;
+  flex-wrap: nowrap;
+  min-height: 40px;
+  width: 100%;
+  flex-wrap: wrap;
+  
+  @media(min-width: 700px){
+    flex-wrap: nowrap;
+  }
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
 }
 
 .objTitle{
@@ -170,9 +191,18 @@ $bor: false;
   justify-content: end;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
   
   @media(min-width: 700px){
+    flex-wrap: nowrap;
     flex-direction: row;
+  }
+  
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: rgb(184, 194, 98);
+    border-style: solid;
   }
 }
 
@@ -189,9 +219,15 @@ $bor: false;
 
 .objectiveNewItemImages{
   display: flex;
-  justify-content: end;
   align-items: center;
   width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  
+  @media(min-width: 700px){
+    justify-content: end;
+    flex-wrap: nowrap;
+  }
 }
 
 .objectiveMenuContainer {
