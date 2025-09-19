@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import './tags-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
+import { SCSSItemType, useThemeContext } from "../../../../contexts/theme-context";
 import log from "../../../../log/log";
 import Loading from "../../../../loading/loading";
 
@@ -10,18 +11,27 @@ interface TagsViewProps{
   theme: string,
   doneEditTags: (newTags:string[]) => void,
   cancelEditTags: ()=>void,
+  itemGetTheme: (theme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean) => string,
 }
 
 const TagsView: React.FC<TagsViewProps> = (props) => {
   const { tags, theme, doneEditTags, cancelEditTags } = props;
+  const { availableTags } = useUserContext();
+  const { getScssColor } = useThemeContext();
 
   const [newTag, setNewTag] = useState<string>('');
   const [newTags, setNewTags] = useState<string[]>([...tags]);
+  const [availableTagsFiltered, setAvailableTagsFiltered] = useState<string[]>([]);
   const [tagBeingHover, setTagBeingHover] = useState<string>('');
 
   useEffect(()=>{
+    setAvailableTagsFiltered(getAvailableTagsFiltered());
     setNewTags(tags);
-  },[])
+  },[]);
+
+  useEffect(() => {
+    setAvailableTagsFiltered(getAvailableTagsFiltered());
+  }, [newTags, availableTags])
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(event.target.value);
@@ -30,11 +40,12 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && event.shiftKey) {
       doneEditTags(newTags);
-    } else if (event.key === 'Enter') {
-        if(newTag.trim() !== ''){
-          setNewTags((prevTags) => [...prevTags, newTag.trim()]);
-          setNewTag('');
-        }
+    } 
+    else if (event.key === 'Enter'){
+      if(newTag.trim() !== '' && !newTags.includes(newTag.trim())){
+        setNewTags((prevTags) => [...prevTags, newTag.trim()]);
+      }
+      setNewTag('');
     } else if (event.key === 'Escape') {
         cancelEditTags();
     }
@@ -44,30 +55,9 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
     setNewTags((prevTags) => prevTags.filter((t) => t !== tag));
   }
 
-  const getInputColor = () => {
-    if(theme === 'blue'){
-      return 'tagInput tagInputBlue'
-    }
-    else if(theme === 'red'){
-      return 'tagInput tagInputRed'
-    }
-    else if(theme === 'green'){
-      return 'tagInput tagInputGreen'
-    }
-    else if(theme === 'white'){
-      return 'tagInput tagInputWhite'
-    }
-    else if(theme === 'cyan'){
-      return 'tagInput tagInputCyan'
-    }
-    else if(theme === 'pink'){
-      return 'tagInput tagInputPink'
-    }
-    else if(theme === 'noTheme'){
-      return 'tagInput tagInputNoTheme'
-    }
-    else{
-      return 'tagInput tagInputNoTheme';
+  const addAvailableTag = (tag: string) => {
+    if(tag.trim() !== '' && !newTags.includes(tag.trim())){
+      setNewTags((prevTags) => [...prevTags, tag.trim()]);
     }
   }
 
@@ -78,51 +68,49 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
       return '';
   }
 
-  const getTheme = () => {
-    if(theme === 'blue'){
-      return 'tagContainer tagBlue';
-    }
-    else if(theme === 'red'){
-      return 'tagContainer tagRed';
-    }
-    else if(theme === 'green'){
-      return 'tagContainer tagGreen';
-    }
-    else if(theme === 'white'){
-      return 'tagContainer tagWhite';
-    }
-    else if(theme === 'cyan'){
-      return 'tagContainer tagCyan';
-    }
-    else if(theme === 'pink'){
-      return 'tagContainer tagPink';
-    }
-    else if(theme === 'noTheme'){
-      return 'tagContainer tagNoTheme';
-    }
-  }
+  const getAvailableTagView = (tag: string) => {
+    if(newTags.includes(tag)) return;
+    let style = 'tagContainer' + getScssColor(SCSSItemType.TEXT, theme) + getScssColor(SCSSItemType.BORDERCOLOR, theme);
 
-  const getTagsView = (tag: string, isBeingHover: boolean):React.ReactNode => {
     return (
-      <div key={'tagview'+tag} className={getTheme()} onClick={()=>{removeTag(tag)}}>{tag}</div>
+      <div key={`includedtagview-${tag}`} className={style} onClick={()=>{addAvailableTag(tag)}}>{tag}</div>
     )
   }
 
+  const getTagsView = (tag: string):React.ReactNode => {
+    let style = '';
+    if(tags.includes(tag)) style+= 'tagContainer' + getScssColor(SCSSItemType.TEXT, theme) + getScssColor(SCSSItemType.BORDERCOLOR, theme);
+    else style += 'tagContainerToSave' + getScssColor(SCSSItemType.TEXT_ALERT, theme) + getScssColor(SCSSItemType.BORDERCOLOR_ALERT, theme);
+    return (
+      <div key={`tagview-${tag}`} className={style} onClick={()=>{removeTag(tag)}}>{tag}</div>
+    )
+  }
+
+  const getAvailableTagsFiltered = (): string[] => {
+    return availableTags.filter((i) => !newTags.includes(i));
+  }
+
   return (
-    <div className={'tagsContainer'}>
+    <div className={'tagsContainer' + props.itemGetTheme(theme, false, false)}>
+      <div className={'tagAvailableTagsTitle'+ getScssColor(SCSSItemType.TEXT, theme)}>AVAILABLE</div>
+      <div className={'tagsList'}>
+        {availableTagsFiltered.map((tag)=>{ return getAvailableTagView(tag)})}
+      </div>
+      <div className={'tagAvailableTagsTitle' + getScssColor(SCSSItemType.TEXT, theme)}>NEW</div>
       <div className='tagsInputLine'>
         <input
-          className={getInputColor()}
+          className={'tagInput'+ getScssColor(SCSSItemType.INPUT, theme)}
           type='text'
           value={newTag}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown} autoFocus>
         </input>
-        <img className='tagInputImage' onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'}></img>
+        <img className='tagInputImage' onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} ></img>
         <img className='tagInputImage' onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
       </div>
+      <div className={'tagAvailableTagsTitle'+ getScssColor(SCSSItemType.TEXT, theme)}>TAGS</div>
       <div className={'tagsList'}>
-        {newTags.map((tag)=>{ return getTagsView(tag, tag===tagBeingHover)})}
+        {newTags.map((tag)=>{ return getTagsView(tag)})}
       </div>
     </div>
   );

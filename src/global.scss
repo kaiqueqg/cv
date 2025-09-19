@@ -32,6 +32,54 @@ $placeholder-TextColor: grey;
 
 $cv-blue: #0A66C2;
 
+.global-blue-text{color: beige;}
+.global-red-text{color: beige;}
+.global-green-text{color: beige;}
+.global-white-text{color: black;}
+.global-cyan-text{color: beige;}
+.global-pink-text{color: black;}
+.global-notheme-text{color: beige;}
+
+.global-blue-text-alert{color: $red;}
+.global-red-text-alert{color: $red;}
+.global-green-text-alert{color: $red;}
+.global-white-text-alert{color: $red;}
+.global-cyan-text-alert{color: $red;}
+.global-pink-text-alert{color: $red;}
+.global-notheme-text-alert{color: $red;}
+
+.global-blue-bordercolor{border-color: beige;}
+.global-red-bordercolor{border-color: beige;}
+.global-green-bordercolor{border-color: beige;}
+.global-white-bordercolor{border-color: black;}
+.global-cyan-bordercolor{border-color: beige;}
+.global-pink-bordercolor{border-color: black;}
+.global-notheme-bordercolor{border-color: beige;}
+
+.global-blue-bordercolor-alert{border-color: $red;}
+.global-red-bordercolor-alert{border-color: $red;}
+.global-green-bordercolor-alert{border-color: $red;}
+.global-white-bordercolor-alert{border-color: $red;}
+.global-cyan-bordercolor-alert{border-color: $red;}
+.global-pink-bordercolor-alert{border-color: $red;}
+.global-notheme-bordercolor-alert{border-color: $red;}
+
+.global-blue-input{color: beige;border-color: beige;}
+.global-red-input{color: beige;border-color: beige;}
+.global-green-input{color: beige;border-color: beige;}
+.global-white-input{color: black;border-color: black;}
+.global-cyan-input{color: beige;border-color: beige;}
+.global-pink-input{color: black;border-color: black;}
+.global-notheme-input{color: beige;border-color: beige;}
+
+.global-blue-input-alert{color: $red;border-color: $red;}
+.global-red-input-alert{color: $red;border-color: $red;}
+.global-green-input-alert{color: $red;border-color: $red;}
+.global-white-input-alert{color: $red;border-color: $red;}
+.global-cyan-input-alert{color: $red;border-color: $red;}
+.global-pink-input-alert{color: $red;border-color: $red;}
+.global-notheme-input-alert{color: $red;border-color: $red;}
+
 .beige-darker{
   filter: brightness(40%);
 }

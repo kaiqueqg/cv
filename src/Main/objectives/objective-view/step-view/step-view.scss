@@ -75,6 +75,28 @@ $bor: false;
   }
 }
 
+.stepAutoDestroyContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 5px;
+  padding-left: 10px;
+
+  // border-width: 1px;
+  // border-style: solid;
+  // border-color: beige;
+  // border-radius: 5px;
+}
+
+.stepAutoDestroyText{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .stepTitle{
   display: flex;
   align-items: center;

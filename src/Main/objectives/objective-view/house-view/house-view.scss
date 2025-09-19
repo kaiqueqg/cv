@@ -5,9 +5,9 @@ $bor: false;
 .houseContainer{
   display: flex;
   justify-content: center;
+  vertical-align: middle;
   align-items: center;
   text-align: center;
-  vertical-align: middle;
   width: 100%;
   min-height: 40px;
   border-radius: 5px;
@@ -22,18 +22,84 @@ $bor: false;
   display: flex;
   width: 100%;
   flex-direction: column;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(255, 255, 255);
+    border-style: solid;
+  }
 }
 
 .houseDisplayMainContainer{
   display: flex;
   width: 100%;
+  align-items: center;
+  // flex-wrap: wrap;
   flex-direction: row;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(255, 0, 221);
+    border-style: solid;
+  }
+}
+
+.houseDisplayMainTextContainer{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  // flex-wrap: wrap;
+  flex-direction: column;
+
+  @media(min-width: 700px){
+    flex-direction: row;
+  }
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(0, 255, 255);
+    border-style: solid;
+  }
+}
+
+.houseDisplayMainLongTextContainer{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  // flex-wrap: wrap;
+  flex-direction: column;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(172, 38, 165);
+    border-style: solid;
+  }
+}
+
+.houseDisplayMainShortTextContainer{
+  display: flex;
+  // width: 100%;
+  align-items: center;
+  // flex-wrap: wrap;
+  flex-direction: row;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(219, 216, 32);
+    border-style: solid;
+  }
 }
 
 .houseDisplaySecondaryContainer{
   display: flex;
   width: 100%;
   flex-direction: column;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(0, 255, 76);
+    border-style: solid;
+  }
 }
 
 .houseDisplayDetailsLine{
@@ -72,7 +138,15 @@ $bor: false;
   display: flex;
   width: 100%;
   align-items: center;
-  padding-left: 10px;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  
+  @media(min-width: 700px){
+    justify-content: left;
+    align-items: flex-start;
+  }
 
   @if($bor){
     border-width: 1px;
@@ -83,9 +157,16 @@ $bor: false;
 
 .houseInfo{
   display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  padding: 5px;
   justify-content: center;
   align-items: center;
-  padding: 0px 5px;
+  
+  @media(min-width: 700px){
+    justify-content: left;
+  }
 
   @if($bor){
     border-width: 1px;

@@ -94,6 +94,7 @@ export interface Step extends Item {
   Title: string,
   Done: boolean,
   Importance: StepImportance,
+  AutoDestroy: boolean,
 }
 
 export interface Wait extends Item {

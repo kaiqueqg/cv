@@ -137,9 +137,8 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
     if (file && file.type.startsWith('image/')) {
       const result:boolean = await uploadImage(file);
       if(result){
-
         setImageFile(file);
-       
+
         const newValue: Image = {...newImage, Name: file.name, Size: file.size, LastModified: new Date().toISOString()};
         const data = await objectiveslistApi.putObjectiveItem(newValue);
 

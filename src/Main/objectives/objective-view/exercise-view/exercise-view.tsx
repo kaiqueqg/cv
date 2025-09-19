@@ -207,13 +207,14 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     if(exercise.Title !== ''){
       if(exercise.Reps > 1 || exercise.Series > 1) title += exercise.Series + 'x' + exercise.Reps + ' ';
       title += exercise.Title;
-      if(exercise.MaxWeight) title += ' ('+exercise.MaxWeight+')';
-      title += exercise.Weekdays.includes(Weekdays.Monday)?' M':'';
-      title += exercise.Weekdays.includes(Weekdays.Tuesday)?' T':'';
-      title += exercise.Weekdays.includes(Weekdays.Wednesday)?' W':'';
+      if(exercise.MaxWeight) title += ' (Max: '+exercise.MaxWeight+')';
+      title += exercise.Weekdays.includes(Weekdays.Monday)?' Mo':'';
+      title += exercise.Weekdays.includes(Weekdays.Tuesday)?' Tu':'';
+      title += exercise.Weekdays.includes(Weekdays.Wednesday)?' We':'';
       title += exercise.Weekdays.includes(Weekdays.Thursday)?' Th':'';
-      title += exercise.Weekdays.includes(Weekdays.Friday)?' F':'';
-      title += exercise.Weekdays.includes(Weekdays.Saturday)?' S':'';
+      title += exercise.Weekdays.includes(Weekdays.Friday)?' Fr':'';
+      title += exercise.Weekdays.includes(Weekdays.Saturday)?' Sa':'';
+      title += exercise.Weekdays.includes(Weekdays.Sunday)?' Su':'';
     }
     
     return title;
@@ -281,8 +282,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
           <div className='exerciseDisplayContainer'>
             <div className='exerciseLine' onClick={onEditExercise}>
               <div className={'exerciseText' + itemTextColor(theme, exercise.IsDone)}> {getTitle()}</div>
-              {/* {medicine.Unit && <div className={'medicineText' + (exercise.IsDone? getTextFadeColor():getTextColor())}>{medicine.Unit}</div>} */}
-              {/* {medicine.Purpose && <div className={'medicineText ' + getTextFadeColor()}>{'('+exercise.Purpose+')'}</div>} */}
+              {exercise.Description && <div className={'exerciseDescriptionText'}> {exercise.Description}</div>}
             </div>
             {!isEditingExercise &&
               (isSavingIsDone?

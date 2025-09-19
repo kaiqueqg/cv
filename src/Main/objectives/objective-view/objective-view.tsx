@@ -34,7 +34,7 @@ interface ObjectiveViewProps{
 
 export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { putSelectedTags, selectedTags } = useUserContext();
+  const { putSelectedTags, selectedTags, availableTags } = useUserContext();
   const { popMessage } = useLogContext();
   const { objective, putObjective, isObjsEditingPos } = props;
   
@@ -239,6 +239,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   const addNewItem = async (addItems: Item[], pos?:number) => {
     let sending:Item[] = [];
+
+    //^ With pos
     if(pos !== undefined && pos !== null) {
       const newList = items.filter((i: Item) => !itemsSelected.includes(i));
       const after = newList.slice(pos+1);
@@ -249,6 +251,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         sending.push({...adjustedList[i - pos], Pos: i, LastModified: new Date().toISOString() });
       }
     }
+    //^ Without pos
     else{
       setIsLoadingAddingNewItem(true);
       for(let i = 0; i < addItems.length; i++){
@@ -966,6 +969,21 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     return rtn;
   };
 
+  const getItemList = () => {
+    if(isRequestingItems){
+      return <Loading IsBlack={objective.Theme==='white' || objective.Theme === 'pink'}></Loading>;
+    }
+    else{
+      return(
+        (objective.IsShowing && 
+          <div className='objectiveItemsContainer'>
+            {getDisplayItemList()}
+          </div>
+        )
+      )
+    }
+  }
+
   const getTintColor = () => {
     if(objective.Theme === 'white' || objective.Theme === 'pink')
       return '-black';
@@ -974,8 +992,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   } 
 
   const getColorMenu = () => {
+    if(!(objective.IsShowing && isChangingColor)) return <></>;
+
     return(
-      <div className='objectiveColorContainer'>
+      <div className={'objectiveColorContainer' + itemGetTheme(objective.Theme, false, false)}>
         <div className='objectiveColorButton objectiveColorButtonBlue' onClick={()=>changeObjColor('blue')}></div>
         <div className='objectiveColorButton objectiveColorButtonRed' onClick={()=>changeObjColor('red')}></div>
         <div className='objectiveColorButton objectiveColorButtonGreen' onClick={()=>changeObjColor('green')}></div>
@@ -988,8 +1008,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const getNewItemMenu = () => {
+    if(!(objective.IsShowing && !isChangingColor && isAddingNewItem)) return <></>;
+
     return(
-      <div className={'objectiveNewItemContainer'}>
+      <div className={'objectiveNewItemContainer' + itemGetTheme(objective.Theme, false, false)}>
         <div className={'objectiveNewItemAmount' + getTextColor(objective.Theme)} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
         <div className='objectiveNewItemImages'>
           <div onClick={()=>{choseNewItemToAdd(ItemType.Wait)}} className='objMenuImageContainer'>
@@ -1060,35 +1082,47 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     )
   }
 
+  const getTagMenu = () => {
+    if(!(objective.IsShowing && !isChangingColor && !isAddingNewItem && isChangingTags)) return <></>;
+
+    return(
+      <TagsView theme={objective.Theme} tags={objective.Tags} doneEditTags={doneEditTags} cancelEditTags={cancelEditTags} itemGetTheme={itemGetTheme}></TagsView>
+    )
+  }
+
   const getTopMenu = () => {
     const hasHidibleItems:Item|undefined = items.find((item)=>{
       if(item.Type===ItemType.Grocery||item.Type=== ItemType.Medicine||item.Type=== ItemType.Step||item.Type=== ItemType.Exercise||item.Type=== ItemType.House) return item;
     });
 
     if(isBelow700px){
-      return ( 
-        <div className='objTopMenu'>
-          {getObjectiveTitle()}
-          {!isEditingTitle && <>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true} isBlack={isLoadingBlack()}/>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos} isBlack={isLoadingBlack()}/>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor} isBlack={isLoadingBlack()}/>
-            <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags} isBlack={isLoadingBlack()}/>
-            {!isEditingPos && <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'} isLoading={isLoadingShorting} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'} isBlack={isLoadingBlack()}/>}
-            {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>}
-            {moveIcons()}
-            {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'} isBlack={isLoadingBlack()}/>}
-            {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'} isLoading={isLoadingAddingNewItem} isBlack={isLoadingBlack()}/>}
-          </>}
+      return (
+        <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
+          <div className='objTopMenu'>
+            {getObjectiveTitle()}
+            {!isEditingTitle && <>
+              <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true} isBlack={isLoadingBlack()}/>
+              <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos} isBlack={isLoadingBlack()}/>
+              <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor} isBlack={isLoadingBlack()}/>
+              <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags} isBlack={isLoadingBlack()}/>
+              {!isEditingPos && <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'} isLoading={isLoadingShorting} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'} isBlack={isLoadingBlack()}/>}
+              {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>}
+              {moveIcons()}
+              {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'} isBlack={isLoadingBlack()}/>}
+              {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'} isLoading={isLoadingAddingNewItem} isBlack={isLoadingBlack()}/>}
+            </>}
+          </div>
         </div>
       )
     }
 
     return(
-      <div className='objTopMenu'>
-        {!isEditingTitle && getLeftMenuIcons()}
-        {getObjectiveTitle()}
-        {!isEditingTitle && getRightMenuIcons()}
+      <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
+        <div className='objTopMenu'>
+          {!isEditingTitle && getLeftMenuIcons()}
+          {getObjectiveTitle()}
+          {!isEditingTitle && getRightMenuIcons()}
+        </div>
       </div>
     )
   }
@@ -1226,8 +1260,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const getSearchingMenu = () => {
+    if(!(objective.IsShowing && !isChangingColor && !isAddingNewItem && !isChangingTags && isSearching)) return <></>;
+
     return(
-      <div className={'objectiveSearchContainer'}>
+      <div className={'objectiveSearchContainer' + itemGetTheme(objective.Theme, false, false)}>
         <input
           className={getInputColor(objective.Theme) + (wasNoSearchNoItemFound? ' inputAlert':'')}
           type='text'
@@ -1252,24 +1288,12 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   return (
     <div className={'objContainer' + getObjTheme()} onMouseEnter={()=>{setIsHovering(true);}} onMouseLeave={()=>{setIsHovering(false);}}>
       {shouldShowPin() && <img className='pinImage' src={process.env.PUBLIC_URL + '/pin.png'}></img>}
-      <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
-        {getTopMenu()}
-      </div>
-      {objective.IsShowing && !isChangingColor && !isAddingNewItem && !isChangingTags && isSearching && getSearchingMenu()}
-      {objective.IsShowing && !isChangingColor && isAddingNewItem &&  getNewItemMenu() }
-      {objective.IsShowing && !isChangingColor && !isAddingNewItem && isChangingTags &&
-        <TagsView theme={objective.Theme} tags={objective.Tags} doneEditTags={doneEditTags} cancelEditTags={cancelEditTags}></TagsView>
-      }
-      {objective.IsShowing && isChangingColor && getColorMenu()}
-      {isRequestingItems?
-        <Loading IsBlack={objective.Theme==='white' || objective.Theme === 'pink'}></Loading>
-        :
-        (objective.IsShowing && 
-          <div className='objectiveItemsContainer'>
-            {getDisplayItemList()}
-          </div>
-        )
-      }
+      {getTopMenu()}
+      {getSearchingMenu()}
+      {getNewItemMenu()}
+      {getTagMenu()}
+      {getColorMenu()}
+      {getItemList()}
       {hiddenItems !== 0 && <div className={'objTitle'+getTextColor(objective.Theme, true)}>{hiddenItems} hidden item{hiddenItems>1?'s':''}.</div>}
     </div>
   );

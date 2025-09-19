@@ -184,7 +184,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
           (isOrderingAToZ?
             <Loading  IsBlack={theme==='white'}></Loading>
             :
-            <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'}/>
+            <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'}/>
           )
         }
         {!isEditingTitle && <img className='dividerImage' onClick={()=>{if(!isEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'}></img>}

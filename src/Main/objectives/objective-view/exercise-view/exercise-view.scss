@@ -43,6 +43,8 @@
 
 .exerciseLine{
   display: flex;
+  justify-content: center;
+  flex-direction: column;
   width: 100%;
   min-height: 35px;
 }
@@ -51,6 +53,26 @@
   display: flex;
   align-items: center;
   margin: 0px 0px 0px 10px;
+
+  // border-width: 1;
+  // border-style: solid;
+  // border-color: red;
+  // border-radius: 5;
+}
+
+.exerciseDescriptionText{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0px 0px 2px 10px;
+  color: #6b6b6b;
+
+
+  // border-width: 1;
+  // border-style: solid;
+  // border-color: green;
+  // border-radius: 5;
+
 }
 
 .inputsContainer{
@@ -91,10 +113,18 @@
   margin: 5px 10px;
   padding: 5px 10px;
   font-size: 12px;
-  color: grey;
-
+  font-weight: bold;
+  color: $beige;
+  
   border-width: 1px;
-  border-color: grey;
+  border-color: $transparent;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.exerciseWeekdaysButton:hover{
+  border-width: 1px;
+  border-color: $beige;
   border-style: solid;
   border-radius: 5px;
 }
@@ -104,8 +134,9 @@
   margin: 5px 10px;
   padding: 5px 10px;
   font-size: 12px;
-  color: black;
-  background-color: beige;
+  font-weight: bold;
+  color: beige;
+  background-color: $blue-dark;
 
   border-width: 1px;
   border-color: beige;
@@ -118,11 +149,12 @@
   margin: 5px 10px;
   padding: 5px 10px;
   font-size: 12px;
+  font-weight: bold;
   color: black;
-  background-color: beige;
+  background-color: $beige;
 
   border-width: 1px;
-  border-color: beige;
+  border-color: $beige;
   border-style: solid;
   border-radius: 5px;
 }

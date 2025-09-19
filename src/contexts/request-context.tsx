@@ -33,7 +33,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
         if(response !== undefined && errors.includes(response.status)){
           const message = await response.text();
-          // popMessage(await message);
+          popMessage(await message);
           log.err('request', message);
         }
 
@@ -246,6 +246,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     async sendImage(itemId:string, file: File, fError?: () => void): Promise<boolean>{
       const imageInfo: ImageInfo = { itemId: itemId, fileName: file.name, fileType: file.type };
       const presignedUrlReturn:PresignedUrl = await objectiveslistApi.generatePutPresignedUrl(imageInfo);
+
       try {
         const uploadResponse = await fetch(presignedUrlReturn?.url, {
           method: 'PUT',

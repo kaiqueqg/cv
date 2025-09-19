@@ -6,9 +6,7 @@ import log from "../../../../log/log";
 // import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import { useLogContext } from "../../../../contexts/log-context";
-import { MessageType } from "../../../../Types";
 import PressImage from "../../../../press-image/press-image";
-import { Console } from "console";
 import { useRequestContext } from "../../../../contexts/request-context";
 
 export function stepNew(){
@@ -31,9 +29,11 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [isSavingTitle, setIsSavingTitle] = useState<boolean>(false);
   const [isSavingDone, setIsSavingDone] = useState<boolean>(false);
+  const [isSavingAutoDestroy, setIsSavingAutoDestroy] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [newTitle, setNewTitle] = useState<string>(step.Title);
   const [newImportance, setNewImportance] = useState<StepImportance>(step.Importance??StepImportance.None);
+  const [newAutoDestroy, setNewAutoDestroy] = useState<boolean>(step.AutoDestroy??false);
 
   useEffect(() => {
     setNewTitle(step.Title);
@@ -42,6 +42,11 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
   const onChangeDone = async () => {
     setIsSavingDone(true);
+
+    if(step.AutoDestroy && !step.Done) {
+      await deleteItem();
+      return;
+    }
 
     try {
       const newItem: Step = { ...step, Done: !step.Done, LastModified: new Date().toISOString()};
@@ -93,10 +98,11 @@ export const StepView: React.FC<StepViewProps> = (props) => {
       ...step,
       Title: newTitle.trim(),
       Importance: newImp??newImportance, 
-      LastModified: new Date().toISOString()
+      LastModified: new Date().toISOString(),
+      AutoDestroy: newAutoDestroy,
     };
 
-    if(newStep.Title !== step.Title || newStep.Done !== step.Done || newStep.Pos !== step.Pos || newStep.Importance !== step.Importance) {
+    if(newStep.Title !== step.Title || newStep.Done !== step.Done || newStep.Pos !== step.Pos || newStep.Importance !== step.Importance || newStep.AutoDestroy !== step.AutoDestroy) {
       setIsSavingTitle(true);
 
       const data = await objectiveslistApi.putObjectiveItem(newStep);
@@ -114,6 +120,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
       setIsEditingTitle(false);
       setNewTitle(step.Title);
       setNewImportance(step.Importance??StepImportance.None);
+      setNewAutoDestroy(step.AutoDestroy);
     }
   }
 
@@ -121,6 +128,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
     setNewTitle(step.Title);
     setNewImportance(step.Importance??StepImportance.None);
     setIsEditingTitle(false);
+    setNewAutoDestroy(step.AutoDestroy);
   }
 
   const getImportanceImage = () => {
@@ -183,7 +191,16 @@ export const StepView: React.FC<StepViewProps> = (props) => {
               <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)doneEdit(StepImportance.Question);}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}/>
               <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)doneEdit(StepImportance.Waiting);}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'}/>
               <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)doneEdit(StepImportance.InProgress);}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
+              {/* <div className='stepAutoDestroyContainer' onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}> */}
+                {/*<div className={'stepAutoDestroyText ' + itemTextColor(theme, !newAutoDestroy)}>Destroy after</div>*/}
+                {newAutoDestroy?
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/explode'+itemTintColor(theme)+'.png'}/>
+                  :
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/explode-grey.png'}/>
+                }
+              {/* </div> */}
             </div>
+
           </div>
           :
           <>
@@ -197,7 +214,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
         {step.Done?
           <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'} isLoading={isSavingDone}/>
           :
-          <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone}/>
+          <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone} confirm={step.AutoDestroy}/>
         }
       </>
       }

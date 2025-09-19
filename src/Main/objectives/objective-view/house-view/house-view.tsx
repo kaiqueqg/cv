@@ -276,21 +276,27 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
           :
           <div className='houseDisplayContainer'>
             <div className='houseDisplayMainContainer'>
-              <div className={'houseLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {getDisplayText()}
+              <div className='houseDisplayMainTextContainer'>
+                <div className='houseDisplayMainLongTextContainer'>
+                  <div className={'houseLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+                    {getDisplayText()}
+                  </div>
+                  {house.Address !== '' && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+                    {house.Address}
+                  </div>}
+                </div>
+                <div className='houseDisplayMainShortTextContainer'>
+                  {house.Rating !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+                    {house.Rating}
+                  </div>}
+                  {house.MeterSquare.trim() !== '' && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+                    {house.MeterSquare+'m²'}
+                  </div>}
+                  {house.TotalPrice !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+                    {'$' + house.TotalPrice.toString()}
+                  </div>}
+                </div>
               </div>
-              {house.Address !== '' && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {house.Address}
-              </div>}
-              {house.Rating !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {house.Rating}
-              </div>}
-              {house.MeterSquare.trim() !== '' && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {house.MeterSquare+'m²'}
-              </div>}
-              {house.TotalPrice !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {'$' + house.TotalPrice.toString()}
-              </div>}
               {house.Listing.trim() !== '' && <PressImage isBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>}
               {house.MapLink.trim() !== '' && <PressImage isBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>}
               {!isEditingHouse &&

@@ -66,10 +66,10 @@ $bor: false;
 
 .objTopMenu{
   display: flex;
-  justify-content: center;
   align-items: center;
   color: beige;
   flex-wrap: nowrap;
+  justify-content: space-around;
   min-height: 40px;
   width: 100%;
   flex-wrap: wrap;
@@ -179,6 +179,7 @@ $bor: false;
   align-items: center;
   width: 100%;
   padding: 10px 5px;
+  margin-bottom: 10px;
   
   @media(min-width: 700px){
     flex-direction: row;
@@ -192,6 +193,7 @@ $bor: false;
   align-items: center;
   width: 100%;
   flex-wrap: wrap;
+  margin-bottom: 10px;
   
   @media(min-width: 700px){
     flex-wrap: nowrap;
@@ -254,6 +256,7 @@ $bor: false;
   justify-content: start;
   align-items: center;
   width: 100%;
+  margin-bottom: 10px;
 }
 
 .objectiveColorButton{
