@@ -96,11 +96,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           tags.push(...sorted[i].Tags);
         }
         const uniqueTags = Array.from(new Set(tags));
-        writeAvailableTags(['Pin', ...uniqueTags]);
+        writeAvailableTags(uniqueTags);
         
         const v = storage.getFirstLogin(); //I need a better solution
         if(v) {
-          writeSelectedTags(['Pin', ...uniqueTags]);
+          writeSelectedTags(uniqueTags);
           storage.setFirstLogin(false);
         }
       }
@@ -299,21 +299,23 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const changeToNoneTag = () => {
-    writeSelectedTags(['Pin']);
+    writeSelectedTags([]);
   }
 
   const changeToAllTag = () => {
-    writeSelectedTags(['Pin', ...availableTags]);
+    writeSelectedTags([...availableTags]);
   }
   
   const changeSelectedTag = (tag:string, event: React.MouseEvent) => {
+    
     if(event.shiftKey && event.button === 0){
+      if(tag === 'Pin') return;
       event.preventDefault();
       if(selectedTags.includes(tag)){
         removeSelectedTags([tag]);
       }
       else{
-        putSelectedTags([tag]);
+        putSelectedTags(['Pin', tag]);
       }
     }
     else if(event.ctrlKey && event.button === 0){
@@ -326,11 +328,17 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const getTagList = () => {
+
     let list:JSX.Element[] = [
       <div key={'tagall'} className={'objectivesListMainTag objectivesListMainTagSpecial'} onMouseDown={(e) => changeToAllTag()}>All</div>,
       <div key={'tagnone'} className={'objectivesListMainTag objectivesListMainTagSpecial'} onMouseDown={(e) => changeToNoneTag()}>None</div>,
     ]
-    list = [...list, ...availableTags.map((tag:string) => getTagView(tag))];
+    const availableTagsSorted = availableTags.sort((a, b) => {
+      if (a === "Pin") return -1;
+      if (b === "Pin") return 1;
+      return a.localeCompare(b);
+    });
+    list = [...list, ...availableTagsSorted.map((tag:string) => getTagView(tag))];
 
     return list;
   }

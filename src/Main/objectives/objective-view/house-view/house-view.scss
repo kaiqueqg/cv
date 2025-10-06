@@ -9,9 +9,9 @@ $bor: false;
   align-items: center;
   text-align: center;
   width: 100%;
-  min-height: 40px;
   border-radius: 5px;
   margin-bottom: 2px;
+  min-height: 35px;
 }
 
 .houseContainer:hover{
@@ -39,16 +39,15 @@ $bor: false;
 
   @if($bor){
     border-width: 1px;
-    border-color: rgb(255, 0, 221);
-    border-style: solid;
+    border-color: rgb(0, 255, 55);
+    border-style: dashed;
   }
 }
 
 .houseDisplayMainTextContainer{
   display: flex;
+  min-height: 35px;
   width: 100%;
-  align-items: center;
-  // flex-wrap: wrap;
   flex-direction: column;
 
   @media(min-width: 700px){
@@ -65,8 +64,6 @@ $bor: false;
 .houseDisplayMainLongTextContainer{
   display: flex;
   width: 100%;
-  align-items: center;
-  // flex-wrap: wrap;
   flex-direction: column;
 
   @if($bor){
@@ -78,9 +75,6 @@ $bor: false;
 
 .houseDisplayMainShortTextContainer{
   display: flex;
-  // width: 100%;
-  align-items: center;
-  // flex-wrap: wrap;
   flex-direction: row;
 
   @if($bor){
@@ -103,29 +97,29 @@ $bor: false;
 }
 
 .houseDisplayDetailsLine{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: left;
   width: 100%;
   height: 100%;
   padding: 5px 10px;
+  font-size: small;
+  white-space: pre-line;
 
   @if($bor){
     border-width: 1px;
-    border-color: purple;
-    border-style: solid;
+    border-color: rgb(0, 247, 255);
+    border-style: dashed;
   }
 }
 
 .houseDisplayAttention{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: left;
   width: 100%;
   height: 100%;
   padding: 5px 10px;
   color: rgb(218, 104, 104);
   font-weight: bold;
+  font-size: small;
+  white-space: pre-line;
 
   @if($bor){
     border-width: 1px;
@@ -137,11 +131,9 @@ $bor: false;
 .houseLine{
   display: flex;
   width: 100%;
-  align-items: center;
-  padding: 5px;
-  justify-content: center;
-  align-items: center;
+  padding: 5px 10px;
   vertical-align: middle;
+  min-height: 35px;
   
   @media(min-width: 700px){
     justify-content: left;
@@ -157,12 +149,9 @@ $bor: false;
 
 .houseInfo{
   display: flex;
-  width: 100%;
-  min-height: 40px;
-  align-items: center;
-  padding: 5px;
-  justify-content: center;
-  align-items: center;
+  padding: 5px 10px;
+  vertical-align: middle;
+  font-size: smaller;
   
   @media(min-width: 700px){
     justify-content: left;

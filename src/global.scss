@@ -32,13 +32,29 @@ $placeholder-TextColor: grey;
 
 $cv-blue: #0A66C2;
 
+$objBlue: #23315c;
+$objRed: #77172E;
+$objGreen: #123525;
+$objWhite: $beige;
+$objNoTheme: $blue-dark;
+$objCyan: #256377;
+$objPink: #F9C5D5;
+
 .global-blue-text{color: beige;}
 .global-red-text{color: beige;}
 .global-green-text{color: beige;}
-.global-white-text{color: black;}
 .global-cyan-text{color: beige;}
-.global-pink-text{color: black;}
 .global-notheme-text{color: beige;}
+.global-white-text{color: black;}
+.global-pink-text{color: black;}
+
+.global-blue-text-contrast{color: black;}
+.global-red-text-contrast{color: black;}
+.global-green-text-contrast{color: black;}
+.global-cyan-text-contrast{color: black;}
+.global-notheme-text-contrast{color: black;}
+.global-white-text-contrast{color: beige;}
+.global-pink-text-contrast{color: beige;}
 
 .global-blue-text-alert{color: $red;}
 .global-red-text-alert{color: $red;}
@@ -51,10 +67,18 @@ $cv-blue: #0A66C2;
 .global-blue-bordercolor{border-color: beige;}
 .global-red-bordercolor{border-color: beige;}
 .global-green-bordercolor{border-color: beige;}
-.global-white-bordercolor{border-color: black;}
 .global-cyan-bordercolor{border-color: beige;}
-.global-pink-bordercolor{border-color: black;}
 .global-notheme-bordercolor{border-color: beige;}
+.global-white-bordercolor{border-color: black;}
+.global-pink-bordercolor{border-color: black;}
+
+.global-blue-bordercolor-contrast{border-color: black;}
+.global-red-bordercolor-contrast{border-color: black;}
+.global-green-bordercolor-contrast{border-color: black;}
+.global-cyan-bordercolor-contrast{border-color: black;}
+.global-notheme-bordercolor-contrast{border-color: black;}
+.global-white-bordercolor-contrast{border-color: beige;}
+.global-pink-bordercolor-contrast{border-color: beige;}
 
 .global-blue-bordercolor-alert{border-color: $red;}
 .global-red-bordercolor-alert{border-color: $red;}
@@ -67,10 +91,18 @@ $cv-blue: #0A66C2;
 .global-blue-input{color: beige;border-color: beige;}
 .global-red-input{color: beige;border-color: beige;}
 .global-green-input{color: beige;border-color: beige;}
-.global-white-input{color: black;border-color: black;}
 .global-cyan-input{color: beige;border-color: beige;}
-.global-pink-input{color: black;border-color: black;}
 .global-notheme-input{color: beige;border-color: beige;}
+.global-white-input{color: black;border-color: black;}
+.global-pink-input{color: black;border-color: black;}
+
+.global-blue-input-contrast{color: black;border-color: black;}
+.global-red-input-contrast{color: black;border-color: black;}
+.global-green-input-contrast{color: black;border-color: black;}
+.global-cyan-input-contrast{color: black;border-color: black;}
+.global-notheme-input-contrast{color: black;border-color: black;}
+.global-white-input-contrast{color: beige;border-color: beige;}
+.global-pink-input-contrast{color: beige;border-color: beige;}
 
 .global-blue-input-alert{color: $red;border-color: $red;}
 .global-red-input-alert{color: $red;border-color: $red;}
@@ -80,8 +112,27 @@ $cv-blue: #0A66C2;
 .global-pink-input-alert{color: $red;border-color: $red;}
 .global-notheme-input-alert{color: $red;border-color: $red;}
 
+.global-blue-obj-background{background: linear-gradient(to right, $objBlue, lighten($objBlue, 3%));}
+.global-red-obj-background{background: linear-gradient(to right, $objRed, lighten($objRed, 3%));}
+.global-green-obj-background{background: linear-gradient(to right, $objGreen, lighten($objGreen, 3%));}
+.global-notheme-obj-background{background: linear-gradient(to right, $objNoTheme, lighten($objNoTheme, 3%));}
+.global-cyan-obj-background{background: linear-gradient(to right, $objCyan, lighten($objCyan, 3%));}
+.global-white-obj-background{background: linear-gradient(to right, $objWhite, darken($objWhite, 3%));}
+.global-pink-obj-background{background: linear-gradient(to right, $objPink, lighten($objPink, 3%));}
+
+.global-blue-item-background{background-color: lighten($objBlue, 10%); border-color: black;}
+.global-red-item-background{background-color: lighten($objRed, 10%); border-color: black;}
+.global-green-item-background{background-color: lighten($objGreen, 10%); border-color: black;}
+.global-notheme-item-background{background-color: lighten($objNoTheme, 10%); border-color: black;}
+.global-cyan-item-background{background-color: lighten($objCyan, 10%); border-color: black;}
+.global-white-item-background{background-color: #D8AE7E; border-color: black;}
+.global-pink-item-background{background-color: darken($objPink, 10%); border-color: black;}
+.global-blue-item-background{background-color: $transparent; border-color:$transparent}
+
 .beige-darker{
   filter: brightness(40%);
+
+  
 }
 
 .text-bold{

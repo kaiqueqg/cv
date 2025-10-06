@@ -1,5 +1,7 @@
 @import '../../../../global.scss';
 
+$bor: false;
+
 .exerciseContainer{
   display: flex;
   justify-content: center;
@@ -49,15 +51,20 @@
   min-height: 35px;
 }
 
-.exerciseText{
+.exerciseMainLine{
   display: flex;
   align-items: center;
-  margin: 0px 0px 0px 10px;
 
   // border-width: 1;
   // border-style: solid;
   // border-color: red;
   // border-radius: 5;
+}
+
+.exerciseText{
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
 }
 
 .exerciseDescriptionText{
@@ -86,6 +93,36 @@
   width: 100%;
 }
 
+.exerciseBodyImagesContainer{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-style: solid;
+    border-color: red;
+    border-radius: 5px;
+  }
+}
+
+.exerciseBodyImageContainer{
+  margin: 2px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0);
+  border-radius: 5px;
+}
+
+.exerciseBodyImageContainerSelected{
+  background-color: $blue-dark;
+
+}
+
+.exerciseBodyImageContainerView{
+  margin: 2px;
+}
+
 .exerciseSideContainer{
   display: flex;
   flex-direction: column;
@@ -94,6 +131,19 @@
 
   width: 10%;
   margin: 0px 2px;
+}
+
+.exerciseHeaderText{
+  font-weight: bolder;
+  font-size: larger;
+  margin: 10px 0px;
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: red;
+    border-radius: 5px;
+  }
 }
 
 .exerciseWeekdaysContainer{
@@ -106,6 +156,14 @@
   align-items: center;
   width: 100%;
   min-height: 30px;
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: green;
+    border-radius: 5px;
+  }
+  
 }
 
 .exerciseWeekdaysButton{
@@ -114,7 +172,6 @@
   padding: 5px 10px;
   font-size: 12px;
   font-weight: bold;
-  color: $beige;
   
   border-width: 1px;
   border-color: $transparent;
@@ -123,10 +180,7 @@
 }
 
 .exerciseWeekdaysButton:hover{
-  border-width: 1px;
-  border-color: $beige;
-  border-style: solid;
-  border-radius: 5px;
+  border-color: $black;
 }
 
 .exerciseWeekdaysButtonSelected{
@@ -135,11 +189,8 @@
   padding: 5px 10px;
   font-size: 12px;
   font-weight: bold;
-  color: beige;
-  background-color: $blue-dark;
 
   border-width: 1px;
-  border-color: beige;
   border-style: solid;
   border-radius: 5px;
 }
@@ -150,13 +201,15 @@
   padding: 5px 10px;
   font-size: 12px;
   font-weight: bold;
-  color: black;
-  background-color: $beige;
 
   border-width: 1px;
-  border-color: $beige;
+  border-color: $transparent;
   border-style: solid;
   border-radius: 5px;
+}
+
+.exerciseWeekdaysButtonAllNone:hover{
+  border-color: $black;
 }
 
 .exerciseImage{

@@ -2,6 +2,8 @@
 
 $bor: false;
 $size: 25px;
+$sizeBig: 30px;
+$sizeBigger: 35px;
 
 .pressImageContainer{
   cursor: pointer;
@@ -20,6 +22,20 @@ $size: 25px;
     border-color: red;
     border-style: solid;
   }
+}
+
+.pressImageContainerBig{
+  min-width: $sizeBig;
+  min-height: $sizeBig;
+  max-width: $sizeBig;
+  max-height: $sizeBig;
+}
+
+.pressImageContainerBigger{
+  min-width: $sizeBigger;
+  min-height: $sizeBigger;
+  max-width: $sizeBigger;
+  max-height: $sizeBigger;
 }
 
 .pressImageContainer:hover{padding: 0px}

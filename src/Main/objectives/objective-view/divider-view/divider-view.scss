@@ -84,6 +84,7 @@
 .dividerNewItemContainer{
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: end;
   align-items: center;
   width: 100%;

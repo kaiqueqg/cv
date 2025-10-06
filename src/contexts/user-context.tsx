@@ -50,7 +50,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [availableTags, setAvailableTags] = useState<string[]>(['Pin']);
   const writeAvailableTags = async (availableTags: string[]) => {
     try {
-      const uniqueTags = Array.from(new Set(availableTags));
+      const uniqueTags = Array.from(new Set([...availableTags, 'Pin']));
       await storage.writeAvailableTags(uniqueTags);
       setAvailableTags(uniqueTags);
     } catch (err) {
@@ -60,7 +60,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const putAvailableTags = async (tags: string[]) => {
     try {
-      const newTags = Array.from(new Set([...availableTags, ...tags]));
+      const newTags = Array.from(new Set([...availableTags, ...tags, 'Pin']));
       await storage.writeAvailableTags(newTags);
       setAvailableTags(newTags);
     } catch (err) {
@@ -91,7 +91,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const putSelectedTags = async (tags: string[]) => {
     try {
-      const newTags = Array.from(new Set([...selectedTags, ...tags]));
+      const newTags = Array.from(new Set([...selectedTags, ...tags, 'Pin']));
       await storage.writeSelectedTags(newTags);
       setSelectedTags(newTags);
     } catch (err) {
@@ -101,7 +101,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const writeSelectedTags = async (selectedTags: string[]) => {
     try {
-      const uniqueTags = Array.from(new Set(selectedTags));
+      const uniqueTags = Array.from(new Set([...selectedTags, 'Pin']));
       await storage.writeSelectedTags(uniqueTags);
       setSelectedTags(uniqueTags);
     } catch (err) {

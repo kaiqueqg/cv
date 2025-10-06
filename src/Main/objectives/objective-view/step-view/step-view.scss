@@ -82,12 +82,12 @@ $bor: false;
   align-items: center;
 
   margin: 5px;
-  padding-left: 10px;
+  padding: 0px 10px;
 
-  // border-width: 1px;
-  // border-style: solid;
-  // border-color: beige;
-  // border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: beige;
+  border-radius: 5px;
 }
 
 .stepAutoDestroyText{

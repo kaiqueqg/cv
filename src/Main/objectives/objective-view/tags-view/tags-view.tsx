@@ -17,7 +17,7 @@ interface TagsViewProps{
 const TagsView: React.FC<TagsViewProps> = (props) => {
   const { tags, theme, doneEditTags, cancelEditTags } = props;
   const { availableTags } = useUserContext();
-  const { getScssColor } = useThemeContext();
+  const { getItemScssColor } = useThemeContext();
 
   const [newTag, setNewTag] = useState<string>('');
   const [newTags, setNewTags] = useState<string[]>([...tags]);
@@ -70,7 +70,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getAvailableTagView = (tag: string) => {
     if(newTags.includes(tag)) return;
-    let style = 'tagContainer' + getScssColor(SCSSItemType.TEXT, theme) + getScssColor(SCSSItemType.BORDERCOLOR, theme);
+    let style = 'tagContainer' + getItemScssColor(theme, SCSSItemType.TEXT) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR);
 
     return (
       <div key={`includedtagview-${tag}`} className={style} onClick={()=>{addAvailableTag(tag)}}>{tag}</div>
@@ -79,8 +79,8 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getTagsView = (tag: string):React.ReactNode => {
     let style = '';
-    if(tags.includes(tag)) style+= 'tagContainer' + getScssColor(SCSSItemType.TEXT, theme) + getScssColor(SCSSItemType.BORDERCOLOR, theme);
-    else style += 'tagContainerToSave' + getScssColor(SCSSItemType.TEXT_ALERT, theme) + getScssColor(SCSSItemType.BORDERCOLOR_ALERT, theme);
+    if(tags.includes(tag)) style+= 'tagContainer' + getItemScssColor(theme, SCSSItemType.TEXT) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR);
+    else style += 'tagContainerToSave' + getItemScssColor(theme, SCSSItemType.TEXT_ALERT) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR_ALERT);
     return (
       <div key={`tagview-${tag}`} className={style} onClick={()=>{removeTag(tag)}}>{tag}</div>
     )
@@ -92,14 +92,14 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   return (
     <div className={'tagsContainer' + props.itemGetTheme(theme, false, false)}>
-      <div className={'tagAvailableTagsTitle'+ getScssColor(SCSSItemType.TEXT, theme)}>AVAILABLE</div>
+      <div className={'tagAvailableTagsTitle'+ getItemScssColor(theme, SCSSItemType.TEXT)}>AVAILABLE</div>
       <div className={'tagsList'}>
         {availableTagsFiltered.map((tag)=>{ return getAvailableTagView(tag)})}
       </div>
-      <div className={'tagAvailableTagsTitle' + getScssColor(SCSSItemType.TEXT, theme)}>NEW</div>
+      <div className={'tagAvailableTagsTitle' + getItemScssColor(theme, SCSSItemType.TEXT)}>NEW</div>
       <div className='tagsInputLine'>
         <input
-          className={'tagInput'+ getScssColor(SCSSItemType.INPUT, theme)}
+          className={'tagInput'+ getItemScssColor(theme, SCSSItemType.INPUT)}
           type='text'
           value={newTag}
           onChange={handleInputChange}
@@ -108,7 +108,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
         <img className='tagInputImage' onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} ></img>
         <img className='tagInputImage' onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
       </div>
-      <div className={'tagAvailableTagsTitle'+ getScssColor(SCSSItemType.TEXT, theme)}>TAGS</div>
+      <div className={'tagAvailableTagsTitle'+ getItemScssColor(theme, SCSSItemType.TEXT)}>TAGS</div>
       <div className={'tagsList'}>
         {newTags.map((tag)=>{ return getTagsView(tag)})}
       </div>

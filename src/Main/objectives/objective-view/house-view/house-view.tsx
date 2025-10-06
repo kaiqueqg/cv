@@ -182,144 +182,220 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     return rtn;
   }
 
+  const getEditingView = ():JSX.Element => {
+    return(
+      <div className='inputsContainer'>
+        <div className='houseSideContainer'>
+          {isDeleting?
+            <Loading IsBlack={theme==='white'}></Loading>
+            :
+            <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+          }
+        </div>
+        <div className='houseCenterContainer'>
+          <input 
+            className={itemInputColor(theme)}
+            type='text'
+            value={newHouse.Title}
+            onChange={handleTitleInputChange}
+            onKeyDown={handleKeyDown} 
+            placeholder="Title"
+            autoFocus></input>
+          <input 
+            className={itemInputColor(theme)}
+            type='text'
+            value={newHouse.Listing}
+            onChange={handleListingInputChange}
+            onKeyDown={handleKeyDown} 
+            placeholder="Listing"
+            ></input>
+          <input 
+            className={itemInputColor(theme)}
+            type='text'
+            value={newHouse.MapLink}
+            onChange={handleMapLinkInputChange}
+            onKeyDown={handleKeyDown} 
+            placeholder="MapLink"
+            ></input>
+          <input 
+            className={itemInputColor(theme)}
+            type='text'
+            value={newHouse.MeterSquare}
+            onChange={handleMeterSquareInputChange}
+            onKeyDown={handleKeyDown} 
+            placeholder="m²"
+            ></input>
+          <input 
+            className={itemInputColor(theme)}
+            type='number'
+            value={newHouse.Rating === 0 ? '' : newHouse.Rating}
+            onChange={handleRatingInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Rating"
+            min={0}></input>
+          <input 
+            className={itemInputColor(theme)}
+            type='text'
+            value={newHouse.Address}
+            onChange={handleAddressInputChange}
+            onKeyDown={handleKeyDown} 
+            placeholder="Address"
+            ></input>
+          <input 
+            className={itemInputColor(theme)}
+            type='number'
+            value={newHouse.TotalPrice === 0 ? '' : newHouse.TotalPrice}
+            onChange={handleTotalPriceInputChange}
+            onKeyDown={handleKeyDown}
+            placeholder="TotalPrice"
+            min={0}></input>
+          <textarea 
+            className={'houseTextArea' + itemTextColor(theme)}
+            value={newHouse.Details}
+            onChange={handleDetailsInputChange}
+            onKeyDown={handleLongTextKeyDown} 
+            placeholder='Details'
+            ></textarea>
+          <textarea 
+            className={'houseTextArea' + itemTextColor(theme)}
+            value={newHouse.Attention}
+            onChange={handleAttentionInputChange}
+            onKeyDown={handleLongTextKeyDown} 
+            placeholder='Attention'
+            ></textarea>
+        </div>
+        <div className='houseSideContainer'>
+          <PressImage isBlack={props.isLoadingBlack} onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+          <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditHouse} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+        </div>
+      </div>
+    )
+  }
+
+  const getRatingView = () => {
+    if(house.Rating === 0) return;
+    
+    return(
+      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+        {house.Rating}
+      </div>
+    )
+  }
+
+  const getMeterSquareView = () => {
+    if(house.MeterSquare.trim() === '') return;
+
+    return(
+      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+        {house.MeterSquare+'m²'}
+      </div>
+    )
+  }
+
+  const getTotalPrice = () => {
+    if(house.TotalPrice === 0) return;
+    
+    return(
+      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+        {'$' + house.TotalPrice.toString()}
+      </div>
+    )
+  }
+
+  const getAdressView = () => {
+    if(house.Address === '') return;
+    
+    return(
+      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+        {house.Address}
+      </div>
+    )
+  }
+
+  const getDetailsView = () => {
+    if(house.Details.trim() === '') return;
+    
+    return(
+      <div className={'houseDisplayDetailsLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+        {house.Details}
+      </div>
+    )
+  }
+
+  const getAttentionView = () => {
+    if(house.Attention.trim() === '') return;
+
+    return(
+      <div className='houseDisplayAttention' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+        {house.Attention}
+      </div>
+    )
+  }
+
+  const getListingView = () => {
+    if(house.Listing.trim() === '') return;
+
+    return(
+      <PressImage isBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>
+    )
+  }
+
+  const getMapLinkView = () => {
+    if(house.MapLink.trim() === '') return;
+    
+    return(
+      <PressImage isBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>
+    )
+  }
+
+  const getDisplayView = (): JSX.Element => {
+    return(
+      <div className='houseDisplayContainer'>
+        <div className='houseDisplayMainContainer'>
+          <div className='houseDisplayMainTextContainer'>
+            <div className='houseDisplayMainLongTextContainer' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+              <div className={'houseLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+                {getDisplayText()}
+              </div>
+            </div>
+            <div className='houseDisplayMainShortTextContainer' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+              {getRatingView()}
+              {getMeterSquareView()}
+              {getTotalPrice()}
+            </div>
+            {getAdressView()}
+          </div>
+          {getListingView()}
+          {getMapLinkView()}
+          {!isEditingHouse &&
+            (isSavingWasContacted?
+              <Loading IsBlack={theme==='white'||theme==='pink'}></Loading>
+              :
+              (house.WasContacted?
+                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
+                :
+                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
+              )
+            )
+          }
+        </div>
+        <div className='houseDisplaySecondaryContainer'>
+          {getDetailsView()}
+          {getAttentionView()}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={'houseContainer' + itemGetTheme(theme, isSelected, isEndingPos, house.WasContacted)}>
       {isSavingHouse?
         <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingHouse?
-          <div className='inputsContainer'>
-            <div className='houseSideContainer'>
-              {isDeleting?
-                <Loading IsBlack={theme==='white'}></Loading>
-                :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
-              }
-            </div>
-            <div className='houseCenterContainer'>
-              <input 
-                className={itemInputColor(theme)}
-                type='text'
-                value={newHouse.Title}
-                onChange={handleTitleInputChange}
-                onKeyDown={handleKeyDown} 
-                placeholder="Title"
-                autoFocus></input>
-              <input 
-                className={itemInputColor(theme)}
-                type='text'
-                value={newHouse.Listing}
-                onChange={handleListingInputChange}
-                onKeyDown={handleKeyDown} 
-                placeholder="Listing"
-                ></input>
-              <input 
-                className={itemInputColor(theme)}
-                type='text'
-                value={newHouse.MapLink}
-                onChange={handleMapLinkInputChange}
-                onKeyDown={handleKeyDown} 
-                placeholder="MapLink"
-                ></input>
-              <input 
-                className={itemInputColor(theme)}
-                type='text'
-                value={newHouse.MeterSquare}
-                onChange={handleMeterSquareInputChange}
-                onKeyDown={handleKeyDown} 
-                placeholder="m²"
-                ></input>
-              <input 
-                className={itemInputColor(theme)}
-                type='number'
-                value={newHouse.Rating === 0 ? '' : newHouse.Rating}
-                onChange={handleRatingInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="Rating"
-                min={0}></input>
-              <input 
-                className={itemInputColor(theme)}
-                type='text'
-                value={newHouse.Address}
-                onChange={handleAddressInputChange}
-                onKeyDown={handleKeyDown} 
-                placeholder="Address"
-                ></input>
-              <input 
-                className={itemInputColor(theme)}
-                type='number'
-                value={newHouse.TotalPrice === 0 ? '' : newHouse.TotalPrice}
-                onChange={handleTotalPriceInputChange}
-                onKeyDown={handleKeyDown}
-                placeholder="TotalPrice"
-                min={0}></input>
-              <textarea 
-                className={'houseTextArea' + itemTextColor(theme)}
-                value={newHouse.Details}
-                onChange={handleDetailsInputChange}
-                onKeyDown={handleLongTextKeyDown} 
-                placeholder='Details'
-                ></textarea>
-              <textarea 
-                className={'houseTextArea' + itemTextColor(theme)}
-                value={newHouse.Attention}
-                onChange={handleAttentionInputChange}
-                onKeyDown={handleLongTextKeyDown} 
-                placeholder='Attention'
-                ></textarea>
-            </div>
-            <div className='houseSideContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditHouse} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-            </div>
-          </div>
+          getEditingView()
           :
-          <div className='houseDisplayContainer'>
-            <div className='houseDisplayMainContainer'>
-              <div className='houseDisplayMainTextContainer'>
-                <div className='houseDisplayMainLongTextContainer'>
-                  <div className={'houseLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                    {getDisplayText()}
-                  </div>
-                  {house.Address !== '' && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                    {house.Address}
-                  </div>}
-                </div>
-                <div className='houseDisplayMainShortTextContainer'>
-                  {house.Rating !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                    {house.Rating}
-                  </div>}
-                  {house.MeterSquare.trim() !== '' && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                    {house.MeterSquare+'m²'}
-                  </div>}
-                  {house.TotalPrice !== 0 && <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                    {'$' + house.TotalPrice.toString()}
-                  </div>}
-                </div>
-              </div>
-              {house.Listing.trim() !== '' && <PressImage isBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>}
-              {house.MapLink.trim() !== '' && <PressImage isBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>}
-              {!isEditingHouse &&
-                (isSavingWasContacted?
-                  <Loading IsBlack={theme==='white'||theme==='pink'}></Loading>
-                  :
-                  (house.WasContacted?
-                    <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
-                    :
-                    <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
-                  )
-                )
-              }
-            </div>
-            <div className='houseDisplaySecondaryContainer'>
-              {house.Details.trim() !== '' && <div className={'houseDisplayDetailsLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {house.Details}
-              </div>}
-              {house.Attention.trim() !== '' && <div className='houseDisplayAttention' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-                {house.Attention}
-              </div>}
-            </div>
-          </div>
+          getDisplayView()
         )
       }
     </div>

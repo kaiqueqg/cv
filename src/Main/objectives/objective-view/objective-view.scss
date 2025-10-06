@@ -224,7 +224,7 @@ $bor: false;
   align-items: center;
   width: 100%;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: end;
   
   @media(min-width: 700px){
     justify-content: end;
@@ -276,6 +276,15 @@ $bor: false;
   width: 100%;
 }
 
+.objDevPosText{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  margin-right: 5px;
+}
+
 .objItemRow{
   display: flex;
 }
@@ -310,15 +319,6 @@ $objPink: #F9C5D5;
 .objObjectiveNoTheme{background: linear-gradient(to right, $objNoTheme, lighten($objNoTheme, 3%));}
 .objObjectiveCyan{background: linear-gradient(to right, $objCyan, lighten($objCyan, 3%));}
 .objObjectivePink{background: linear-gradient(to right, $objPink, lighten($objPink, 3%));}
-.objObjectiveFrance{background: linear-gradient(to right, #85bcff 33%, #ffffff 33%, #ffffff 66%, #fdadb6 66%);}
-
-.objectiveColorButtonBlue{background-color: $objBlue;}
-.objectiveColorButtonRed{background-color: $objRed;}
-.objectiveColorButtonGreen{background-color: $objGreen;}
-.objectiveColorButtonWhite{background-color: $objWhite;}
-.objectiveColorButtonCyan{background-color: $objCyan;}
-.objectiveColorButtonPink{background-color: $objPink;}
-.objectiveColorButtonNoTheme{background-color: $blue-dark;}
 
 .input{
   vertical-align: middle;

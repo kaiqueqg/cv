@@ -8,6 +8,7 @@ import PressImage from "../../../../press-image/press-image";
 import { useLogContext } from "../../../../contexts/log-context";
 import { MessageType } from "../../../../Types";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { SCSSItemType, SCSSObjType, useThemeContext } from "../../../../contexts/theme-context";
 
 export function exerciseNew(){
   return {
@@ -19,6 +20,7 @@ export function exerciseNew(){
     Description: '',
     Weekdays: [],
     LastDone: '',
+    BodyImages: [],
   }
 }
 
@@ -29,7 +31,10 @@ interface ExerciseViewProps extends ItemViewProps{
 export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const { popMessage } = useLogContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, 
+    itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+
+  const { getItemScssColor, getScssObjColor } = useThemeContext();
 
   const [isSavingExercise, setIsSavingExercise] = useState<boolean>(false);
   const [isSavingIsDone, setIsSavingIsDone] = useState<boolean>(false);
@@ -37,6 +42,37 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const [newExercise, setNewExercise] = useState<Exercise>(exercise);
 
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  const bodyImages: Record<string, string> = {
+    abs: process.env.PUBLIC_URL + '/128px/abs.png',
+    anteriorforearm: process.env.PUBLIC_URL + '/128px/anteriorforearm.png',
+    backoutside: process.env.PUBLIC_URL + '/128px/backoutside.png',
+    biceps: process.env.PUBLIC_URL + '/128px/biceps.png',
+    calves: process.env.PUBLIC_URL + '/128px/calves.png',
+    chest: process.env.PUBLIC_URL + '/128px/chest.png',
+    innerthigh: process.env.PUBLIC_URL + '/128px/innerthigh.png',
+    externalobliques: process.env.PUBLIC_URL + '/128px/externalobliques.png',
+    frontthigh: process.env.PUBLIC_URL + '/128px/frontthigh.png',
+    glutes: process.env.PUBLIC_URL + '/128px/glutes.png',
+    hamstrings: process.env.PUBLIC_URL + '/128px/hamstrings.png',
+    lower: process.env.PUBLIC_URL + '/128px/lower.png',
+    lumbar: process.env.PUBLIC_URL + '/128px/lumbar.png',
+    obliques: process.env.PUBLIC_URL + '/128px/obliques.png',
+    pectorals: process.env.PUBLIC_URL + '/128px/pectorals.png',
+    posteriorforearm: process.env.PUBLIC_URL + '/128px/posteriorforearm.png',
+    quadriceps: process.env.PUBLIC_URL + '/128px/quadriceps.png',
+    rectusabdominis: process.env.PUBLIC_URL + '/128px/rectusabdominis.png',
+    shoulderback: process.env.PUBLIC_URL + '/128px/shoulderback.png',
+    shoulderfront: process.env.PUBLIC_URL + '/128px/shoulderfront.png',
+    topback: process.env.PUBLIC_URL + '/128px/topback.png',
+    outerthigh: process.env.PUBLIC_URL + '/128px/outerthigh.png',
+    trapezius: process.env.PUBLIC_URL + '/128px/trapezius.png',
+    triceps: process.env.PUBLIC_URL + '/128px/triceps.png',
+    cardio: process.env.PUBLIC_URL + '/128px/cardio.png',
+    stretching: process.env.PUBLIC_URL + '/128px/stretching.png',
+    warmup: process.env.PUBLIC_URL + '/128px/warmup.png',
+    cancel: process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png',
+  };
 
   useEffect(()=>{
     const now = new Date();
@@ -51,11 +87,12 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     if (exercise.IsDone && needToWorkoutToday && exercise.Weekdays.includes(now.getDay())) {
       onChangeDone();
     }
+
+    exercise
   }, []);
 
-  useEffect(() => {
-    
-  }, [exercise, newExercise]);
+  // useEffect(() => {
+  // }, [exercise, newExercise]);
 
   const handleTitleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewExercise({...newExercise, Title: event.target.value});
@@ -142,6 +179,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       MaxWeight: newExercise.MaxWeight.trim(),
       Description: newExercise.Description.trim(),
       Weekdays: newExercise.Weekdays,
+      BodyImages: newExercise.BodyImages,
     };
 
     if(newItem.Title !== exercise.Title || 
@@ -151,6 +189,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       newItem.Pos !== exercise.Pos ||
       newItem.Description !== exercise.Description ||
       newItem.Weekdays !== exercise.Weekdays ||
+      newItem.BodyImages !== exercise.BodyImages ||
       newItem.LastDone !== exercise.LastDone) {
       setIsSavingExercise(true);
 
@@ -183,14 +222,19 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
 
   const getWeekButtonColor = (weekday: Weekdays) => {
     const isCont = newExercise.Weekdays.includes(weekday);
-    return 'exerciseWeekdaysButton ' + (isCont?'exerciseWeekdaysButtonSelected':'');
+    if(isCont){
+      return 'exerciseWeekdaysButton exerciseWeekdaysButtonSelected ' + getItemScssColor(theme, SCSSItemType.TEXT, SCSSItemType.BORDERCOLOR) + getScssObjColor(theme, SCSSObjType.OBJ_BG)
+    }
+    else{
+      return 'exerciseWeekdaysButton ' + getItemScssColor(theme, SCSSItemType.TEXT);
+    }
   }
 
   const getWeekdaysButtons = () => {
     return(
-      <div className='exerciseWeekdaysContainer'>
-        <div className={'exerciseWeekdaysButtonAllNone'} onClick={allWeekdayChange}>All</div>
-        <div className={'exerciseWeekdaysButtonAllNone'} onClick={noneWeekdayChange}>None</div>
+      <div className={'exerciseWeekdaysContainer'}>
+        <div className={'exerciseWeekdaysButtonAllNone' + getItemScssColor(theme, SCSSItemType.TEXT, SCSSItemType.BORDERCOLOR) + getScssObjColor(theme, SCSSObjType.OBJ_BG)} onClick={allWeekdayChange}>All</div>
+        <div className={'exerciseWeekdaysButtonAllNone' + getItemScssColor(theme, SCSSItemType.TEXT, SCSSItemType.BORDERCOLOR) + getScssObjColor(theme, SCSSObjType.OBJ_BG)} onClick={noneWeekdayChange}>None</div>
         <div className={getWeekButtonColor(Weekdays.Monday)} onClick={()=>weekdayChange(Weekdays.Monday)}>Mon</div>
         <div className={getWeekButtonColor(Weekdays.Tuesday)} onClick={()=>weekdayChange(Weekdays.Tuesday)}>Tue</div>
         <div className={getWeekButtonColor(Weekdays.Wednesday)} onClick={()=>weekdayChange(Weekdays.Wednesday)}>Wed</div>
@@ -202,7 +246,69 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     )
   }
 
-  const getTitle = ():string => {
+  const onChangeBodyImage = (bodyImage: string) => {
+    const includes = newExercise.BodyImages.includes(bodyImage);
+  
+    if(includes){
+      setNewExercise({...newExercise, BodyImages: newExercise.BodyImages.filter((item)=>item!==bodyImage)});
+    }
+    else{
+      setNewExercise({...newExercise, BodyImages: [...newExercise.BodyImages, bodyImage]});
+    }
+  };
+
+  const bodyImageEditButton = (bodyImage: string) => {
+    if(bodyImage === 'cancel'){
+      setNewExercise({...newExercise, BodyImages: []});
+      return;
+    }
+
+    onChangeBodyImage(bodyImage);
+  }
+
+  const getBodyImage = (bodyImage: string, view: boolean = false) => {
+    if (typeof newExercise.BodyImages === 'string' || newExercise.BodyImages === undefined) {
+      newExercise.BodyImages = [];
+    }
+    const isSelectedSaved = newExercise.BodyImages.includes(bodyImage);
+
+    if(view){
+      return (
+        <PressImage
+            size={'bigger'}
+            src={bodyImages[bodyImage]}
+            onClick={() => {onEditExercise(); }}
+            isBlack={props.isLoadingBlack}
+          />
+      );
+    }
+    else{
+      return(
+        <div className={'exerciseBodyImageContainer ' + (isSelectedSaved? getScssObjColor(theme, SCSSObjType.OBJ_BG) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR)+' exerciseBodyImageContainerSelected ':'')}>
+          <PressImage
+            size={'bigger'}
+            src={bodyImages[bodyImage]}
+            onClick={() => {bodyImageEditButton(bodyImage)}}
+            isBlack={props.isLoadingBlack}
+          />
+        </div>
+      )
+    }
+  }; 
+
+  const getBodyImages = () => {
+    if (!exercise.BodyImages || exercise.BodyImages === undefined || exercise.BodyImages.includes('cancel')) return <></>;
+
+    const rtn = [];
+
+    for (let i = 0; i < exercise.BodyImages.length; i++) {
+      rtn.push(getBodyImage(exercise.BodyImages[i], true));
+    }
+
+    return <>{rtn}</>;
+  };
+
+  const getTitle = () => {
     let title = '';
     if(exercise.Title !== ''){
       if(exercise.Reps > 1 || exercise.Series > 1) title += exercise.Series + 'x' + exercise.Reps + ' ';
@@ -217,7 +323,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       title += exercise.Weekdays.includes(Weekdays.Sunday)?' Su':'';
     }
     
-    return title;
+    return <div className={'exerciseText' + getItemScssColor(theme, SCSSItemType.TEXT)}>{title}</div>;
   }
 
   return (
@@ -271,7 +377,39 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 onChange={handleDescriptionInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Description"></input>
+              <div className={'exerciseHeaderText ' + getItemScssColor(theme, SCSSItemType.TEXT)}>WEEKDAYS</div>
               {getWeekdaysButtons()}
+              <div className={'exerciseHeaderText ' + getItemScssColor(theme, SCSSItemType.TEXT)}>BODY PART</div>
+              {<div className={'exerciseBodyImagesContainer'}>
+                {getBodyImage('chest')}
+                {getBodyImage('triceps')}
+                {getBodyImage('shoulderfront')}
+                {getBodyImage('anteriorforearm')}
+                {getBodyImage('trapezius')}
+                {getBodyImage('biceps')}
+                {getBodyImage('posteriorforearm')}
+                {getBodyImage('shoulderback')}
+                {getBodyImage('backoutside')}
+                {getBodyImage('topback')}
+                {getBodyImage('abs')}
+                {getBodyImage('pectorals')}
+                {getBodyImage('lower')}
+                {getBodyImage('obliques')}
+                {getBodyImage('externalobliques')}
+                {getBodyImage('hamstrings')}
+                {getBodyImage('frontthigh')}
+                {getBodyImage('quadriceps')}
+                {getBodyImage('innerthigh')}
+                {getBodyImage('outerthigh')}
+                {getBodyImage('glutes')}
+                {getBodyImage('lumbar')}
+                {getBodyImage('calves')}
+                {getBodyImage('rectusabdominis')}
+                {getBodyImage('cardio')}
+                {getBodyImage('stretching')}
+                {getBodyImage('warmup')}
+                {getBodyImage('cancel')}
+              </div>}
             </div>
             <div className='exerciseSideContainer'>
               <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
@@ -281,7 +419,10 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
           :
           <div className='exerciseDisplayContainer'>
             <div className='exerciseLine' onClick={onEditExercise}>
-              <div className={'exerciseText' + itemTextColor(theme, exercise.IsDone)}> {getTitle()}</div>
+              <div className={'exerciseMainLine' + itemTextColor(theme, exercise.IsDone)}>
+                {getBodyImages()}
+                {getTitle()}
+              </div>
               {exercise.Description && <div className={'exerciseDescriptionText'}> {exercise.Description}</div>}
             </div>
             {!isEditingExercise &&

@@ -89,6 +89,8 @@ export enum StepImportance {
   Waiting,
   InProgress,
   Ladybug,
+  LadybugYellow,
+  LadybugGreen,
 }
 export interface Step extends Item {
   Title: string,
@@ -148,6 +150,7 @@ export interface Exercise extends Item{
   Description: string,
   Weekdays: Weekdays[],
   LastDone: string,
+  BodyImages: string[],
 }
 
 export interface Link extends Item{

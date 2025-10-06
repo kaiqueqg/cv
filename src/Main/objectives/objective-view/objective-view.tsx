@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
 import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House } from "../../../TypesObjectives";
@@ -25,6 +25,7 @@ import { HouseView, houseNew } from "./house-view/house-view";
 import PressImage from "../../../press-image/press-image";
 import { useRequestContext } from "../../../contexts/request-context";
 import { MessageType } from "../../../Types";
+import { SCSSItemType, SCSSObjType, useThemeContext } from "../../../contexts/theme-context";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -34,8 +35,9 @@ interface ObjectiveViewProps{
 
 export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { putSelectedTags, selectedTags, availableTags } = useUserContext();
+  const { putSelectedTags, selectedTags, availableTags, user } = useUserContext();
   const { popMessage } = useLogContext();
+  const { getItemScssColor, getScssObjColor } = useThemeContext();
   const { objective, putObjective, isObjsEditingPos } = props;
   
   const [items, setItems] = useState<(Item)[]>([]);
@@ -74,6 +76,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   const [isSavingTitle, setIsSavingTitle] = useState<boolean>(false);
   const [isRequestingItems, setIsRequestingItems] = useState<boolean>(false);
+
+  //dev
+  const [devShowPos, setDevShowPos] = useState<boolean>(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   let hiddenItems = 0;
 
@@ -407,6 +413,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsLoadingChangingColor(false);
   }
 
+  //TODO need to be replace for theme context
   const getObjTheme = (): string => {
     if(objective.Theme === 'blue'){
       return ' objObjectiveBlue';
@@ -433,6 +440,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     return ' objObjectiveNoTheme';
   }
   
+  //TODO need to be replace for theme context
   const itemGetTheme = (paramTheme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean): string => {
     let rtnTheme = ' itemContainer';
     if(fade){
@@ -467,6 +475,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     return rtnTheme;
   }
 
+  //TODO need to be replace for theme context
   const getTextColor = (theme: string, fade?: boolean): string => {
     if(fade){
       if(theme === 'white')
@@ -480,6 +489,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
   }
 
+  //TODO need to be replace for theme context
   const getInputColor = (theme: string, fade?: boolean): string => {
     return ' input' + (theme === 'white' || theme === 'pink'?'White':'');
   }
@@ -885,6 +895,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       key={item.ItemId}
       className='objItemRow'
       onClick={() => {isEditingPos && (isEndingPos? endChangingPos(item) : addingRemovingItem(item))}}>
+      {devShowPos && <div className={'objDevPosText' + getItemScssColor(objective.Theme, SCSSItemType.TEXT)}>{item.Pos}</div>}
       {rtnItem}
     </div>)
   }
@@ -996,13 +1007,13 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
     return(
       <div className={'objectiveColorContainer' + itemGetTheme(objective.Theme, false, false)}>
-        <div className='objectiveColorButton objectiveColorButtonBlue' onClick={()=>changeObjColor('blue')}></div>
-        <div className='objectiveColorButton objectiveColorButtonRed' onClick={()=>changeObjColor('red')}></div>
-        <div className='objectiveColorButton objectiveColorButtonGreen' onClick={()=>changeObjColor('green')}></div>
-        <div className='objectiveColorButton objectiveColorButtonWhite' onClick={()=>changeObjColor('white')}></div>
-        <div className='objectiveColorButton objectiveColorButtonCyan' onClick={()=>changeObjColor('cyan')}></div>
-        <div className='objectiveColorButton objectiveColorButtonPink' onClick={()=>changeObjColor('pink')}></div>
-        <div className='objectiveColorButton objectiveColorButtonNoTheme' onClick={()=>changeObjColor('noTheme')}></div>
+        <div className='objectiveColorButton objObjectiveBlue' onClick={()=>changeObjColor('blue')}></div>
+        <div className='objectiveColorButton objObjectiveRed' onClick={()=>changeObjColor('red')}></div>
+        <div className='objectiveColorButton objObjectiveGreen' onClick={()=>changeObjColor('green')}></div>
+        <div className='objectiveColorButton objObjectiveWhite' onClick={()=>changeObjColor('white')}></div>
+        <div className='objectiveColorButton objObjectiveCyan' onClick={()=>changeObjColor('cyan')}></div>
+        <div className='objectiveColorButton objObjectivePink' onClick={()=>changeObjColor('pink')}></div>
+        <div className='objectiveColorButton objObjectiveNoTheme' onClick={()=>changeObjColor('noTheme')}></div>
       </div>
     )
   }
@@ -1127,6 +1138,16 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     )
   }
 
+  const handleMouseDown = () => {
+    timerRef.current = setTimeout(() => {
+      if(user?.Role === 'Admin') setDevShowPos(!devShowPos);
+    }, 800);
+  };
+
+  const handleMouseUp = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+  };
+
   const getObjectiveTitle = () => {
     return(
       <div className='objTitleContainer'>
@@ -1146,7 +1167,17 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
               <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isBlack={isLoadingBlack()}/>
             </>
             :
-            <div className={'objTitle'+getTextColor(objective.Theme)} onClick={()=>{if(!isObjsEditingPos)setIsEditingTitle(true);}}>{objective.Title}</div>
+            <div 
+              className={'objTitle'+getTextColor(objective.Theme)} 
+              onClick={()=>{if(!isObjsEditingPos)setIsEditingTitle(true);}}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              onTouchStart={handleMouseDown}
+              onTouchEnd={handleMouseUp}
+              >
+              {objective.Title}
+            </div>
           )
         }
       </div>
