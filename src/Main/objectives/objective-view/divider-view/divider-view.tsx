@@ -9,6 +9,7 @@ import PressImage from "../../../../press-image/press-image";
 import { MessageType } from "../../../../Types";
 import { useLogContext } from "../../../../contexts/log-context";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { SCSSItemType, useThemeContext } from "../../../../contexts/theme-context";
 
 export function dividerNew(){
   return {
@@ -20,13 +21,14 @@ export function dividerNew(){
 interface DividerProps extends ItemViewProps{
   divider: Divider,
   orderDividerItems: (item: Item)=>Promise<void>,
-  choseNewItemToAdd: (type: ItemType, pos?:number)=>void,
+  choseNewItemToAdd: (type: ItemType, pos?:number, amount?: number)=>void,
 }
 
 export const DividerView: React.FC<DividerProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
   const { popMessage } = useLogContext();
+  const { getItemScssColor } = useThemeContext();
   const { divider, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, choseNewItemToAdd, orderDividerItems, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(divider.Title);
@@ -40,6 +42,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
   const [isAddingNewItem, setIsAddingNewItem] = useState<boolean>(false);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
   const [amountOfItemsToAdd, setAmountOfItemsToAdd] = useState<number>(1);
+  const [isLoadingAddingNewItem, setIsLoadingAddingNewItem] = useState<boolean>(false);
 
   const onTitleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
@@ -116,6 +119,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       if(isAddingNewItemLocked){ //turn all off
         setIsAddingNewItemLocked(false);
         setIsAddingNewItem(false);
+        setAmountOfItemsToAdd(1);
       }
       else{//adding but now lock
         setIsAddingNewItemLocked(true);
@@ -141,6 +145,16 @@ export const DividerView: React.FC<DividerProps> = (props) => {
 
   const increaseAmountItemsToAdd = () => {
     setAmountOfItemsToAdd(amountOfItemsToAdd+1);
+  }
+
+  const addNewItem = async (type: ItemType, pos: number) => {
+    if(!isAddingNewItemLocked) setIsAddingNewItem(false);
+
+    setIsLoadingAddingNewItem(true);
+
+    await choseNewItemToAdd(type, pos, amountOfItemsToAdd);
+
+    setIsLoadingAddingNewItem(false);
   }
 
   return (
@@ -180,52 +194,46 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             getTitle()
           )
         }
-        {!isEditingTitle && 
-          (isOrderingAToZ?
-            <Loading  IsBlack={theme==='white'}></Loading>
-            :
-            <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'}/>
-          )
-        }
-        {!isEditingTitle && <img className='dividerImage' onClick={()=>{if(!isEditingPos)addingNewItem()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'}></img>}
+        {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'} isLoading={isOrderingAToZ}/>}
+        {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem}/>}
       </div>
       {isAddingNewItem &&
         <div className='dividerNewItemContainer'>
-          {/* <div className={'objectiveNewItemAmount' + getTextColor(objective.Theme)} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div> */}
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Wait, divider.Pos);}}>
+          <div className={'objectiveNewItemAmount' + getItemScssColor(theme, SCSSItemType.TEXT)} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Wait, divider.Pos)}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/wait' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.House, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.House, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Link, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Link, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Exercise, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Exercise, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Divider, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Divider, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/minus' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Grocery, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Grocery, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Medicine, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Medicine, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Location, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Location, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Question, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Question, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/question' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Note, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Note, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Step, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Step, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{if(!isAddingNewItemLocked)setIsAddingNewItem(false); choseNewItemToAdd(ItemType.Image, divider.Pos);}}>
+          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Image, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/image-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
 import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House } from "../../../TypesObjectives";
-import log from "../../../log/log";
+// import log from "../../../log/log";
 // import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
 import Loading from "../../../loading/loading";
 // import WaitView from "./WaitView/WaitView";
@@ -36,7 +36,7 @@ interface ObjectiveViewProps{
 export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { putSelectedTags, selectedTags, availableTags, user } = useUserContext();
-  const { popMessage } = useLogContext();
+  const { log, popMessage } = useLogContext();
   const { getItemScssColor, getScssObjColor } = useThemeContext();
   const { objective, putObjective, isObjsEditingPos } = props;
   
@@ -247,14 +247,30 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     let sending:Item[] = [];
 
     //^ With pos
-    if(pos !== undefined && pos !== null) {
+    // if(pos !== undefined && pos !== null) {
+    //   const newList = items.filter((i: Item) => !itemsSelected.includes(i));
+    //   const after = newList.slice(pos+1);
+
+    //   let adjustedList = [...addItems, ...after];
+
+    //   for (let i = pos; i < pos + adjustedList.length; i++) {
+    //     sending.push({...adjustedList[i - pos], Pos: i, LastModified: new Date().toISOString() });
+    //   }
+    // }
+    if (pos !== undefined && pos !== null) {
       const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-      const after = newList.slice(pos+1);
 
-      let adjustedList = [...addItems, ...after];
+      const before = newList.slice(0, pos + 1);
+      const after = newList.slice(pos + 1);
 
-      for (let i = pos; i < pos + adjustedList.length; i++) {
-        sending.push({...adjustedList[i - pos], Pos: i, LastModified: new Date().toISOString() });
+      const adjustedList = [...before, ...addItems, ...after];
+
+      for (let i = 0; i < adjustedList.length; i++) {
+        sending.push({
+          ...adjustedList[i],
+          Pos: i,
+          LastModified: new Date().toISOString(),
+        });
       }
     }
     //^ Without pos
@@ -274,7 +290,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsLoadingAddingNewItem(false);
   }
 
-  const choseNewItemToAdd = async (type: ItemType, pos?:number) => {
+  const choseNewItemToAdd = async (type: ItemType, pos?:number, amount?: number) => {
     if(!isAddingNewItemLocked) setIsAddingNewItem(false);
 
     const baseItem:Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length);
@@ -325,7 +341,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
 
     const itemList:Item[] = [];
-    for(let i = 0; i < amountOfItemsToAdd; i++){
+    const finalAmount = amount?amount:amountOfItemsToAdd;
+    for(let i = 0; i < finalAmount; i++){
       itemList.push(typeItem);
     }
     await addNewItem(itemList, pos)
@@ -553,9 +570,17 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setLoadingIsEndingChangingPos(true);
 
     const newList = items.filter((i: Item) => !itemsSelected.includes(i));
+
+    // log.g('newList');
+    // log.ig(...newList);
     const index = newList.indexOf(itemTo);
+    // log.w(index);
     const before = newList.slice(0, index+1);
+    // log.r('before');
+    // log.ir(...before);
     const after = newList.slice(index+1);
+    // log.b('after');
+    // log.ib(...after);
 
     let ajustedList = [...before, ...itemsSelected, ...after];
 
@@ -565,6 +590,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
     
     try{
+      // log.g('finalList')
+      // log.ig(...finalList)
       setItems(finalList);
       const data = await objectiveslistApi.putObjectiveItems(finalList);
       if(data) {
@@ -895,7 +922,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       key={item.ItemId}
       className='objItemRow'
       onClick={() => {isEditingPos && (isEndingPos? endChangingPos(item) : addingRemovingItem(item))}}>
-      {devShowPos && <div className={'objDevPosText' + getItemScssColor(objective.Theme, SCSSItemType.TEXT)}>{item.Pos}</div>}
+      {devShowPos && <div className={'objDevPosText' + getItemScssColor(objective.Theme, SCSSItemType.TEXT)}>{item.Pos < 10?'0'+item.Pos:item.Pos}</div>}
       {rtnItem}
     </div>)
   }
@@ -1140,7 +1167,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
   const handleMouseDown = () => {
     timerRef.current = setTimeout(() => {
-      if(user?.Role === 'Admin') setDevShowPos(!devShowPos);
+      setDevShowPos(!devShowPos);
     }, 800);
   };
 

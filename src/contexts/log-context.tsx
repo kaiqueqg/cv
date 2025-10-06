@@ -33,7 +33,7 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
     setConsoleLogs('');
   };
 
-  const log = {
+  const log: LogFunctions = {
     arr(array: any[], f?:(e:any)=>string){
       for(let i = 0; i < array.length; i++){
         if(f)
@@ -110,7 +110,52 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
           if(text.Type===ItemType.Step) return (text as Step).Title;
           if(text.Type===ItemType.Wait) return (text as Wait).Title;
         });
+        console.log('%c[DEV]' + formattedTexts, 'color: rgba(255, 255, 255, 1); font-weight: bold;');
+        // putLog(...formattedTexts);
+      }
+    },
+    ir(...texts: Item[]){
+      if (currentLogLevel <= LogLevel.Dev) {
+        const formattedTexts = texts.map(text => {
+          if(text.Type===ItemType.Divider) return (text as Divider).Title;
+          if(text.Type===ItemType.Grocery) return (text as Grocery).Title;
+          if(text.Type===ItemType.Location) return (text as Location).Title;
+          if(text.Type===ItemType.Note) return (text as Note).Text;
+          if(text.Type===ItemType.Question) return (text as Question).Statement;
+          if(text.Type===ItemType.Step) return (text as Step).Title;
+          if(text.Type===ItemType.Wait) return (text as Wait).Title;
+        });
         console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 80, 80); font-weight: bold;');
+        // putLog(...formattedTexts);
+      }
+    },
+    ig(...texts: Item[]){
+      if (currentLogLevel <= LogLevel.Dev) {
+        const formattedTexts = texts.map(text => {
+          if(text.Type===ItemType.Divider) return (text as Divider).Title;
+          if(text.Type===ItemType.Grocery) return (text as Grocery).Title;
+          if(text.Type===ItemType.Location) return (text as Location).Title;
+          if(text.Type===ItemType.Note) return (text as Note).Text;
+          if(text.Type===ItemType.Question) return (text as Question).Statement;
+          if(text.Type===ItemType.Step) return (text as Step).Title;
+          if(text.Type===ItemType.Wait) return (text as Wait).Title;
+        });
+        console.log('%c[DEV]' + formattedTexts, 'color: rgba(21, 255, 0, 1); font-weight: bold;');
+        // putLog(...formattedTexts);
+      }
+    },
+    ib(...texts: Item[]){
+      if (currentLogLevel <= LogLevel.Dev) {
+        const formattedTexts = texts.map(text => {
+          if(text.Type===ItemType.Divider) return (text as Divider).Title;
+          if(text.Type===ItemType.Grocery) return (text as Grocery).Title;
+          if(text.Type===ItemType.Location) return (text as Location).Title;
+          if(text.Type===ItemType.Note) return (text as Note).Text;
+          if(text.Type===ItemType.Question) return (text as Question).Statement;
+          if(text.Type===ItemType.Step) return (text as Step).Title;
+          if(text.Type===ItemType.Wait) return (text as Wait).Title;
+        });
+        console.log('%c[DEV]' + formattedTexts, 'color: rgba(25, 0, 255, 1); font-weight: bold;');
         // putLog(...formattedTexts);
       }
     },
@@ -260,8 +305,30 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
   );
 };
 
+interface LogFunctions {
+  arr: (array: any[], f?: (e: any) => string) => void;
+  arrg: (array: any[], f?: (e: any) => string) => void;
+  arrb: (array: any[], f?: (e: any) => string) => void;
+  arrr: (array: any[], f?: (e: any) => string) => void;
+  arry: (array: any[], f?: (e: any) => string) => void;
+
+  dev: (...texts: any[]) => void;
+  o: (...objs: Objective[]) => void;
+  i: (...texts: Item[]) => void;
+  ir: (...texts: Item[]) => void;
+  ig: (...texts: Item[]) => void;
+  ib: (...texts: Item[]) => void;
+  y: (...texts: any[]) => void;
+  r: (...texts: any[]) => void;
+  b: (...texts: any[]) => void;
+  g: (...texts: any[]) => void;
+  w: (...texts: any[]) => void;
+  war: (...texts: any[]) => void;
+  err: (...texts: any[]) => void;
+}
+
 interface LogContextType {
-  log: any,
+  log: LogFunctions,
   consoleLogs: string,
   deleteLog: () => void,
   //^Message
