@@ -22,7 +22,7 @@ interface NoteViewProps extends ItemViewProps{
 export const NoteView: React.FC<NoteViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { note, putItemInDisplay, theme, isSelected, isEditingPos, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
+  const { note, putItemsInDisplay, theme, isSelected, isEditingPos, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
 
   const [newText, setNewText] = useState<string>(note.Text);
   const [isEditingText, setIsEditingText] = useState<boolean>(false);
@@ -71,7 +71,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(note);
 
     if(data){
-      putItemInDisplay(note, true);
+      putItemsInDisplay([note], true);
     }
 
     setIsDeleting(false);
@@ -83,11 +83,11 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
       setIsSavingTitle(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newNote);
+      const data = await objectiveslistApi.putObjectiveItems([newNote]);
 
       if(data){
         setIsEditingText(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {
@@ -107,11 +107,11 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
       setIsAutoUpdating(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newNote);
+      const data = await objectiveslistApi.putObjectiveItems([newNote]);
 
       if(data){
         setIsEditingText(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {

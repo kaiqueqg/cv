@@ -17,7 +17,7 @@ interface WaitViewProps extends ItemViewProps{
 
 export const WaitView: React.FC<WaitViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { wait, putItemInDisplay, theme, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { wait, putItemsInDisplay, theme, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -50,7 +50,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(wait);
 
     if(data){
-      putItemInDisplay(wait, true);
+      putItemsInDisplay([wait], true);
     }
 
     setIsDeleting(false);
@@ -62,11 +62,11 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
     if(newWait.Title !== wait.Title || newWait.Pos !== wait.Pos) {
       setIsSavingTitle(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newWait);
+      const data = await objectiveslistApi.putObjectiveItems([newWait]);
 
       if(data){
         setIsEditingTitle(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {

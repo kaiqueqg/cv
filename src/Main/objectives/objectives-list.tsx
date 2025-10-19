@@ -130,9 +130,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         Tags: [],
       }
       
-      const data = await objectiveslistApi.putObjective(emptyObjective, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectives([emptyObjective], (error:any) => popMessage(error.Message, MessageType.Error, 10));
       if(data){
-        putObjectiveInDisplay(data);
+        putObjectiveInDisplay(data[0]);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -159,8 +159,13 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
         const tagSet = new Set<string>();
         for (const obj of sorted) {
-          for (const tag of obj.Tags) {
-            tagSet.add(tag);
+          if(obj.Tags) {
+            for (const tag of obj.Tags) {
+              tagSet.add(tag);
+            }
+          }
+          else{
+            log.r(obj.Title + ' has no tags')
           }
         }
         writeAvailableTags(['Pin', ...Array.from(tagSet)])

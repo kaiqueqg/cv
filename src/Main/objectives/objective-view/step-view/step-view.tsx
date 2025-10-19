@@ -26,7 +26,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { popMessage } = useLogContext();
   const { getItemScssColor } = useThemeContext();
-  const { step, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { step, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [isSavingTitle, setIsSavingTitle] = useState<boolean>(false);
@@ -51,8 +51,8 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
     try {
       const newItem: Step = { ...step, Done: !step.Done, LastModified: new Date().toISOString()};
-      putItemInDisplay(newItem);
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      putItemsInDisplay([newItem]);
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
         setIsSavingDone(false);
@@ -89,7 +89,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
     if(data){
       setIsEditingTitle(false);
-      putItemInDisplay(step, true);
+      putItemsInDisplay([step], true);
     }
     setIsDeleting(false);
   }
@@ -106,11 +106,11 @@ export const StepView: React.FC<StepViewProps> = (props) => {
     if(newStep.Title !== step.Title || newStep.Done !== step.Done || newStep.Pos !== step.Pos || newStep.Importance !== step.Importance || newStep.AutoDestroy !== step.AutoDestroy) {
       setIsSavingTitle(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newStep);
+      const data = await objectiveslistApi.putObjectiveItems([newStep]);
 
       if(data){
         setIsEditingTitle(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {

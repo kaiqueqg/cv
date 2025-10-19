@@ -23,7 +23,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { log } = useLogContext();
-  const { link, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { link, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(link.Title);
   const [newLink, setNewLink] = useState<string>(link.Link);
@@ -77,11 +77,11 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
       || newValue.Pos !== link.Pos) {
       setIsEditingLinks(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newValue);
+      const data = await objectiveslistApi.putObjectiveItems([newValue]);
 
       if(data){
         setIsEditingLinks(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {
@@ -109,7 +109,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(link);
 
     if(data){
-      putItemInDisplay(link, true);
+      putItemsInDisplay([link], true);
     }
 
     setIsDeleting(false);

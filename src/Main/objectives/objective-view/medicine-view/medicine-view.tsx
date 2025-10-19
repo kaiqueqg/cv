@@ -26,7 +26,7 @@ interface MedicineViewProps extends ItemViewProps{
 export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { medicine, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { medicine, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newMedicine, setNewMedicine] = useState<Medicine>(medicine);
   const [isEditingMedicine, setIsEditingMedicine] = useState<boolean>(false);
@@ -69,8 +69,8 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
 
     try {
       const newItem: Medicine = { ...medicine, IsChecked: !medicine.IsChecked, LastModified: new Date().toISOString()};
-      putItemInDisplay(newItem);
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      putItemsInDisplay([newItem]);
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
         setIsSavingIsChecked(false);
@@ -98,11 +98,11 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
       || newItem.Purpose !== medicine.Purpose?.trim()) {
       setIsEditingMedicine(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
         setIsEditingMedicine(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {
@@ -128,7 +128,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(medicine);
 
     if(data){
-      putItemInDisplay(medicine, true);
+      putItemsInDisplay([medicine], true);
     }
 
     setIsDeleting(false);

@@ -76,23 +76,22 @@ const Login: React.FC<LoginProps> = (props) => {
 
   interface LoginData { User: ResponseUser, Token: string }
   const login = async () => {
-    if(email.trim() === "" || password.trim() === ""){
-      if(email.trim() === ""){
-        setWrongEmail(false);
-        setWrongPassword(false);
-        setTypeAnEmail(true);
-      }
-      else if(!isValidEmail(email.trim())){
-        setWrongEmail(false);
-        setWrongPassword(false);
-        setTypeAnValidEmail(true);
-      }
-
-      if(password.trim() === ""){
-        setWrongEmail(false);
-        setWrongPassword(false);
-        setTypeAnPassword(true);
-      }
+    if(email.trim() === ""){
+      setWrongEmail(false);
+      setWrongPassword(false);
+      setTypeAnEmail(true);
+      return;
+    }
+    if(password.trim() === ""){
+      setWrongEmail(false);
+      setWrongPassword(false);
+      setTypeAnPassword(true);
+      return;
+    }
+    if(!isValidEmail(email.trim())){
+      setWrongEmail(false);
+      setWrongPassword(false);
+      setTypeAnValidEmail(true);
       return;
     }
 

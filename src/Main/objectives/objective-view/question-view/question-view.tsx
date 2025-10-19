@@ -21,7 +21,7 @@ interface QuestionViewProps extends ItemViewProps{
 export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { question, theme, putItemInDisplay, isSelected, isEditingPos, isEndingPos,
+  const { question, theme, putItemsInDisplay, isSelected, isEditingPos, isEndingPos,
     itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
 
   const [newStatement, setNewStatement] = useState<string>(question.Statement);
@@ -74,11 +74,11 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
       || newQuestion.Pos !== question.Pos) {
       setIsEditingQuestion(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newQuestion);
+      const data = await objectiveslistApi.putObjectiveItems([newQuestion]);
 
       if(data){
         setIsEditingQuestion(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {
@@ -105,7 +105,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(question);
 
     if(data){
-      putItemInDisplay(question, true);
+      putItemsInDisplay([question], true);
     }
 
     setIsDeleting(false);

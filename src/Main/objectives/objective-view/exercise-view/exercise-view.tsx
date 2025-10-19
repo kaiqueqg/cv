@@ -31,7 +31,7 @@ interface ExerciseViewProps extends ItemViewProps{
 export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const { popMessage } = useLogContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { exercise, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, 
+  const { exercise, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, 
     itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const { getItemScssColor, getScssObjColor } = useThemeContext();
@@ -136,8 +136,8 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       const newItem: Exercise = { 
         ...exercise, 
         IsDone: !exercise.IsDone, LastDone: !exercise.IsDone? new Date().toISOString():exercise.LastDone, LastModified: new Date().toISOString()};
-      putItemInDisplay(newItem);
-      const data = await objectiveslistApi.putObjectiveItem(newItem, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      putItemsInDisplay([newItem]);
+      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsSavingExercise(false);
@@ -166,7 +166,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
 
     if(data){
       setIsEditingExercise(false);
-      putItemInDisplay(exercise, true);
+      putItemsInDisplay([exercise], true);
     }
     setIsDeleting(false);
   }
@@ -193,11 +193,11 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       newItem.LastDone !== exercise.LastDone) {
       setIsSavingExercise(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newExercise, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItems([newExercise], (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsEditingExercise(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
         setNewExercise(newExercise);
       }
 

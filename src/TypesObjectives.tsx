@@ -37,7 +37,7 @@ export interface ItemViewProps{
   isEditingPos: boolean,
   isSelected: boolean,
   isEndingPos: boolean,
-  putItemInDisplay: (item?: Item, remove?: boolean) => void,
+  putItemsInDisplay: (item?: Item[], remove?: boolean) => void,
   itemGetTheme: (theme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean) => string,
   itemTextColor: (theme: string, fade?: boolean) => string,
   itemInputColor: (theme: string, fade?: boolean) => string,

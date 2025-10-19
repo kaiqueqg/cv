@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 import { DeviceData, ImageInfo, Objective, Item as ObjectiveItem, ObjectiveList, PresignedUrl } from '../TypesObjectives';
-import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices } from '../Types';
+import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices, MessageType } from '../Types';
 import storage from '../storage/storage';
 import log from '../log/log';
 import { useLogContext } from './log-context';
@@ -12,9 +12,53 @@ interface RequestProviderProps {
 
 const RequestContext = createContext<RequestContextType | undefined>(undefined);
 
+interface RequestContextType {
+  identityApi: IdentityApi;
+  objectiveslistApi: ObjectivesListApi;
+  s3Api: S3Api;
+}
+
+export interface IdentityApi {
+  isUp(body?: string, fError?: (error: any) => void): Promise<any>;
+  login(body?: string, fError?: (error: any) => void): Promise<LoginModel|null>;
+  getUser(body?: string, fError?: (error: any) => void): Promise<any>;
+  getUserList(fError?: (error: any) => void): Promise<ResponseUser[]|null>;
+  askToCreate(body?: string, fError?: (error: any) => void): Promise<any>;
+  changeUserStatus(request?: ChangeUserStatusRequest, fError?: (error: any) => void): Promise<ResponseUser|null>;
+  getIdentityServiceStatus(fError?: (error: any) => void): Promise<ResponseServices|null>;
+  putIdentityServiceStatus(service: ResponseServices, fError?: (error: any) => void): Promise<ResponseServices|null>;
+  getEmergencyStop(fError?: (error: any) => void): Promise<string|null>;
+  requestIdentity<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<T|null>;
+}
+
+export interface ObjectivesListApi {
+  isUpObjective(fError?: (error: any) => void): Promise<any>;
+  getObjectiveList(fError?: (error: any) => void): Promise<Objective[]|null>;
+  getObjectiveItemList(objectiveId: string, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>;
+  getObjective(objectiveId: string, fError?: (error: any) => void): Promise<Objective|null>;
+  putObjectives(objectives: Objective[], fError?: (error: any) => void): Promise<Objective[]|null>;
+  deleteObjectives(objective: Objective[], fError?: (error: any) => void): Promise<Objective|null>;
+  getObjectiveItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<ObjectiveItem|null>;
+  putObjectiveItems(item: ObjectiveItem[], fError?: (error: any) => void): Promise<ObjectiveItem[]|null>;
+  deleteObjectiveItem(item: ObjectiveItem, fError?: (error: any) => void): Promise<ObjectiveItem|null>;
+  syncObjectivesList(objectivesList: ObjectiveList, fError?: (error: any) => void): Promise<ObjectiveList>;
+  backupData(fError?: (error: any) => void): Promise<boolean>;
+  getBackupDataList(fError?: (error: any) => void): Promise<string[]>;
+  generateGetPresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>;
+  generatePutPresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>;
+  generateDeletePresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>;
+  getDeviceData(deviceId: string, fError?: (error: any) => void): Promise<DeviceData[]>;
+  requestObjectivesList<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<T|null>;
+}
+
+export interface S3Api {
+  getImage(imageInfo: ImageInfo, fError?: () => void): Promise<File | null>;
+  sendImage(itemId:string, file: File, fError?: () => void): Promise<boolean>;
+  deleteImage(itemId:string, file: File, fError?: () => void): Promise<boolean>;
+}
+
 export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) => {
   const { popMessage } = useLogContext();
-  const errors = [204, 400, 401, 404, 409, 500, 503, 429];
 
   const request = async (url: string, endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<any> => {
     const headers: {[key: string]: string} = {};
@@ -30,13 +74,6 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
         body,
         };
         const response = await fetch(url + endpoint, payload);
-
-        if(response !== undefined && errors.includes(response.status)){
-          const message = await response.text();
-          popMessage(await message);
-          log.err('request', message);
-        }
-
         return response;
     } catch (error) {
         if(fError) fError(error);
@@ -123,12 +160,14 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
         if(resp){
           const respData: Response<T> = await resp.json();
-          if(!respData.WasAnError && respData.Data){
-            return respData.Data;
+
+          if(!resp.ok) popMessage(respData.message?? 'There was a problem with the server. No explanation', MessageType.Error)
+          if(respData.data){
+            return respData.data;
           }
           else{
             if(fError) {
-              log.err(respData.Message);
+              log.err(respData.message);
               fError(respData);
             }
             //alert(respData.Message);
@@ -154,20 +193,14 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     async getObjective(objectiveId: string, fError?: (error: any) => void): Promise<Objective|null>{
       return this.requestObjectivesList<Objective>('/GetObjective', 'POST', JSON.stringify({ObjectiveId: objectiveId}), fError);
     },
-    async putObjective(objective: Objective, fError?: (error: any) => void): Promise<Objective|null>{
-      return this.requestObjectivesList<Objective>('/PutObjective', 'PUT', JSON.stringify(objective), fError);
-    },
     async putObjectives(objectives: Objective[], fError?: (error: any) => void): Promise<Objective[]|null>{
       return this.requestObjectivesList<Objective[]>('/PutObjectives', 'PUT', JSON.stringify(objectives), fError);
     },
-    async deleteObjective(objective: Objective, fError?: (error: any) => void): Promise<Objective|null>{
-      return this.requestObjectivesList<Objective>('/DeleteObjective', 'DELETE', JSON.stringify(objective), fError);
+    async deleteObjectives(objective: Objective[], fError?: (error: any) => void): Promise<Objective|null>{
+      return this.requestObjectivesList<Objective>('/DeleteObjectives', 'DELETE', JSON.stringify(objective), fError);
     },
     async getObjectiveItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<ObjectiveItem|null>{
       return this.requestObjectivesList<ObjectiveItem>('/GetObjectiveItem', 'POST', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
-    },
-    async putObjectiveItem(item: ObjectiveItem, fError?: (error: any) => void): Promise<ObjectiveItem|null>{
-      return this.requestObjectivesList<ObjectiveItem>('/PutObjectiveItem', 'PUT', JSON.stringify(item), fError);
     },
     async putObjectiveItems(item: ObjectiveItem[], fError?: (error: any) => void): Promise<ObjectiveItem[]|null>{
       return this.requestObjectivesList<ObjectiveItem[]>('/PutObjectiveItems', 'PUT', JSON.stringify(item), fError);
@@ -202,12 +235,12 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
   
         if(resp){
           const respData: Response<T> = await resp.json();
-          if(!respData.WasAnError && respData.Data){
-            return respData.Data;
+          if(respData.data){
+            return respData.data;
           }
           else{
             if(fError) {
-              log.err(respData.Message);
+              log.err(respData.message);
               fError(respData);
             }
             //alert(respData.Message);
@@ -306,12 +339,6 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     </RequestContext.Provider>
   );
 };
-
-interface RequestContextType {
-  identityApi: any,
-  objectiveslistApi: any,
-  s3Api: any,
-}
 
 export const useRequestContext = () => {
   const context = useContext(RequestContext);

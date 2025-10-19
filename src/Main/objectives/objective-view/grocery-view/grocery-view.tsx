@@ -28,7 +28,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { popMessage } = useLogContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { grocery, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { grocery, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newGrocery, setNewGrocery] = useState<Grocery>(grocery);
   const [isEditingGrocery, setIsEditingGrocery] = useState<boolean>(false);
@@ -67,11 +67,11 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
 
     try {
       const newItem: Grocery = { ...grocery, IsChecked: !grocery.IsChecked, LastModified: new Date().toISOString()};
-      const data = await objectiveslistApi.putObjectiveItem(newItem, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsSavingIsChecked(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -95,12 +95,12 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
       || newItem.Pos !== grocery.Pos) {
       setIsEditingGrocery(true);
 
-      putItemInDisplay(newItem);
-      const data = await objectiveslistApi.putObjectiveItem(newItem, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      putItemsInDisplay([newItem]);
+      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
       if(data){
         setIsEditingGrocery(false);
-        setNewGrocery(data);
+        setNewGrocery(newGrocery);
       }
 
       setTimeout(() => {
@@ -126,7 +126,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(grocery);
 
     if(data){
-      putItemInDisplay(grocery, true);
+      putItemsInDisplay([grocery], true);
     }
 
     setIsDeleting(false);

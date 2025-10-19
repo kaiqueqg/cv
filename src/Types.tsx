@@ -46,11 +46,9 @@ export interface CreateUserModel{
 }
 
 export interface Response<T>{
-  Data?: T,
-  Message: string,
-  Exception?: string,
-  WasAnError: boolean,
-  Code: number,
+  data: T,
+  success: boolean,
+  message?: string,
 }
 
 export enum Language{ PR_BR, EN, FR, IT };

@@ -30,7 +30,7 @@ interface HouseViewProps extends ItemViewProps{
 export const HouseView: React.FC<HouseViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { house, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { house, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newHouse, setNewHouse] = useState<House>(house);
   const [isEditingHouse, setIsEditingHouse] = useState<boolean>(false);
@@ -93,11 +93,11 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
 
     try {
       const newItem: House = { ...house, WasContacted: !house.WasContacted, LastModified: new Date().toISOString()};
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
         setIsSavingWasContacted(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -131,11 +131,11 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
       || newItem.Attention !== house.Attention) {
       setIsEditingHouse(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
         setIsEditingHouse(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
         setNewHouse(newHouse);
       }
 
@@ -162,7 +162,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(house);
 
     if(data){
-      putItemInDisplay(house, true);
+      putItemsInDisplay([house], true);
     }
 
     setIsDeleting(false);

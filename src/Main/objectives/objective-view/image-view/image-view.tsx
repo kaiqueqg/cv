@@ -31,7 +31,7 @@ interface ImageViewProps extends ItemViewProps{
 
 export const ImageView: React.FC<ImageViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { image, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { image, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newImage, setNewImage] = useState<Image>(image);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -74,15 +74,15 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
     try {
       const newItem: Image = { ...image, IsDisplaying: !image.IsDisplaying, LastModified: new Date().toISOString()};
 
-      putItemInDisplay(newItem);
+      putItemsInDisplay([newItem]);
 
-      const data = await objectiveslistApi.putObjectiveItem(newItem);
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
         setIsSavingIsDisplaying(false);
       }
     } catch (err) {
-      putItemInDisplay(image);
+      putItemsInDisplay([image]);
       log.err(JSON.stringify(err));
     }
 
@@ -97,7 +97,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
 
     if(data){
       setIsEditingImage(false);
-      putItemInDisplay(image, true);
+      putItemsInDisplay([image], true);
     }
     setIsDeleting(false);
   }
@@ -112,11 +112,11 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
     if(newValue.Title !== image.Title.trim()) {
       setIsSavingImage(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newValue);
+      const data = await objectiveslistApi.putObjectiveItems([newValue]);
 
       if(data){
         setIsEditingImage(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {
@@ -140,10 +140,10 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
         setImageFile(file);
 
         const newValue: Image = {...newImage, Name: file.name, Size: file.size, LastModified: new Date().toISOString()};
-        const data = await objectiveslistApi.putObjectiveItem(newValue);
+        const data = await objectiveslistApi.putObjectiveItems([newValue]);
 
         if(data){
-          putItemInDisplay(data);
+          putItemsInDisplay(data);
         }
       }
       else{
@@ -227,10 +227,10 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
 
         if(result){
           const newValue: Image = {...newImage, Name: '', Size: 0, LastModified: new Date().toISOString()};
-          const data = await objectiveslistApi.putObjectiveItem(newValue);
+          const data = await objectiveslistApi.putObjectiveItems([newValue]);
 
           if(data){
-            putItemInDisplay(data);
+            putItemsInDisplay(data);
             setImageFile(null);
           }
         }

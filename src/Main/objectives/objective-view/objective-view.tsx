@@ -116,35 +116,69 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsRequestingItems(false);
   }
 
-  const putItemInDisplay = async (item?: Item, remove?: boolean) => {
-    if(item) {
-      let sorted: Item[] = [];
-      setItems((prevItems) => {
-        let newItems = [];
-        if (remove) {
-          newItems = prevItems.filter((i: Item) => i.ItemId !== item.ItemId);
-        } else {
-          const itemInList = prevItems.find((i: Item) => i.ItemId === item.ItemId);
-          if (itemInList) {
-            newItems = prevItems.map((i: Item) => i.ItemId === item.ItemId ? item : i);
+  const putItemsInDisplay = async (items?: Item[], remove?: boolean) => {
+  if (items && items.length > 0) {
+    setItems((prevItems) => {
+      let newItems: Item[] = [...prevItems];
+
+      if (remove) {
+        // Remove all matching items
+        newItems = newItems.filter(
+          (i: Item) => !items.some((r: Item) => r.ItemId === i.ItemId)
+        );
+      } else {
+        // Add or update each item
+        for (const item of items) {
+          const existingIndex = newItems.findIndex(
+            (i: Item) => i.ItemId === item.ItemId
+          );
+          if (existingIndex >= 0) {
+            newItems[existingIndex] = item; // update
           } else {
-            newItems = [...prevItems, item];
+            newItems.push(item); // add new
           }
         }
-        sorted = newItems.sort((a, b) => a.Pos - b.Pos);
-        return sorted;
-      });
-    } else {
-      if(objective.IsShowing) {
-        await downloadItemList();
       }
+
+      // Sort by position
+      return newItems.sort((a, b) => a.Pos - b.Pos);
+    });
+  } else {
+    if (objective.IsShowing) {
+      await downloadItemList();
     }
   }
+};
+
+  // const putItemsInDisplay = async (item?: Item[], remove?: boolean) => {
+  //   if(item) {
+  //     let sorted: Item[] = [];
+  //     setItems((prevItems) => {
+  //       let newItems = [];
+  //       if (remove) {
+  //         newItems = prevItems.filter((i: Item) => i.ItemId !== item.ItemId);
+  //       } else {
+  //         const itemInList = prevItems.find((i: Item) => i.ItemId === item.ItemId);
+  //         if (itemInList) {
+  //           newItems = prevItems.map((i: Item) => i.ItemId === item.ItemId ? item : i);
+  //         } else {
+  //           newItems = [...prevItems, item];
+  //         }
+  //       }
+  //       sorted = newItems.sort((a, b) => a.Pos - b.Pos);
+  //       return sorted;
+  //     });
+  //   } else {
+  //     if(objective.IsShowing) {
+  //       await downloadItemList();
+  //     }
+  //   }
+  // }
 
   const deleteObjective = async () => {   
     setIsDeleting(true);
     try {
-      const data = await objectiveslistApi.deleteObjective(objective, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.deleteObjectives([objective], (error:any) => popMessage(error.Message, MessageType.Error, 10));
   
       if(data){
         putObjective(objective, true);
@@ -174,10 +208,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     const newObjective: Objective = {...objective, Title: newTitle, LastModified: new Date().toISOString()};
 
     if(newObjective.Title !== objective.Title) {
-      const data = await objectiveslistApi.putObjective(newObjective);
+      const data = await objectiveslistApi.putObjectives([newObjective]);
 
       if(data){
-        putObjective(data);
+        putObjective(newObjective);
         setIsEditingTitle(false);
       }
 
@@ -205,7 +239,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     if(newObjective.Tags !== objective.Tags) {
       putObjective(newObjective);
       putSelectedTags(newTags);
-      const data = await objectiveslistApi.putObjective(newObjective);
+      const data = await objectiveslistApi.putObjectives([newObjective]);
 
       if(data){
       }
@@ -283,9 +317,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     
     const data = await objectiveslistApi.putObjectiveItems(sending);
     if(data){
-      data.forEach((element: Item | undefined) => {
-        putItemInDisplay(element);
-      });
+      putItemsInDisplay(data);
     }
     setIsLoadingAddingNewItem(false);
   }
@@ -352,10 +384,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     try {
       const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
       putObjective(newObjective);
-      const data = await objectiveslistApi.putObjective(newObjective);
+      const data = await objectiveslistApi.putObjectives([newObjective]);
       
       if(data){
-        if(data.IsShowing){
+        if(data[0].IsShowing){
           downloadItemList();
         }
         else{
@@ -372,10 +404,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
       const newObjective:Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
       putObjective(newObjective); //change before confirm to be more practicle
-      const data = await objectiveslistApi.putObjective(newObjective);
+      const data = await objectiveslistApi.putObjectives([newObjective]);
       
       if(data){
-        if(data.IsShowing){
+        if(data[0].IsShowing){
           downloadItemList();
         }
         else{
@@ -417,7 +449,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     try {
       const newObj = {...objective, Theme: theme, LastModified: new Date().toISOString()};
       putObjective(newObj);
-      const data = await objectiveslistApi.putObjective(newObj);
+      const data = await objectiveslistApi.putObjectives([newObj]);
   
       if(data){
       }
@@ -526,7 +558,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       LastModified: new Date().toISOString()};
 
     putObjective(newObjective);
-    const data = await objectiveslistApi.putObjective(newObjective);
+    const data = await objectiveslistApi.putObjectives([newObjective]);
 
     if(data){
     }
@@ -692,9 +724,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
     const data = await objectiveslistApi.putObjectiveItems(sending, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     if(data){
-      data.forEach((element: Item | undefined) => {
-        putItemInDisplay(element);
-      });
+      putItemsInDisplay(data);
     }
   }
 
@@ -708,9 +738,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
     const data = await objectiveslistApi.putObjectiveItems(sending, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     if(data){
-      data.forEach((element: Item | undefined) => {
-        putItemInDisplay(element);
-      });
+      putItemsInDisplay(data);
     }
   }
 
@@ -723,7 +751,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const increaseAmountItemsToAdd = () => {
-    setAmountOfItemsToAdd(amountOfItemsToAdd+1);
+    if(amountOfItemsToAdd >= 10)
+      setAmountOfItemsToAdd(1);
+    else
+      setAmountOfItemsToAdd(amountOfItemsToAdd+1);
   }
 
   const getItemView = (item: Item): React.ReactNode => {
@@ -738,7 +769,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -754,7 +785,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -769,7 +800,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -784,7 +815,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -799,7 +830,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
         location={item as Location}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -816,7 +847,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isEditingPos={isEditingPos || isObjsEditingPos}
         orderDividerItems={orderDividerItems}
         choseNewItemToAdd={choseNewItemToAdd}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -831,7 +862,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -846,7 +877,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -861,7 +892,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -876,7 +907,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -891,7 +922,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -906,7 +937,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         isSelected={isSelected}
         isEndingPos={isEndingPos}
         isEditingPos={isEditingPos || isObjsEditingPos}
-        putItemInDisplay={putItemInDisplay}
+        putItemsInDisplay={putItemsInDisplay}
         itemGetTheme={itemGetTheme}
         itemInputColor={getInputColor}
         itemTextColor={getTextColor}
@@ -987,7 +1018,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       isSelected={false}
       isEndingPos={isEndingPos}
       isEditingPos={isEditingPos || isObjsEditingPos}
-      putItemInDisplay={putItemInDisplay}
+      putItemsInDisplay={putItemsInDisplay}
       itemGetTheme={itemGetTheme}
       itemInputColor={getInputColor}
       itemTextColor={getTextColor}

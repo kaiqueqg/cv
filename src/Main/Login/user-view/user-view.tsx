@@ -42,7 +42,6 @@ const UserView: React.FC<UserViewProps> = (props) => {
 
   const getServicesList = async () => {
     setIsGettingServicesList(true);
-
     const identityData = await identityApi.getIdentityServiceStatus();
     if(identityData){
       setIdentityServiceStatus(identityData);

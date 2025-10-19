@@ -213,10 +213,13 @@ $bor: false;
   display: flex;
   justify-content: center;
   align-items: center;
+  vertical-align: middle;
+  text-align: center;
+
   width: 30px;
   height: 30px;
-
   font-weight: bold;
+  margin-left: 5px;
 }
 
 .objectiveNewItemImages{

@@ -28,7 +28,7 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
       const newObjective: Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
       putObjectiveInDisplay(newObjective);
 
-      const data = await objectiveslistApi.putObjective(newObjective);
+      const data = await objectiveslistApi.putObjectives([newObjective]);
       if(data){
       }
       else{

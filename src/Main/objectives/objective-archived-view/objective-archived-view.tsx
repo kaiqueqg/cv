@@ -24,7 +24,7 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
     try {
       const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
       putObjectiveInDisplay(newObjective)
-      const data = await objectiveslistApi.putObjective(newObjective);
+      const data = await objectiveslistApi.putObjectives([newObjective]);
   
       if(data){
       }

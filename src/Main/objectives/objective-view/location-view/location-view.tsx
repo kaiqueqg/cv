@@ -21,7 +21,7 @@ interface LocationViewProps extends ItemViewProps{
 export const LocationView: React.FC<LocationViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { location, theme, putItemInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { location, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(location.Title);
   const [newUrl, setNewUrl] = useState<string>(location.Url);
@@ -72,11 +72,11 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
       || newLocation.Pos !== location.Pos) {
       setIsEditingLocation(true);
 
-      const data = await objectiveslistApi.putObjectiveItem(newLocation);
+      const data = await objectiveslistApi.putObjectiveItems([newLocation]);
 
       if(data){
         setIsEditingLocation(false);
-        putItemInDisplay(data);
+        putItemsInDisplay(data);
       }
 
       setTimeout(() => {
@@ -104,7 +104,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItem(location);
 
     if(data){
-      putItemInDisplay(location, true);
+      putItemsInDisplay([location], true);
     }
 
     setIsDeleting(false);
