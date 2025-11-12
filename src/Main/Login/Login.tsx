@@ -16,6 +16,7 @@ interface LoginProps{
 
 const Login: React.FC<LoginProps> = (props) => {
   const [isLogging, setIsLogging] = useState<boolean>(false);
+  const [isCreatingNewUser, setIsCreatingNewUser] = useState<boolean>(false);
   const [isLogged, setIsLogged] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
   const [reason, setReason] = useState<string>('');
@@ -193,11 +194,7 @@ const Login: React.FC<LoginProps> = (props) => {
   }
 
   const createLogin = async () => {
-    if(createEmail.trim() === ""
-      ||!isValidEmail(createEmail.trim())
-      || username.trim() === ""
-      || createPassword.trim() === ""
-      || reason.trim() === ""){
+    if(createEmail.trim() === "" ||!isValidEmail(createEmail.trim()) || username.trim() === "" || createPassword.trim() === ""|| reason.trim() === ""){
       if(createEmail.trim() === ""){
         setTypeAnEmailCreate(true);
       }else if(!isValidEmail(createEmail.trim())){
@@ -224,10 +221,9 @@ const Login: React.FC<LoginProps> = (props) => {
     };
 
     try {
-      setIsLogging(true);
+      setIsCreatingNewUser(true);
       const data = await identityApi.askToCreate(JSON.stringify(createUser));
 
-      setIsLogging(false);
       
       if(data){
         storage.setToken(data.Token);
@@ -237,11 +233,10 @@ const Login: React.FC<LoginProps> = (props) => {
         setIsLogged(true);
       }
     } catch (error) {
-      setIsLogging(false);
+      setIsCreatingNewUser(false);
     }
-    setTimeout(() => {
-      setIsLogging(false);
-    }, 1000); 
+
+    setIsCreatingNewUser(false);
   }
 
   //Responsable for getting token and user from storage to state
@@ -271,10 +266,12 @@ const Login: React.FC<LoginProps> = (props) => {
           <div className='login-box'>
             <h3 style={{margin: '10px 0px'}}>Login</h3>
             <div className="email-column">
-              <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
-              {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
-              {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
-              {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}
+              <div className="pass-row">
+                <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
+                {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
+                {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
+                {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}
+              </div>
             </div>
             <div className="pass-column">
               <div className="pass-row">
@@ -314,11 +311,7 @@ const Login: React.FC<LoginProps> = (props) => {
             </div>
             <div className="login-row">
               <input className="input-base"  type="password" onChange={changeCreatePaswword} placeholder="Password" aria-label="Server"></input>
-              {typeAnPasswordCreate ?
-                <span className="alert-message concert-one-regular">Type an password.</span>
-                :
-                <span className="focus-message concert-one-regular">For now isn't encrypted, put something silly!</span>
-              }
+              {typeAnPasswordCreate && <span className="alert-message concert-one-regular">Type an password.</span>}
             </div>
             <div className="login-row">
               <input className="input-base"  type="text" onChange={changeReason} onKeyUp={reasonEnter} placeholder="Reason" aria-label="Server"></input>
@@ -329,7 +322,11 @@ const Login: React.FC<LoginProps> = (props) => {
               }
             </div>
             <div className="login-row">
-              <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
+              {isCreatingNewUser?
+                <Loading></Loading>
+                :
+                <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
+              }
             </div>
           </div> */}
         </div>

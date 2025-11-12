@@ -10,10 +10,17 @@ $bor: false;
   min-height: 400px;
   flex-direction: row;
   margin-top: 10px;
+
   @if $bor {border: 1px solid grey;}
 }
 
 .login-box{
+  // min-width: 400px;
+  padding: 10px;
+  
+  @media(min-width: 700px){
+    padding: 0px;
+  }
   @if $bor {border: 1px solid red;}
 }
 
@@ -21,8 +28,10 @@ $bor: false;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  margin: 10px 0px;
 
-  @if $bor {border: 1px solid grey;}
+  @if $bor {border: 1px dashed rgb(8, 183, 196);}
 }
 
 .email-row{
@@ -30,7 +39,8 @@ $bor: false;
   justify-content: center;
   align-items: center;
   margin: 10px;
-  @if $bor {border: 1px solid purple;}
+
+  @if $bor {border: 1px dashed rgb(74, 0, 248);}
 }
 
 .email-column{
@@ -46,6 +56,8 @@ $bor: false;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+
   @if $bor {border: 1px solid rgb(167, 76, 167);}
 }
 
@@ -84,19 +96,27 @@ $bor: false;
 .input-base:focus + .focus-message {
   display: block;
 
-  @if $bor {border: 1px solid rgb(29, 172, 36);}
+  @if $bor {border: 1px solid rgb(0, 255, 13);}
 }
 
 .input-base{
   color: beige;
   background-color: #282C34;
+  padding: 5px;
+  width: 100%;
+  outline: none;
+  
   border-radius: 5px;
   border-width: 1px;
   border-color: $transparent;
   border-style: solid;
-  padding: 5px;
-  width: 100%;
-  outline: none;
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(243, 219, 6);
+    border-radius: 5px;
+  }
+  
 }
 
 .input-base:focus{

@@ -1,6 +1,10 @@
 $bor: false;
 $size: 25px;
 
+.loadingContainer{
+  position: relative;
+}
+
 .loading-image{
   display: flex;
   justify-content: center;
@@ -19,6 +23,16 @@ $size: 25px;
     border-color: red;
     border-style: solid;
   }
+}
+
+.loading-text{
+  position: absolute;
+  color: red;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px;
+  top: 50%;
+  left: 50%; 
 }
 
 .loading-cell{

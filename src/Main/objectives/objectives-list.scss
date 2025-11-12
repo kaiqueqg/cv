@@ -63,7 +63,7 @@ $bor: false;
   border-color: $beige-darker;
   border-style: solid;
   width: 100%;
-  padding: 5px;
+  // padding: 5px;
   
   @media(min-width: 700px){
     align-items: flex-start;
@@ -72,6 +72,18 @@ $bor: false;
     width: 15%;
     @if $bor {border: 3px solid blue;}
   }
+  @if $bor {border: 1px solid blue;}
+}
+
+.objectivesListSideContainerArchived{
+  background-color: $blue-dark;
+}
+
+.objectivesSidePanelTitle{
+  padding: 10px 0px;
+  background-color: $blue-darker;
+  font-weight: bolder;
+
   @if $bor {border: 1px solid blue;}
 }
 
@@ -88,6 +100,7 @@ $bor: false;
   align-items: center;
   flex-direction: row;
   flex-wrap: wrap;
+  padding: 5px 0px;
 
   @if($bor){
     border-width: 1px;
@@ -201,9 +214,8 @@ $bor: false;
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
-  // min-width: 300px; //TODO It's really necesssary?
-  max-width: 700px;
+  min-width: 300px; //TODO It's really necesssary?
+  // max-width: 700px;
   margin: 0px 0px 10px 0px;
 }
 
@@ -226,6 +238,7 @@ $bor: false;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0px 5px;
   @if($bor){
     border-width: 1px;
     border-color: red;

@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-import { DeviceData, ImageInfo, Objective, Item as ObjectiveItem, ObjectiveList, PresignedUrl } from '../TypesObjectives';
+import { DeviceData, ImageInfo, Objective, Item as ObjectiveItem, ObjectivesList, PresignedUrl } from '../TypesObjectives';
 import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices, MessageType } from '../Types';
 import storage from '../storage/storage';
 import log from '../log/log';
 import { useLogContext } from './log-context';
+import { useUserContext } from './user-context';
 
 interface RequestProviderProps {
   children: ReactNode;
@@ -24,6 +25,7 @@ export interface IdentityApi {
   getUser(body?: string, fError?: (error: any) => void): Promise<any>;
   getUserList(fError?: (error: any) => void): Promise<ResponseUser[]|null>;
   askToCreate(body?: string, fError?: (error: any) => void): Promise<any>;
+  resendApproveEmail(fError?: (error: any) => void): Promise<any>;
   changeUserStatus(request?: ChangeUserStatusRequest, fError?: (error: any) => void): Promise<ResponseUser|null>;
   getIdentityServiceStatus(fError?: (error: any) => void): Promise<ResponseServices|null>;
   putIdentityServiceStatus(service: ResponseServices, fError?: (error: any) => void): Promise<ResponseServices|null>;
@@ -36,13 +38,13 @@ export interface ObjectivesListApi {
   getObjectiveList(fError?: (error: any) => void): Promise<Objective[]|null>;
   getObjectiveItemList(objectiveId: string, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>;
   getObjective(objectiveId: string, fError?: (error: any) => void): Promise<Objective|null>;
-  putObjectives(objectives: Objective[], fError?: (error: any) => void): Promise<Objective[]|null>;
-  deleteObjectives(objective: Objective[], fError?: (error: any) => void): Promise<Objective|null>;
+  putObjectives(objectives: Objective[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<Objective[]|null>;
+  deleteObjectives(objective: Objective[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<Objective[]|null>;
   getObjectiveItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<ObjectiveItem|null>;
-  putObjectiveItems(item: ObjectiveItem[], fError?: (error: any) => void): Promise<ObjectiveItem[]|null>;
-  deleteObjectiveItem(item: ObjectiveItem, fError?: (error: any) => void): Promise<ObjectiveItem|null>;
-  syncObjectivesList(objectivesList: ObjectiveList, fError?: (error: any) => void): Promise<ObjectiveList>;
-  backupData(fError?: (error: any) => void): Promise<boolean>;
+  putObjectiveItems(item: ObjectiveItem[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>;
+  deleteObjectiveItems(item: ObjectiveItem[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>;
+  syncObjectivesList(objectivesList: ObjectivesList, fError?: (error: any) => void): Promise<ObjectivesList>;
+  backupData(fError?: (error: any) => void): Promise<{success: boolean}>;
   getBackupDataList(fError?: (error: any) => void): Promise<string[]>;
   generateGetPresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>;
   generatePutPresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>;
@@ -59,6 +61,7 @@ export interface S3Api {
 
 export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) => {
   const { popMessage } = useLogContext();
+  const { logout } = useUserContext();
 
   const request = async (url: string, endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<any> => {
     const headers: {[key: string]: string} = {};
@@ -66,23 +69,18 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
     const token = storage.getToken();
     if(token !== null) headers['Authorization'] = "Bearer " + token;
-    try {
-        const payload: RequestInit = {
-        headers,
-        method,
-        mode: 'cors',
-        body,
-        };
-        const response = await fetch(url + endpoint, payload);
-        return response;
-    } catch (error) {
-        if(fError) fError(error);
-        else {
-          console.error("Untreated error...", { autoClose: 5000 });
-        }
-        return undefined;
-    }
-  }
+
+    const payload: RequestInit = {
+    headers,
+    method,
+    mode: 'cors',
+    body,
+    };
+
+    const response:globalThis.Response = await fetch(url + endpoint, payload);
+    return response;
+  };
+
   const IDENTITY_URLS = {
     BR: process.env.REACT_APP_IDENTITY_URL_BR!,
     FR: process.env.REACT_APP_IDENTITY_URL_FR!,
@@ -128,19 +126,22 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
   const identityApi = {
     async isUp(body?: string, fError?: (error: any) => void): Promise<any>{
-      return this.requestIdentity('/IsUp', 'GET', body, fError);
+      return await this.requestIdentity('/IsUp', 'GET', body, fError);
     },
     async login(body?: string, fError?: (error: any) => void): Promise<LoginModel|null>{
-      return this.requestIdentity<LoginModel|null>('/Login', 'POST', body, fError);
+      return await this.requestIdentity<LoginModel|null>('/Login', 'POST', body, fError);
     },
     async getUser(body?: string, fError?: (error: any) => void): Promise<any>{
-      return this.requestIdentity('/GetUser', 'GET', body, fError);
+      return await this.requestIdentity('/GetUser', 'GET', body, fError);
     },
     async getUserList(fError?: (error: any) => void): Promise<ResponseUser[]|null>{
       return await this.requestIdentity<ResponseUser[]>('/GetUserList', 'GET', undefined, fError);
     },
     async askToCreate(body?: string, fError?: (error: any) => void): Promise<any>{
-      return this.requestIdentity('/AskToCreate', 'POST', body, fError);
+      return await this.requestIdentity('/AskToCreate', 'POST', body, fError);
+    },
+    async resendApproveEmail(fError?: (error: any) => void): Promise<any>{
+      return await this.requestIdentity('/ResendApproveEmail', 'GET', undefined, fError);
     },
     async changeUserStatus(request?: ChangeUserStatusRequest, fError?: (error: any) => void): Promise<ResponseUser|null>{
       return await this.requestIdentity<ResponseUser>('/ChangeUserStatus', 'POST', JSON.stringify(request), fError);
@@ -157,98 +158,143 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     async requestIdentity<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<T|null>{
       try {
         const resp = await request(await getIdentityUrl(), endpoint, method, body, fError);
-
         if(resp){
           const respData: Response<T> = await resp.json();
-
-          if(!resp.ok) popMessage(respData.message?? 'There was a problem with the server. No explanation', MessageType.Error)
-          if(respData.data){
+          if(resp.ok && respData.data){
             return respData.data;
-          }
-          else{
-            if(fError) {
-              log.err(respData.message);
-              fError(respData);
+          }else{
+            if(resp.status === 500){
+              log.r('Response: ', resp);
             }
-            //alert(respData.Message);
+            else if(respData.message){
+              popMessage(respData.message, MessageType.Error);
+            }
+            else{
+              popMessage('No info error.', MessageType.Error);
+            }
+
+            return null;
           }
         }
       } catch (err) {
         log.err('Error: ', endpoint, err);
+        return null;
       }
       return null;
     },
   }
 
   const objectiveslistApi = {
+    splitArr<T>(arr: T[], chunkSize: number): T[][] { 
+      const parts: T[][] = [];
+      for (let i = 0; i < arr.length; i += chunkSize){ 
+          parts.push(arr.slice(i, i + chunkSize)); 
+      } 
+      return parts; 
+    },
+    async splitRequestObjectivesList<T>(endpoint: string, method: string, data: T[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<T[]|null> { 
+      const splitItems: T[][] = this.splitArr<T>(data, 10);
+      let returnList:T[] = [];
+
+      const amountOfLists = splitItems.length;
+      let startListSended = 0;
+      if(splitCallback !== undefined && amountOfLists > 1) splitCallback(startListSended.toString()+'/'+amountOfLists.toString())
+
+      for (let i = 0; i < splitItems.length; i++) {
+        const split = splitItems[i];
+        const v = await this.requestObjectivesList<T[]>(endpoint, method, split, fError);
+        if(v !== null) {
+          startListSended++;
+          if(splitCallback !== undefined && amountOfLists > 1) splitCallback(startListSended.toString()+'/'+amountOfLists.toString());
+
+          if(Array.isArray(v))
+            returnList.push(...v);
+          else
+            returnList.push(v);
+        }
+        else {
+          return null;
+        }
+      } 
+      const rtn = !returnList ||returnList.length === 0?null:returnList; 
+      return rtn;
+    },
     async isUpObjective(fError?: (error: any) => void): Promise<any>{
-      return this.requestObjectivesList('/IsUpObjective', 'GET', undefined, fError);
+      return await this.requestObjectivesList('/IsUpObjective', 'GET', undefined, fError);
     },
     async getObjectiveList(fError?: (error: any) => void): Promise<Objective[]|null>{
-      return this.requestObjectivesList<Objective[]>('/GetObjectiveList', 'GET', undefined, fError);
+      return await this.requestObjectivesList<Objective[]>('/GetObjectiveList', 'GET', undefined, fError);
     },
     async getObjectiveItemList(objectiveId: string, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>{
-      return this.requestObjectivesList<ObjectiveItem[]>('/GetObjectiveItemList', 'POST', JSON.stringify({ObjectiveId: objectiveId}), fError);
+      return await this.requestObjectivesList<ObjectiveItem[]>('/GetObjectiveItemList', 'POST', {ObjectiveId: objectiveId}, fError);
     },
     async getObjective(objectiveId: string, fError?: (error: any) => void): Promise<Objective|null>{
-      return this.requestObjectivesList<Objective>('/GetObjective', 'POST', JSON.stringify({ObjectiveId: objectiveId}), fError);
+      return await this.requestObjectivesList<Objective>('/GetObjective', 'POST', {ObjectiveId: objectiveId}, fError);
     },
-    async putObjectives(objectives: Objective[], fError?: (error: any) => void): Promise<Objective[]|null>{
-      return this.requestObjectivesList<Objective[]>('/PutObjectives', 'PUT', JSON.stringify(objectives), fError);
+    async putObjectives(objectives: Objective[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<Objective[]|null>{
+      const rtn = await this.splitRequestObjectivesList<Objective>('/PutObjectives', 'PUT', objectives, splitCallback, fError);
+      return rtn;
     },
-    async deleteObjectives(objective: Objective[], fError?: (error: any) => void): Promise<Objective|null>{
-      return this.requestObjectivesList<Objective>('/DeleteObjectives', 'DELETE', JSON.stringify(objective), fError);
+    async deleteObjectives(objectives: Objective[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<Objective[]|null>{
+      return await this.splitRequestObjectivesList<Objective>('/DeleteObjectives', 'DELETE', objectives, splitCallback, fError);
     },
     async getObjectiveItem(userIdCategoryId: string, itemId: string, fError?: () => void): Promise<ObjectiveItem|null>{
-      return this.requestObjectivesList<ObjectiveItem>('/GetObjectiveItem', 'POST', JSON.stringify({UserIdCategoryId: userIdCategoryId, ItemId: itemId}), fError);
+      return await this.requestObjectivesList<ObjectiveItem>('/GetObjectiveItem', 'POST', {UserIdCategoryId: userIdCategoryId, ItemId: itemId}, fError);
     },
-    async putObjectiveItems(item: ObjectiveItem[], fError?: (error: any) => void): Promise<ObjectiveItem[]|null>{
-      return this.requestObjectivesList<ObjectiveItem[]>('/PutObjectiveItems', 'PUT', JSON.stringify(item), fError);
+    async putObjectiveItems(items: ObjectiveItem[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>{
+      return await this.splitRequestObjectivesList<ObjectiveItem>('/PutObjectiveItems', 'PUT', items, splitCallback, fError);
     },
-    async deleteObjectiveItem(item: ObjectiveItem, fError?: (error: any) => void): Promise<ObjectiveItem|null>{
-      return this.requestObjectivesList<ObjectiveItem>('/DeleteObjectiveItem', 'DELETE', JSON.stringify(item), fError);
+    async deleteObjectiveItems(item: ObjectiveItem[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<ObjectiveItem[]|null>{
+      return await this.splitRequestObjectivesList<ObjectiveItem>('/DeleteObjectiveItems', 'DELETE', item, splitCallback, fError);
     },
-    async syncObjectivesList(objectivesList: ObjectiveList, fError?: (error: any) => void): Promise<ObjectiveList>{
-      return this.requestObjectivesList<ObjectiveList>('/SyncObjectivesList', 'PUT', JSON.stringify(objectivesList), fError);
+    async syncObjectivesList(objectivesList: ObjectivesList, fError?: (error: any) => void): Promise<ObjectivesList>{
+      return await this.requestObjectivesList<ObjectivesList>('/SyncObjectivesList', 'PUT', objectivesList, fError);
     },
-    async backupData(fError?: (error: any) => void): Promise<boolean>{
-      return this.requestObjectivesList<ObjectiveList>('/BackupData', 'GET', undefined, fError);
+    async backupData(fError?: (error: any) => void): Promise<{success: boolean}>{
+      return await this.requestObjectivesList<ObjectivesList>('/BackupData', 'GET', undefined, fError);
     },
     async getBackupDataList(fError?: (error: any) => void): Promise<string[]>{
-      return this.requestObjectivesList<string[]>('/GetBackupDataList', 'GET', undefined, fError);
+      return await this.requestObjectivesList<string[]>('/GetBackupDataList', 'GET', undefined, fError);
     },
     async generateGetPresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>{
-      return this.requestObjectivesList<ImageInfo>('/GenerateGetPresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);
+      return await this.requestObjectivesList<ImageInfo>('/GenerateGetPresignedUrl', 'PUT', fileInfo, fError);
     },
     async generatePutPresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>{
-      return this.requestObjectivesList<ImageInfo>('/GeneratePutPresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);
+      return await this.requestObjectivesList<ImageInfo>('/GeneratePutPresignedUrl', 'PUT', fileInfo, fError);
     },
     async generateDeletePresignedUrl(fileInfo: ImageInfo, fError?: (error: any) => void): Promise<PresignedUrl>{
-      return this.requestObjectivesList<ImageInfo>('/GenerateDeletePresignedUrl', 'PUT', JSON.stringify(fileInfo), fError);
+      return await this.requestObjectivesList<ImageInfo>('/GenerateDeletePresignedUrl', 'PUT', fileInfo, fError);
     },
     async getDeviceData(deviceId: string, fError?: (error: any) => void): Promise<DeviceData[]>{
-      return this.requestObjectivesList<DeviceData[]>('/GetDeviceData', 'POST', JSON.stringify({DeviceId: deviceId}), fError);
+      return await this.requestObjectivesList<DeviceData[]>('/GetDeviceData', 'POST', {DeviceId: deviceId}, fError);
     },
-    async requestObjectivesList<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<any>{
+    async requestObjectivesList<T>(endpoint: string, method: string, body?: any, fError?: (error: any) => void): Promise<any>{
       try {
-        const resp = await request(await getObjectivelistUrl(), endpoint, method, body, fError);
-  
-        if(resp){
-          const respData: Response<T> = await resp.json();
-          if(respData.data){
-            return respData.data;
+        const resp = await request(await getObjectivelistUrl(), endpoint, method, JSON.stringify(body), fError);
+        
+        const respData: Response<T> = await resp.json();
+        if(resp.ok && respData.data){
+          return respData.data;
+        }else{
+          if(resp.status === 401){
+            popMessage('Unauthorized, try to Logoff and Login again...', MessageType.Error);
+            logout();
+          }
+          if(resp.status === 500){
+            log.r('Response: ', resp);
+          }
+          else if(respData.message){
+            const words = respData.message.split(/\s+/).length;
+            const displayTime = Math.max(5, words * 0.8);
+            // popMessage(respData.message, MessageType.Error, displayTime);
           }
           else{
-            if(fError) {
-              log.err(respData.message);
-              fError(respData);
-            }
-            //alert(respData.Message);
+            popMessage('No info error.', MessageType.Error, 5);
           }
         }
       } catch (err) {
+        log.err('Error: ', endpoint, err);
         if(fError) fError(err);
-        else log.err('Error: ', endpoint, err);
       }
       return null;
     },

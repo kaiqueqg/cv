@@ -26,6 +26,15 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     loadSelectedTags();
   }, []);
 
+  const logout = async () => {
+    storage.deleteToken();
+    storage.deleteUser();
+    storage.deleteAvailableTags();
+    storage.deleteSelectedTags();
+    storage.deleteFirstLogin();
+    setUser(null);
+  };
+
   const loadUserPrefs = async () => {
     const userPrefs = await storage.getUserPrefs();
   };
@@ -114,6 +123,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       value={{
         user,
         setUser,
+        logout,
         prefs,
         setPrefs,
         // firstLogin,
@@ -140,6 +150,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 interface UserContextType {
   user: ResponseUser|null,
   setUser: React.Dispatch<React.SetStateAction<ResponseUser|null>>,
+  logout: () => void,
   prefs: UserPrefs,
   setPrefs: React.Dispatch<React.SetStateAction<UserPrefs>>,
   // firstLogin: boolean,

@@ -47,7 +47,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(wait);
+    const data = await objectiveslistApi.deleteObjectiveItems([wait]);
 
     if(data){
       putItemsInDisplay([wait], true);

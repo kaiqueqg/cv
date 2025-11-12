@@ -14,7 +14,7 @@ const SiteMessagesView = (props: SiteMessagesViewProps) => {
   const getMessageList = () => {
     return(
       messageList.map((item)=>{
-        return <SiteMessageView message={item}></SiteMessageView>
+        return <SiteMessageView key={item.id} message={item}></SiteMessageView>
       })
     )
   }

@@ -69,10 +69,10 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
 
     try {
       const newItem: Medicine = { ...medicine, IsChecked: !medicine.IsChecked, LastModified: new Date().toISOString()};
-      putItemsInDisplay([newItem]);
       const data = await objectiveslistApi.putObjectiveItems([newItem]);
-
+      
       if(data){
+        putItemsInDisplay([newItem]);
         setIsSavingIsChecked(false);
       }
     } catch (err) {
@@ -96,7 +96,6 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
       || newItem.Unit !== medicine.Unit?.trim()
       || newItem.Pos !== medicine.Pos
       || newItem.Purpose !== medicine.Purpose?.trim()) {
-      setIsEditingMedicine(true);
 
       const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
@@ -104,10 +103,6 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
         setIsEditingMedicine(false);
         putItemsInDisplay(data);
       }
-
-      setTimeout(() => {
-        setIsEditingMedicine(false);
-      }, 200); 
     }
     else{
       setIsEditingMedicine(false);
@@ -125,7 +120,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(medicine);
+    const data = await objectiveslistApi.deleteObjectiveItems([medicine]);
 
     if(data){
       putItemsInDisplay([medicine], true);

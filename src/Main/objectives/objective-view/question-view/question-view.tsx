@@ -102,7 +102,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(question);
+    const data = await objectiveslistApi.deleteObjectiveItems([question]);
 
     if(data){
       putItemsInDisplay([question], true);

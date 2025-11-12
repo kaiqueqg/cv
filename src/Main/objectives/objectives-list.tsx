@@ -4,7 +4,7 @@ import storage from "../../storage/storage";
 import './objectives-list.scss';
 // import { objectiveslistApi } from "../../requests-sdk/requests-sdk";
 import log from "../../log/log";
-import { Item, Objective, ObjectiveList, Question, Step, Wait } from "../../TypesObjectives";
+import { Item, Objective, ObjectivesList as ObjectivesListType, Question, Step, Wait } from "../../TypesObjectives";
 import { ObjectiveView } from "./objective-view/objective-view";
 import Loading from "../../loading/loading";
 import ObjectiveHideView from "./objective-hide-view/objective-hide-view";
@@ -359,17 +359,30 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const backupData = async () => {
     setIsBackingUpData(true);
-    const data = await objectiveslistApi.backupData((error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data:{success: boolean} = await objectiveslistApi.backupData((error:any) => popMessage(error.Message, MessageType.Error, 10));
     console.log(data);
-    if(data){
-      
+    if(data && data.success){
+      popMessage('Backup done: ' + data.success);
+    }
+    else{
+      popMessage('Some unknown error...');
     }
     setIsBackingUpData(false);
+  }
+
+  const getSideMenuTitle = (): string => {
+    if(currentSidePanelView === SidePanelView.Archived){
+      return 'ARCHIVED OBJECTIVES';
+    }
+    else{
+      return 'OBJECTIVES';
+    }
   }
 
   const getSideMenu = () => {
     return(
       <div className='objectivesSidePanel'>
+        <div className={'objectivesSidePanelTitle'}>{getSideMenuTitle()}</div>
         <div className='objectivesSidePanelButtons'>
           <input
             type="file"
@@ -381,7 +394,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           />
           <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isBlack={false}/>
           <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isBlack={false}/>
-          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} hide={objectives.length < 2} isBlack={false}/>}
+          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} disable={objectives.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isBlack={false}/>}
           {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={false}/>}
           {(isEditingPos && !isEndingPos) && 
             ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
@@ -391,7 +404,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           }
           {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isBlack={false}/>}
           {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isBlack={false}/>}
-          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/plus-one.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isBlack={false}/>}
+          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isBlack={false}/>}
         </div>
         {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>}
         {currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}
@@ -414,7 +427,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           reader.onload = (e) => {
             try {
               const text = e.target?.result as string; // Força para string
-              const newObjectiveList:ObjectiveList = JSON.parse(text) as ObjectiveList;
+              const newObjectiveList:ObjectivesListType = JSON.parse(text) as ObjectivesListType;
               uploadBackupData(newObjectiveList, file.name);
             } catch (error) {
               console.error("Erro ao parsear JSON:", error);
@@ -428,7 +441,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   };
 
-  const uploadBackupData = async (data: ObjectiveList, fileName: string) => {
+  const uploadBackupData = async (data: ObjectivesListType, fileName: string) => {
     setIsUpdatingObjectives(true);
     await objectiveslistApi.syncObjectivesList(data, (error:any) => popMessage(error.Message, MessageType.Error, 10));
     setIsUpdatingObjectives(false);
@@ -450,7 +463,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         </div>
         :
         (<div className='objectivesListContainer'>
-          <div className={'objectivesListSideContainer'}> 
+          <div className={'objectivesListSideContainer ' + ((currentSidePanelView === SidePanelView.Archived)?'objectivesListSideContainerArchived':'')}> 
             {getSideMenu()}
           </div>
           <div className='objectivesListMainAndTagsContainer'>

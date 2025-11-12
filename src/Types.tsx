@@ -9,10 +9,24 @@ export interface LangText{
 export interface ResponseUser{
   Username: string,
   Email: string,
-  Status: string,
-  Role: string,
+  Status: UserStatus,
+  Role: UserRoles,
   CreateAt: string,
   FCMToken?: string,
+}
+
+export enum UserRoles{
+  Admin = 'Admin',
+  Basic = 'Basic',
+  Guest = 'Guest',
+  EmailToken = 'EmailToken',
+  TokenTester = 'TokenTester',
+}
+
+export enum UserStatus{
+  Active = 'Active',
+  WaitingApproval = 'WaitingApproval',
+  Refused = 'Refused',
 }
 
 export interface ResponseServices{

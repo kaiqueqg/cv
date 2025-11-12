@@ -64,19 +64,31 @@ const UserView: React.FC<UserViewProps> = (props) => {
     navigate('/objectiveslist')
   }
 
+  const resendApproveEmail = async () => {
+    console.log('resendApproveEmail');
+    const response = await identityApi.resendApproveEmail();
+    console.log(response);
+  }
+
   const activateUser = async (user: ResponseUser) => {
+    setIsGettingUserList(true);
     const respUser = await identityApi.changeUserStatus({Email: user.Email, Status: 'Active'});
     await getUserList();
+    setIsGettingUserList(false);
   }
 
   const refuseUser = async (user: ResponseUser) => {
+    setIsGettingUserList(true);
     const respUser = await identityApi.changeUserStatus({Email: user.Email, Status: 'Refused'});
     await getUserList();
+    setIsGettingUserList(false);
   }
 
   const waitingApproval = async (user: ResponseUser) => {
+    setIsGettingUserList(true);
     const respUser = await identityApi.changeUserStatus({Email: user.Email, Status: 'WaitingApproval'});
     await getUserList();
+    setIsGettingUserList(false);
   }
 
   const changeIdentityStatus = async (up: boolean) => {
@@ -111,7 +123,6 @@ const UserView: React.FC<UserViewProps> = (props) => {
 
   const emergencyStop = async () => {
     const result = await identityApi.getEmergencyStop();
-    log.r(result);
   }
 
   return(
@@ -135,6 +146,7 @@ const UserView: React.FC<UserViewProps> = (props) => {
       <div className="logout-row">
         <button className="btn-base btn-logout" type="button"  onClick={logout}>Logout</button>
         <button className="btn-base btn-togrocerylist" type="button"  onClick={changeToObjectivesList}>To Objectives List</button>
+        {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
       </div>
     </div>
 

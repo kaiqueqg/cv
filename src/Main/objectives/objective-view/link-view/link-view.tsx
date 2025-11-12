@@ -106,7 +106,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(link);
+    const data = await objectiveslistApi.deleteObjectiveItems([link]);
 
     if(data){
       putItemsInDisplay([link], true);

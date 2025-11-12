@@ -1,4 +1,4 @@
-export interface ObjectiveList{
+export interface ObjectivesList{
   Objectives?: Objective[],
   Items?: Item[],
   DeleteObjectives?: Objective[],

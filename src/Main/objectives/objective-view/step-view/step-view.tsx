@@ -51,10 +51,10 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
     try {
       const newItem: Step = { ...step, Done: !step.Done, LastModified: new Date().toISOString()};
-      putItemsInDisplay([newItem]);
       const data = await objectiveslistApi.putObjectiveItems([newItem]);
-
+      
       if(data){
+        putItemsInDisplay([newItem]);
         setIsSavingDone(false);
       }
     } catch (err) {
@@ -85,7 +85,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
   const deleteItem = async () => {
     setIsDeleting(true);
-    const data = await objectiveslistApi.deleteObjectiveItem(step);
+    const data = await objectiveslistApi.deleteObjectiveItems([step]);
 
     if(data){
       setIsEditingTitle(false);
@@ -161,7 +161,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
       return <PressImage src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'} isBlack={props.isLoadingBlack}/>
     }
     else{
-      return <></>//<img className='stepImage' onClick={() => {if(!isEditingPos)onChangeImportance();}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}></img>;
+      return <></>
     }
   }
 
@@ -171,10 +171,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
     if(step.Done)
       return <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'} isLoading={isSavingDone}/>;
     else{
-      if(step.AutoDestroy)
-        return <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/explode' + itemTintColor(theme) + '.png'} isLoading={isSavingDone} confirm={true}/>
-      else 
-        return <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone}/>
+      return <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone} confirm={step.AutoDestroy}/>
     }
   }
 
@@ -183,7 +180,6 @@ export const StepView: React.FC<StepViewProps> = (props) => {
       return(
         <div className={'stepAutoDestroyContainer' + getItemScssColor(theme, SCSSItemType.BORDERCOLOR)} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}>
           <PressImage isBlack={props.isLoadingBlack} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/explode'+itemTintColor(theme)+'.png'}/>
-          {/* <div className={'stepAutoDestroyText'}>Destroy on done</div> */}
         </div>
       )
     }
@@ -191,7 +187,6 @@ export const StepView: React.FC<StepViewProps> = (props) => {
       return(
         <div className={'stepAutoDestroyContainer' + getItemScssColor(theme, SCSSItemType.BORDERCOLOR)} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}>
           <PressImage isBlack={props.isLoadingBlack} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/explode-grey.png'}/>
-          {/* <div className={'stepAutoDestroyText'}>Don't destroy on done</div> */}
         </div>
       )
     }

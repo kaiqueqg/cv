@@ -8,7 +8,8 @@ $bor: false;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  min-width: 450px;
+  max-width: 1000px;
   padding: 10px;
   margin: 2px;
 
@@ -16,6 +17,14 @@ $bor: false;
   border-width: 1px;
   border-color: black;
   border-style: solid;
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: dashed;
+    border-color: red;
+    border-radius: 5px;
+  }
+  
 }
 
 .pinImage{
@@ -57,22 +66,28 @@ $bor: false;
   color: beige;
   min-height: 40px;
   width: 100%;
+  min-width: 100px;
 
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: rgba(255, 255, 255, 0);
-  border-style: solid;
+  // border-radius: 5px;
+  // border-width: 1px;
+  // border-color: $transparent;
+  // border-style: solid;
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: rgb(125, 255, 125);
+    border-style: solid;
+  }
 }
 
 .objTopMenu{
   display: flex;
   align-items: center;
-  color: beige;
-  flex-wrap: nowrap;
   justify-content: space-around;
+  color: beige;
+  flex-wrap: wrap;
   min-height: 40px;
   width: 100%;
-  flex-wrap: wrap;
   
   @media(min-width: 700px){
     flex-wrap: nowrap;
@@ -85,21 +100,42 @@ $bor: false;
   }
 }
 
+.objTopMenuBellow700px{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  min-height: 40px;
+  width: 100%;
+  padding: 15px 0px 5px 0px;
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(55, 169, 189);
+    border-radius: 5px;
+  }
+  
+}
+
 .objTitle{
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 40px;
+  width: 100%;
+  min-height: 39px;
+  margin: 0px 5px;
+
   font-weight: bold;
   word-wrap: 'break-word';
   overflow-wrap: 'break-word';
+  overflow: hidden;
   white-space: 'normal';
-  width: 100%;
 
   @if($bor) {
     border-width: 1px;
-    border-color: red;
+    border-color: rgb(185, 112, 112);
     border-style: solid;
   }
 }
@@ -109,7 +145,8 @@ $bor: false;
   justify-content: space-around;
   align-items: center;
   flex-direction: row;
-  width: 100%;
+  min-height: 40px;
+  padding: 0px 15px 0px 5px;
   
   @media(min-width: 700px){
     justify-content: flex-start;
@@ -118,7 +155,7 @@ $bor: false;
   @if($bor) {
     border-width: 1px;
     border-color: yellow;
-    border-style: solid;
+    border-style: dashed;
   }
 }
 
@@ -127,7 +164,8 @@ $bor: false;
   justify-content: space-around;
   align-items: center;
   flex-direction: row;
-  width: 100%;
+  min-height: 40px;
+  padding: 0px 5px 0px 15px;
   
   @media(min-width: 700px){
     justify-content: flex-end;
@@ -184,6 +222,14 @@ $bor: false;
   @media(min-width: 700px){
     flex-direction: row;
   }
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: red;
+    border-radius: 5px;
+  }
+  
 }
 
 .objectiveNewItemContainer {

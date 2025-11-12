@@ -2,10 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
 import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House } from "../../../TypesObjectives";
-// import log from "../../../log/log";
-// import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";
 import Loading from "../../../loading/loading";
-// import WaitView from "./WaitView/WaitView";
 import TagsView from "./tags-view/tags-view";
 import { useLogContext } from "../../../contexts/log-context";
 
@@ -43,7 +40,6 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const [items, setItems] = useState<(Item)[]>([]);
   const [itemSearchToShow, setItemsSearchToShow] = useState<string[]>([]);
   const [newTitle, setNewTitle] = useState<string>(props.objective.Title);
-  const [isHovering, setIsHovering] = useState<boolean>(false);
   const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -56,18 +52,29 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   const [isAddingNewItem, setIsAddingNewItem] = useState<boolean>(false);
   const [amountOfItemsToAdd, setAmountOfItemsToAdd] = useState<number>(1);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
+
   const [isChangingColor, setIsChangingColor] = useState<boolean>(false);
   const [isChangingTags, setIsChangingTags] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [isObjectiveMenuOpen, setIsObjectiveMenuOpen] = useState<boolean>(false);
 
+  const [shouldFoldAll, setShouldFoldAll] = useState<boolean>(false);
+  const [isChangingFoldingUnfolding, setIsChangingFoldingUnfolding] = useState<boolean>(false);
+  const [hasADividerToFold, setHasADividerToFold] = useState<boolean>(false);
+
   //menu loadings
   const [isLoadingChangingColor, setIsLoadingChangingColor] = useState<boolean>(false);
   const [isLoadingChangingTags, setIsLoadingChangingTags] = useState<boolean>(false);
-  const [isLoadingShorting, setLoadingIsShorting] = useState<boolean>(false);
   const [isLoadingIsShowingItems, setIsLoadingIsShowingItems] = useState<boolean>(false);
   const [isLoadingEndingChangingPos, setLoadingIsEndingChangingPos] = useState<boolean>(false);
   const [isLoadingAddingNewItem, setIsLoadingAddingNewItem] = useState<boolean>(false);
+  const [isLoadingShorting, setLoadingIsShorting] = useState<boolean>(false);
+
+  //Partial infos
+  const [addingNewItemPartialInfo, setAddingNewItemPartialInfo] = useState<string>('');
+  const [shortingPartialInfo, setShortingPartialInfo] = useState<string>('');
+  const [changingPosPartialInfo, setChangingPosPartialInfo] = useState<string>('');
+  const [foldingUnfoldingDividersPartialInfo, setFoldingUnfoldingDividersPartialInfo] = useState<string>('');
 
   //Changing pos
   const [isEditingPos, setIsEditingPos] = useState<boolean>(false);
@@ -92,11 +99,23 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       setIsBelow700px(window.innerWidth < 700);
     };
 
+    
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    setHasADividerToFold(items.some((item) => {
+      if(item.Type === ItemType.Divider){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }));
+  }, [items]);
 
   const downloadItemList = async () => {
     setIsRequestingItems(true);
@@ -116,19 +135,19 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsRequestingItems(false);
   }
 
-  const putItemsInDisplay = async (items?: Item[], remove?: boolean) => {
-  if (items && items.length > 0) {
+  const putItemsInDisplay = async (pItems?: Item[], remove?: boolean) => {
+  if (pItems && pItems.length > 0) {
     setItems((prevItems) => {
       let newItems: Item[] = [...prevItems];
 
       if (remove) {
         // Remove all matching items
         newItems = newItems.filter(
-          (i: Item) => !items.some((r: Item) => r.ItemId === i.ItemId)
+          (i: Item) => !pItems.some((r: Item) => r.ItemId === i.ItemId)
         );
       } else {
         // Add or update each item
-        for (const item of items) {
+        for (const item of pItems) {
           const existingIndex = newItems.findIndex(
             (i: Item) => i.ItemId === item.ItemId
           );
@@ -150,35 +169,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 };
 
-  // const putItemsInDisplay = async (item?: Item[], remove?: boolean) => {
-  //   if(item) {
-  //     let sorted: Item[] = [];
-  //     setItems((prevItems) => {
-  //       let newItems = [];
-  //       if (remove) {
-  //         newItems = prevItems.filter((i: Item) => i.ItemId !== item.ItemId);
-  //       } else {
-  //         const itemInList = prevItems.find((i: Item) => i.ItemId === item.ItemId);
-  //         if (itemInList) {
-  //           newItems = prevItems.map((i: Item) => i.ItemId === item.ItemId ? item : i);
-  //         } else {
-  //           newItems = [...prevItems, item];
-  //         }
-  //       }
-  //       sorted = newItems.sort((a, b) => a.Pos - b.Pos);
-  //       return sorted;
-  //     });
-  //   } else {
-  //     if(objective.IsShowing) {
-  //       await downloadItemList();
-  //     }
-  //   }
-  // }
-
   const deleteObjective = async () => {   
     setIsDeleting(true);
     try {
-      const data = await objectiveslistApi.deleteObjectives([objective], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.deleteObjectives([objective]);
   
       if(data){
         putObjective(objective, true);
@@ -209,18 +203,14 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
     if(newObjective.Title !== objective.Title) {
       const data = await objectiveslistApi.putObjectives([newObjective]);
-
       if(data){
         putObjective(newObjective);
         setIsEditingTitle(false);
       }
-
-      setTimeout(() => {
-        setIsSavingTitle(false);
-      }, 200); 
     }
 
     setIsSavingTitle(false);
+    setIsEditingTitle(false);
   }
 
   const cancelEdit = () => {
@@ -237,11 +227,11 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     const newTags = tagList.filter((t) => !objective.Tags.includes(t));
 
     if(newObjective.Tags !== objective.Tags) {
-      putObjective(newObjective);
-      putSelectedTags(newTags);
       const data = await objectiveslistApi.putObjectives([newObjective]);
 
       if(data){
+        putObjective(newObjective);
+        putSelectedTags(newTags);
       }
     }
 
@@ -277,20 +267,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     if(isChangingColor) setIsChangingColor(false);
   }
 
-  const addNewItem = async (addItems: Item[], pos?:number) => {
+  const addNewItems = async (addItems: Item[], pos?:number) => {
     let sending:Item[] = [];
 
     //^ With pos
-    // if(pos !== undefined && pos !== null) {
-    //   const newList = items.filter((i: Item) => !itemsSelected.includes(i));
-    //   const after = newList.slice(pos+1);
-
-    //   let adjustedList = [...addItems, ...after];
-
-    //   for (let i = pos; i < pos + adjustedList.length; i++) {
-    //     sending.push({...adjustedList[i - pos], Pos: i, LastModified: new Date().toISOString() });
-    //   }
-    // }
     if (pos !== undefined && pos !== null) {
       const newList = items.filter((i: Item) => !itemsSelected.includes(i));
 
@@ -315,10 +295,14 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       }
     }
     
-    const data = await objectiveslistApi.putObjectiveItems(sending);
+    const data = await objectiveslistApi.putObjectiveItems(sending, (value: string) =>{
+      setAddingNewItemPartialInfo(value);
+    });
     if(data){
       putItemsInDisplay(data);
     }
+
+    setAddingNewItemPartialInfo('');
     setIsLoadingAddingNewItem(false);
   }
 
@@ -377,7 +361,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     for(let i = 0; i < finalAmount; i++){
       itemList.push(typeItem);
     }
-    await addNewItem(itemList, pos)
+    await addNewItems(itemList, pos)
   }
 
   const onChangeObjectiveIsArchived = async () => {
@@ -441,6 +425,28 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsChangingTags(v??!isChangingTags);
   }
 
+  const onFoldUnfoldDividers = async () => {
+    setIsChangingFoldingUnfolding(true);
+
+    const newDividers:Divider[] = items.filter((item: Item) => {
+      return item.Type === ItemType.Divider && (item as Divider).IsOpen === shouldFoldAll;
+      }).map((item) => {
+      return {...(item as Divider), IsOpen:!shouldFoldAll};
+    });
+
+    const data = await objectiveslistApi.putObjectiveItems(newDividers, (value: string) => {
+      log.r(value)
+      setFoldingUnfoldingDividersPartialInfo(value);
+    });
+    if(data){
+      putItemsInDisplay(newDividers);
+      setShouldFoldAll(!shouldFoldAll);
+    }
+
+    setFoldingUnfoldingDividersPartialInfo('');
+    setIsChangingFoldingUnfolding(false);
+  }
+
   const changeObjColor = async (theme: string) => {
     setIsObjectiveMenuOpen(false);
     setIsChangingColor(false);
@@ -448,10 +454,10 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     setIsLoadingChangingColor(true);
     try {
       const newObj = {...objective, Theme: theme, LastModified: new Date().toISOString()};
-      putObjective(newObj);
       const data = await objectiveslistApi.putObjectives([newObj]);
-  
+      
       if(data){
+        putObjective(newObj);
       }
       else{
       }
@@ -555,12 +561,13 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       IsShowingCheckedExercise: !objective.IsShowingCheckedGrocery,
       IsShowingCheckedMedicine: !objective.IsShowingCheckedGrocery,
       IsShowingCheckedStep: !objective.IsShowingCheckedGrocery, //for now, to all be the same
-      LastModified: new Date().toISOString()};
+      LastModified: new Date().toISOString()
+    };
 
-    putObjective(newObjective);
     const data = await objectiveslistApi.putObjectives([newObjective]);
-
+      
     if(data){
+      putObjective(newObjective);
     }
 
     setIsLoadingIsShowingItems(false);
@@ -603,16 +610,9 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
 
     const newList = items.filter((i: Item) => !itemsSelected.includes(i));
 
-    // log.g('newList');
-    // log.ig(...newList);
     const index = newList.indexOf(itemTo);
-    // log.w(index);
     const before = newList.slice(0, index+1);
-    // log.r('before');
-    // log.ir(...before);
     const after = newList.slice(index+1);
-    // log.b('after');
-    // log.ib(...after);
 
     let ajustedList = [...before, ...itemsSelected, ...after];
 
@@ -622,18 +622,19 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
     
     try{
-      // log.g('finalList')
-      // log.ig(...finalList)
-      setItems(finalList);
-      const data = await objectiveslistApi.putObjectiveItems(finalList);
+      const data = await objectiveslistApi.putObjectiveItems(finalList, (value: string) =>{
+        setChangingPosPartialInfo(value);
+      });
       if(data) {
+        setItems(finalList);
       }
       else{
-        downloadItemList(); //! in case failed, reload items
+        downloadItemList(); //// in case failed, reload items
       }
     }
     catch(err){}
 
+    setChangingPosPartialInfo('');
     setLoadingIsEndingChangingPos(false);
   }
 
@@ -728,7 +729,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     }
   }
 
-  const orderItems = async () => {
+  const orderItemsAtoZ = async () => {
+    setLoadingIsShorting(true);
     let itemsOrdered:Item[] = sortItemsAlphabetically(items, true);
     let sending:Item[] = [];
 
@@ -736,17 +738,15 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
       sending.push({...itemsOrdered[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
 
-    const data = await objectiveslistApi.putObjectiveItems(sending, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.putObjectiveItems(sending, (value: string) => {
+      setShortingPartialInfo(value);
+    });
+
     if(data){
       putItemsInDisplay(data);
     }
-  }
-
-  const onOrderAToZ = async () => {
-    setLoadingIsShorting(true);
-
-    await orderItems();
     
+    setShortingPartialInfo('');
     setLoadingIsShorting(false);
   }
 
@@ -1108,7 +1108,7 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
             <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + getTintColor() + '.png'}></img>
           </div>
           <div onClick={()=>{choseNewItemToAdd(ItemType.Question)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question' + getTintColor() + '.png'}></img>
+            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question-filled' + getTintColor() + '.png'}></img>
           </div>
           <div onClick={()=>{choseNewItemToAdd(ItemType.Note)}} className='objMenuImageContainer'>
             <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/note' + getTintColor() + '.png'}></img>
@@ -1124,29 +1124,105 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
     )
   }
 
-  const getLeftMenuIcons = () => {
+  const getFoldUnfoldButton = () => {
     return(
-      <div className='objTitleLeft'>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true} isBlack={isLoadingBlack()}/>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos} isBlack={isLoadingBlack()}/>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor} isBlack={isLoadingBlack()}/>
-        <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags} isBlack={isLoadingBlack()}/>
-      </div>
+      <PressImage 
+        onClick={()=>{if(!isObjsEditingPos)onFoldUnfoldDividers()}}
+        src={process.env.PUBLIC_URL + '/double'+(shouldFoldAll?'up':'down')+'-chevron' + getTintColor() + '.png'}
+        disable={items.length < 1 || !hasADividerToFold} isLoading={isChangingFoldingUnfolding}
+        hide={!objective.IsShowing || isEditingPos}
+        disableSrc={process.env.PUBLIC_URL + '/double'+(  shouldFoldAll?'down':'up')+'-chevron-grey.png'}
+        isBlack={isLoadingBlack()}
+        text={foldingUnfoldingDividersPartialInfo}
+      />
     )
   }
 
-  const getRightMenuIcons = () => {
+  const getSortItemsButton = () => {
+    return (!isEditingPos && 
+      <PressImage 
+        onClick={orderItemsAtoZ}
+        src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'}
+        isLoading={isLoadingShorting}
+        text={shortingPartialInfo}
+        disable={items.length < 2}
+        disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'}
+        isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getArchiveButton = () => {
+    return(
+      <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true} isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getIsShowingButton = () => {
+    return(
+      <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos} isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getPaletteButton = () => {
+    return(
+      <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor} isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getTagMenuButton = () => {
+    return(
+      <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags} isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getSearchMenuButton = () => {
+    return(
+      <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getIsShowingItems = () => {
     const hasHidibleItems:Item|undefined = items.find((item)=>{
       if(item.Type===ItemType.Grocery||item.Type=== ItemType.Medicine||item.Type=== ItemType.Step||item.Type=== ItemType.Exercise||item.Type=== ItemType.House) return item;
     });
-    
+
+    return(
+      !isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'} isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getNewItemButton = () => {
+    return(
+      !isEditingPos && 
+        <PressImage
+          onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}}
+          src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'}
+          isLoading={isLoadingAddingNewItem}
+          text={addingNewItemPartialInfo}
+          isBlack={isLoadingBlack()}/>
+    )
+  }
+
+  const getLeftMenuIcons = () => {
+    return(
+      <div className='objTitleLeft'>
+        {getArchiveButton()}
+        {getIsShowingButton()}
+        {getPaletteButton()}
+        {getTagMenuButton()}
+        {getSearchMenuButton()}
+      </div>
+    )
+  }
+  
+  const getRightMenuIcons = () => {
     return(
       <div className='objTitleRight'>
-        {!isEditingPos && <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'} isLoading={isLoadingShorting} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'} isBlack={isLoadingBlack()}/>}
-        {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>}
+        {getFoldUnfoldButton()}
+        {getSortItemsButton()}
         {moveIcons()}
-        {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'} isBlack={isLoadingBlack()}/>}
-        {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'} isLoading={isLoadingAddingNewItem} isBlack={isLoadingBlack()}/>}
+        {getIsShowingItems()}
+        {getNewItemButton()}
       </div>
     )
   }
@@ -1160,26 +1236,25 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   const getTopMenu = () => {
-    const hasHidibleItems:Item|undefined = items.find((item)=>{
-      if(item.Type===ItemType.Grocery||item.Type=== ItemType.Medicine||item.Type=== ItemType.Step||item.Type=== ItemType.Exercise||item.Type=== ItemType.House) return item;
-    });
-
     if(isBelow700px){
       return (
         <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
           <div className='objTopMenu'>
             {getObjectiveTitle()}
-            {!isEditingTitle && <>
-              <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsArchived()}} src={process.env.PUBLIC_URL + '/archive' + getTintColor() + '.png'} hide={isEditingPos} confirm={true} isBlack={isLoadingBlack()}/>
-              <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveIsShowing()}} src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor() + '.png'} hide={isEditingPos} isBlack={isLoadingBlack()}/>
-              <PressImage onClick={()=>{if(!isObjsEditingPos)openColorMenu()}} src={process.env.PUBLIC_URL + '/palette' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingColor} isBlack={isLoadingBlack()}/>
-              <PressImage onClick={()=>{if(!isObjsEditingPos)openTagsMenu()}} src={process.env.PUBLIC_URL + '/tag' + getTintColor() + '.png'} hide={!objective.IsShowing || isEditingPos} isLoading={isLoadingChangingTags} isBlack={isLoadingBlack()}/>
-              {!isEditingPos && <PressImage onClick={onOrderAToZ} src={process.env.PUBLIC_URL + '/atoz' + getTintColor() + '.png'} isLoading={isLoadingShorting} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'} isBlack={isLoadingBlack()}/>}
-              {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>}
-              {moveIcons()}
-              {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)onChangeIsShowingItems()}} src={process.env.PUBLIC_URL + '/checked' + (objective.IsShowingCheckedExercise?'':'-off') + getTintColor() + '.png'} isLoading={isLoadingIsShowingItems} disable={!hasHidibleItems} disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'} isBlack={isLoadingBlack()}/>}
-              {!isEditingPos && <PressImage onClick={()=>{if(!isObjsEditingPos)openNewItemMenu()}} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor()) + '.png'} isLoading={isLoadingAddingNewItem} isBlack={isLoadingBlack()}/>}
-            </>}
+            {!isEditingTitle && 
+              <div className={'objTopMenuBellow700px'}>
+                {getArchiveButton()}
+                {getIsShowingButton()}
+                {getPaletteButton()}
+                {getTagMenuButton()}
+                {!isEditingPos && <PressImage onClick={openSearchMenu} src={process.env.PUBLIC_URL + '/search' + getTintColor() + '.png'} disable={items.length < 1} disableSrc={process.env.PUBLIC_URL + '/search-grey.png'} isBlack={isLoadingBlack()}/>}
+                {getFoldUnfoldButton()}
+                {getSortItemsButton()}
+                {moveIcons()}
+                {getIsShowingItems()}
+                {getNewItemButton()}
+              </div>
+            }
           </div>
         </div>
       )
@@ -1248,7 +1323,16 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
         {isEditingPos && <PressImage hide={isEndingPos} isBlack={isLoadingBlack()}/>}
         {isEditingPos && <PressImage hide={isEndingPos} isBlack={isLoadingBlack()}/>}
         {isEditingPos && !shouldShowEndingMovingIcon() && <PressImage hide={isEndingPos} isBlack={isLoadingBlack()}/>}
-        {!isEditingPos && <PressImage onClick={startChangePos} src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'} disable={items.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoading={isLoadingEndingChangingPos} isBlack={isLoadingBlack()}/>}
+        {!isEditingPos && 
+          <PressImage
+            onClick={startChangePos}
+            src={process.env.PUBLIC_URL + '/change' + getTintColor() + '.png'}
+            disable={items.length < 2}
+            disableSrc={process.env.PUBLIC_URL + '/change-grey.png'}
+            isLoading={isLoadingEndingChangingPos}
+            text={changingPosPartialInfo}
+            isBlack={isLoadingBlack()}/>
+        }
         {shouldShowCancelMovingIcon() && <PressImage onClick={cancelChangePos} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={isLoadingBlack()}/>}
         {shouldShowEndingMovingIcon() && <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move' + getTintColor() + '.png'} isBlack={isLoadingBlack()}/>}
       </>
@@ -1375,7 +1459,8 @@ export const ObjectiveView: React.FC<ObjectiveViewProps> = (props) => {
   }
 
   return (
-    <div className={'objContainer' + getObjTheme()} onMouseEnter={()=>{setIsHovering(true);}} onMouseLeave={()=>{setIsHovering(false);}}>
+    <div 
+      className={'objContainer' + getObjTheme()}>
       {shouldShowPin() && <img className='pinImage' src={process.env.PUBLIC_URL + '/pin.png'}></img>}
       {getTopMenu()}
       {getSearchingMenu()}

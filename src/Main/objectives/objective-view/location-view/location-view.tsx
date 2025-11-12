@@ -101,7 +101,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(location);
+    const data = await objectiveslistApi.deleteObjectiveItems([location]);
 
     if(data){
       putItemsInDisplay([location], true);

@@ -105,7 +105,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(divider, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.deleteObjectiveItems([divider], (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
     if(data){
       putItemsInDisplay([divider], true);
@@ -228,7 +228,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Question, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/question' + itemTintColor(theme) + '.png'}></img>
+            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/question-filled' + itemTintColor(theme) + '.png'}></img>
           </div>
           <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Note, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>

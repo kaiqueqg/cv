@@ -123,7 +123,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(grocery);
+    const data = await objectiveslistApi.deleteObjectiveItems([grocery]);
 
     if(data){
       putItemsInDisplay([grocery], true);

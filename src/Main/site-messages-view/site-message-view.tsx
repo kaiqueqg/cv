@@ -16,7 +16,8 @@ const SiteMessageView = (props: SiteMessageViewProps) => {
     setTimeout(()=>{
       removeMessage(message.id);
     }, message.timeout);
-  },[]);
+  }
+  ,[]);
 
   const getMessageClassname = () => {
     switch (message.type) {

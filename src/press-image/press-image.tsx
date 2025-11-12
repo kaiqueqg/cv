@@ -64,7 +64,7 @@ const PressImage = (props: PressImageProps) => {
         className={classnameImageContainer + (props.hideHoverEffect?' pressImageContainerHover':'')}
         onClick={normalTouchEnd}>
         {props.src && <img className={'pressImageImage ' } src={imageSrc}></img>}
-        {props.text && <div className={'pressImageText'}>{props.text}</div>}
+        {props.text && props.text !== '' && <div className={'pressImageText'}>{props.text}</div>}
       </div>
     )
   }
@@ -87,7 +87,7 @@ const PressImage = (props: PressImageProps) => {
   
   return(
     props.isLoading?
-    <Loading IsBlack={props.isBlack}></Loading>
+    <Loading IsBlack={props.isBlack} text={props.text}></Loading>
     :
     (props.hide ?
       getHideImage()
@@ -100,7 +100,8 @@ const PressImage = (props: PressImageProps) => {
         )
       :
       getNormalImage()
-      ))
+      )
+    )
   )
 }
 

@@ -73,12 +73,30 @@
   min-height: 300px;
   margin-right: 5px;
   background-color: #00000000;
+  outline: 0px;
+  margin: 5px 0px;
+  
+  resize: both;
+
   border-width: 1px;
   border-color: black;
   border-style: dashed;
   border-radius: 5px;
-  outline: 0px;
-  margin: 5px 0px;
+}
+
+.editable {
+  border: 1px solid #aaa;
+  padding: 8px;
+  min-height: 100px;
+  width: 100%;
+  resize: both;
+  overflow: auto;
+  white-space: pre-wrap; // conserve les retours à la ligne
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: $transparent;
+  border-radius: 5px;
 }
 
 .noteImage{

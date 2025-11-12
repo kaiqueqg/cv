@@ -93,7 +93,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
 
   const deleteItem = async () => {
     setIsDeleting(true);
-    const data = await objectiveslistApi.deleteObjectiveItem(image);
+    const data = await objectiveslistApi.deleteObjectiveItems([image]);
 
     if(data){
       setIsEditingImage(false);

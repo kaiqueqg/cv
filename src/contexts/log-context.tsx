@@ -270,13 +270,12 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
 
   const [messageList, setMessageList] = useState<PopMessage[]>([]);
   const popMessage = (text: string, type?: MessageType, timeoutInSeconds?: number) => {
-    let timeout = 3000;
+    const words = text.split(/\s+/).length;
+    const displayTime = Math.max(5, words * 0.8);
 
-    if(timeoutInSeconds){
-      timeout = timeoutInSeconds*1000;
-      if(timeoutInSeconds > 30) timeout = 30000;
-      if(timeoutInSeconds < 1) timeout = 1000;
-    }
+    let timeout = timeoutInSeconds?timeoutInSeconds:displayTime;
+    timeout = Math.min(Math.max(timeout, 1), 30);
+    timeout *= 1000;
 
     setMessageList((prevList) => [
       ...prevList,

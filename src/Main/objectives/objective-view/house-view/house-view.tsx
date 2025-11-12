@@ -159,7 +159,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(house);
+    const data = await objectiveslistApi.deleteObjectiveItems([house]);
 
     if(data){
       putItemsInDisplay([house], true);
@@ -273,7 +273,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getRatingView = () => {
-    if(house.Rating === 0) return;
+    if(!house.Rating || house.Rating === 0) return;
     
     return(
       <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
@@ -283,7 +283,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getMeterSquareView = () => {
-    if(house.MeterSquare.trim() === '') return;
+    if(!house.MeterSquare || house.MeterSquare.trim() === '') return;
 
     return(
       <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
@@ -293,7 +293,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getTotalPrice = () => {
-    if(house.TotalPrice === 0) return;
+    if(!house.TotalPrice || house.TotalPrice === 0) return;
     
     return(
       <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
@@ -303,7 +303,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getAdressView = () => {
-    if(house.Address === '') return;
+    if(!house.Address || house.Address === '') return;
     
     return(
       <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
@@ -313,7 +313,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getDetailsView = () => {
-    if(house.Details.trim() === '') return;
+    if(!house.Details || house.Details.trim() === '') return;
     
     return(
       <div className={'houseDisplayDetailsLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
@@ -323,7 +323,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getAttentionView = () => {
-    if(house.Attention.trim() === '') return;
+    if(!house.Attention || house.Attention.trim() === '') return;
 
     return(
       <div className='houseDisplayAttention' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
@@ -333,7 +333,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getListingView = () => {
-    if(house.Listing.trim() === '') return;
+    if(!house.Listing || house.Listing.trim() === '') return;
 
     return(
       <PressImage isBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>
@@ -341,7 +341,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   const getMapLinkView = () => {
-    if(house.MapLink.trim() === '') return;
+    if(!house.MapLink || house.MapLink.trim() === '') return;
     
     return(
       <PressImage isBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>

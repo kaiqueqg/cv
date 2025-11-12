@@ -33,8 +33,6 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-  }, []);
 
   const hasTextSelection = () => {
     const selection = window.getSelection();
@@ -68,7 +66,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItem(note);
+    const data = await objectiveslistApi.deleteObjectiveItems([note]);
 
     if(data){
       putItemsInDisplay([note], true);
