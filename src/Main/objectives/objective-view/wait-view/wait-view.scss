@@ -4,31 +4,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  align-items: center;
+  text-align: start;
+
   width: 100%;
   min-height: 35px;
   border-radius: 5px;
   margin-bottom: 2px;
-  
-  align-items: center;
-  text-align: start;
-}
 
-.waitContainerClear{
-  background-color: $transparent;
-  border-color: $transparent;
-}
-
-.waitContainer:hover{
-  border-color: black;
-}
-
-.waitContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.waitContainerSelectedEnding{
+  border-width: 1px;
   border-style: solid;
+  border-radius: 5px;
 }
 
 .waitTitleContainer{

@@ -7,6 +7,7 @@ import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function medicineNew(){
   return {
@@ -26,7 +27,8 @@ interface MedicineViewProps extends ItemViewProps{
 export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { medicine, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { medicine, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelecting, isSelected, itemTintColor } = props;
 
   const [newMedicine, setNewMedicine] = useState<Medicine>(medicine);
   const [isEditingMedicine, setIsEditingMedicine] = useState<boolean>(false);
@@ -52,7 +54,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   }
 
   const onEditMedicine = () => {
-    if(!isEditingPos)setIsEditingMedicine(!isEditingMedicine);
+    if(!isDisabled)setIsEditingMedicine(!isEditingMedicine);
   }
 
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -123,7 +125,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([medicine]);
 
     if(data){
-      putItemsInDisplay([medicine], true);
+      removeItemsInDisplay([medicine]);
     }
 
     setIsDeleting(false);
@@ -138,7 +140,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   }
 
   return (
-    <div className={'medicineContainer' + itemGetTheme(theme, isSelected, isEndingPos, medicine.IsChecked)}>
+    <div className={'medicineContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], medicine.IsChecked, isSelecting, isSelected)}>
       {isSavingMedicine?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -153,7 +155,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
             </div>
             <div className='medicineCenterContainer'>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newMedicine.Title}
                 onChange={handleTitleInputChange}
@@ -161,7 +163,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newMedicine.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -169,14 +171,14 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newMedicine.Unit?? ''}
                 onChange={handleUnitInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Unit"></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newMedicine.Purpose?? ''}
                 onChange={handlePurposeInputChange}
@@ -191,18 +193,18 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
           :
           <div className={'medicineDisplayContainer'}>
             <div className='medicineLine' onClick={onEditMedicine}>
-              <div className={'medicineText' + itemTextColor(theme, medicine.IsChecked)}> {getDisplayText()}</div>
-              {medicine.Unit && <div className={'medicineText' + itemTextColor(theme, medicine.IsChecked)}>{medicine.Unit}</div>}
-              {medicine.Purpose && <div className={'medicineText ' + itemTextColor(theme, true)}>{'('+medicine.Purpose+')'}</div>}
+              <div className={'medicineText' + scss(theme, [SCSS.TEXT], medicine.IsChecked)}> {getDisplayText()}</div>
+              {medicine.Unit && <div className={'medicineText' + scss(theme, [SCSS.TEXT], medicine.IsChecked)}>{medicine.Unit}</div>}
+              {medicine.Purpose && <div className={'medicineText ' + scss(theme, [SCSS.TEXT], true)}>{'('+medicine.Purpose+')'}</div>}
             </div>
             {!isEditingMedicine &&
               (isSavingIsChecked?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (medicine.IsChecked?
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>
                   :
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

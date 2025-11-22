@@ -5,6 +5,7 @@ import log from "../../../log/log";
 import { Objective } from "../../../TypesObjectives";
 import Loading from "../../../loading/loading";
 import { useRequestContext } from "../../../contexts/request-context";
+import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 
 interface ObjectiveArchivedViewProps{
   objective: Objective,
@@ -13,8 +14,11 @@ interface ObjectiveArchivedViewProps{
 }
 
 const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
-  const { identityApi, objectiveslistApi } = useRequestContext();
+  const { objectiveslistApi } = useRequestContext();
+  const { scss, getTintColor } = useThemeContext();
+
   const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
+  const { Theme } = objective;
 
   const [isUnarchiving, setIsUnarchiving] = useState<boolean>(false);
   const [isBeingHover, setIsBeingHover] = useState<boolean>(false);
@@ -38,44 +42,9 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
     setIsUnarchiving(false);
   }
 
-  const getTheme = () => {
-    if(objective.Theme === 'blue'){
-      return ' objObjectiveBlue'
-    }
-    else if(objective.Theme === 'red'){
-      return ' objObjectiveRed'
-    }
-    else if(objective.Theme === 'green'){
-      return ' objObjectiveGreen'
-    }
-    else if(objective.Theme === 'white'){
-      return ' objObjectiveWhite'
-    }
-    else if(objective.Theme === 'cyan'){
-      return ' objObjectiveCyan'
-    }
-    else if(objective.Theme === 'pink'){
-      return ' objObjectivePink'
-    }
-    else if(objective.Theme === 'noTheme'){
-      return ' objObjectiveNoTheme'
-    }
-  }
-
-  const getTextColor = () => {
-    return ' textColor' + (objective.Theme === 'white' || objective.Theme === 'pink'?'White':'');
-  }
-
-  const getTintColor = () => {
-    if(objective.Theme === 'white')
-      return '-black';
-    else
-      return '';
-  }
-
   return (
     <div 
-      className={'objectiveArchivedContainer' + getTheme()} 
+      className={'objectiveArchivedContainer' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG])}
       onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveArchived(objective)}}
       onMouseEnter={()=>{if(!isObjsEditingPos)setIsBeingHover(true)}}
       onMouseLeave={()=>{setIsBeingHover(false)}}
@@ -84,9 +53,9 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
         <Loading IsBlack={objective.Theme==='white'}></Loading>
         :
         (isBeingHover?
-          <img className="objectiveArchivedImage" src={process.env.PUBLIC_URL + '/unarchive' + getTintColor() + '.png'} alt='meaningfull text'></img>
+          <img className="objectiveArchivedImage" src={process.env.PUBLIC_URL + '/unarchive' + getTintColor(Theme) + '.png'} alt='meaningfull text'></img>
           :
-          <div className={'objectiveArchivedText' + getTextColor()}>{objective.Title}</div>
+          <div className={'objectiveArchivedText' + scss(Theme, [SCSS.TEXT])}>{objective.Title}</div>
         )
       }
     </div>

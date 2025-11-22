@@ -2,31 +2,17 @@
 
 .noteContainer{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 2px;
-  
   align-items: center;
   text-align: start;
-}
+  justify-content: center;
+  align-items: center;
 
-.noteContainerClear{
-  background-color: $transparent;
-  border-color: $transparent;
-}
+  width: 100%;
+  margin-bottom: 2px;
 
-.noteContainer:hover{
-  border-color: black;
-}
-
-.noteContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.noteContainerSelectedEnding{
+  border-width: 1px;
   border-style: solid;
+  border-radius: 5px;
 }
 
 .noteTitleContainer{
@@ -60,7 +46,7 @@
   width: 100%;
   min-height: 35px;
   margin-right: 5px;
-  padding: 0px 10px 0px 10px;
+  padding: 0px 10px 6px 10px;
   white-space: pre-line;
 }
 .noteTitle:hover{

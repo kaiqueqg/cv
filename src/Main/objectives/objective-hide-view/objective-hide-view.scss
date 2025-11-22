@@ -6,20 +6,19 @@ $bor: false;
   cursor: pointer;
   position: relative;
   display: flex;
-  min-height: 40px;
+  min-height: 44px;
   margin: 2px;
-  padding: 3px 6px;
+  padding: 3px 8px 3px 8px;
   align-items: center;
   width: 100%;
 
   border-width: 1px;
-  border-color: $black;
   border-style: solid;
   border-radius: 5px;
 
   @if($bor){
     border-width: 1px;
-    border-color: white;
+    border-color: rgb(255, 0, 0);
     border-style: solid;
   }
 }
@@ -39,9 +38,20 @@ $bor: false;
 }
 
 .objectiveClosedText{
+  align-items: center;
+  text-align: left;
+
+  font-weight: bolder;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: rgb(9, 255, 0);
+    border-style: solid;
+  }
 }
 
 .objectiveClosedImage{

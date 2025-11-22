@@ -1,35 +1,19 @@
 @import '../../../../global.scss';
 
 .medicineContainer{
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   vertical-align: middle;
+
   width: 100%;
   min-height: 40px;
-  border-radius: 5px;
   margin-bottom: 2px;
-}
 
-.medicineContainer:hover{
-  cursor: pointer;
-}
-
-.medicineContainerClear{
-  background-color: $transparent;
-  border-color: $transparent;
-}
-.medicineContainerClear:hover{
-  border-color: black;
-}
-
-.medicineContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.medicineContainerSelectedEnding{
+  border-radius: 5px;
+  border-width: 1px;
   border-style: solid;
 }
 
@@ -87,28 +71,3 @@
 .medicineImage:hover{
   padding: 4px;
 }
-
-.medicineContainerBlue{background-color: #035a9c;}
-.medicineContainerRed{background-color: rgb(189, 32, 32);}
-.medicineContainerGreen{background-color: rgb(64, 121, 64);}
-.medicineContainerWhite{background-color: #D8AE7E;}
-.medicineContainerNoTheme{background-color: #1D1D1D;}
-
-
-.medicineTextBlue{color: beige,}
-.medicineTextRed{color: beige,}
-.medicineTextGreen{color: beige,}
-.medicineTextWhite{color: black,}
-.medicineTextNoTheme{color: beige,}
-
-.medicineTextFadeBlue{color: lightblue,}
-.medicineTextFadeRed{color: rgb(245, 184, 184),}
-.medicineTextFadeGreen{color: lightgreen,}
-.medicineTextFadeWhite{color: rgb(73, 73, 73),}
-.medicineTextFadeNoTheme{color: rgb(116, 116, 116); font-weight: bold;}
-
-.medicineInputBlue{border-color: beige;}
-.medicineInputRed{border-color: beige;}
-.medicineInputGreen{border-color: beige;}
-.medicineInputWhite{border-color: black;}
-.medicineInputNoTheme{border-color: beige;}

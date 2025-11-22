@@ -9,6 +9,7 @@ import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
 import { useLogContext } from "../../../../contexts/log-context";
 import { MessageType } from "../../../../Types";
+import { SCSS, useThemeContext } from "../../../../contexts/theme-context";
 
 export function groceryNew(){
   return {
@@ -28,7 +29,8 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { popMessage } = useLogContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { grocery, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { grocery, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelected, isSelecting, itemTintColor } = props;
 
   const [newGrocery, setNewGrocery] = useState<Grocery>(grocery);
   const [isEditingGrocery, setIsEditingGrocery] = useState<boolean>(false);
@@ -126,7 +128,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([grocery]);
 
     if(data){
-      putItemsInDisplay([grocery], true);
+      removeItemsInDisplay([grocery]);
     }
 
     setIsDeleting(false);
@@ -142,7 +144,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   }
 
   return (
-    <div className={'groceryContainer' + itemGetTheme(theme, isSelected, isEndingPos, grocery.IsChecked)}>
+    <div className={'groceryContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], grocery.IsChecked, isSelecting, isSelected)}>
       {isSavingGrocery?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -157,7 +159,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
             </div>
             <div className='groceryCenterContainer'>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newGrocery.Title}
                 onChange={handleTitleInputChange}
@@ -165,7 +167,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newGrocery.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -173,14 +175,14 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newGrocery.GoodPrice?? ''}
                 onChange={handleGoodPriceInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Good price"></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newGrocery.Unit?? ''}
                 onChange={handleUnitInputChange}
@@ -195,8 +197,8 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
           :
           <div className='groceryDisplayContainer'>
             <div 
-              className={'groceryLine' + itemTextColor(theme, grocery.IsChecked)}
-              onClick={() => {if(!isEditingPos)setIsEditingGrocery(true)}}>
+              className={'groceryLine' + scss(theme, [SCSS.TEXT], grocery.IsChecked)}
+              onClick={() => {if(!isDisabled)setIsEditingGrocery(true)}}>
               {getDisplayText()}
             </div>
             {!isEditingGrocery &&
@@ -204,9 +206,9 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (grocery.IsChecked?
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
                   :
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

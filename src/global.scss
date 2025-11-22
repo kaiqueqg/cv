@@ -1,3 +1,5 @@
+$bor: false;
+
 $transparent: #00000000;
 $screen-max-width: 700px;
 $blue-light: #98C1D9;
@@ -40,6 +42,38 @@ $objNoTheme: $blue-dark;
 $objCyan: #256377;
 $objPink: #F9C5D5;
 
+.input{
+  vertical-align: middle;
+  text-align: left;
+  width: 100%;
+  height: 30px;
+  padding: 0px 10px 0px 10px;
+  margin-right: 5px;
+  color: $beige;
+  background-color: #00000000;
+  border-width: 0px 0px 1px 0px;
+  // border-color: beige;
+  border-style: solid;
+  outline: 0px;
+
+  @if($bor){
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
+}
+
+.inputWhite{
+  vertical-align: middle;
+  width: 100%;
+  height: 26px;
+  padding: 0px 10px 0px 10px;
+  margin-right: 5px;
+  border-width: 0px 0px 1px 0px;
+  border-style: solid;
+  outline: 0px;
+}
+
 .global-blue-text{color: beige;}
 .global-red-text{color: beige;}
 .global-green-text{color: beige;}
@@ -47,6 +81,14 @@ $objPink: #F9C5D5;
 .global-notheme-text{color: beige;}
 .global-white-text{color: black;}
 .global-pink-text{color: black;}
+
+.global-blue-text-fade{color: #a3a3a3;}
+.global-red-text-fade{color: #a3a3a3;}
+.global-green-text-fade{color: #a3a3a3;}
+.global-cyan-text-fade{color: #a3a3a3;}
+.global-notheme-text-fade{color: #a3a3a3;}
+.global-white-text-fade{color: #a8855c;}
+.global-pink-text-fade{color: #a3a3a3;}
 
 .global-blue-text-contrast{color: black;}
 .global-red-text-contrast{color: black;}
@@ -64,6 +106,8 @@ $objPink: #F9C5D5;
 .global-pink-text-alert{color: $red;}
 .global-notheme-text-alert{color: $red;}
 
+// BORDER --------------------------------------------------------------------------------
+
 .global-blue-bordercolor{border-color: beige;}
 .global-red-bordercolor{border-color: beige;}
 .global-green-bordercolor{border-color: beige;}
@@ -77,8 +121,56 @@ $objPink: #F9C5D5;
 .global-green-bordercolor-contrast{border-color: black;}
 .global-cyan-bordercolor-contrast{border-color: black;}
 .global-notheme-bordercolor-contrast{border-color: black;}
-.global-white-bordercolor-contrast{border-color: beige;}
-.global-pink-bordercolor-contrast{border-color: beige;}
+.global-white-bordercolor-contrast{border-color: black;}
+.global-pink-bordercolor-contrast{border-color: black;}
+
+$borderFocusBlue: rgb(40, 200, 240);
+$borderFocusRed: $red;
+$borderFocusGreen: yellowgreen;
+$borderFocusCyan: rgb(0, 251, 255);
+$borderFocusnoTheme: beige;
+$borderFocusWhite: #E4A200;
+$borderFocusPink: #E91E63;
+
+.global-blue-bordercolor-contrast:hover{border-color: $borderFocusBlue;}
+.global-red-bordercolor-contrast:hover{border-color: $borderFocusRed;}
+.global-green-bordercolor-contrast:hover{border-color: $borderFocusGreen;}
+.global-cyan-bordercolor-contrast:hover{border-color: $borderFocusCyan;}
+.global-notheme-bordercolor-contrast:hover{border-color: $borderFocusnoTheme;}
+.global-white-bordercolor-contrast:hover{border-color: $borderFocusWhite;}
+.global-pink-bordercolor-contrast:hover{border-color: $borderFocusPink;}
+
+.global-blue-bordercolor-fade{border-color: $transparent;}
+.global-red-bordercolor-fade{border-color: $transparent;}
+.global-green-bordercolor-fade{border-color: $transparent;}
+.global-cyan-bordercolor-fade{border-color: $transparent;}
+.global-notheme-bordercolor-fade{border-color: $transparent;}
+.global-white-bordercolor-fade{border-color: $transparent;}
+.global-pink-bordercolor-fade{border-color: $transparent;}
+
+.global-blue-bordercolor-fade:hover{border-color: $borderFocusBlue;}
+.global-red-bordercolor-fade:hover{border-color: $borderFocusRed;}
+.global-green-bordercolor-fade:hover{border-color: $borderFocusGreen;}
+.global-cyan-bordercolor-fade:hover{border-color: $borderFocusCyan;}
+.global-notheme-bordercolor-fade:hover{border-color: $borderFocusnoTheme;}
+.global-white-bordercolor-fade:hover{border-color: $borderFocusWhite;}
+.global-pink-bordercolor-fade:hover{border-color: $borderFocusPink;}
+
+.global-blue-bordercolor-selecting{border-color: rgb(40, 200, 240);}//ok
+.global-red-bordercolor-selecting{border-color: $red;}
+.global-green-bordercolor-selecting{border-color: yellowgreen;}//ok
+.global-cyan-bordercolor-selecting{border-color: rgb(0, 251, 255);}
+.global-notheme-bordercolor-selecting{border-color: beige;}//ok
+.global-white-bordercolor-selecting{border-color: red;}
+.global-pink-bordercolor-selecting{border-color: red;}
+
+.global-blue-bordercolor-selected{border-color: rgb(40, 200, 240); border-style: dashed;}//ok
+.global-red-bordercolor-selected{border-color: $red; border-style: dashed;}
+.global-green-bordercolor-selected{border-color: yellowgreen; border-style: dashed;}//ok
+.global-cyan-bordercolor-selected{border-color: rgb(0, 251, 255); border-style: dashed;}
+.global-notheme-bordercolor-selected{border-color: beige; border-style: dashed;}//ok
+.global-white-bordercolor-selected{border-color: red; border-style: dashed;}
+.global-pink-bordercolor-selected{border-color: red; border-style: dashed;}
 
 .global-blue-bordercolor-alert{border-color: $red;}
 .global-red-bordercolor-alert{border-color: $red;}
@@ -87,6 +179,9 @@ $objPink: #F9C5D5;
 .global-cyan-bordercolor-alert{border-color: $red;}
 .global-pink-bordercolor-alert{border-color: $red;}
 .global-notheme-bordercolor-alert{border-color: $red;}
+
+// BORDER
+// INPUT --------------------------------------------------------------------------------
 
 .global-blue-input{color: beige;border-color: beige;}
 .global-red-input{color: beige;border-color: beige;}
@@ -120,25 +215,27 @@ $objPink: #F9C5D5;
 .global-white-obj-background{background: linear-gradient(to right, $objWhite, darken($objWhite, 3%));}
 .global-pink-obj-background{background: linear-gradient(to right, $objPink, lighten($objPink, 3%));}
 
-.global-blue-item-background{background-color: lighten($objBlue, 10%); border-color: black;}
-.global-red-item-background{background-color: lighten($objRed, 10%); border-color: black;}
-.global-green-item-background{background-color: lighten($objGreen, 10%); border-color: black;}
-.global-notheme-item-background{background-color: lighten($objNoTheme, 10%); border-color: black;}
-.global-cyan-item-background{background-color: lighten($objCyan, 10%); border-color: black;}
-.global-white-item-background{background-color: #D8AE7E; border-color: black;}
-.global-pink-item-background{background-color: darken($objPink, 10%); border-color: black;}
-.global-blue-item-background{background-color: $transparent; border-color:$transparent}
+.global-blue-item-background-fade{background-color: $transparent}
+.global-red-item-background-fade{background-color: $transparent}
+.global-green-item-background-fade{background-color: $transparent}
+.global-notheme-item-background-fade{background-color: $transparent}
+.global-cyan-item-background-fade{background-color: $transparent}
+.global-white-item-background-fade{background-color: $transparent}
+.global-pink-item-background-fade{background-color: $transparent}
+.global-blue-item-background-fade{background-color: $transparent;}
+
+.global-blue-item-background{background-color: lighten($objBlue, 10%);}
+.global-red-item-background{background-color: lighten($objRed, 10%);}
+.global-green-item-background{background-color: lighten($objGreen, 10%);}
+.global-notheme-item-background{background-color: lighten($objNoTheme, 10%);}
+.global-cyan-item-background{background-color: lighten($objCyan, 10%);}
+.global-white-item-background{background-color: #D8AE7E;}
+.global-pink-item-background{background-color: darken($objPink, 10%);}
 
 .beige-darker{
   filter: brightness(40%);
-
-  
 }
 
 .text-bold{
   font-weight: bold;
-}
-
-.obj{
-
 }

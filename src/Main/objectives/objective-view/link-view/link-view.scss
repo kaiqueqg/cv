@@ -7,30 +7,14 @@ $bor: false;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  text-align: start;
+
   width: 100%;
   min-height: 35px;
-  border-radius: 5px;
   margin-bottom: 2px;
-
-  align-items: center;
-  text-align: start;
-}
-
-.linksContainerClear{
-  background-color: $transparent;
-  border-color: $transparent;
-}
-
-.linksContainer:hover{
-  border-color: black;
-}
-
-.linksContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.linksContainerSelectedEnding{
+  
+  border-radius: 5px;
+  border-width: 1px;
   border-style: solid;
 }
 
@@ -165,9 +149,4 @@ $bor: false;
 
 .upDownImage:hover{
   padding: 4px;
-}
-
-.linksInputWarning{
-  border-color: red;
-  color: red;
 }

@@ -8,7 +8,7 @@ import PressImage from "../../../../press-image/press-image";
 import { useLogContext } from "../../../../contexts/log-context";
 import { MessageType } from "../../../../Types";
 import { useRequestContext } from "../../../../contexts/request-context";
-import { SCSSItemType, SCSSObjType, useThemeContext } from "../../../../contexts/theme-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function exerciseNew(){
   return {
@@ -31,10 +31,9 @@ interface ExerciseViewProps extends ItemViewProps{
 export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const { popMessage } = useLogContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { exercise, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, 
-    itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { exercise, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelected, isSelecting, itemTintColor } = props;
 
-  const { getItemScssColor, getScssObjColor } = useThemeContext();
+  const { scss } = useThemeContext();
 
   const [isSavingExercise, setIsSavingExercise] = useState<boolean>(false);
   const [isSavingIsDone, setIsSavingIsDone] = useState<boolean>(false);
@@ -166,7 +165,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
 
     if(data){
       setIsEditingExercise(false);
-      putItemsInDisplay([exercise], true);
+      removeItemsInDisplay([exercise]);
     }
     setIsDeleting(false);
   }
@@ -212,7 +211,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   }
 
   const onEditExercise = () => {
-    if(!isEditingPos)setIsEditingExercise(!isEditingExercise);
+    if(!isDisabled)setIsEditingExercise(!isEditingExercise);
   }
 
   const cancelEdit = () => {
@@ -223,18 +222,18 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   const getWeekButtonColor = (weekday: Weekdays) => {
     const isCont = newExercise.Weekdays.includes(weekday);
     if(isCont){
-      return 'exerciseWeekdaysButton exerciseWeekdaysButtonSelected ' + getItemScssColor(theme, SCSSItemType.TEXT, SCSSItemType.BORDERCOLOR) + getScssObjColor(theme, SCSSObjType.OBJ_BG)
+      return 'exerciseWeekdaysButton exerciseWeekdaysButtonSelected ' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR]) + scss(theme, [SCSS.OBJ_BG])
     }
     else{
-      return 'exerciseWeekdaysButton ' + getItemScssColor(theme, SCSSItemType.TEXT);
+      return 'exerciseWeekdaysButton ' + scss(theme, [SCSS.TEXT]);
     }
   }
 
   const getWeekdaysButtons = () => {
     return(
       <div className={'exerciseWeekdaysContainer'}>
-        <div className={'exerciseWeekdaysButtonAllNone' + getItemScssColor(theme, SCSSItemType.TEXT, SCSSItemType.BORDERCOLOR) + getScssObjColor(theme, SCSSObjType.OBJ_BG)} onClick={allWeekdayChange}>All</div>
-        <div className={'exerciseWeekdaysButtonAllNone' + getItemScssColor(theme, SCSSItemType.TEXT, SCSSItemType.BORDERCOLOR) + getScssObjColor(theme, SCSSObjType.OBJ_BG)} onClick={noneWeekdayChange}>None</div>
+        <div className={'exerciseWeekdaysButtonAllNone' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR]) + scss(theme, [SCSS.OBJ_BG])} onClick={allWeekdayChange}>All</div>
+        <div className={'exerciseWeekdaysButtonAllNone' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR]) + scss(theme, [SCSS.OBJ_BG])} onClick={noneWeekdayChange}>None</div>
         <div className={getWeekButtonColor(Weekdays.Monday)} onClick={()=>weekdayChange(Weekdays.Monday)}>Mon</div>
         <div className={getWeekButtonColor(Weekdays.Tuesday)} onClick={()=>weekdayChange(Weekdays.Tuesday)}>Tue</div>
         <div className={getWeekButtonColor(Weekdays.Wednesday)} onClick={()=>weekdayChange(Weekdays.Wednesday)}>Wed</div>
@@ -284,7 +283,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     }
     else{
       return(
-        <div className={'exerciseBodyImageContainer ' + (isSelectedSaved? getScssObjColor(theme, SCSSObjType.OBJ_BG) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR)+' exerciseBodyImageContainerSelected ':'')}>
+        <div className={'exerciseBodyImageContainer ' + (isSelectedSaved? scss(theme, [SCSS.OBJ_BG]) + scss(theme, [SCSS.BORDERCOLOR])+' exerciseBodyImageContainerSelected ':'')}>
           <PressImage
             size={'bigger'}
             src={bodyImages[bodyImage]}
@@ -323,11 +322,11 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       title += exercise.Weekdays.includes(Weekdays.Sunday)?' Su':'';
     }
     
-    return <div className={'exerciseText' + getItemScssColor(theme, SCSSItemType.TEXT)}>{title}</div>;
+    return <div className={'exerciseText' + scss(theme, [SCSS.TEXT], exercise.IsDone)}>{title}</div>;
   }
 
   return (
-    <div className={'exerciseContainer' + itemGetTheme(theme, isSelected, isEndingPos, exercise.IsDone)}>
+    <div className={'exerciseContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], exercise.IsDone, isSelecting, isSelected)}>
       {isSavingExercise?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -342,7 +341,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
             </div>
             <div className='exerciseCenterContainer'>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newExercise.Title}
                 onChange={handleTitleInputChange}
@@ -350,36 +349,36 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newExercise.Series}
                 onChange={handleSeriesInputChange}
                 onKeyDown={handleKeyDown}
                 min={1}></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newExercise.Reps}
                 onChange={handleRepsInputChange}
                 onKeyDown={handleKeyDown}
                 min={1}></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newExercise.MaxWeight}
                 onChange={handleMaxHeightInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Max"></input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newExercise.Description}
                 onChange={handleDescriptionInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Description"></input>
-              <div className={'exerciseHeaderText ' + getItemScssColor(theme, SCSSItemType.TEXT)}>WEEKDAYS</div>
+              <div className={'exerciseHeaderText ' + scss(theme, [SCSS.TEXT])}>WEEKDAYS</div>
               {getWeekdaysButtons()}
-              <div className={'exerciseHeaderText ' + getItemScssColor(theme, SCSSItemType.TEXT)}>BODY PART</div>
+              <div className={'exerciseHeaderText ' + scss(theme, [SCSS.TEXT])}>BODY PART</div>
               {<div className={'exerciseBodyImagesContainer'}>
                 {getBodyImage('chest')}
                 {getBodyImage('triceps')}
@@ -419,7 +418,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
           :
           <div className='exerciseDisplayContainer'>
             <div className='exerciseLine' onClick={onEditExercise}>
-              <div className={'exerciseMainLine' + itemTextColor(theme, exercise.IsDone)}>
+              <div className={'exerciseMainLine' + scss(theme, [SCSS.TEXT] ,exercise.IsDone)}>
                 {getBodyImages()}
                 {getTitle()}
               </div>
@@ -430,9 +429,9 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (exercise.IsDone?
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
                   :
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

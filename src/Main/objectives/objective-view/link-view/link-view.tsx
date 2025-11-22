@@ -7,6 +7,7 @@ import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { useLogContext } from "../../../../contexts/log-context";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function linkNew(){
   return {
@@ -23,7 +24,8 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { log } = useLogContext();
-  const { link, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { link, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelecting, isSelected, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(link.Title);
   const [newLink, setNewLink] = useState<string>(link.Link);
@@ -109,7 +111,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([link]);
 
     if(data){
-      putItemsInDisplay([link], true);
+      removeItemsInDisplay([link]);
     }
 
     setIsDeleting(false);
@@ -120,7 +122,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
   }
 
   return (
-    <div className={'linksContainer' + itemGetTheme(theme, isSelected, isEndingPos, link.Link.trim() !== '')}>
+    <div className={'linksContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], link.Link.trim() !== '', isSelecting, isSelected)}>
       {isSavingLinks?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -135,7 +137,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
             </div>
             <div className='linksCenterContainer'>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleInputChange}
@@ -143,7 +145,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
                 placeholder='Title'>
               </input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newLink}
                 onChange={handleLinkInputChange}
@@ -157,7 +159,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
             </div>
           </div>
           :
-          <div className={'titleLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingLinks(true)}}>{link.Title}</div>
+          <div className={'titleLine' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingLinks(true)}}>{link.Title}</div>
         )
       }
       {!isEditingLinks &&

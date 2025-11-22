@@ -6,6 +6,7 @@ import { Item, ItemViewProps, Question } from "../../../../TypesObjectives";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { SCSS, useThemeContext } from "../../../../contexts/theme-context";
 
 export function questionNew(){
   return {
@@ -21,8 +22,8 @@ interface QuestionViewProps extends ItemViewProps{
 export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { question, theme, putItemsInDisplay, isSelected, isEditingPos, isEndingPos,
-    itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
+  const { question, theme, putItemsInDisplay, removeItemsInDisplay, isSelected, isDisabled, isSelecting, itemTintColor} = props;
+  const { scss } = useThemeContext();
 
   const [newStatement, setNewStatement] = useState<string>(question.Statement);
   const [newAnswer, setNewAnswer] = useState<string>(question.Answer);
@@ -105,7 +106,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([question]);
 
     if(data){
-      putItemsInDisplay([question], true);
+      removeItemsInDisplay([question]);
     }
 
     setIsDeleting(false);
@@ -116,7 +117,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   }
 
   return (
-    <div className={'questionContainer '+itemGetTheme(theme, isSelected, isEndingPos, (question.Statement.trim()!==''&&question.Answer.trim()!==''))}>
+    <div className={'questionContainer '+scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], shouldBeClear(), isSelecting, isSelected)}>
       {isSavingQuestion?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -125,27 +126,29 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
             <div className='locationSideContainer'>
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
-                :
+                : 
                 <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
             </div>
             <div className='locationCenterContainer'>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newStatement}
                 onChange={handleStatementInputChange}
                 onKeyDown={handleStatementKeyDown} 
-                placeholder='Statement' autoFocus>
+                placeholder='Statement' 
+                autoFocus={newStatement.trim() === ''}>
               </input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newAnswer}
                 onChange={handleAnswerInputChange}
                 onKeyDown={handleAnswerKeyDown} 
                 placeholder="Answer"
-                ></input>
+                autoFocus={newAnswer.trim() === ''}>
+              </input>
             </div>
             <div className='locationSideContainer'>
               <PressImage isBlack={props.isLoadingBlack} onClick={doneEditQuestion} src={process.env.PUBLIC_URL + '/done' +itemTintColor(theme) + '.png'}/>
@@ -155,15 +158,15 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
           :
           <div className='questionDisplayContainer'>
             <div 
-              className={'questionDisplayLine ' + itemTextColor(theme, question.Statement.trim()==='')+' textBold'}
-              onClick={() => {if(!isEditingPos) setIsEditingQuestion(true)}}>
+              className={'questionDisplayLine ' + scss(theme, [SCSS.TEXT], question.Statement.trim()==='')+' textBold'}
+              onClick={() => {if(!isDisabled) setIsEditingQuestion(true)}}>
                 {question.Statement===''? 'Question':question.Statement}
               </div>
             <div className='questionAnswerContainer'>
               <PressImage isBlack={props.isLoadingBlack} onClick={()=>{}} hideHoverEffect={true} src={process.env.PUBLIC_URL + '/arow-down-right-thicker' +itemTintColor(theme) + '.png'}></PressImage>
               <div
-                className={'questionDisplayLine ' + itemTextColor(theme, question.Answer.trim()==='')}
-                onClick={() => {if(!isEditingPos) setIsEditingQuestion(true)}}>
+                className={'questionDisplayLine ' + scss(theme, [SCSS.TEXT], question.Answer.trim()==='')}
+                onClick={() => {if(!isDisabled) setIsEditingQuestion(true)}}>
                   {question.Answer===''? 'Answer':question.Answer}
               </div>
             </div>

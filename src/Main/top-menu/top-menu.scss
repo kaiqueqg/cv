@@ -5,12 +5,13 @@
   width: 100%;
   flex-direction: column;
   flex-wrap: wrap;
-  border-color: $beige-dark;
-  border-style: solid;
-  border-width: 0px 0px 1px 0px;
   justify-content: center;
   padding: 20px 0px 20px 0px;
   margin: 0px;
+
+  border-color: $beige-dark;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
   
   @media screen and (max-width: $screen-max-width){
     width: 100%;
@@ -49,12 +50,12 @@
 .menuButton:hover{
   border-style: solid;
   border-width: 1px;
-  border-color: $beige;
+  border-color: $beige-dark;
 }
 
 .menuSelected{
-  border-style: solid;
-  border-color: $beige;
+  // border-style: solid;
+  // border-color: $beige;
   background-color: $blue-dark;
 }
 

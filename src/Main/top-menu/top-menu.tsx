@@ -18,10 +18,10 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
   useEffect(() => {
     switch (location.pathname) {
       case '':
-        setCurrentMenuOption(MenuOption.Main);
+        setCurrentMenuOption(MenuOption.Curriculum);
         break;
       case '/':
-        setCurrentMenuOption(MenuOption.Main);
+        setCurrentMenuOption(MenuOption.Curriculum);
         break;
       case '/login':
         setCurrentMenuOption(MenuOption.Login);
@@ -33,7 +33,7 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
         setCurrentMenuOption(MenuOption.ObjectivesList);
         break;
       default:
-        setCurrentMenuOption(MenuOption.Main);
+        setCurrentMenuOption(MenuOption.Curriculum);
         break;
     }
   }, [location.pathname]);

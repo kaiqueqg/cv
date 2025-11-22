@@ -11,30 +11,19 @@
 
   align-items: center;
   text-align: start;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
 }
 
 .dividerLighten {
   background: transparentize(#000000, 0.9); 
 }
 
-
-.dividerContainer:hover{
-  border-color: black;
-}
-
 .dividerContainerEmptyTitle{
   border-radius: 5px;
   border-width: 1px;
-  border-color: black;
-  border-style: solid;
-}
-
-.dividerContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.dividerContainerSeletedEnding{
   border-style: solid;
 }
 
@@ -56,18 +45,6 @@
   min-height: 35px;
   font-weight: bold;
   margin: 0px 5px 0px 10px;
-}
-
-.dividerInput{
-  width: 100%;
-  padding: 0px 10px 0px 10px;
-  margin-right: 5px;
-  color: beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
 }
 
 .dividerImage{

@@ -8,6 +8,7 @@ import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { isEditable } from "@testing-library/user-event/dist/utils";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function imageNew(){
   return {
@@ -31,7 +32,8 @@ interface ImageViewProps extends ItemViewProps{
 
 export const ImageView: React.FC<ImageViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { image, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { image, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelecting, isSelected, itemTintColor } = props;
 
   const [newImage, setNewImage] = useState<Image>(image);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -97,7 +99,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
 
     if(data){
       setIsEditingImage(false);
-      putItemsInDisplay([image], true);
+      removeItemsInDisplay([image]);
     }
     setIsDeleting(false);
   }
@@ -243,7 +245,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
   }
 
   return (
-    <div className={'imageContainer' + itemGetTheme(theme, isSelected, isEndingPos)}>
+    <div className={'imageContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], false, isSelecting, isSelected)}>
       {isSavingImage?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -259,7 +261,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
             <div className='imageCenterContainer'>
               <div className='imageInfoContainer'>
                 <input
-                  className={itemInputColor(theme)}
+                  className={scss(theme, [SCSS.INPUT])}
                   type='text'
                   placeholder='Title'
                   value={newImage.Title}
@@ -300,11 +302,11 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
           :
           <div className={'imageDisplayContainer'}>
             <div className='imageDisplayTitleContainer'>
-              <div className={'imageTitle ' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingImage(!isEditingImage);}}>{image.Title}</div>
+              <div className={'imageTitle ' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingImage(!isEditingImage);}}>{image.Title}</div>
               {isSavingIsDisplaying?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <img className='imageImage' onClick={() => {if(!isEditingPos)onChangeIsDisplaying()}} src={process.env.PUBLIC_URL + '/image' + ((imageFile)?'-filled':'') + (image.IsDisplaying?itemTintColor(theme):'-grey') + '.png'}></img>
+                <img className='imageImage' onClick={() => {if(!isDisabled)onChangeIsDisplaying()}} src={process.env.PUBLIC_URL + '/image' + ((imageFile)?'-filled':'') + (image.IsDisplaying?itemTintColor(theme):'-grey') + '.png'}></img>
               }
             </div>
             <div className='previewImageContainer'>
@@ -312,7 +314,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
                 (isDownloadingImage?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <img className={'previewImage'} src={URL.createObjectURL(imageFile)} onClick={() => {if(!isEditingPos)setIsEditingImage(!isEditingImage);}} alt="Preview" />
+                <img className={'previewImage'} src={URL.createObjectURL(imageFile)} onClick={() => {if(!isDisabled)setIsEditingImage(!isEditingImage);}} alt="Preview" />
               )}
             </div>
           </div>

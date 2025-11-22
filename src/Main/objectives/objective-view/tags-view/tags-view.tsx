@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import './tags-view.scss';
 import { useUserContext } from "../../../../contexts/user-context";
-import { SCSSItemType, useThemeContext } from "../../../../contexts/theme-context";
+import { SCSS, useThemeContext } from "../../../../contexts/theme-context";
 import log from "../../../../log/log";
 import Loading from "../../../../loading/loading";
 
@@ -11,13 +11,12 @@ interface TagsViewProps{
   theme: string,
   doneEditTags: (newTags:string[]) => void,
   cancelEditTags: ()=>void,
-  itemGetTheme: (theme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean) => string,
 }
 
 const TagsView: React.FC<TagsViewProps> = (props) => {
   const { tags, theme, doneEditTags, cancelEditTags } = props;
   const { availableTags } = useUserContext();
-  const { getItemScssColor } = useThemeContext();
+  const { scss } = useThemeContext();
 
   const [newTag, setNewTag] = useState<string>('');
   const [newTags, setNewTags] = useState<string[]>([...tags]);
@@ -70,7 +69,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getAvailableTagView = (tag: string) => {
     if(newTags.includes(tag)) return;
-    let style = 'tagContainer' + getItemScssColor(theme, SCSSItemType.TEXT) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR);
+    let style = 'tagContainer' + scss(theme, [SCSS.TEXT]) + scss(theme, [SCSS.BORDERCOLOR]);
 
     return (
       <div key={`includedtagview-${tag}`} className={style} onClick={()=>{addAvailableTag(tag)}}>{tag}</div>
@@ -79,8 +78,8 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getTagsView = (tag: string):React.ReactNode => {
     let style = '';
-    if(tags.includes(tag)) style+= 'tagContainer' + getItemScssColor(theme, SCSSItemType.TEXT) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR);
-    else style += 'tagContainerToSave' + getItemScssColor(theme, SCSSItemType.TEXT_ALERT) + getItemScssColor(theme, SCSSItemType.BORDERCOLOR_ALERT);
+    if(tags.includes(tag)) style+= 'tagContainer' + scss(theme, [SCSS.TEXT]) + scss(theme, [SCSS.BORDERCOLOR]);
+    else style += 'tagContainerToSave' + scss(theme, [SCSS.TEXT_ALERT]) + scss(theme, [SCSS.BORDERCOLOR_ALERT]);
     return (
       <div key={`tagview-${tag}`} className={style} onClick={()=>{removeTag(tag)}}>{tag}</div>
     )
@@ -91,15 +90,15 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
   }
 
   return (
-    <div className={'tagsContainer' + props.itemGetTheme(theme, false, false)}>
-      <div className={'tagAvailableTagsTitle'+ getItemScssColor(theme, SCSSItemType.TEXT)}>AVAILABLE</div>
+    <div className={'tagsContainer ' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
+      <div className={'tagAvailableTagsTitle'+ scss(theme, [SCSS.TEXT])}>AVAILABLE</div>
       <div className={'tagsList'}>
         {availableTagsFiltered.map((tag)=>{ return getAvailableTagView(tag)})}
       </div>
-      <div className={'tagAvailableTagsTitle' + getItemScssColor(theme, SCSSItemType.TEXT)}>NEW</div>
+      <div className={'tagAvailableTagsTitle' + scss(theme, [SCSS.TEXT])}>NEW</div>
       <div className='tagsInputLine'>
         <input
-          className={'tagInput'+ getItemScssColor(theme, SCSSItemType.INPUT)}
+          className={'tagInput'+ scss(theme, [SCSS.INPUT])}
           type='text'
           value={newTag}
           onChange={handleInputChange}
@@ -108,7 +107,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
         <img className='tagInputImage' onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} ></img>
         <img className='tagInputImage' onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
       </div>
-      <div className={'tagAvailableTagsTitle'+ getItemScssColor(theme, SCSSItemType.TEXT)}>TAGS</div>
+      <div className={'tagAvailableTagsTitle'+ scss(theme, [SCSS.TEXT])}>TAGS</div>
       <div className={'tagsList'}>
         {newTags.map((tag)=>{ return getTagsView(tag)})}
       </div>

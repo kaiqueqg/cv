@@ -8,7 +8,7 @@ $bor: false;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 450px;
+  min-width: 350px;
   max-width: 1000px;
   padding: 10px;
   margin: 2px;
@@ -84,8 +84,8 @@ $bor: false;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  color: beige;
   flex-wrap: wrap;
+  color: beige;
   min-height: 40px;
   width: 100%;
   
@@ -218,6 +218,10 @@ $bor: false;
   width: 100%;
   padding: 10px 5px;
   margin-bottom: 10px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
   
   @media(min-width: 700px){
     flex-direction: row;
@@ -232,7 +236,62 @@ $bor: false;
   
 }
 
-.objectiveNewItemContainer {
+.objectiveMultiSelectContainer{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  flex-direction: row;
+  width: 100%;
+  padding: 10px 0px;
+  margin: 0px 0px 10px 0px;
+}
+
+.objectiveMultiSelectMenu{
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  
+  @media(min-width: 700px){
+    flex-wrap: nowrap;
+    flex-direction: row;
+  }
+  
+
+  @if($bor) {
+    border-width: 1px;
+    border-color: rgb(184, 194, 98);
+    border-style: solid;
+  }
+}
+
+.objectiveMultiSelectMenuIcon{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  font-weight: bolder;
+
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(19, 40, 158);
+    border-radius: 5px;
+  }
+}
+
+.objectiveNewItemContainer{
   display: flex;
   flex-direction: column;
   justify-content: end;
@@ -240,12 +299,15 @@ $bor: false;
   width: 100%;
   flex-wrap: wrap;
   margin-bottom: 10px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
   
   @media(min-width: 700px){
     flex-wrap: nowrap;
     flex-direction: row;
   }
-  
 
   @if($bor) {
     border-width: 1px;
@@ -306,6 +368,10 @@ $bor: false;
   align-items: center;
   width: 100%;
   margin-bottom: 10px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
 }
 
 .objectiveColorButton{
@@ -336,6 +402,17 @@ $bor: false;
 
 .objItemRow{
   display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: dashed;
+    border-color: rgb(81, 156, 85);
+    border-radius: 5px;
+  }
 }
 
 .objDragImageContainer{
@@ -353,74 +430,75 @@ $bor: false;
 }
 
 //$objBlue: #113a58;
-$objBlue: #23315c;
-$objRed: #77172E;
-$objGreen: #123525;
-$objWhite: $beige;
-$objNoTheme: $blue-dark;
-$objCyan: #256377;
-$objPink: #F9C5D5;
+// $objBlue: #23315c;
+// $objRed: #77172E;
+// $objGreen: #123525;
+// $objWhite: $beige;
+// $objNoTheme: $blue-dark;
+// $objCyan: #256377;
+// $objPink: #F9C5D5;
 
-.objObjectiveBlue{background: linear-gradient(to right, $objBlue, lighten($objBlue, 3%));}
-.objObjectiveRed{background: linear-gradient(to right, $objRed, lighten($objRed, 3%));}
-.objObjectiveGreen{background: linear-gradient(to right, $objGreen, lighten($objGreen, 3%));}
-.objObjectiveWhite{background: linear-gradient(to right, $objWhite, darken($objWhite, 3%));}
-.objObjectiveNoTheme{background: linear-gradient(to right, $objNoTheme, lighten($objNoTheme, 3%));}
-.objObjectiveCyan{background: linear-gradient(to right, $objCyan, lighten($objCyan, 3%));}
-.objObjectivePink{background: linear-gradient(to right, $objPink, lighten($objPink, 3%));}
+// .objObjectiveBlue{background: linear-gradient(to right, $objBlue, lighten($objBlue, 3%));}
+// .objObjectiveRed{background: linear-gradient(to right, $objRed, lighten($objRed, 3%));}
+// .objObjectiveGreen{background: linear-gradient(to right, $objGreen, lighten($objGreen, 3%));}
+// .objObjectiveWhite{background: linear-gradient(to right, $objWhite, darken($objWhite, 3%));}
+// .objObjectiveNoTheme{background: linear-gradient(to right, $objNoTheme, lighten($objNoTheme, 3%));}
+// .objObjectiveCyan{background: linear-gradient(to right, $objCyan, lighten($objCyan, 3%));}
+// .objObjectivePink{background: linear-gradient(to right, $objPink, lighten($objPink, 3%));}
 
-.input{
-  vertical-align: middle;
-  text-align: left;
-  width: 100%;
-  height: 30px;
-  padding: 0px 10px 0px 10px;
-  margin-right: 5px;
-  color: $beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
+// .input{
+//   vertical-align: middle;
+//   text-align: left;
+//   width: 100%;
+//   height: 30px;
+//   padding: 0px 10px 0px 10px;
+//   margin-right: 5px;
+//   color: $beige;
+//   background-color: #00000000;
+//   border-width: 0px 0px 1px 0px;
+//   border-color: beige;
+//   border-style: solid;
+//   outline: 0px;
 
-  @if($bor){
-    border-width: 1px;
-    border-color: green;
-    border-style: solid;
-  }
-}
-.inputWhite{
-  vertical-align: middle;
-  width: 100%;
-  height: 26px;
-  padding: 0px 10px 0px 10px;
-  margin-right: 5px;
-  color: black;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: black;
-  border-style: solid;
-  outline: 0px;
-}
+//   @if($bor){
+//     border-width: 1px;
+//     border-color: green;
+//     border-style: solid;
+//   }
+// }
 
-.inputAlert{
-  color: red;
-}
+// .inputWhite{
+//   vertical-align: middle;
+//   width: 100%;
+//   height: 26px;
+//   padding: 0px 10px 0px 10px;
+//   margin-right: 5px;
+//   color: black;
+//   background-color: #00000000;
+//   border-width: 0px 0px 1px 0px;
+//   border-color: black;
+//   border-style: solid;
+//   outline: 0px;
+// }
 
-.textColor{color: beige;}
-.textColorWhite{color: black;}
+// .inputAlert{
+//   color: red;
+// }
 
-.textColorWhiteFade{color: #a8855c;}
-.textColorFade{color: #a3a3a3}
+// .textColor{color: beige;}
+// .textColorWhite{color: black;}
 
-.itemBackgroundBlue{background-color: lighten($objBlue, 10%); border-color: black;}
-.itemBackgroundRed{background-color: lighten($objRed, 10%); border-color: black;}
-.itemBackgroundGreen{background-color: lighten($objGreen, 10%); border-color: black;}
-.itemBackgroundWhite{background-color: #D8AE7E; border-color: black;}
-.itemBackgroundNoTheme{background-color: lighten($objNoTheme, 10%); border-color: black;}
-.itemBackgroundCyan{background-color: lighten($objCyan, 10%); border-color: black;}
-.itemBackgroundPink{background-color: darken($objPink, 10%); border-color: black;}
-.itemBackgroundNoBackground{background-color: $transparent; border-color:$transparent}
+// .textColorWhiteFade{color: #a8855c;}
+// .textColorFade{color: #a3a3a3}
+
+// .itemBackgroundBlue{background-color: lighten($objBlue, 10%); border-color: black;}
+// .itemBackgroundRed{background-color: lighten($objRed, 10%); border-color: black;}
+// .itemBackgroundGreen{background-color: lighten($objGreen, 10%); border-color: black;}
+// .itemBackgroundWhite{background-color: #D8AE7E; border-color: black;}
+// .itemBackgroundNoTheme{background-color: lighten($objNoTheme, 10%); border-color: black;}
+// .itemBackgroundCyan{background-color: lighten($objCyan, 10%); border-color: black;}
+// .itemBackgroundPink{background-color: darken($objPink, 10%); border-color: black;}
+// .itemBackgroundNoBackground{background-color: $transparent; border-color:$transparent}
 
 .itemContainer{ 
   border-radius: 5px;
@@ -430,9 +508,9 @@ $objPink: #F9C5D5;
   @if($bor){
     border-width: 1px;
     border-color: red;
-    border-style: solid;
+    border-style: dashed;
   }
 }
-.itemContainer:hover{ border-color: black; }
-.itemContainerSelected{ border-color: red; border-style: dashed; }
-.itemContainerSelectedEnding{ border-style: solid; }
+// .itemContainer:hover{ border-color: black; }
+// .itemContainerSelected{ border-color: red; border-style: dashed; }
+// .itemContainerSelectedEnding{ border-style: solid; }

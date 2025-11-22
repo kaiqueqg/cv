@@ -34,16 +34,17 @@ export const ItemNew = (userId: string, objectiveId: string, itemId: string, typ
 
 export interface ItemViewProps{
   theme: string,
-  isEditingPos: boolean,
+  isSelecting: boolean,
   isSelected: boolean,
-  isEndingPos: boolean,
-  putItemsInDisplay: (item?: Item[], remove?: boolean) => void,
-  itemGetTheme: (theme: string, isSelected: boolean, isEndingPos: boolean, fade?: boolean) => string,
-  itemTextColor: (theme: string, fade?: boolean) => string,
-  itemInputColor: (theme: string, fade?: boolean) => string,
+  isDisabled: boolean,
+  putItemsInDisplay: (item: Item[]) => void,
+  removeItemsInDisplay: (item: Item[]) => void,
   itemTintColor: (theme: string, fade?: boolean) => string,
   isLoadingBlack: boolean,
 }
+
+export enum MultiSelectType { MOVE, COPY }
+export interface MultSelectAction { type: MultiSelectType, objectiveId: string, items: Item[] }
 
 export interface DisplayTag{
   tag: string,

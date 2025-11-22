@@ -1,36 +1,20 @@
 @import '../../../../global.scss';
 
 .groceryContainer{
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   vertical-align: middle;
+
   width: 100%;
   min-height: 40px;
-  border-radius: 5px;
   margin-bottom: 2px;
-}
 
-.groceryContainer:hover{
-  cursor: pointer;
-}
-
-.groceryContainerClear{
-  background-color: $transparent; 
-  border-color: $transparent;
-}
-.groceryContainerClear:hover{
-  border-color: black;
-}
-
-.groceryContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.groceryContainerSelectedEnding{
+  border-width: 1px;
   border-style: solid;
+  border-radius: 5px;
 }
 
 .groceryDisplayContainer{

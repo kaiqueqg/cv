@@ -81,6 +81,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   }
 
+  ///TODO too heavy
   const updateObjectives = async () => {
     setIsUpdatingObjectives(true);
 
@@ -177,6 +178,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   }
 
+  //! Dangerous
+  const deleteObjectiveItemsInDisplay = (objectiveId: string, items: Item[]) => {
+    objectiveRefs.current[objectiveId].deleteItems(items);
+  }
+
   const startEditingPos = () => {
     popMessage("Select items to change position.");
     setIsEditingPos(true);
@@ -232,8 +238,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     cancelEditingPos();
   }
 
+  const objectiveRefs = useRef<Record<string, any>>({});
   const getObjectiveList = () => {
-    let rtnView: JSX.Element[] = [];
+    let rtnView: JSX.Element[] = [];  
 
     for(let i = 0; i < objectives.length; i++){
       const hasTagSelected = objectives[i].Tags.length>0? selectedTags.some((item)=>objectives[i].Tags.includes(item)): true;
@@ -247,8 +254,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             className={'objectiveRow ' + (isEditingPos ? 'isEditing' : '') + (isSelected?' objectiveRowSelected':'') + (isEndingPos&&isSelected?' objectiveRowSelectedEnding':'')}
             onClick={() => {isEditingPos && (isEndingPos? endEnditingPos(objectives[i]) : addingRemovingItem(objectives[i]))}}>
             <ObjectiveView 
+              ref={el => objectiveRefs.current[objectives[i].ObjectiveId] = el}
               objective={objectives[i]}
               putObjective={putObjectiveInDisplay}
+              deleteObjectiveItemsInDisplay={deleteObjectiveItemsInDisplay}
               isObjsEditingPos={isEditingPos}
             ></ObjectiveView>
           </div>
@@ -469,7 +478,14 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           <div className='objectivesListMainAndTagsContainer'>
             <div className='objectivesListMainTags'>{ getTagList() }</div>
             <div className='objectivesListMainContainer'>
-              {getObjectiveList()}
+              {objectives.length === 0?
+                <div className={'objectivesListFirstOneContainer'} onClick={addNewObjective}>
+                  Create a new objective
+                  <PressImage src={process.env.PUBLIC_URL + '/newfile.png'}  isBlack={false}/>
+                </div>
+                :
+                getObjectiveList()
+              }
             </div>
             <div style={{height: '700px'}}></div>
           </div>

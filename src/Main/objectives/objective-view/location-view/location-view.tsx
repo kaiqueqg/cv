@@ -6,6 +6,7 @@ import { Item, ItemViewProps, Location } from "../../../../TypesObjectives";
 import Loading from "../../../../loading/loading";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function locationNew(){
   return {
@@ -21,7 +22,8 @@ interface LocationViewProps extends ItemViewProps{
 export const LocationView: React.FC<LocationViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { location, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { location, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelected, isSelecting, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(location.Title);
   const [newUrl, setNewUrl] = useState<string>(location.Url);
@@ -104,14 +106,14 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([location]);
 
     if(data){
-      putItemsInDisplay([location], true);
+      removeItemsInDisplay([location]);
     }
 
     setIsDeleting(false);
   }
 
   return (
-    <div className={'locationContainer'+ itemGetTheme(theme, isSelected, isEndingPos, location.Url.trim()!=='')}>
+    <div className={'locationContainer'+ scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], location.Url.trim()!=='', isSelecting, isSelected)}>
       {isSavingLocation?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -126,7 +128,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
             </div>
             <div className='locationCenterContainer'>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleInputChange}
@@ -134,7 +136,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
                 placeholder='Title'>
               </input>
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newUrl}
                 onChange={handleUrlInputChange}
@@ -148,10 +150,10 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
             </div>
           </div>
           :
-          <div className={'locationTitleLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingLocation(true)}}>{location.Title}</div>
+          <div className={'locationTitleLine' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingLocation(true)}}>{location.Title}</div>
         )
       }
-      {!isEditingLocation && <img className={'urlImage ' + ((location.Url && location.Url.trim()) !== ''?'':'urlImageNoPointer')} onClick={() => {if(!isEditingPos && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + itemTintColor(theme) + '.png'}></img>}
+      {!isEditingLocation && <img className={'urlImage ' + ((location.Url && location.Url.trim()) !== ''?'':'urlImageNoPointer')} onClick={() => {if(!isDisabled && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + itemTintColor(theme) + '.png'}></img>}
     </div>
   );
 }

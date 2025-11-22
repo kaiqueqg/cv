@@ -1,7 +1,6 @@
 import { ResponseUser, UserPrefs } from '../Types';
 import log from '../log/log';
 
-
 type StorageKeys = {
   JwtToken: string,
   User: string,

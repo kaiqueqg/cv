@@ -7,6 +7,7 @@ import Loading from "../../../loading/loading";
 import PressImage from "../../../press-image/press-image";
 import { useUserContext } from "../../../contexts/user-context";
 import { useRequestContext } from "../../../contexts/request-context";
+import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 
 interface ObjectiveHideViewProps{
   objective: Objective,
@@ -19,8 +20,10 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
   const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
   const [isOpening, setIsOpening] = useState<boolean>(false);
   const [isBeingHover, setIsBeingHover] = useState<boolean>(false);
+  const { Theme } = objective;
 
   const { selectedTags } = useUserContext();
+  const { scss, getTintColor } = useThemeContext();
 
   const onChangeObjectiveShowing = async (objective: Objective) => {
     setIsOpening(true);
@@ -41,41 +44,6 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
     setIsOpening(false);
   }
 
-  const getTheme = () => {
-    if(objective.Theme === 'blue'){
-      return ' objObjectiveBlue'
-    }
-    else if(objective.Theme === 'red'){
-      return ' objObjectiveRed'
-    }
-    else if(objective.Theme === 'green'){
-      return ' objObjectiveGreen'
-    }
-    else if(objective.Theme === 'white'){
-      return ' objObjectiveWhite'
-    }
-    else if(objective.Theme === 'cyan'){
-      return ' objObjectiveCyan'
-    }
-    else if(objective.Theme === 'pink'){
-      return ' objObjectivePink'
-    }
-    else if(objective.Theme === 'noTheme'){
-      return ' objObjectiveNoTheme'
-    }
-  }
-
-  const getTextColor = () => {
-    return ' textColor' + (objective.Theme === 'white' || objective.Theme === 'pink'?'White':'');
-  }
-
-  const getTintColor = () => {
-    if(objective.Theme === 'white' || objective.Theme === 'pink')
-      return '-black';
-    else
-      return '';
-  }
-
   const isLoadingBlack = () => { return objective.Theme==='white' || objective.Theme==='pink'}
 
   const shouldShowPin = () => {
@@ -85,7 +53,7 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
 
   return (
     <div 
-      className={'objectiveClosedContainer' + getTheme()} 
+      className={'objectiveClosedContainer ' + scss(objective.Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.OBJ_BG])} 
       onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveShowing(objective)}}
       onMouseEnter={()=>{if(!isObjsEditingPos)setIsBeingHover(true)}}
       onMouseLeave={()=>{setIsBeingHover(false)}}
@@ -95,9 +63,9 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
         <Loading IsBlack={isLoadingBlack()}></Loading>
         :
         (isBeingHover?
-          <PressImage isBlack={isLoadingBlack()} src={process.env.PUBLIC_URL + '/show' + getTintColor() + '.png'}/>
+          <PressImage isBlack={isLoadingBlack()} src={process.env.PUBLIC_URL + '/show' + getTintColor(Theme) + '.png'}/>
           :
-          <div className={'objectiveClosedText' + getTextColor()}>{objective.Title}</div>
+          <div className={'objectiveClosedText' + scss(Theme, [SCSS.TEXT])}>{objective.Title}</div>
         )
       }
     </div>

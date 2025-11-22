@@ -10,8 +10,11 @@ $bor: false;
   text-align: start;
   width: 100%;
   min-height: 35px;
-  border-radius: 5px;
   margin-bottom: 2px;
+  
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
 
   @if($bor){
     border-width: 1px;

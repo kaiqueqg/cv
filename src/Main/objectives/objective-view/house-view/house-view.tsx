@@ -7,6 +7,7 @@ import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function houseNew(){
   return {
@@ -30,7 +31,8 @@ interface HouseViewProps extends ItemViewProps{
 export const HouseView: React.FC<HouseViewProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { house, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { house, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelecting, isSelected, itemTintColor } = props;
 
   const [newHouse, setNewHouse] = useState<House>(house);
   const [isEditingHouse, setIsEditingHouse] = useState<boolean>(false);
@@ -162,7 +164,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([house]);
 
     if(data){
-      putItemsInDisplay([house], true);
+      removeItemsInDisplay([house]);
     }
 
     setIsDeleting(false);
@@ -194,7 +196,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
         </div>
         <div className='houseCenterContainer'>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.Title}
             onChange={handleTitleInputChange}
@@ -202,7 +204,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Title"
             autoFocus></input>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.Listing}
             onChange={handleListingInputChange}
@@ -210,7 +212,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Listing"
             ></input>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.MapLink}
             onChange={handleMapLinkInputChange}
@@ -218,7 +220,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="MapLink"
             ></input>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.MeterSquare}
             onChange={handleMeterSquareInputChange}
@@ -226,7 +228,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="m²"
             ></input>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='number'
             value={newHouse.Rating === 0 ? '' : newHouse.Rating}
             onChange={handleRatingInputChange}
@@ -234,7 +236,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Rating"
             min={0}></input>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.Address}
             onChange={handleAddressInputChange}
@@ -242,7 +244,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Address"
             ></input>
           <input 
-            className={itemInputColor(theme)}
+            className={scss(theme, [SCSS.INPUT])}
             type='number'
             value={newHouse.TotalPrice === 0 ? '' : newHouse.TotalPrice}
             onChange={handleTotalPriceInputChange}
@@ -250,14 +252,14 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="TotalPrice"
             min={0}></input>
           <textarea 
-            className={'houseTextArea' + itemTextColor(theme)}
+            className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
             value={newHouse.Details}
             onChange={handleDetailsInputChange}
             onKeyDown={handleLongTextKeyDown} 
             placeholder='Details'
             ></textarea>
           <textarea 
-            className={'houseTextArea' + itemTextColor(theme)}
+            className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
             value={newHouse.Attention}
             onChange={handleAttentionInputChange}
             onKeyDown={handleLongTextKeyDown} 
@@ -276,7 +278,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.Rating || house.Rating === 0) return;
     
     return(
-      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+      <div className={'houseInfo' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {house.Rating}
       </div>
     )
@@ -286,7 +288,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.MeterSquare || house.MeterSquare.trim() === '') return;
 
     return(
-      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+      <div className={'houseInfo' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {house.MeterSquare+'m²'}
       </div>
     )
@@ -296,7 +298,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.TotalPrice || house.TotalPrice === 0) return;
     
     return(
-      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+      <div className={'houseInfo' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {'$' + house.TotalPrice.toString()}
       </div>
     )
@@ -306,7 +308,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.Address || house.Address === '') return;
     
     return(
-      <div className={'houseInfo' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+      <div className={'houseInfo' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {house.Address}
       </div>
     )
@@ -316,7 +318,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.Details || house.Details.trim() === '') return;
     
     return(
-      <div className={'houseDisplayDetailsLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+      <div className={'houseDisplayDetailsLine' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {house.Details}
       </div>
     )
@@ -326,7 +328,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.Attention || house.Attention.trim() === '') return;
 
     return(
-      <div className='houseDisplayAttention' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+      <div className='houseDisplayAttention' onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {house.Attention}
       </div>
     )
@@ -350,15 +352,15 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
 
   const getDisplayView = (): JSX.Element => {
     return(
-      <div className='houseDisplayContainer'>
+      <div className={'houseDisplayContainer '}>
         <div className='houseDisplayMainContainer'>
           <div className='houseDisplayMainTextContainer'>
-            <div className='houseDisplayMainLongTextContainer' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
-              <div className={'houseLine' + itemTextColor(theme)} onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+            <div className='houseDisplayMainLongTextContainer' onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
+              <div className={'houseLine' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
                 {getDisplayText()}
               </div>
             </div>
-            <div className='houseDisplayMainShortTextContainer' onClick={() => {if(!isEditingPos)setIsEditingHouse(true)}}>
+            <div className='houseDisplayMainShortTextContainer' onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
               {getRatingView()}
               {getMeterSquareView()}
               {getTotalPrice()}
@@ -372,9 +374,9 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
               <Loading IsBlack={theme==='white'||theme==='pink'}></Loading>
               :
               (house.WasContacted?
-                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
+                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
               )
             )
           }
@@ -388,12 +390,12 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   return (
-    <div className={'houseContainer' + itemGetTheme(theme, isSelected, isEndingPos, house.WasContacted)}>
+    <div className={'houseContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], house.WasContacted, isSelecting, isSelected)}>
       {isSavingHouse?
         <Loading IsBlack={theme==='white'}></Loading>
         :
         (isEditingHouse?
-          getEditingView()
+          getEditingView() 
           :
           getDisplayView()
         )

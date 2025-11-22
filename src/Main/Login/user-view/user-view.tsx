@@ -126,9 +126,9 @@ const UserView: React.FC<UserViewProps> = (props) => {
   }
 
   return(
-  <div className="logged-container">
+  <div className={"logged-container "}>
     <div className='card-container'>
-      <div className='logged-title'>Profile:</div>
+      <div className='logged-title'>PROFILE:</div>
       <div className="logged-info-box">
         <div className="logged-box">
           <div className="userRow"><b>Username:</b> </div>

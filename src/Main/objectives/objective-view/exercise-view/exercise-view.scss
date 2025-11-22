@@ -3,36 +3,20 @@
 $bor: false;
 
 .exerciseContainer{
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   vertical-align: middle;
+
   width: 100%;
   min-height: 40px;
-  border-radius: 5px;
   margin-bottom: 2px;
-}
 
-.exerciseContainer:hover{
-  cursor: pointer;
-}
-
-.exerciseContainerClear{
-  background-color: $transparent;
-  border-color: $transparent;
-}
-.exerciseContainerClear:hover{
-  border-color: black;
-}
-
-.exerciseContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.exerciseContainerSelectedEnding{
+  border-width: 1px;
   border-style: solid;
+  border-radius: 5px;
 }
 
 .exerciseDisplayContainer{
@@ -54,11 +38,6 @@ $bor: false;
 .exerciseMainLine{
   display: flex;
   align-items: center;
-
-  // border-width: 1;
-  // border-style: solid;
-  // border-color: red;
-  // border-radius: 5;
 }
 
 .exerciseText{
@@ -72,14 +51,6 @@ $bor: false;
   align-items: center;
   justify-content: flex-start;
   margin: 0px 0px 2px 10px;
-  color: #6b6b6b;
-
-
-  // border-width: 1;
-  // border-style: solid;
-  // border-color: green;
-  // border-radius: 5;
-
 }
 
 .inputsContainer{

@@ -9,9 +9,12 @@ $bor: false;
   align-items: center;
   text-align: center;
   width: 100%;
-  border-radius: 5px;
   margin-bottom: 2px;
   min-height: 35px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
 }
 
 .houseContainer:hover{
@@ -168,14 +171,17 @@ $bor: false;
   user-select: text;
   width: 100%;
   min-height: 100px;
+  min-width: 300px;
   margin-right: 5px;
-  background-color: #00000000;
-  border-width: 1px;
-  border-color: black;
-  border-style: dashed;
-  border-radius: 5px;
   outline: 0px;
   margin: 5px 0px;
+  resize: both;
+
+  border-width: 1px;
+  border-style: dashed;
+  border-radius: 5px;
+
+  background-color: $transparent;
 }
 
 .inputsContainer{

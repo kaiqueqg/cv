@@ -101,6 +101,7 @@ const Login: React.FC<LoginProps> = (props) => {
       Password: password,
     };
 
+    setPassword('');
     setIsLogging(true);
     try {
       const data = await identityApi.login(JSON.stringify(user), loginError);
@@ -262,12 +263,12 @@ const Login: React.FC<LoginProps> = (props) => {
   return(
     <div className='login-container'>
       {!isLogged?
-        <div className=''>
+        <div className='login-wrapper'>
           <div className='login-box'>
-            <h3 style={{margin: '10px 0px'}}>Login</h3>
+            {/* <h3 className='login-title'>LOGIN</h3> */}
             <div className="email-column">
               <div className="pass-row">
-                <input className="input-base" type="text" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
+                <input name='email'  className="input-base" type="email" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
                 {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
                 {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
                 {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}

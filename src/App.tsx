@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './app.scss';
 import './global.scss';
 import Curriculum from './main/curriculum/curriculum';
@@ -10,6 +10,7 @@ import { LogProvider } from './contexts/log-context';
 import Login from './main/login/login';
 import ObjectivesList from './main/objectives/objectives-list';
 import IoT from './main/iot/iot';
+import { ThemeProvider } from './contexts/theme-context';
 
 interface AppProps{
 }
@@ -23,23 +24,25 @@ const App: React.FC<AppProps> = () => {
   return (
     <React.StrictMode>
       <LogProvider>
-        <RequestProvider>
           <UserProvider>  
-            <div className="appContainer">
-              <HashRouter>
-                <TopMenu></TopMenu>
-                <Routes>
-                  <Route path="" element={<Curriculum/>}/>
-                  <Route path="/" element={<Curriculum/>}/>
-                  <Route path="/login" element={<Login/>}/>
-                  <Route path="/cv" element={<Curriculum/>}/>
-                  <Route path="/objectiveslist" element={<ObjectivesList/>}/>
-                  <Route path="/iot" element={<IoT></IoT>}/>
-                </Routes>
-              </HashRouter>
-            </div>
-          </UserProvider>
+        <RequestProvider>
+            <ThemeProvider>
+              <div className="appContainer">
+                <HashRouter>
+                  <TopMenu></TopMenu>
+                  <Routes>
+                    <Route path="" element={<Curriculum/>}/>
+                    <Route path="/" element={<Curriculum/>}/>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/cv" element={<Curriculum/>}/>
+                    <Route path="/objectiveslist" element={<ObjectivesList/>}/>
+                    <Route path="/iot" element={<IoT></IoT>}/>
+                  </Routes>
+                </HashRouter>
+              </div>
+            </ThemeProvider>
         </RequestProvider>
+          </UserProvider>
       </LogProvider>
     </React.StrictMode>
   )

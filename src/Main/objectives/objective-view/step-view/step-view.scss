@@ -6,31 +6,22 @@ $bor: false;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: start;
+
   width: 100%;
   min-height: 35px;
-  border-radius: 5px;
   margin-bottom: 2px;
-
-  align-items: center;
-  text-align: start;
-}
-
-.stepContainerClear{
-  background-color: $transparent;
-  border-color: $transparent;
-}
-
-.stepContainerClear:hover{
-  border-color: black;
-}
-
-.stepContainerSelected{
-  border-color: red;
-  border-style: dashed;
-}
-
-.stepContainerSelectedEnding{
+  
+  border-radius: 5px;
+  border-width: 1px;
   border-style: solid;
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: red;
+    border-radius: 5px;
+  }
 }
 
 .stepTitleContainer{
@@ -66,6 +57,7 @@ $bor: false;
   justify-content: center;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
   width: 100%;
 
   @if($bor){
@@ -86,7 +78,6 @@ $bor: false;
 
   border-width: 1px;
   border-style: solid;
-  border-color: beige;
   border-radius: 5px;
 }
 
@@ -112,20 +103,6 @@ $bor: false;
 
 .stepTitle:hover{
   cursor: pointer;
-}
-
-.stepInput{
-  display: flex;
-  width: 100%;
-  height: 26px;
-  padding: 0px 10px 0px 10px;
-  margin-right: 5px;
-  color: beige;
-  background-color: #00000000;
-  border-width: 0px 0px 1px 0px;
-  border-color: beige;
-  border-style: solid;
-  outline: 0px;
 }
 
 .inputImage{

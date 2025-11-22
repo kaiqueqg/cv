@@ -33,6 +33,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     storage.deleteSelectedTags();
     storage.deleteFirstLogin();
     setUser(null);
+
+    localStorage.clear();
+    sessionStorage.clear();
   };
 
   const loadUserPrefs = async () => {

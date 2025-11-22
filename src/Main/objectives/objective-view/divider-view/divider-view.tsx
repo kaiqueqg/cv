@@ -9,7 +9,7 @@ import PressImage from "../../../../press-image/press-image";
 import { MessageType } from "../../../../Types";
 import { useLogContext } from "../../../../contexts/log-context";
 import { useRequestContext } from "../../../../contexts/request-context";
-import { SCSSItemType, useThemeContext } from "../../../../contexts/theme-context";
+import { SCSS, useThemeContext } from "../../../../contexts/theme-context";
 
 export function dividerNew(){
   return {
@@ -28,8 +28,8 @@ export const DividerView: React.FC<DividerProps> = (props) => {
   const { user, setUser } = useUserContext();
   const { identityApi, objectiveslistApi } = useRequestContext();
   const { popMessage } = useLogContext();
-  const { getItemScssColor } = useThemeContext();
-  const { divider, theme, putItemsInDisplay, isEditingPos, isSelected, isEndingPos, choseNewItemToAdd, orderDividerItems, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { divider, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelected, isSelecting, choseNewItemToAdd, orderDividerItems, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>(divider.Title);
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -108,7 +108,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([divider], (error:any) => popMessage(error.Message, MessageType.Error, 10));
 
     if(data){
-      putItemsInDisplay([divider], true);
+      removeItemsInDisplay([divider]);
     }
 
     setIsDeleting(false);
@@ -140,7 +140,12 @@ export const DividerView: React.FC<DividerProps> = (props) => {
 
   const getTitle = () => {
     const rtnTitle = divider.Title.trim() === ''?'add title':divider.Title;
-    return <div className={'dividerTitleLine' + itemTextColor(theme, divider.Title.trim() === '')} onClick={() => {if(!isEditingPos)setIsEditingTitle(true)}}>{rtnTitle}</div>;
+    return (
+      <div
+        className={'dividerTitleLine' + scss(theme, [SCSS.TEXT], divider.Title.trim() === '')}
+        onClick={() => {if(!isDisabled)setIsEditingTitle(true)}}>{rtnTitle}
+      </div>
+    );
   }
 
   const increaseAmountItemsToAdd = () => {
@@ -160,17 +165,23 @@ export const DividerView: React.FC<DividerProps> = (props) => {
     setIsLoadingAddingNewItem(false);
   }
 
+  const borderIfSelected = () => {
+    if(isSelecting || isSelected){
+      return scss(theme, [SCSS.BORDERCOLOR_CONTRAST], true, isSelecting, isSelected);
+    }
+  }
+
   return (
-    <div className={'dividerContainer' + itemGetTheme(theme, isSelected, isEndingPos, divider.Title.trim() !== '') + ' dividerLighten'}>
+    <div className={'dividerContainer ' + scss(theme, [SCSS.BORDERCOLOR_CONTRAST], true, isSelecting, isSelected)}>
       <div className='titleLineContainer'>
         {!isEditingTitle && 
           (isSavingIsOpen?
             <Loading IsBlack={theme==='white'}></Loading>
             :
             (divider.IsOpen?
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
               :
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isEditingPos)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + itemTintColor(theme) + '.png'}/>
+              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + itemTintColor(theme) + '.png'}/>
             )
           )
         }
@@ -185,7 +196,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
                 <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
               }
               <input 
-                className={itemInputColor(theme)}
+                className={scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={onTitleInputChange}
@@ -202,7 +213,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       </div>
       {isAddingNewItem &&
         <div className='dividerNewItemContainer'>
-          <div className={'objectiveNewItemAmount' + getItemScssColor(theme, SCSSItemType.TEXT)} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+          <div className={'objectiveNewItemAmount' + scss(theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
           <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Wait, divider.Pos)}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/wait' + itemTintColor(theme) + '.png'}></img>
           </div>

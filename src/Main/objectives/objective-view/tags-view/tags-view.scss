@@ -12,6 +12,10 @@ $bor: false;
   padding: 5px 5px;
   margin-bottom: 10px;
 
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
   @if($bor) {
     border-width: 1px;
     border-style: solid;

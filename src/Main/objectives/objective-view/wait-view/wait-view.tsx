@@ -7,6 +7,7 @@ import Loading from "../../../../loading/loading";
 import log from "../../../../log/log";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function waitNew() { return { Title: '' } }
 
@@ -17,7 +18,8 @@ interface WaitViewProps extends ItemViewProps{
 
 export const WaitView: React.FC<WaitViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { wait, putItemsInDisplay, theme, isEditingPos, isSelected, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor } = props;
+  const { scss } = useThemeContext();
+  const { wait, putItemsInDisplay, removeItemsInDisplay, theme, isDisabled, isSelected, itemTintColor } = props;
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
@@ -50,7 +52,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([wait]);
 
     if(data){
-      putItemsInDisplay([wait], true);
+      removeItemsInDisplay([wait]);
     }
 
     setIsDeleting(false);
@@ -85,7 +87,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
   }
 
   return (
-    <div className={'waitContainer' + itemGetTheme(theme, isSelected, isEndingPos)}>
+    <div className={'waitContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], wait.Title.trim() !==  '')}>
       {isSavingTitle?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -97,7 +99,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
               <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true} isLoading={isDeleting}/>
             }
             <input 
-              className={itemInputColor(theme)}
+              className={scss(theme, [SCSS.INPUT])}
               type='text'
               placeholder='Wait text'
               value={newTitle}
@@ -107,7 +109,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
             <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
           </div>
           :
-          <div className={'waitTitle' + itemTextColor(theme)} onClick={()=>{if(!isEditingPos)onChangeEditTitle()}}>{wait.Title}</div>
+          <div className={'waitTitle' + scss(theme, [SCSS.TEXT], wait.Title.trim() !==  '')} onClick={()=>{if(!isDisabled)onChangeEditTitle()}}>{wait.Title}</div>
         )
       }
     {!isEditingTitle && <img className='waitImage' src={process.env.PUBLIC_URL + '/wait' + itemTintColor(theme) + '.png'}></img>}

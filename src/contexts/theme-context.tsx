@@ -3,12 +3,9 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-export const enum SCSSObjType {
+export const enum SCSS {
   OBJ_BG,
   ITEM_BG,
-}
-
-export const enum SCSSItemType {
   INPUT,
   INPUT_CONTRAST,
   INPUT_ALERT,
@@ -20,120 +17,103 @@ export const enum SCSSItemType {
   BORDERCOLOR_ALERT,
 }
 
+
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [theme, setTheme] = useState<string>('light');
+  // const [theme, setTheme] = useState<string>('light');
 
-  const getScssObjColor = (objTheme: string, ...items: SCSSObjType[]) => {
-    let finalStyle = '';
-    for (let i = 0; i < items.length; i++) {
-      let currentStyle = '';
-      if(objTheme === 'blue'){
-        currentStyle += ' global-blue';
-      }
-      else if(objTheme === 'red'){
-        currentStyle += ' global-red';
-      }
-      else if(objTheme === 'green'){
-        currentStyle += ' global-green';
-      }
-      else if(objTheme === 'white'){
-        currentStyle += ' global-white';
-      }
-      else if(objTheme === 'cyan'){
-        currentStyle += ' global-cyan';
-      }
-      else if(objTheme === 'pink'){
-        currentStyle += ' global-pink';
-      }
-      else{
-        currentStyle += ' global-notheme';
-      }
+  const getTintColor = (objTheme: string): string => {
+    if(objTheme === 'white' || objTheme === 'pink')
+      return '-black';
+    else
+      return '';
+  }
   
-      switch (items[i]) {
-        case SCSSObjType.ITEM_BG:
-          currentStyle += '-item-background';
-          break;
-        case SCSSObjType.OBJ_BG:
-          currentStyle += '-obj-background';
-          break;
+  const getThemeString = (item: SCSS, fade?: boolean, isSelecting?: boolean, isSelected?: boolean) => {
+    switch(item){
+      case SCSS.OBJ_BG:
+        return '-obj-background';
+      case SCSS.ITEM_BG:
+        return '-item-background'+(fade?'-fade':'');
+      case SCSS.INPUT:
+        return '-input input ';
+      case SCSS.INPUT_CONTRAST:
+        return '-input-contrast input ';
+      case SCSS.INPUT_ALERT:
+        return '-input-alert input ';
+      case SCSS.TEXT:
+        return '-text'+(fade?'-fade':'');
+      case SCSS.TEXT_CONTRAST:
+        return '-text-contrast';
+      case SCSS.TEXT_ALERT:
+        return '-text-alert';
+      case SCSS.BORDERCOLOR:
+        if(isSelected)
+          return '-bordercolor-selected';
+        else if(isSelecting)
+          return '-bordercolor-selecting';
+        else if(fade)
+          return '-bordercolor-fade';
+        else
+          return '-bordercolor';
+      case SCSS.BORDERCOLOR_CONTRAST:
+        if(isSelected)
+          return '-bordercolor-selected';
+        else if(isSelecting)
+          return '-bordercolor-selecting';
+        else if(fade)
+          return '-bordercolor-fade';
+        else
+          return '-bordercolor-contrast';
+      case SCSS.BORDERCOLOR_ALERT:
+        return '-bordercolor-alert';
       }
 
-      finalStyle += ' ' + currentStyle + ' ';
-    }
-    
-    return ' '+finalStyle+' ';
+      return '';
   }
 
-  //
-  const getItemScssColor = (objTheme: string, ...items: SCSSItemType[]): string => {
-    let finalStyle = '';
+  const scss = (objTheme: string, items: SCSS[]|SCSS, fade?: boolean, isSelecting?: boolean, isSelected?: boolean): string => {
+    let finalSCSS = '';
+    let baseStyle = '';
 
-
-    for (let i = 0; i < items.length; i++) {
-      let currentStyle = '';
-      if(objTheme === 'blue'){
-        currentStyle += ' global-blue';
-      }
-      else if(objTheme === 'red'){
-        currentStyle += ' global-red';
-      }
-      else if(objTheme === 'green'){
-        currentStyle += ' global-green';
-      }
-      else if(objTheme === 'white'){
-        currentStyle += ' global-white';
-      }
-      else if(objTheme === 'cyan'){
-        currentStyle += ' global-cyan';
-      }
-      else if(objTheme === 'pink'){
-        currentStyle += ' global-pink';
-      }
-      else{
-        currentStyle += ' global-notheme';
-      }
-  
-      switch(items[i]){
-        case SCSSItemType.INPUT:
-          currentStyle += '-input';
-          break;
-        case SCSSItemType.INPUT_CONTRAST:
-          currentStyle += '-input-contrast';
-          break;
-        case SCSSItemType.INPUT_ALERT:
-          currentStyle += '-input-alert';
-          break;
-        case SCSSItemType.TEXT:
-          currentStyle += '-text';
-          break;
-        case SCSSItemType.TEXT_CONTRAST:
-          currentStyle += '-text-contrast';
-          break;
-        case SCSSItemType.TEXT_ALERT:
-          currentStyle += '-text-alert';
-          break;
-        case SCSSItemType.BORDERCOLOR:
-          currentStyle += '-bordercolor';
-          break;
-        case SCSSItemType.BORDERCOLOR_CONTRAST:
-          currentStyle += '-bordercolor-contrast';
-          break;
-        case SCSSItemType.BORDERCOLOR_ALERT:
-          currentStyle += '-bordercolor-alert';
-          break;
-      }
-
-      finalStyle += ' ' + currentStyle + ' ';
+    if(objTheme === 'blue'){
+      baseStyle += ' global-blue';
     }
-    
-    return ' '+finalStyle+' ';
+    else if(objTheme === 'red'){
+      baseStyle += ' global-red';
+    }
+    else if(objTheme === 'green'){
+      baseStyle += ' global-green';
+    }
+    else if(objTheme === 'white'){
+      baseStyle += ' global-white';
+    }
+    else if(objTheme === 'cyan'){
+      baseStyle += ' global-cyan';
+    }
+    else if(objTheme === 'pink'){
+      baseStyle += ' global-pink';
+    }
+    else{
+      baseStyle += ' global-notheme';
+    }
+
+    if(Array.isArray(items)){
+      for (let i = 0; i < items.length; i++) {
+        finalSCSS += (baseStyle + getThemeString(items[i], fade, isSelecting, isSelected));
+      }
+    }
+    else{
+      finalSCSS += (baseStyle + getThemeString(items, fade, isSelecting, isSelected));
+    }
+
+    return ' '+finalSCSS+' ';
   }
 
   return (
     <ThemeContext.Provider value={{ 
-        theme, setTheme,
-        getItemScssColor,
-        getScssObjColor,
+        // theme, setTheme,
+        scss,
+        getTintColor,
       }}>
       {children}
     </ThemeContext.Provider>
@@ -141,10 +121,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 };
 
 interface ThemeContextProps {
-  theme: string;
-  setTheme: React.Dispatch<React.SetStateAction<string>>,
-  getItemScssColor: (objTheme: string, ...items: SCSSItemType[]) => string
-  getScssObjColor: (objTheme: string, ...items: SCSSObjType[]) => string
+  // theme: string;
+  // setTheme: React.Dispatch<React.SetStateAction<string>>,
+  scss: (objTheme: string, items: SCSS[], fade?: boolean, isSelecting?: boolean, isSelected?: boolean) => string
+  getTintColor: (objTheme: string) => string,
 }
 
 export const useThemeContext = () => {

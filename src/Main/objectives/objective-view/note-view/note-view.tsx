@@ -8,6 +8,7 @@ import log from "../../../../log/log";
 import { isEnumDeclaration } from "typescript";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
+import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function noteNew(){
   return {
@@ -22,7 +23,8 @@ interface NoteViewProps extends ItemViewProps{
 export const NoteView: React.FC<NoteViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
-  const { note, putItemsInDisplay, theme, isSelected, isEditingPos, isEndingPos, itemGetTheme, itemTextColor, itemInputColor, itemTintColor} = props;
+  const { scss } = useThemeContext();
+  const { note, putItemsInDisplay, removeItemsInDisplay, theme, isSelecting, isSelected, isDisabled, itemTintColor} = props;
 
   const [newText, setNewText] = useState<string>(note.Text);
   const [isEditingText, setIsEditingText] = useState<boolean>(false);
@@ -69,7 +71,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     const data = await objectiveslistApi.deleteObjectiveItems([note]);
 
     if(data){
-      putItemsInDisplay([note], true);
+      removeItemsInDisplay([note]);
     }
 
     setIsDeleting(false);
@@ -124,7 +126,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   }
 
   return (
-    <div className={'noteContainer' + itemGetTheme(theme, isSelected, isEndingPos, note.Text.trim() !== '')}>
+    <div className={'noteContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], note.Text.trim() !== '', isSelecting, isSelected)}>
       {isSavingText?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -139,7 +141,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
             </div>
             <div className='centerTitleContainer'>
               <textarea 
-                className={'noteTextArea' + itemTextColor(theme)}
+                className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
                 value={newText}
                 onChange={handleTextInputChange}
                 onKeyDown={handleKeyDown} 
@@ -157,8 +159,8 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
           </div>
           :
           <div 
-            className={'noteTitle' + itemTextColor(theme)}
-            onClick={() => {if(!isEditingPos && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>
+            className={'noteTitle' + scss(theme, [SCSS.TEXT])}
+            onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>
         )
       }
     {note.Text === '' && !isEditingText && <img className='noteImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>}

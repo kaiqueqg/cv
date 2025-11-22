@@ -1,9 +1,13 @@
 @import '../global.scss';
 
 $bor: false;
-$size: 25px;
-$sizeBig: 30px;
-$sizeBigger: 35px;
+// $size: 25px;
+// $sizeBig: 30px;
+// $sizeBigger: 35px;
+
+$size: 36px;
+$sizeBig: 50px;
+$sizeBigger: 55px;
 
 .pressImageContainer{
   cursor: pointer;
@@ -14,14 +18,27 @@ $sizeBigger: 35px;
   min-height: $size;
   max-width: $size;
   max-height: $size;
-  margin: 5px;
-  padding: 2px;
+  // margin: 5px;
+  padding: 7px;
 
   @if($bor){
     border-width: 1px;
     border-color: red;
     border-style: solid;
   }
+}
+
+.pressImageContainer:hover{
+  padding: 5px;
+}
+
+.pressImageContainerSelected{
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
 }
 
 .pressImageContainerBig{
@@ -38,13 +55,6 @@ $sizeBigger: 35px;
   max-height: $sizeBigger;
 }
 
-.pressImageContainer:hover{padding: 0px}
-
-.pressImageContainerHover{}
-
-.pressImageContainerHover:hover{
-  padding: 2px;
-}
 
 .pressImageImage{
   width: 100%;

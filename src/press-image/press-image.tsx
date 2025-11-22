@@ -21,13 +21,14 @@ export interface PressImageProps{
   wasOk?: ()=>void,
   wasWrong?: ()=>void,
 
+  isSelected?: boolean,
   isBlack: boolean,
   size?: 'big'|'bigger',
 }
 
 const PressImage = (props: PressImageProps) => {
-  const {log} = useLogContext();
-  const { getItemScssColor } = useThemeContext();
+  const { log } = useLogContext();
+  const { scss } = useThemeContext();
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
   const [text, setText] = useState<number>(2000);
   const [imageClass, setImageClass] = useState<string>('spin fade-in');
@@ -52,7 +53,7 @@ const PressImage = (props: PressImageProps) => {
 
   const getNormalImage = () => {
     const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
-    let classnameImageContainer = 'pressImageContainer ';
+    let classnameImageContainer = 'pressImageContainer ' + (props.isSelected && ' pressImageContainerSelected ');
     if(props.size){
       if(props.size === 'big') classnameImageContainer += 'pressImageContainerBig ';
       if(props.size === 'bigger') classnameImageContainer += 'pressImageContainerBigger ';
