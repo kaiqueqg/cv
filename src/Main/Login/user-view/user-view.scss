@@ -8,20 +8,25 @@ $bor: false;
 }
 
 .card-container{
+  display: flex;
   justify-content: center;
+  vertical-align: middle;
   align-items: center;
   text-align: center;
-  vertical-align: middle;
-  border: 1px solid $grey;
-  border-radius: 10px;
+  flex-direction: column;
+
   padding: 10px 15px;
   margin-bottom: 30px;
+
+  border: 1px solid $grey;
+  border-radius: 5px;
 }
 
 .logged-title{
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
+  user-select: none;
 }
 
 .logged-info-box {
@@ -36,15 +41,47 @@ $bor: false;
   @if $bor {border: 1px solid yellow;}
 }
 
+.input-base{
+  display: flex;
+  justify-content: baseline;
+  vertical-align: middle;
+  color: beige;
+  background-color: #282C34;
+  padding: 5px 15px;
+  width: 100%;
+  outline: none;
+  font-size: 20px;
+  
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: $transparent;
+  border-style: solid;
+
+  @media(min-width: 700px){
+    min-height: 40px;
+    padding: 2px 5px;
+    font-size: medium
+  }
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(243, 219, 6);
+    border-radius: 5px;
+  }
+}
+
 .userRow{
   margin-bottom: 1px;
   padding: 5px;
   color: $blue-light;
+  max-width: 300px;
   text-align: left;
+
   border-color: $grey;
   border-style: solid;
   border-width: 0px 0px 1px 0px;
-  max-width: 300px;
+
   @if $bor {border: 1px solid red;}
 }
 
@@ -118,6 +155,19 @@ $bor: false;
   padding: 5px;
 }
 
+.changeEmailText{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  font-weight: bold;
+  font-size: medium;
+  padding: 10px 0px ;
+  @if $bor {border: 1px solid rgb(0, 255, 55);}
+}
+
 .admin-user-image{
   cursor: pointer;
   max-width: 25px;
@@ -128,6 +178,14 @@ $bor: false;
 
 .admin-user-image:hover{
   padding: 0px;
+}
+
+.qrcode-image{
+  cursor: pointer;
+  max-width: 200px;
+  max-height: 200px;
+  padding: 3px;
+  @if $bor {border: 1px solid purple;}
 }
 
 .admin-service-box {

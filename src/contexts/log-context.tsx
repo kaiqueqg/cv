@@ -12,7 +12,7 @@ const currentLogLevel = LogLevel.Dev;
 
 export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
   
-  const randomId = (size?: number) => {
+  const randomId = (size?: number): string => {
     const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let randomString = "";
     const amount = size ?? 40;
@@ -287,17 +287,23 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
       },
     ]);
   }
+
   const removeMessage = (removeId: string) => {
     setMessageList(prevMessages => prevMessages.filter(msg => msg.id !== removeId));
+  }
+
+  const clearMessages = () => {
+    setMessageList([]);
   }
     
   return (
     <LogContext.Provider 
     value={{
+      // randomId,
       log,
       consoleLogs,
       deleteLog,
-      messageList, popMessage, removeMessage,
+      messageList, popMessage, removeMessage, clearMessages,
     }}>
     {children}
     </LogContext.Provider>
@@ -327,6 +333,7 @@ interface LogFunctions {
 }
 
 interface LogContextType {
+  // randomId: (size?: number) => string,
   log: LogFunctions,
   consoleLogs: string,
   deleteLog: () => void,
@@ -334,6 +341,7 @@ interface LogContextType {
   messageList: PopMessage[],
   popMessage: (text: string, type?: MessageType, timeoutInSeconds?: number) => void,
   removeMessage: (removeId: string) => void,
+  clearMessages: () => void,
 }
 
 export const useLogContext = () => {

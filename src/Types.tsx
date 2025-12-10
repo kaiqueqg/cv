@@ -9,9 +9,12 @@ export interface LangText{
 export interface ResponseUser{
   Username: string,
   Email: string,
-  Status: UserStatus,
-  Role: UserRoles,
-  CreateAt: string,
+  Status: string,
+  Role: string,
+  TwoFAActive: boolean,
+  CreateAt?: string,
+  Count?: number,
+  CountResetAt?: string,
   FCMToken?: string,
 }
 
@@ -43,7 +46,21 @@ export interface LoginModel{
   ErrorMessage: string
 }
 
+export interface LoginRequest {
+  Password: string;
+  Email: string;
+  ExpoToken?: string;
+}
+export interface LoginResponse {
+  User?: ResponseUser,
+  Token?: string,
+  RequiringTwoFA: boolean,
+  TwoFATempToken?: string,
+}
+
 export interface ChangeUserStatusRequest { Email: string, Status: string }
+export interface ChangeUserPasswordRequest { Email: string, Password: string }
+export interface RequestActivateTwoFA { TwoFAActivationCode: string }
 
 export interface UserPrefs{
   theme: string,

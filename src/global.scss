@@ -128,7 +128,7 @@ $borderFocusBlue: rgb(40, 200, 240);
 $borderFocusRed: $red;
 $borderFocusGreen: yellowgreen;
 $borderFocusCyan: rgb(0, 251, 255);
-$borderFocusnoTheme: beige;
+$borderFocusnoTheme:black;
 $borderFocusWhite: #E4A200;
 $borderFocusPink: #E91E63;
 
@@ -207,6 +207,9 @@ $borderFocusPink: #E91E63;
 .global-pink-input-alert{color: $red;border-color: $red;}
 .global-notheme-input-alert{color: $red;border-color: $red;}
 
+// INPUT
+// BACKGROUND --------------------------------------------------------------------------------
+
 .global-blue-obj-background{background: linear-gradient(to right, $objBlue, lighten($objBlue, 3%));}
 .global-red-obj-background{background: linear-gradient(to right, $objRed, lighten($objRed, 3%));}
 .global-green-obj-background{background: linear-gradient(to right, $objGreen, lighten($objGreen, 3%));}
@@ -231,6 +234,16 @@ $borderFocusPink: #E91E63;
 .global-cyan-item-background{background-color: lighten($objCyan, 10%);}
 .global-white-item-background{background-color: #D8AE7E;}
 .global-pink-item-background{background-color: darken($objPink, 10%);}
+
+.global-blue-item-background-dark{background-color: darken($objBlue, 5%);}
+.global-red-item-background-dark{background-color: darken($objRed, 5%);}
+.global-green-item-background-dark{background-color: darken($objGreen, 5%);}
+.global-notheme-item-background-dark{background-color: darken($objNoTheme, 5%);}
+.global-cyan-item-background-dark{background-color: darken($objCyan, 5%);}
+.global-white-item-background-dark{background-color: darken(#D8AE7E, 5%);}
+.global-pink-item-background-dark{background-color: darken($objPink, 5%);}
+
+// BACKGROUND
 
 .beige-darker{
   filter: brightness(40%);

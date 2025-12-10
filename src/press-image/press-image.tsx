@@ -3,6 +3,7 @@ import { useLogContext } from "../contexts/log-context";
 import './press-image.scss';
 import Loading from "../loading/loading";
 import { useThemeContext } from "../contexts/theme-context";
+import { MessageType } from "../Types";
 
 export interface PressImageProps{
   id?: string,
@@ -12,12 +13,15 @@ export interface PressImageProps{
 
   onClick?: () => void,
   hide?: boolean,
+  
   disable?: boolean,
-  disableSrc?:string,
+  disableSrc?: string,
+  disableMsg?: string,
+  
   confirm?: boolean,
   isLoading?: boolean,
   hideHoverEffect?: boolean,
-  text?: string,
+  badgeText?: string,
   wasOk?: ()=>void,
   wasWrong?: ()=>void,
 
@@ -27,7 +31,7 @@ export interface PressImageProps{
 }
 
 const PressImage = (props: PressImageProps) => {
-  const { log } = useLogContext();
+  const { popMessage } = useLogContext();
   const { scss } = useThemeContext();
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
   const [text, setText] = useState<number>(2000);
@@ -49,6 +53,9 @@ const PressImage = (props: PressImageProps) => {
       }
       else if(props.onClick) props.onClick();
     }
+    else if(props.disableMsg){
+      popMessage(props.disableMsg);
+    }
   }
 
   const getNormalImage = () => {
@@ -65,7 +72,7 @@ const PressImage = (props: PressImageProps) => {
         className={classnameImageContainer + (props.hideHoverEffect?' pressImageContainerHover':'')}
         onClick={normalTouchEnd}>
         {props.src && <img className={'pressImageImage ' } src={imageSrc}></img>}
-        {props.text && props.text !== '' && <div className={'pressImageText'}>{props.text}</div>}
+        {props.badgeText && props.badgeText !== '' && <div className={'pressImageText'}>{props.badgeText}</div>}
       </div>
     )
   }
@@ -88,7 +95,7 @@ const PressImage = (props: PressImageProps) => {
   
   return(
     props.isLoading?
-    <Loading IsBlack={props.isBlack} text={props.text}></Loading>
+    <Loading IsBlack={props.isBlack} text={props.badgeText}></Loading>
     :
     (props.hide ?
       getHideImage()

@@ -3,22 +3,61 @@
 $bor: false;
 
 .objectiveMessagesContainer {
-  display: flex;
+  cursor: pointer;
+  position: fixed;
+  top: 30px;
+  right: 10px;
+  // transform: translateX(10%);
+  z-index: 20;
+  // min-width: 300px;
+
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  // margin: 10px 0px;
 
-  // position: fixed;
-  // top: 0;
-  // right: 10px;
-  // z-index: 1000; // Garante que fique acima de outros elementos
-  // padding: 10px; // Ajuste para espaçamento interno
-  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Opcional, melhora a visibilidade
+  @if(min-width:700px) {
+    
+  }
 
   @if($bor) {
     border-width: 1px;
-    border-color: red;
+    border-color: rgb(26, 255, 0);
     border-style: solid;
   }
+}
+
+.site-messages-top-menu{
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  user-select: none;
+
+  background-color: $blue-dark;
+
+  font-size: 12px;
+  font-weight: bolder;
+
+  padding: 5px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: $beige-dark;
+
+  @media(min-width: 700px){
+    font-size: 20px;
+    // color: red;
+  }
+
+  @if($bor) {
+    border-width: 1px;
+    border-style: solid;
+    border-color: red;
+    border-radius: 5px;
+  }
+  
 }

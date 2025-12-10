@@ -3,6 +3,7 @@ import './site-message-view.scss';
 import { useLogContext } from "../../contexts/log-context";
 import { MessageType, PopMessage } from "../../Types";
 import log from "../../log/log";
+import PressImage from "../../press-image/press-image";
 
 export interface SiteMessageViewProps {
   message: PopMessage, 
@@ -31,8 +32,9 @@ const SiteMessageView = (props: SiteMessageViewProps) => {
   }
 
   return (
-    <div key={message.id} className={getMessageClassname()}>
+    <div key={message.id} className={getMessageClassname()} onClick={() => {removeMessage(message.id);}}>
       {message.text}
+      {/* <PressImage isBlack src={process.env.PUBLIC_URL + '/cancel.png'} onClick={() => {removeMessage(message.id);}}/> */}
     </div>
   );
 };

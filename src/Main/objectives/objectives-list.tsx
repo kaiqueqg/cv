@@ -85,9 +85,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const updateObjectives = async () => {
     setIsUpdatingObjectives(true);
 
-    const data = await objectiveslistApi.syncObjectivesList({});
-    if(data && data.Objectives){
-      const sorted = data.Objectives.sort((a: Objective, b: Objective) => a.Pos-b.Pos);
+    const data = await objectiveslistApi.getObjectiveList();
+    if(data){
+      const sorted = data.sort((a: Objective, b: Objective) => a.Pos-b.Pos);
       setObjectives(sorted);
 
       //updating available tags and selected tags

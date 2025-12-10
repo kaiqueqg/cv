@@ -43,7 +43,7 @@ export interface ItemViewProps{
   isLoadingBlack: boolean,
 }
 
-export enum MultiSelectType { MOVE, COPY }
+export enum MultiSelectType { MOVE = 'Move', COPY = 'Copy' }
 export interface MultSelectAction { type: MultiSelectType, objectiveId: string, items: Item[] }
 
 export interface DisplayTag{
@@ -58,20 +58,21 @@ export interface ImageInfo {
 }
 export interface PresignedUrl { url: string }
 
-export enum ItemType{
-  Step,
-  Wait,
-  Question,
-  Note,
-  Location,
-  Divider,
-  Grocery, 
-  Medicine, 
-  Exercise, 
-  Link, 
-  ItemFake, 
-  Image,
-  House }
+export enum ItemType {
+  Step = 'Step',
+  Wait = 'Wait',
+  Question = 'Question',
+  Note = 'Note',
+  Location = 'Location',
+  Divider = 'Divider',
+  Grocery = 'Grocery',
+  Medicine = 'Medicine',
+  Exercise = 'Exercise',
+  Link = 'Link',
+  ItemFake = 'ItemFake',
+  Image = 'Image',
+  House = 'House'
+}
 
 export interface Item {
   ItemId: string,

@@ -95,12 +95,14 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   }
 
   const doneEdit = async (newImp?: StepImportance) => {
+
     const newStep: Step = {
       ...step,
       Title: newTitle.trim(),
       Importance: newImp??newImportance, 
       LastModified: new Date().toISOString(),
       AutoDestroy: newAutoDestroy,
+      Done: (newAutoDestroy!==step.AutoDestroy&&step.Done)? false:step.Done,
     };
 
     if(newStep.Title !== step.Title || newStep.Done !== step.Done || newStep.Pos !== step.Pos || newStep.Importance !== step.Importance || newStep.AutoDestroy !== step.AutoDestroy) {
@@ -176,20 +178,19 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   }
 
   const getAutodestroyView = () => {
-    if(newAutoDestroy){
-      return(
-        <div className={'stepAutoDestroyContainer' + scss(theme, [SCSS.BORDERCOLOR])} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}>
-          <PressImage isBlack={props.isLoadingBlack} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/explode'+itemTintColor(theme)+'.png'}/>
-        </div>
-      )
-    }
-    else{
-      return(
-        <div className={'stepAutoDestroyContainer' + scss(theme, [SCSS.BORDERCOLOR])} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}>
-          <PressImage isBlack={props.isLoadingBlack} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/explode-grey.png'}/>
-        </div>
-      )
-    }
+    return(
+      <div className={'stepAutoDestroyContainer ' + scss(theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK, SCSS.TEXT], !newAutoDestroy)} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}>
+        {/* <PressImage 
+          isBlack={props.isLoadingBlack}
+          onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} 
+          src={
+            process.env.PUBLIC_URL + (newAutoDestroy?('/explode'+itemTintColor(theme)+'.png'):'/explode-grey.png')
+          }/> */}
+        When you click on 
+        <PressImage isBlack={props.isLoadingBlack}onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/step'+itemTintColor(theme)+'.png'}></PressImage>
+        should delete it? {newAutoDestroy? 'Yes':'No '}
+      </div>
+    )
   }
 
   return (
@@ -217,18 +218,18 @@ export const StepView: React.FC<StepViewProps> = (props) => {
               <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} isBlack={props.isLoadingBlack}/>
             </div>
             <div className='stepIconRowContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.None);}} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Low);}} src={process.env.PUBLIC_URL + '/low.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Medium);}} src={process.env.PUBLIC_URL + '/med.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.High);}} src={process.env.PUBLIC_URL + '/high.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Ladybug);}} src={process.env.PUBLIC_URL + '/ladybug.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugYellow);}} src={process.env.PUBLIC_URL + '/ladybugyellow.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugGreen);}} src={process.env.PUBLIC_URL + '/ladybuggreen.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Question);}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Waiting);}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.InProgress);}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
-              {getAutodestroyView()}
+              <PressImage isSelected={step.Importance===StepImportance.None} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.None);}} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.Low} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Low);}} src={process.env.PUBLIC_URL + '/low.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.Medium} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Medium);}} src={process.env.PUBLIC_URL + '/med.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.High} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.High);}} src={process.env.PUBLIC_URL + '/high.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.LadybugGreen} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Ladybug);}} src={process.env.PUBLIC_URL + '/ladybug.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.LadybugYellow} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugYellow);}} src={process.env.PUBLIC_URL + '/ladybugyellow.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.Ladybug} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugGreen);}} src={process.env.PUBLIC_URL + '/ladybuggreen.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.Question} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Question);}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.Waiting} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Waiting);}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.InProgress} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.InProgress);}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
             </div>
+            {getAutodestroyView()}
 
           </div>
           :

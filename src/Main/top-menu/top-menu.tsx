@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useLocation, useNavigate  } from 'react-router-dom';
 import { useUserContext } from '../../contexts/user-context';
 import SiteMessagesView from '../site-messages-view/site-messages-view';
+import Win95Btn from '../../win95-btn/win95-btn';
 
 
 interface TopMenuProps{
@@ -41,6 +42,7 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
   return (
     <div className='topMenu'>
       <div className='buttonsContainer'>
+        {/* <Win95Btn imageSrc='/cancel.png'></Win95Btn> */}
         <div key='loginBtn' className={MenuOption.Login === currentMenuOption? 'menuButton menuSelected': 'menuButton'} onClick={() =>{setCurrentMenuOption(MenuOption.Login); navigate("/login");}}>
           <div className={MenuOption.Login === currentMenuOption? 'text textSelected': 'text'}>Login</div>
         </div>

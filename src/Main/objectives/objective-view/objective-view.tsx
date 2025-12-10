@@ -581,7 +581,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
   const pasteItems = async (itemTo: Item) => {
     try{
-      const action: string|null = sessionStorage.getItem('multiItems');
+      const action: string|null = sessionStorage.getItem('multiItems'); /// should 
       let parsedAction: MultSelectAction;
 
       if(action) {
@@ -605,9 +605,11 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
           try{
             setIsLoadingIsEndingSelecMult(true);
-            const data = await objectiveslistApi.putObjectiveItems(finalList, (value: string) =>{
-              setSelecMultPartialInfo(value);
-            });
+            const data = await objectiveslistApi.putObjectiveItems(finalList, 
+            //   (value: string) =>{
+            //   setSelecMultPartialInfo(value);
+            // }
+          );
 
             if(data) {
               sessionStorage.removeItem('multiItems');
@@ -740,7 +742,11 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       sending.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
 
-    const data = await objectiveslistApi.putObjectiveItems(sending, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.putObjectiveItems(sending, (value: string) => {
+        setShortingPartialInfo(value);
+      }
+    );
+
     if(data){
       putItemsInDisplay(data);
     }
@@ -756,9 +762,11 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       sending.push({...itemsOrdered[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
 
-    const data = await objectiveslistApi.putObjectiveItems(sending, (value: string) => {
+    const data = await objectiveslistApi.putObjectiveItems(sending, 
+      (value: string) => {
       setShortingPartialInfo(value);
-    });
+    }
+  );
 
     if(data){
       putItemsInDisplay(data);
@@ -791,7 +799,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
     let isSelected = false;
     if(parsedAction) isSelected = parsedAction.items.some(i => i.ItemId === item.ItemId);
-
     if(item.Type === ItemType.Step){
       rtnItem = <StepView 
         key={item.ItemId}
@@ -1213,21 +1220,26 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return(
       <div className={'objectiveMultiSelectContainer '}>
         <PressImage onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isBlack={isLoadingBlack()}/>
-        <div className={'objectiveMultiSelectMenu' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
-          <div className={'objectiveMultiSelectMenuIcon'}>
-            <PressImage onClick={eraseSelectedItems} src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'} disable={!(multItemsSelected.length !== 0 || stgValue !== null)} disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'} isBlack={isLoadingBlack()}/>
+        <div className={'objectiveMultiSelectMenu '}>
+          <div className={'objectiveMultiSelectMenuIcon ' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], !(multItemsSelected.length !== 0 || stgValue !== null))} onClick={() => {if(multItemsSelected.length > 0 || stgValue !== null) eraseSelectedItems()}}>
+            <PressImage src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0 && stgValue === null} disableMsg="No item unselect..." disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'} isBlack={isLoadingBlack()}/>
+            Unselect
           </div>
-          <div className={'objectiveMultiSelectMenuIcon'}>
-            <PressImage onClick={moveItems} src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableSrc={process.env.PUBLIC_URL + '/next-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)moveItems()}}>
+            <PressImage onClick={moveItems} src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/next-grey.png'} isBlack={isLoadingBlack()}/>
+            Move
           </div>
-          <div className={'objectiveMultiSelectMenuIcon'}>
-            <PressImage onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)copyItems()}}>
+            <PressImage onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isBlack={isLoadingBlack()}/>
+            Copy
           </div>
-          <div className={'objectiveMultiSelectMenuIcon'}>
-            <PressImage onClick={() => {setIsSelectingPastePos(true);}} src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'} disable={stgValue === null} disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], stgValue === null)} onClick={() => {if(stgValue !== null)setIsSelectingPastePos(true);}}>
+            <PressImage onClick={() => {setIsSelectingPastePos(true);}} src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'} disable={stgValue === null} disableMsg="You need to select copy or move before paste..." disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'} isBlack={isLoadingBlack()}/>
+            Paste
           </div>
-          <div className={'objectiveMultiSelectMenuIcon'}>
-            <PressImage onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red' + getTintColor(Theme) + '.png'} confirm disable={multItemsSelected.length === 0} disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)deleteSelectedItems()}}>
+            <PressImage onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red' + getTintColor(Theme) + '.png'} confirm disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isBlack={isLoadingBlack()}/>
+            Delete
           </div>
         </div>
       </div>
@@ -1263,8 +1275,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         src={process.env.PUBLIC_URL + '/double'+(shouldFoldAll?'down':'up')+'-chevron' + getTintColor(Theme) + '.png'}
         disable={items.length < 1 || !hasADividerToFold} isLoading={isLoadingFoldingUnfolding}
         disableSrc={process.env.PUBLIC_URL + '/double'+(  shouldFoldAll?'down':'up')+'-chevron-grey.png'}
+        disableMsg="There's no divider item to fold..."
         isBlack={isLoadingBlack()}
-        text={foldingUnfoldingDividersPartialInfo}
+        badgeText={foldingUnfoldingDividersPartialInfo}
       />
     )
   }
@@ -1275,9 +1288,11 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={orderItemsAtoZ}
         src={process.env.PUBLIC_URL + '/atoz' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingShorting}
-        text={shortingPartialInfo}
+        badgeText={shortingPartialInfo}
+        confirm
         disable={items.length < 2}
         disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'}
+        disableMsg="There are fewer than two items on the list..."
         isBlack={isLoadingBlack()}/>
     )
   }
@@ -1328,6 +1343,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         src={process.env.PUBLIC_URL + '/search' + getTintColor(Theme) + '.png'}
         disable={items.length < 1}
         disableSrc={process.env.PUBLIC_URL + '/search-grey.png'}
+        disableMsg="No item to search..."
         isBlack={isLoadingBlack()}/>
     )
   }
@@ -1338,7 +1354,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={openNewItemMenu}
         src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor(Theme)) + '.png'}
         isLoading={isLoadingAddingNewItem}
-        text={addingNewItemPartialInfo}
+        badgeText={addingNewItemPartialInfo}
         isBlack={isLoadingBlack()}/>
     )
   }
@@ -1355,6 +1371,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         isLoading={isLoadingIsShowingItems}
         disable={!hasHidibleItems}
         disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'}
+        disableMsg="There's no item to hide..."
         isBlack={isLoadingBlack()}/>
     )
   }
@@ -1365,7 +1382,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={onMultiSelectOpen}
         src={process.env.PUBLIC_URL + '/change' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingIsEndingSelecMult}
-        text={selecMultPartialInfo}
+        badgeText={selecMultPartialInfo}
         isBlack={isLoadingBlack()}/>
     )
   }

@@ -1,0 +1,67 @@
+@import '../global.scss';
+
+$bor: false;
+
+.win95btn-outter-container{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  border-width: 2px;
+  border-style: solid;
+}
+
+.win95btn-inner-container{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  background-color: #C3C3C3;
+  color: #151515;
+  padding: 2px 10px;
+
+  height: 100%;
+
+  border-width: 2px;
+  border-style: solid;
+
+  user-select: none;
+}
+
+.win95btn-color-outer-bright{
+  border-top-color: #FFFFFF;
+  border-left-color: #FFFFFF;
+  border-bottom-color: #171717;
+  border-right-color: #171717;
+}
+
+.win95btn-color-inner-bright{
+  border-top-color: #DFDFDF;
+  border-left-color: #DFDFDF;
+  border-bottom-color: #808080;
+  border-right-color: #808080;
+}
+
+.win95btn-color-outer-dark{
+  border-top-color: #171717;
+  border-left-color: #171717;
+  border-bottom-color: #FFFFFF;
+  border-right-color: #FFFFFF;
+}
+
+.win95btn-color-inner-dark{
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-bottom-color: #DFDFDF;
+  border-right-color: #DFDFDF;
+}
+
+.win95btn-image{
+  width: 25px;
+  height: 25px;
+}

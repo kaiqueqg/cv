@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 import { DeviceData, ImageInfo, Objective, Item as ObjectiveItem, ObjectivesList, PresignedUrl } from '../TypesObjectives';
-import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices, MessageType } from '../Types';
+import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices, MessageType, ChangeUserPasswordRequest, RequestActivateTwoFA } from '../Types';
 import storage from '../storage/storage';
 import log from '../log/log';
 import { useLogContext } from './log-context';
@@ -22,12 +22,15 @@ interface RequestContextType {
 export interface IdentityApi {
   isUp(body?: string, fError?: (error: any) => void): Promise<any>;
   login(body?: string, fError?: (error: any) => void): Promise<LoginModel|null>;
-  getUser(body?: string, fError?: (error: any) => void): Promise<any>;
+  getUserInfo(fError?: (error: any) => void): Promise<ResponseUser|null>;
   getUserList(fError?: (error: any) => void): Promise<ResponseUser[]|null>;
   askToCreate(body?: string, fError?: (error: any) => void): Promise<any>;
   resendApproveEmail(fError?: (error: any) => void): Promise<any>;
   changeUserStatus(request?: ChangeUserStatusRequest, fError?: (error: any) => void): Promise<ResponseUser|null>;
+  changeUserPassword(request?: ChangeUserPasswordRequest, fError?: (error: any) => void): Promise<ResponseUser|null>;
   getIdentityServiceStatus(fError?: (error: any) => void): Promise<ResponseServices|null>;
+  getTwoFAAuth(fError?: (error: any) => void): Promise<string|null>;
+  activateTwoFA(code: RequestActivateTwoFA, fError?: (error: any) => void): Promise<string|null>;
   putIdentityServiceStatus(service: ResponseServices, fError?: (error: any) => void): Promise<ResponseServices|null>;
   getEmergencyStop(fError?: (error: any) => void): Promise<string|null>;
   requestIdentity<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<T|null>;
@@ -131,8 +134,8 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     async login(body?: string, fError?: (error: any) => void): Promise<LoginModel|null>{
       return await this.requestIdentity<LoginModel|null>('/Login', 'POST', body, fError);
     },
-    async getUser(body?: string, fError?: (error: any) => void): Promise<any>{
-      return await this.requestIdentity('/GetUser', 'GET', body, fError);
+    async getUserInfo(fError?: (error: any) => void): Promise<ResponseUser|null>{
+      return await this.requestIdentity<ResponseUser>('/GetUserInfo', 'GET', undefined, fError);
     },
     async getUserList(fError?: (error: any) => void): Promise<ResponseUser[]|null>{
       return await this.requestIdentity<ResponseUser[]>('/GetUserList', 'GET', undefined, fError);
@@ -146,8 +149,21 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     async changeUserStatus(request?: ChangeUserStatusRequest, fError?: (error: any) => void): Promise<ResponseUser|null>{
       return await this.requestIdentity<ResponseUser>('/ChangeUserStatus', 'POST', JSON.stringify(request), fError);
     },
+    async changeUserPassword(request?: ChangeUserPasswordRequest, fError?: (error: any) => void): Promise<ResponseUser|null>{
+      return await this.requestIdentity<ResponseUser>('/ChangeUserPassword', 'POST', JSON.stringify(request), fError);
+    },
     async getIdentityServiceStatus(fError?: (error: any) => void): Promise<ResponseServices|null>{
       return await this.requestIdentity<ResponseServices>('/GetServiceStatus', 'GET', undefined, fError);
+    },
+    async getTwoFAAuth(fError?: (error: any) => void): Promise<string|null>{
+      const aaa = await this.requestIdentity<string>('/GetTwoFAAuth', 'GET', undefined, fError);
+      log.b(aaa)
+      return aaa
+    },
+    async activateTwoFA(code: RequestActivateTwoFA, fError?: (error: any) => void): Promise<string|null>{
+      const aaa = await this.requestIdentity<string>('/ActivateTwoFA', 'POST', JSON.stringify(code), fError);
+      log.b(aaa)
+      return aaa
     },
     async putIdentityServiceStatus(service: ResponseServices, fError?: (error: any) => void): Promise<ResponseServices|null>{
       return await this.requestIdentity<ResponseServices>('/PutServiceStatus', 'PUT', JSON.stringify(service), fError);
@@ -161,6 +177,9 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
         if(resp){
           const respData: Response<T> = await resp.json();
           if(resp.ok && respData.data){
+            if(respData.message) 
+              popMessage(respData.message);
+
             return respData.data;
           }else{
             if(resp.status === 500){
@@ -193,13 +212,13 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
       return parts; 
     },
     async splitRequestObjectivesList<T>(endpoint: string, method: string, data: T[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<T[]|null> { 
-      const splitItems: T[][] = this.splitArr<T>(data, 10);
+      const splitItems: T[][] = this.splitArr<T>(data, 100);
       let returnList:T[] = [];
 
       const amountOfLists = splitItems.length;
       let startListSended = 0;
-      if(splitCallback !== undefined && amountOfLists > 1) splitCallback(startListSended.toString()+'/'+amountOfLists.toString())
-
+      if(splitCallback !== undefined && amountOfLists > 1) {splitCallback(startListSended.toString()+'/'+amountOfLists.toString())}
+      
       for (let i = 0; i < splitItems.length; i++) {
         const split = splitItems[i];
         const v = await this.requestObjectivesList<T[]>(endpoint, method, split, fError);
@@ -232,8 +251,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
       return await this.requestObjectivesList<Objective>('/GetObjective', 'POST', {ObjectiveId: objectiveId}, fError);
     },
     async putObjectives(objectives: Objective[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<Objective[]|null>{
-      const rtn = await this.splitRequestObjectivesList<Objective>('/PutObjectives', 'PUT', objectives, splitCallback, fError);
-      return rtn;
+      return await this.splitRequestObjectivesList<Objective>('/PutObjectives', 'PUT', objectives, splitCallback, fError);
     },
     async deleteObjectives(objectives: Objective[], splitCallback?:(value: string) => void, fError?: (error: any) => void): Promise<Objective[]|null>{
       return await this.splitRequestObjectivesList<Objective>('/DeleteObjectives', 'DELETE', objectives, splitCallback, fError);
@@ -284,9 +302,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
             log.r('Response: ', resp);
           }
           else if(respData.message){
-            const words = respData.message.split(/\s+/).length;
-            const displayTime = Math.max(5, words * 0.8);
-            // popMessage(respData.message, MessageType.Error, displayTime);
+            popMessage(respData.message, MessageType.Error);
           }
           else{
             popMessage('No info error.', MessageType.Error, 5);

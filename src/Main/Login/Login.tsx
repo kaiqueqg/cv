@@ -105,6 +105,7 @@ const Login: React.FC<LoginProps> = (props) => {
     setIsLogging(true);
     try {
       const data = await identityApi.login(JSON.stringify(user), loginError);
+      log.b(data)
       if(data && data.User){
         storage.setToken(data.Token);
         storage.setUser(data.User);

@@ -44,6 +44,7 @@ $bor: false;
   align-items: center;
   flex-direction: row;
   width: 100%;
+  padding-bottom: 10px;
 
   @if($bor){
     border-width: 1px;
@@ -59,6 +60,7 @@ $bor: false;
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
+  padding-bottom: 5px;
 
   @if($bor){
     border-width: 1px;
@@ -73,12 +75,16 @@ $bor: false;
   justify-content: center;
   align-items: center;
 
-  margin: 5px;
-  padding: 0px 10px;
-
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
+
+  margin: 5px;
+  padding: 0px 10px;
+}
+
+.stepAutoDestroyContainerActive{
+
 }
 
 .stepAutoDestroyText{

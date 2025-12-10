@@ -6,6 +6,7 @@ export const ThemeContext = createContext<ThemeContextProps | undefined>(undefin
 export const enum SCSS {
   OBJ_BG,
   ITEM_BG,
+  ITEM_BG_DARK,
   INPUT,
   INPUT_CONTRAST,
   INPUT_ALERT,
@@ -34,6 +35,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         return '-obj-background';
       case SCSS.ITEM_BG:
         return '-item-background'+(fade?'-fade':'');
+      case SCSS.ITEM_BG_DARK:
+        return '-item-background-dark'+(fade?'-fade':'');
       case SCSS.INPUT:
         return '-input input ';
       case SCSS.INPUT_CONTRAST:

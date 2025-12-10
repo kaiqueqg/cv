@@ -3,11 +3,12 @@ import storage from "../../../storage/storage";
 import { useNavigate } from 'react-router-dom';
 import './user-view.scss';
 import { useEffect, useState } from "react";
-import { ResponseUser, Response, ResponseServices } from "../../../Types";
-// import { identityApi } from "../../../requests-sdk/requests-sdk";
+import { ResponseUser, Response, ResponseServices, MessageType } from "../../../Types";
 import log from "../../../log/log";
 import Loading from "../../../loading/loading";
 import { useRequestContext } from "../../../contexts/request-context";
+import { useLogContext } from "../../../contexts/log-context";
+const QRCode = require("qrcode");
 
 interface UserViewProps{
   setIsLogged: (value: boolean) => void,
@@ -16,11 +17,24 @@ interface UserViewProps{
 const UserView: React.FC<UserViewProps> = (props) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
+  const { 
+    popMessage,
+    // randomId
+  } = useLogContext();
   const navigate = useNavigate();
   const [userList, setUserList] = useState<ResponseUser[]>([]);
   const [identityServiceStatus, setIdentityServiceStatus] = useState<ResponseServices>();
   const [isGettingUserList, setIsGettingUserList] = useState<boolean>();
   const [isGettingServicesList, setIsGettingServicesList] = useState<boolean>();
+  
+  const [emailChangePassword, setEmailChangePassword] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [isShowingChangePass, setIsShowingChangePass] = useState<boolean>(false);
+  
+  const [twoFAQRCode, setTwoFAQRCode] = useState<string>('');
+  const [isGettingQRCode, setIsGettingQRCode] = useState<boolean>(false);
+  const [isActivatingTwoFA, setIsActivatingTwoFA] = useState<boolean>(false);
+  const [twoFAVerificationCode, setTwoFAVerificationCode] = useState<string>('');
 
   useEffect(() => {
     if(user?.Role === 'Admin'){
@@ -116,7 +130,8 @@ const UserView: React.FC<UserViewProps> = (props) => {
         <div className='admin-user-name'>{user.Email}</div>
         <img className={user.Status === 'Active'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{activateUser(user)}}></img>
         <img className={user.Status === 'Refused'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{refuseUser(user)}}></img>
-        <img className={user.Status === 'WaitingApproval'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/waitingapproval.png'} alt='meaningfull text' onClick={()=>{waitingApproval(user)}}></img>
+        <img className={user.Status === 'WaitingApproval'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/wait.png'} alt='meaningfull text' onClick={()=>{waitingApproval(user)}}></img>
+        <img className={'admin-user-image'} src={process.env.PUBLIC_URL + '/add-lock.png'} alt='meaningfull text' onClick={()=>{showChangePass(user.Email)}}></img>
       </div>
     )
   }
@@ -124,23 +139,94 @@ const UserView: React.FC<UserViewProps> = (props) => {
   const emergencyStop = async () => {
     const result = await identityApi.getEmergencyStop();
   }
+  
+  const changePassword = (event: any) => {
+    setPassword(event.target.value);
+  }
+
+  const passwordEnter = async (event: any) => {
+    if(event.key === 'Enter'){
+      if(emailChangePassword.trim() === '') { popMessage('Invalid user email to change.'); return;}
+      if(password.trim() === '') { popMessage(`The password can't be empty.`); return;}
+      if(password.trim().length > 64) { popMessage(`Too big. ( Max 64 characters )`); return;}
+
+      const data = await identityApi.changeUserPassword({Email: emailChangePassword, Password: password});
+
+      if(data){
+        popMessage('Password changed.');
+      }
+
+      setIsShowingChangePass(false);
+      setEmailChangePassword('');
+      setPassword('');
+    }
+  }
+
+  const showChangePass = (email: string) => {
+    if(isShowingChangePass){
+      setEmailChangePassword('');
+      setPassword('');
+      setIsShowingChangePass(false);
+    }
+    else{
+      setEmailChangePassword(email);
+      setIsShowingChangePass(true);
+    }
+  }
+
+  const get2FAAuth = async () => {
+    setIsGettingQRCode(true);
+    const otpauth_url = await identityApi.getTwoFAAuth();
+
+    if(otpauth_url){
+      const url = await QRCode.toDataURL(otpauth_url);
+      setTwoFAQRCode(url);
+    }
+    setIsGettingQRCode(false);
+  }
+
+  const sendVerificationTwoFA = async (event: any) => {
+    setIsActivatingTwoFA(true);
+    if(event.key === 'Enter'){
+      log.b('sendVerificationTwoFA')
+      const data = await identityApi.activateTwoFA({ TwoFAActivationCode: twoFAVerificationCode});
+
+      setTwoFAQRCode('');
+      if(data){
+        const newUser = await identityApi.getUserInfo();
+        if(newUser){
+          log.g(newUser)
+          storage.setUser(newUser);
+          setUser(newUser);
+        }
+      }
+    }
+    setIsActivatingTwoFA(false);
+  }
+
+  const changeTwoFACode = (event: any) => {
+    log.b('changeTwoFACode')
+    setTwoFAVerificationCode(event.target.value);
+  }
 
   return(
   <div className={"logged-container "}>
     <div className='card-container'>
-      <div className='logged-title'>PROFILE:</div>
+      <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.Error)}}>PROFILE:</div>
       <div className="logged-info-box">
         <div className="logged-box">
           <div className="userRow"><b>Username:</b> </div>
           <div className="userRow"><b>Email:</b> </div>
           <div className="userRow"><b>Role:</b> </div>
           <div className="userRow"><b>Status:</b> </div>
+          <div className="userRow"><b>2FA:</b> </div>
         </div>
         <div className="logged-box">
           <div className="userData">{user?.Username}</div>
           <div className="userData">{user?.Email}</div>
           <div className="userData">{user?.Role}</div>
           <div className="userData">{user?.Status}</div>
+          <div className="userData">{(user?.TwoFAActive)? 'True':'False'}</div>
         </div>
       </div>
       <div className="logout-row">
@@ -149,7 +235,25 @@ const UserView: React.FC<UserViewProps> = (props) => {
         {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
       </div>
     </div>
-
+    {!user?.TwoFAActive &&
+      <div className="card-container">
+        {isGettingQRCode?
+          <Loading/>
+          :
+          <button className="btn-base" type="button" onClick={get2FAAuth}>Get 2FA</button>
+        }
+        {twoFAQRCode !== '' && 
+          (isActivatingTwoFA?
+            <Loading/>
+            :
+            <>
+              <img className={'qrcode-image'} src={twoFAQRCode}></img>
+              <input className="input-base" type="text" onChange={changeTwoFACode} onKeyUp={sendVerificationTwoFA} placeholder="Password" aria-label="Server" value={twoFAVerificationCode}></input>
+            </>
+          )
+        }
+      </div>
+    }
     {user?.Role === 'Admin' && (
     <>
       <div className='card-container'>
@@ -163,6 +267,8 @@ const UserView: React.FC<UserViewProps> = (props) => {
                 getUserRow(user)
               ))}
             </div>
+            {isShowingChangePass && <div className="changeEmailText">{emailChangePassword}</div>}
+            {isShowingChangePass && <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>}
           </>
         )}
       </div>
