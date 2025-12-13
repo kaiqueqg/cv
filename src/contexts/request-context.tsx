@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 import { DeviceData, ImageInfo, Objective, Item as ObjectiveItem, ObjectivesList, PresignedUrl } from '../TypesObjectives';
-import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices, MessageType, ChangeUserPasswordRequest, RequestActivateTwoFA } from '../Types';
-import storage from '../storage/storage';
+import { ChangeUserStatusRequest, ResponseUser, LoginModel, Response, ResponseServices, MessageType, ChangeUserPasswordRequest, TwoFactorAuthRequest } from '../Types';
+import { local, session } from '../storage/storage';
 import log from '../log/log';
 import { useLogContext } from './log-context';
 import { useUserContext } from './user-context';
@@ -30,7 +30,9 @@ export interface IdentityApi {
   changeUserPassword(request?: ChangeUserPasswordRequest, fError?: (error: any) => void): Promise<ResponseUser|null>;
   getIdentityServiceStatus(fError?: (error: any) => void): Promise<ResponseServices|null>;
   getTwoFAAuth(fError?: (error: any) => void): Promise<string|null>;
-  activateTwoFA(code: RequestActivateTwoFA, fError?: (error: any) => void): Promise<string|null>;
+  activateTwoFA(request: TwoFactorAuthRequest, fError?: (error: any) => void): Promise<string|null>;
+  deactivateTwoFA(request: TwoFactorAuthRequest, fError?: (error: any) => void): Promise<string|null>;
+  validateTwoFA(code: TwoFactorAuthRequest, fError?: (error: any) => void): Promise<LoginModel|null>;
   putIdentityServiceStatus(service: ResponseServices, fError?: (error: any) => void): Promise<ResponseServices|null>;
   getEmergencyStop(fError?: (error: any) => void): Promise<string|null>;
   requestIdentity<T>(endpoint: string, method: string, body?: string, fError?: (error: any) => void): Promise<T|null>;
@@ -70,7 +72,7 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
     const headers: {[key: string]: string} = {};
     headers['Content-Type'] = 'application/json';
 
-    const token = storage.getToken();
+    const token = local.getToken();
     if(token !== null) headers['Authorization'] = "Bearer " + token;
 
     const payload: RequestInit = {
@@ -156,14 +158,16 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
       return await this.requestIdentity<ResponseServices>('/GetServiceStatus', 'GET', undefined, fError);
     },
     async getTwoFAAuth(fError?: (error: any) => void): Promise<string|null>{
-      const aaa = await this.requestIdentity<string>('/GetTwoFAAuth', 'GET', undefined, fError);
-      log.b(aaa)
-      return aaa
+      return await this.requestIdentity<string>('/GetTwoFAAuth', 'GET', undefined, fError);
     },
-    async activateTwoFA(code: RequestActivateTwoFA, fError?: (error: any) => void): Promise<string|null>{
-      const aaa = await this.requestIdentity<string>('/ActivateTwoFA', 'POST', JSON.stringify(code), fError);
-      log.b(aaa)
-      return aaa
+    async activateTwoFA(code: TwoFactorAuthRequest, fError?: (error: any) => void): Promise<string|null>{
+      return await this.requestIdentity<string>('/ActivateTwoFA', 'POST', JSON.stringify(code), fError);
+    },
+    async deactivateTwoFA(code: TwoFactorAuthRequest, fError?: (error: any) => void): Promise<string|null>{
+      return await this.requestIdentity<string>('/DeactivateTwoFA', 'POST', JSON.stringify(code), fError);
+    },
+    async validateTwoFA(code: TwoFactorAuthRequest, fError?: (error: any) => void): Promise<LoginModel|null>{
+      return await this.requestIdentity<LoginModel|null>('/ValidateTwoFA', 'POST', JSON.stringify(code), fError);
     },
     async putIdentityServiceStatus(service: ResponseServices, fError?: (error: any) => void): Promise<ResponseServices|null>{
       return await this.requestIdentity<ResponseServices>('/PutServiceStatus', 'PUT', JSON.stringify(service), fError);

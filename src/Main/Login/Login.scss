@@ -20,6 +20,9 @@ $bor: false;
   vertical-align: middle;
   align-items: center;
   text-align: center;
+
+  flex-direction: column;
+
   width: 100%;
   padding: 0px 10px;
 
@@ -29,7 +32,6 @@ $bor: false;
     border-color: rgb(0, 255, 204);
     border-radius: 5px;
   }
-  
 }
 
 .login-box{

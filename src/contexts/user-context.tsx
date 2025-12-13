@@ -1,7 +1,7 @@
 // UserContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { ResponseUser, UserPrefs } from '../Types';
-import storage from '../storage/storage';
+import {local} from '../storage/storage';
 import log from '../log/log';
 
 interface UserProviderProps {
@@ -27,11 +27,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }, []);
 
   const logout = async () => {
-    storage.deleteToken();
-    storage.deleteUser();
-    storage.deleteAvailableTags();
-    storage.deleteSelectedTags();
-    storage.deleteFirstLogin();
+    local.deleteToken();
+    local.deleteUser();
+    local.deleteAvailableTags();
+    local.deleteSelectedTags();
+    local.deleteFirstLogin();
     setUser(null);
 
     localStorage.clear();
@@ -39,17 +39,17 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   };
 
   const loadUserPrefs = async () => {
-    const userPrefs = await storage.getUserPrefs();
+    const userPrefs = await local.getUserPrefs();
   };
 
   const loadSelectedTags = async () => {
-    const storageAvailableTags = await storage.readAvailableTags();
+    const storageAvailableTags = await local.readAvailableTags();
     if (storageAvailableTags) {
       writeAvailableTags(Array.from(storageAvailableTags));
     }
 
     if (storageAvailableTags) {
-      const storageSelectedTags = await storage.readSelectedTags();
+      const storageSelectedTags = await local.readSelectedTags();
       if(storageSelectedTags) {
         const filteredTags = storageSelectedTags.filter((tag: string) => storageAvailableTags.includes(tag));
         writeSelectedTags(Array.from(filteredTags));
@@ -63,7 +63,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const writeAvailableTags = async (availableTags: string[]) => {
     try {
       const uniqueTags = Array.from(new Set([...availableTags, 'Pin']));
-      await storage.writeAvailableTags(uniqueTags);
+      await local.writeAvailableTags(uniqueTags);
       setAvailableTags(uniqueTags);
     } catch (err) {
       log.err('AvailableTags', 'Problem writing available tags', err);
@@ -73,7 +73,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const putAvailableTags = async (tags: string[]) => {
     try {
       const newTags = Array.from(new Set([...availableTags, ...tags, 'Pin']));
-      await storage.writeAvailableTags(newTags);
+      await local.writeAvailableTags(newTags);
       setAvailableTags(newTags);
     } catch (err) {
       log.err('putAvailableTags', 'Problem putting available tags', err);
@@ -83,7 +83,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const removeAvailableTags = async (tags: string[]) => {
     try {
       const newTags = availableTags.filter((t) => !tags.includes(t));
-      await storage.writeAvailableTags(newTags);
+      await local.writeAvailableTags(newTags);
       setAvailableTags(newTags);
     } catch (err) {
       log.err('removeAvailableTags', 'Problem removing available tags', err);
@@ -94,7 +94,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const removeSelectedTags = async (tags: string[]) => {
     try {
       const newTags = selectedTags.filter((t) => !tags.includes(t));
-      await storage.writeSelectedTags(newTags);
+      await local.writeSelectedTags(newTags);
       setSelectedTags(newTags);
     } catch (err) {
       log.err('removeSelectedTags', 'Problem removing selected tags', err);
@@ -104,7 +104,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const putSelectedTags = async (tags: string[]) => {
     try {
       const newTags = Array.from(new Set([...selectedTags, ...tags, 'Pin']));
-      await storage.writeSelectedTags(newTags);
+      await local.writeSelectedTags(newTags);
       setSelectedTags(newTags);
     } catch (err) {
       log.err('putSelectedTags', 'Problem putting selected tags', err);
@@ -114,7 +114,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const writeSelectedTags = async (selectedTags: string[]) => {
     try {
       const uniqueTags = Array.from(new Set([...selectedTags, 'Pin']));
-      await storage.writeSelectedTags(uniqueTags);
+      await local.writeSelectedTags(uniqueTags);
       setSelectedTags(uniqueTags);
     } catch (err) {
       log.err('SelectedTags', 'Problem writing selected tags', err);

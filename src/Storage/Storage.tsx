@@ -1,7 +1,7 @@
 import { ResponseUser, UserPrefs } from '../Types';
 import log from '../log/log';
 
-type StorageKeys = {
+type LocalKeys = {
   JwtToken: string,
   User: string,
   FirstLogin: string,
@@ -11,7 +11,7 @@ type StorageKeys = {
   SelectedTags: string,
 };
 
-const keys: StorageKeys = {
+const localKeys: LocalKeys = {
   JwtToken: '@kaiqueqgcv:jwt',
   User: '@kaiqueqgcv:user',
   FirstLogin: '@kaiqueqgcv:FirstLogin',
@@ -21,46 +21,54 @@ const keys: StorageKeys = {
   SelectedTags: '@kaiqueqgcv:SelectedTags',
 };
 
-const storage = {
+type SessionKeys = {
+  TwoFATempToken: string,
+};
+
+const sessionKeys: SessionKeys = {
+  TwoFATempToken: '@kaiqueqgcv:TwoFATempToken',
+};
+
+export const local = {
   //^-------------------- First Token
   getToken(): string|null{
-    const token = localStorage.getItem(keys.JwtToken);
+    const token = localStorage.getItem(localKeys.JwtToken);
     return token;
   },
   setToken(token: string){
-    localStorage.setItem(keys.JwtToken, token);
+    localStorage.setItem(localKeys.JwtToken, token);
   },
   deleteToken(){
-    localStorage.removeItem(keys.JwtToken);
+    localStorage.removeItem(localKeys.JwtToken);
   },
 
   //^-------------------- User
   getUser(): ResponseUser|null{
-    const userJson = localStorage.getItem(keys.User);
+    const userJson = localStorage.getItem(localKeys.User);
     return userJson ? JSON.parse(userJson) : null;
   },
   setUser(user: ResponseUser){
-    localStorage.setItem(keys.User, JSON.stringify(user));
+    localStorage.setItem(localKeys.User, JSON.stringify(user));
   },
   deleteUser(){
-    localStorage.removeItem(keys.User);
+    localStorage.removeItem(localKeys.User);
   },
 
   //^-------------------- First Login
   getFirstLogin(): boolean|null{
-    const firstLogin = localStorage.getItem(keys.FirstLogin);
+    const firstLogin = localStorage.getItem(localKeys.FirstLogin);
     return firstLogin ? JSON.parse(firstLogin) : null;
   },
   setFirstLogin(value: boolean){
-    localStorage.setItem(keys.FirstLogin, JSON.stringify(value));
+    localStorage.setItem(localKeys.FirstLogin, JSON.stringify(value));
   },
   deleteFirstLogin(){
-    localStorage.removeItem(keys.FirstLogin);
+    localStorage.removeItem(localKeys.FirstLogin);
   },
 
   //^-------------------- Base Url
   getBaseUrl() : string{
-    const value = localStorage.getItem(keys.BaseUrl);
+    const value = localStorage.getItem(localKeys.BaseUrl);
     if(value === null){
       console.error("No base url saved on local storage!");
       return 'https://ygwynyk5j6.execute-api.sa-east-1.amazonaws.com/dev/api'
@@ -68,12 +76,12 @@ const storage = {
     else return value;
   },
   setBaseUrl(baseUrl: string) {
-    localStorage.setItem(keys.BaseUrl, baseUrl);
+    localStorage.setItem(localKeys.BaseUrl, baseUrl);
   },
 
   //^-------------------- User Prefs
   getUserPrefs(): UserPrefs {
-    const prefs = localStorage.getItem(keys.UserPrefs);
+    const prefs = localStorage.getItem(localKeys.UserPrefs);
     return prefs ? JSON.parse(prefs) : {
       theme: '',
       allowLocation: false,
@@ -82,20 +90,20 @@ const storage = {
     };
   },
   setUserPrefs(prefs: UserPrefs) {
-    localStorage.setItem(keys.UserPrefs, JSON.stringify(prefs));
+    localStorage.setItem(localKeys.UserPrefs, JSON.stringify(prefs));
   },
 
   //^-------------------- Available Tags
   async writeAvailableTags(tags: string[]): Promise<void> {
     try {
-      await localStorage.setItem(keys.AvailableTags, JSON.stringify(tags));
+      await localStorage.setItem(localKeys.AvailableTags, JSON.stringify(tags));
     } catch (err) {
       // log.err('stg writeAvailableTags', '[catch] writing available tags.');
     }
   },
   async readAvailableTags(): Promise<string[]|null> {
     try {
-      const data = await localStorage.getItem(keys.AvailableTags);
+      const data = await localStorage.getItem(localKeys.AvailableTags);
       if(data !== null){
         try {
           const parsedData: string[] = JSON.parse(data);
@@ -112,20 +120,20 @@ const storage = {
   },
   
   async deleteAvailableTags() {
-    await localStorage.removeItem(keys.AvailableTags);
+    await localStorage.removeItem(localKeys.AvailableTags);
   },
   
   //^-------------------- Selected Tags
   async writeSelectedTags(tags: string[]): Promise<void> {
     try {
-      await localStorage.setItem(keys.SelectedTags, JSON.stringify(tags));
+      await localStorage.setItem(localKeys.SelectedTags, JSON.stringify(tags));
     } catch (err) {
       // log.err('stg writeSelectedTags', '[catch] writing selected tags.');
     }
   },
   async readSelectedTags(): Promise<string[]|null> {
     try {
-      const data = await localStorage.getItem(keys.SelectedTags);
+      const data = await localStorage.getItem(localKeys.SelectedTags);
       if(data !== null){
         try {
           const parsedData: string[] = JSON.parse(data);
@@ -142,9 +150,40 @@ const storage = {
   },
 
   async deleteSelectedTags() {
-    await localStorage.removeItem(keys.SelectedTags);
+    await localStorage.removeItem(localKeys.SelectedTags);
   },
 }
 
+export const session = {
+  //^-------------------- Selected Tags
+  async writeTwoFATempToken(token: string): Promise<void> {
+    try {
+      await sessionStorage.setItem(sessionKeys.TwoFATempToken, JSON.stringify(token));
+    } catch (err) {
+      // log.err('stg writeTwoFATempToken', '[catch] writing selected token.');
+    }
+  },
+  async readTwoFATempToken(): Promise<string|null> {
+    try {
+      const data = await sessionStorage.getItem(sessionKeys.TwoFATempToken);
+      if(data !== null){
+        try {
+          const parsedData: string = JSON.parse(data);
+          return parsedData;
+        } catch (err) {
+          // log.err('stg readTwoFATempToken', 'Error parsing json');
+        }
+      }
+      return null;
+    } catch (err) {
+      // log.err('stg readTwoFATempToken', '[catch] reading selected token.');
+      return null;
+    }
+  },
 
-export default storage;
+  async deleteTwoFATempToken() {
+    await sessionStorage.removeItem(sessionKeys.TwoFATempToken);
+  },
+}
+
+// export default storage;

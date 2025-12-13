@@ -1,9 +1,9 @@
 import { useUserContext } from "../../../contexts/user-context";
-import storage from "../../../storage/storage";
+import {local, session} from "../../../storage/storage";
 import { useNavigate } from 'react-router-dom';
 import './user-view.scss';
 import { useEffect, useState } from "react";
-import { ResponseUser, Response, ResponseServices, MessageType } from "../../../Types";
+import { ResponseUser, Response, ResponseServices, MessageType, TwoFactorAuthRequest } from "../../../Types";
 import log from "../../../log/log";
 import Loading from "../../../loading/loading";
 import { useRequestContext } from "../../../contexts/request-context";
@@ -12,9 +12,10 @@ const QRCode = require("qrcode");
 
 interface UserViewProps{
   setIsLogged: (value: boolean) => void,
+  logout: () => void,
 }
 
-const UserView: React.FC<UserViewProps> = (props) => {
+const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { 
@@ -24,16 +25,25 @@ const UserView: React.FC<UserViewProps> = (props) => {
   const navigate = useNavigate();
   const [userList, setUserList] = useState<ResponseUser[]>([]);
   const [identityServiceStatus, setIdentityServiceStatus] = useState<ResponseServices>();
-  const [isGettingUserList, setIsGettingUserList] = useState<boolean>();
-  const [isGettingServicesList, setIsGettingServicesList] = useState<boolean>();
+  const [isGettingUserInfo, setIsGettingUserInfo] = useState<boolean>(false);
+  const [isGettingUserList, setIsGettingUserList] = useState<boolean>(false);
+  const [isGettingServicesList, setIsGettingServicesList] = useState<boolean>(false);
   
   const [emailChangePassword, setEmailChangePassword] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [isShowingChangePass, setIsShowingChangePass] = useState<boolean>(false);
   
+  //2FA QR CODE
   const [twoFAQRCode, setTwoFAQRCode] = useState<string>('');
   const [isGettingQRCode, setIsGettingQRCode] = useState<boolean>(false);
+
+  //2FA Activating
   const [isActivatingTwoFA, setIsActivatingTwoFA] = useState<boolean>(false);
+  const [deactivateTwoFA, setDeactivateTwoFA] = useState<boolean>(false);
+  const [isDeactivatingTwoFA, setIsDeactivatingTwoFA] = useState<boolean>(false);
+
+  //2FA Verification
+  const [twoFATempToken, setTwoFATempToken] = useState<string>('');
   const [twoFAVerificationCode, setTwoFAVerificationCode] = useState<string>('');
 
   useEffect(() => {
@@ -42,6 +52,18 @@ const UserView: React.FC<UserViewProps> = (props) => {
       getServicesList();
     }
   }, []);
+
+  const getUserInfo = async () => {
+    setIsGettingUserInfo(true);
+
+    const newUser = await identityApi.getUserInfo();
+    if(newUser){
+      local.setUser(newUser);
+      setUser(newUser);
+    }
+
+    setIsGettingUserInfo(false);
+  }
 
   const getUserList = async () => {
     setIsGettingUserList(true);
@@ -62,16 +84,6 @@ const UserView: React.FC<UserViewProps> = (props) => {
     }
 
     setIsGettingServicesList(false);
-  }
-
-  const logout = () => {
-    storage.deleteToken();
-    storage.deleteUser();
-    storage.deleteAvailableTags();
-    storage.deleteSelectedTags();
-    storage.deleteFirstLogin();
-    setUser(null);
-    props.setIsLogged(false);
   }
 
   const changeToObjectivesList = () => {
@@ -131,6 +143,7 @@ const UserView: React.FC<UserViewProps> = (props) => {
         <img className={user.Status === 'Active'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{activateUser(user)}}></img>
         <img className={user.Status === 'Refused'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{refuseUser(user)}}></img>
         <img className={user.Status === 'WaitingApproval'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/wait.png'} alt='meaningfull text' onClick={()=>{waitingApproval(user)}}></img>
+        <img className={user.TwoFAActive? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/fingerprint.png'} alt='meaningfull text' onClick={()=>{}}></img>
         <img className={'admin-user-image'} src={process.env.PUBLIC_URL + '/add-lock.png'} alt='meaningfull text' onClick={()=>{showChangePass(user.Email)}}></img>
       </div>
     )
@@ -185,23 +198,37 @@ const UserView: React.FC<UserViewProps> = (props) => {
     setIsGettingQRCode(false);
   }
 
-  const sendVerificationTwoFA = async (event: any) => {
-    setIsActivatingTwoFA(true);
+  const sendDeactivateTwoFA = async (event: any) => {
     if(event.key === 'Enter'){
-      log.b('sendVerificationTwoFA')
-      const data = await identityApi.activateTwoFA({ TwoFAActivationCode: twoFAVerificationCode});
+      setIsDeactivatingTwoFA(true);
+
+      const requestDeactivate: TwoFactorAuthRequest = {TwoFACode: twoFAVerificationCode}
+      log.b(requestDeactivate)
+      const data = await identityApi.deactivateTwoFA(requestDeactivate);
+
+      if(data){
+        await getUserInfo();
+      }
+
+      setTwoFAVerificationCode('');
+      setIsDeactivatingTwoFA(false);
+    }
+  }
+
+  const sendActivationCode = async (event: any) => {
+    if(event.key === 'Enter'){
+      setIsActivatingTwoFA(true);
+      const data = await identityApi.activateTwoFA({ TwoFACode: twoFAVerificationCode});
 
       setTwoFAQRCode('');
+      setDeactivateTwoFA(false);
       if(data){
-        const newUser = await identityApi.getUserInfo();
-        if(newUser){
-          log.g(newUser)
-          storage.setUser(newUser);
-          setUser(newUser);
-        }
+        await getUserInfo();
       }
+
+      setTwoFAVerificationCode('');
+      setIsActivatingTwoFA(false);
     }
-    setIsActivatingTwoFA(false);
   }
 
   const changeTwoFACode = (event: any) => {
@@ -211,45 +238,73 @@ const UserView: React.FC<UserViewProps> = (props) => {
 
   return(
   <div className={"logged-container "}>
-    <div className='card-container'>
-      <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.Error)}}>PROFILE:</div>
-      <div className="logged-info-box">
-        <div className="logged-box">
-          <div className="userRow"><b>Username:</b> </div>
-          <div className="userRow"><b>Email:</b> </div>
-          <div className="userRow"><b>Role:</b> </div>
-          <div className="userRow"><b>Status:</b> </div>
-          <div className="userRow"><b>2FA:</b> </div>
-        </div>
-        <div className="logged-box">
-          <div className="userData">{user?.Username}</div>
-          <div className="userData">{user?.Email}</div>
-          <div className="userData">{user?.Role}</div>
-          <div className="userData">{user?.Status}</div>
-          <div className="userData">{(user?.TwoFAActive)? 'True':'False'}</div>
-        </div>
-      </div>
-      <div className="logout-row">
-        <button className="btn-base btn-logout" type="button"  onClick={logout}>Logout</button>
-        <button className="btn-base btn-togrocerylist" type="button"  onClick={changeToObjectivesList}>To Objectives List</button>
-        {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
-      </div>
+      <div className='card-container'>
+      {isGettingUserInfo?
+        <Loading/>
+        :
+        <>
+          <div className='logged-title' onClick={getUserInfo}>PROFILE</div>
+          <div className="logged-info-box">
+            <div className="logged-box">
+              <div className="userRow"><b>Username:</b> </div>
+              <div className="userRow"><b>Email:</b> </div>
+              <div className="userRow"><b>Role:</b> </div>
+              <div className="userRow"><b>Status:</b> </div>
+              <div className="userRow"><b>2FA:</b> </div>
+            </div>
+            <div className="logged-box">
+              <div className="userData">{user?.Username}</div>
+              <div className="userData">{user?.Email}</div>
+              <div className="userData">{user?.Role}</div>
+              <div className="userData">{user?.Status}</div>
+              <div className="userData">{(user?.TwoFAActive)? 'Active':'Not active'}</div>
+            </div>
+          </div>
+          <div className="logout-row">
+            <button className="btn-base btn-logout" type="button"  onClick={logout}>Logout</button>
+            <button className="btn-base btn-togrocerylist" type="button"  onClick={changeToObjectivesList}>To Objectives List</button>
+            {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
+          </div>
+        </>
+      }
     </div>
-    {!user?.TwoFAActive &&
+    {user?.TwoFAActive?
       <div className="card-container">
-        {isGettingQRCode?
-          <Loading/>
-          :
-          <button className="btn-base" type="button" onClick={get2FAAuth}>Get 2FA</button>
+        <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.Error)}}>Deactivate 2FA</div>
+        {deactivateTwoFA && 
+          <div className={'fa-deactivate-container'}>
+            <div className='fa-deactivate-subtitle'>Verification code:</div>
+            {isDeactivatingTwoFA?
+              <Loading/>
+              :
+              <input className="input-base" type="text" onChange={changeTwoFACode} onKeyUp={sendDeactivateTwoFA} placeholder="6 digit number" aria-label="Server" value={twoFAVerificationCode}></input>
+            }
+          </div>
         }
-        {twoFAQRCode !== '' && 
+        <button className="btn-base" type="button" onClick={() => { setDeactivateTwoFA(!deactivateTwoFA)}}>{deactivateTwoFA?'Cancel':'Deactivate 2FA'}</button>
+      </div>
+      :
+      <div className="card-container">
+        <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.Error)}}>Activate 2FA</div>
+        {twoFAQRCode !== ''?
           (isActivatingTwoFA?
             <Loading/>
             :
             <>
-              <img className={'qrcode-image'} src={twoFAQRCode}></img>
-              <input className="input-base" type="text" onChange={changeTwoFACode} onKeyUp={sendVerificationTwoFA} placeholder="Password" aria-label="Server" value={twoFAVerificationCode}></input>
+              {isGettingQRCode?
+                <Loading/>
+                :
+                <img className={'qrcode-image'} src={twoFAQRCode} onClick={get2FAAuth}></img>
+              }
+              <div className='fa-subtitle'>Verification code:</div>
+              <input className="input-base" type="text" onChange={changeTwoFACode} onKeyUp={sendActivationCode} placeholder="6 digit number" aria-label="Server" value={twoFAVerificationCode}></input>
             </>
+          )
+          :
+          (isGettingQRCode?
+            <Loading/>
+            :
+            <button className="btn-base" type="button" onClick={get2FAAuth}>Get 2FA</button>
           )
         }
       </div>

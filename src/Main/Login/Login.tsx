@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import './login.scss'
-import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType } from '../../Types'
+import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType, TwoFactorAuthRequest } from '../../Types'
 import Loading from '../../loading/loading';
 import { useUserContext } from '../../contexts/user-context';
-import storage from '../../storage/storage';
 import log from '../../log/log';
-// import { identityApi } from '../../requests-sdk/requests-sdk';
 import { useNavigate } from 'react-router-dom';
 import UserView from './user-view/user-view';
 import { useLogContext } from '../../contexts/log-context';
 import { useRequestContext } from '../../contexts/request-context';
+import { local, session } from '../../storage/storage';
+import TwoFAView from './twofa-view/twofa-view';
+import RequestUserView from './request-user-view/request-user-view';
 
 interface LoginProps{
 }
 
-const Login: React.FC<LoginProps> = (props) => {
+const Login: React.FC<LoginProps> = () => {
+  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
+  const { user, setUser, isServerUp } = useUserContext();
+  const { popMessage } = useLogContext();
+  const navigate = useNavigate();
+
   const [isLogging, setIsLogging] = useState<boolean>(false);
-  const [isCreatingNewUser, setIsCreatingNewUser] = useState<boolean>(false);
   const [isLogged, setIsLogged] = useState<boolean>(false);
-  const [username, setUsername] = useState<string>('');
-  const [reason, setReason] = useState<string>('');
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  const [createEmail, setCreateEmail] = useState<string>('');
-  const [createPassword, setCreatePassword] = useState<string>('');
 
   const [typeAnEmail, setTypeAnEmail] = useState<boolean>(false);
   const [wrongEmail, setWrongEmail] = useState<boolean>(false);
@@ -34,16 +34,8 @@ const Login: React.FC<LoginProps> = (props) => {
   const [typeAnPassword, setTypeAnPassword] = useState<boolean>(false);
   const [wrongPassword, setWrongPassword] = useState<boolean>(false);
 
-  const [typeAnEmailCreate, setTypeAnEmailCreate] = useState<boolean>(false);
-  const [typeAnValidEmailCreate, setTypeAnValidEmailCreate] = useState<boolean>(false);
-  const [typeAnPasswordCreate, setTypeAnPasswordCreate] = useState<boolean>(false);
-  const [typeAnUsernameCreate, setTypeAnUsernameCreate] = useState<boolean>(false);
-  const [typeReasonCreate, setTypeReasonCreate] = useState<boolean>(false);
+  const [requiringTwoFA, setRequiringTwoFA] = useState<boolean>(false);
 
-  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { user, setUser, isServerUp } = useUserContext();
-  const { popMessage } = useLogContext();
-  const navigate = useNavigate();
   
   useEffect(() => {
     verifyLogin();
@@ -75,7 +67,7 @@ const Login: React.FC<LoginProps> = (props) => {
     }
   }
 
-  interface LoginData { User: ResponseUser, Token: string }
+  // interface LoginData { User: ResponseUser, Token: string }
   const login = async () => {
     if(email.trim() === ""){
       setWrongEmail(false);
@@ -105,13 +97,30 @@ const Login: React.FC<LoginProps> = (props) => {
     setIsLogging(true);
     try {
       const data = await identityApi.login(JSON.stringify(user), loginError);
-      log.b(data)
-      if(data && data.User){
-        storage.setToken(data.Token);
-        storage.setUser(data.User);
-        storage.setFirstLogin(true);
-        setUser(data.User);
-        setIsLogged(true);
+      if(data){
+        /// Fist require 2FA
+        if(data.RequiringTwoFA){
+          if(data.TwoFATempToken && data.TwoFATempToken.trim() !== ''){
+            session.writeTwoFATempToken(data.TwoFATempToken);
+            setRequiringTwoFA(true);
+          }
+          else{
+            popMessage('There was a problem with requiring 2FA code.', MessageType.Error);
+          }
+        }
+        else{
+          /// Normal login, without 2FA
+          if(data.User && data.Token){
+            local.setToken(data.Token);
+            local.setUser(data.User);
+            local.setFirstLogin(true);
+            setUser(data.User);
+            setIsLogged(true);
+          }
+          else{
+            popMessage('Login was ok but no data was returned.', MessageType.Error);
+          }
+        }
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -139,35 +148,8 @@ const Login: React.FC<LoginProps> = (props) => {
     }
   }
 
-  const changeCreateEmail = (event: any) => {
-    setTypeAnEmailCreate(false);
-    setTypeAnValidEmailCreate(false);
-    setCreateEmail(event.target.value);
-  }
-  
-  const changeUsername = (event: any) => {
-    setTypeAnUsernameCreate(false);
-    setUsername(event.target.value);
-  }
-  
-  const changeCreatePaswword = (event: any) => {
-    setTypeAnPasswordCreate(false);
-    setCreatePassword(event.target.value);
-  }
-  
-  const changeReason = (event: any) => {
-    setTypeReasonCreate(false);
-    setReason(event.target.value);
-  }
-
-  const reasonEnter = (event: any) => {
-    if(event.key === 'Enter'){
-      createLogin();
-    }
-  }
-
   const checkForLoginToken = () =>{
-    const token = storage.getToken();
+    const token = local.getToken();
 
     if(token != null && token !== undefined){
       const parsedToken = parseJwt(token);
@@ -181,13 +163,14 @@ const Login: React.FC<LoginProps> = (props) => {
   }
 
   const logout = async () => {
-    storage.deleteToken();
-    storage.deleteUser();
-    storage.deleteAvailableTags();
-    storage.deleteSelectedTags();
-    storage.deleteFirstLogin();
+    local.deleteToken();
+    local.deleteUser();
+    local.deleteAvailableTags();
+    local.deleteSelectedTags();
+    local.deleteFirstLogin();
     setUser(null);
     setIsLogged(false);
+    setRequiringTwoFA(false);
   }
 
   function isValidEmail(input: string) {
@@ -195,56 +178,12 @@ const Login: React.FC<LoginProps> = (props) => {
     return regex.test(input);
   }
 
-  const createLogin = async () => {
-    if(createEmail.trim() === "" ||!isValidEmail(createEmail.trim()) || username.trim() === "" || createPassword.trim() === ""|| reason.trim() === ""){
-      if(createEmail.trim() === ""){
-        setTypeAnEmailCreate(true);
-      }else if(!isValidEmail(createEmail.trim())){
-        setTypeAnValidEmailCreate(true);
-      }
-      if(username.trim() === ""){
-        setTypeAnUsernameCreate(true);
-      }
-      if(createPassword.trim() === ""){
-        setTypeAnPasswordCreate(true);
-      }
-      if(reason.trim() === ""){
-        setTypeReasonCreate(true);
-      }
-
-      return;
-    }
-
-    const createUser: CreateUserModel = {
-      Email: createEmail.trim(),
-      Password: createPassword.trim(),
-      Username: username,
-      Reason: reason,
-    };
-
-    try {
-      setIsCreatingNewUser(true);
-      const data = await identityApi.askToCreate(JSON.stringify(createUser));
-
-      
-      if(data){
-        storage.setToken(data.Token);
-        storage.setUser(data.User);
-        storage.setFirstLogin(true);
-        setUser(data.User);
-        setIsLogged(true);
-      }
-    } catch (error) {
-      setIsCreatingNewUser(false);
-    }
-
-    setIsCreatingNewUser(false);
-  }
+  
 
   //Responsable for getting token and user from storage to state
   const verifyLogin = () => {
-    const token = storage.getToken();
-    const user = storage.getUser();
+    const token = local.getToken();
+    const user = local.getUser();
 
     if(token != null && token !== undefined && user != null && user !== undefined){
       const parsedToken = parseJwt(token);
@@ -252,7 +191,7 @@ const Login: React.FC<LoginProps> = (props) => {
       const tokenDate = new Date(parsedToken.exp * 1000);
 
       if(parsedToken.exp === undefined || tokenDate > now){
-        setUser(storage.getUser());
+        setUser(local.getUser());
         setIsLogged(true);
       }
       else{
@@ -265,75 +204,47 @@ const Login: React.FC<LoginProps> = (props) => {
     <div className='login-container'>
       {!isLogged?
         <div className='login-wrapper'>
-          <div className='login-box'>
-            {/* <h3 className='login-title'>LOGIN</h3> */}
-            <div className="email-column">
-              <div className="pass-row">
-                <input name='email'  className="input-base" type="email" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
-                {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
-                {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
-                {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}
+          {requiringTwoFA?
+            <TwoFAView setIsLogged={setIsLogged} logout={logout}></TwoFAView>
+            :
+            <div className='login-box'>
+              <div className="email-column">
+                <div className="pass-row">
+                  <input name='email'  className="input-base" type="email" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
+                  {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
+                  {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
+                  {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}
+                </div>
+              </div>
+              <div className="pass-column">
+                <div className="pass-row">
+                  {showPassword?
+                    <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
+                    :
+                    <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
+                  }
+                  {showPassword?
+                    <img className="loginImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>{setShowPassword(false)}}></img>
+                    :
+                    <img className="loginImage" src={process.env.PUBLIC_URL + '/show.png'} alt='meaningfull text' onClick={()=>{setShowPassword(true)}}></img>
+                  }
+                </div>
+                {typeAnPassword && <span className="warning-message concert-one-regular">Type a password</span>}
+                {wrongPassword && <span className="alert-message concert-one-regular">Wrong password</span>}
+              </div>
+              <div className="login-row">
+                {isLogging?
+                  <Loading/>
+                  :
+                  <button className="btn-login" type="button" onClick={login}>Login</button>
+                }
               </div>
             </div>
-            <div className="pass-column">
-              <div className="pass-row">
-                {showPassword?
-                  <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
-                  :
-                  <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
-                }
-                {showPassword?
-                  <img className="loginImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>{setShowPassword(false)}}></img>
-                  :
-                  <img className="loginImage" src={process.env.PUBLIC_URL + '/show.png'} alt='meaningfull text' onClick={()=>{setShowPassword(true)}}></img>
-                }
-              </div>
-              {typeAnPassword && <span className="warning-message concert-one-regular">Type a password</span>}
-              {wrongPassword && <span className="alert-message concert-one-regular">Wrong password</span>}
-            </div>
-            <div className="login-row">
-              {isLogging?
-                <Loading/>
-                :
-                <button className="btn-login" type="button" onClick={login}>Login</button>
-              }
-            </div>
-          </div>
-          {/* <div className=" login-box">
-            <div style={{width: '100%', height:'1px', margin: '40px 0px', backgroundColor: 'black'}}></div>
-            <h3 style={{margin: '40px 0px 30px 0px'}}>Do you want to test my project?</h3>
-            <div className="login-row">
-              <input className="input-base" type="text" onChange={changeCreateEmail} placeholder="Email" aria-label="Email"></input>
-              {typeAnEmailCreate && <span className="alert-message concert-one-regular">Type an email.</span>}
-              {typeAnValidEmailCreate && <span className="alert-message concert-one-regular">Type in a valid email style.</span>}
-            </div>
-            <div className="login-row">
-              <input className="input-base" type="text" onChange={changeUsername} placeholder="Username" aria-label="Username"></input>
-              {typeAnUsernameCreate && <span className="alert-message concert-one-regular">Type an username.</span>}
-            </div>
-            <div className="login-row">
-              <input className="input-base"  type="password" onChange={changeCreatePaswword} placeholder="Password" aria-label="Server"></input>
-              {typeAnPasswordCreate && <span className="alert-message concert-one-regular">Type an password.</span>}
-            </div>
-            <div className="login-row">
-              <input className="input-base"  type="text" onChange={changeReason} onKeyUp={reasonEnter} placeholder="Reason" aria-label="Server"></input>
-              {typeReasonCreate ?
-                <span className="alert-message concert-one-regular">Write something, otherwise I'll refuse."</span>
-                :
-                <span className="focus-message concert-one-regular">e.g. "I saw your CV and want to test your project. I'm a recruter."</span>
-              }
-            </div>
-            <div className="login-row">
-              {isCreatingNewUser?
-                <Loading></Loading>
-                :
-                <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
-              }
-            </div>
-          </div> */}
+          }
+          {/* <RequestUserView setIsLogged={setIsLogged}></RequestUserView> */}
         </div>
         :
-        <UserView setIsLogged={setIsLogged}></UserView>
+        <UserView setIsLogged={setIsLogged} logout={logout}></UserView>
       }
     </div>
   );

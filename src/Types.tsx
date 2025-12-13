@@ -42,8 +42,9 @@ export interface ResponseServices{
 
 export interface LoginModel{
   User?: ResponseUser,
-  Token: string,
-  ErrorMessage: string
+  Token?: string,
+  RequiringTwoFA: boolean,
+  TwoFATempToken?: string,
 }
 
 export interface LoginRequest {
@@ -60,7 +61,10 @@ export interface LoginResponse {
 
 export interface ChangeUserStatusRequest { Email: string, Status: string }
 export interface ChangeUserPasswordRequest { Email: string, Password: string }
-export interface RequestActivateTwoFA { TwoFAActivationCode: string }
+export interface TwoFactorAuthRequest { 
+  TwoFACode: string,
+  TwoFATempToken?: string,
+}
 
 export interface UserPrefs{
   theme: string,

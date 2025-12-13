@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../../../contexts/user-context";
-import storage from "../../../storage/storage";
+import {local} from "../../../storage/storage";
 import './objective-backup-side-view.scss';
 import Loading from "../../../loading/loading";
 // import { objectiveslistApi } from "../../../requests-sdk/requests-sdk";

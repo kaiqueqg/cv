@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../../contexts/user-context";
-import storage from "../../storage/storage";
+import {local} from "../../storage/storage";
 import './objectives-list.scss';
 // import { objectiveslistApi } from "../../requests-sdk/requests-sdk";
 import log from "../../log/log";
@@ -67,8 +67,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const verifyLogin = async () => {
-    const token = await storage.getToken();
-    const user = await storage.getUser();
+    const token = await local.getToken();
+    const user = await local.getUser();
 
     if(token && user){
       const parsedToken = parseJwt(token);
@@ -76,7 +76,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       const tokenDate = new Date(parsedToken.exp * 1000);
 
       if(parsedToken.exp === undefined || tokenDate > now){
-        setUser(await storage.getUser());
+        setUser(await local.getUser());
       }
     }
   }
@@ -99,10 +99,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         const uniqueTags = Array.from(new Set(tags));
         writeAvailableTags(uniqueTags);
         
-        const v = storage.getFirstLogin(); //I need a better solution
+        const v = local.getFirstLogin(); //I need a better solution
         if(v) {
           writeSelectedTags(uniqueTags);
-          storage.setFirstLogin(false);
+          local.setFirstLogin(false);
         }
       }
     }

@@ -14,6 +14,7 @@ $bor: false;
   align-items: center;
   text-align: center;
   flex-direction: column;
+  background-color: $blue-darker;
 
   padding: 10px 15px;
   margin-bottom: 30px;
@@ -29,10 +30,36 @@ $bor: false;
   user-select: none;
 }
 
+.fa-deactivate-container{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.fa-deactivate-subtitle{
+  font-size: 20px;
+  font-weight: bold;
+  margin: 5px 0px 5px 0px;
+  user-select: none;
+}
+
+.fa-subtitle{
+  font-size: 20px;
+  font-weight: bold;
+  margin: 20px 0px 5px 0px;
+  user-select: none;
+}
+
 .logged-info-box {
   display: flex;
   margin-bottom: 20px;
   border-radius: 2px;
+  width: 100%;
   @if $bor {border: 1px solid green;}
 }
 
