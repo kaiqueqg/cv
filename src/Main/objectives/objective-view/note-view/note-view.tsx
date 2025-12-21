@@ -26,7 +26,8 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   const { scss } = useThemeContext();
   const { note, putItemsInDisplay, removeItemsInDisplay, theme, isSelecting, isSelected, isDisabled, itemTintColor} = props;
 
-  const [newText, setNewText] = useState<string>(note.Text);
+
+  const [tempNote, setTempNote] = useState<Note>(note);
   const [isEditingText, setIsEditingText] = useState<boolean>(false);
   const [isSavingText, setIsSavingTitle] = useState<boolean>(false);
   const [isAutoUpdating, setIsAutoUpdating] = useState<boolean>(false);
@@ -34,7 +35,6 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   const [shouldAutoSave, setShouldAutoSave] = useState<boolean>(false);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-
 
   const hasTextSelection = () => {
     const selection = window.getSelection();
@@ -46,17 +46,31 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   }
 
   const handleTextInputChange = (event: any) => {
-    const newValue = event.target.value;
-    setNewText(newValue);
+    const newValue = {...tempNote, Text: event.target.value}
+    setTempNote(newValue);
 
-    if(shouldAutoSave) {
-      timerRef.current = setTimeout(async () => {
-        await saveNote(newValue);
-      }, 3000);
+    // if(shouldAutoSave) {
+    //   timerRef.current = setTimeout(async () => {
+    //     await saveNote(newValue);
+    //   }, 3000);
+    // }
+  }
+
+  const handleTitleInputChange = (event: any) => {
+    const newValue = {...tempNote, Title: event.target.value}
+    setTempNote(newValue);
+  }
+
+  const handleTitleKeyDown = async (event: any) => {
+    if(event.key === 'Enter'){
+        doneEdit();
+    }
+    else if(event.key === 'Escape'){
+      cancelEdit();
     }
   }
 
-  const handleKeyDown = async (event: any) => {
+  const handleTextKeyDown = async (event: any) => {
     if(event.key === 'Enter' && event.shiftKey){
       doneEdit();
     }
@@ -78,9 +92,9 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   }
 
   const doneEdit = async () => {
-    const newNote: Note = {...note, Text: newText.trim(), LastModified: new Date().toISOString()};
+    const newNote: Note = {...tempNote, Title: tempNote.Title, Text: tempNote.Text, LastModified: new Date().toISOString()};
 
-    if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
+    if(newNote.Title !== note.Title || newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
       setIsSavingTitle(true);
 
       const data = await objectiveslistApi.putObjectiveItems([newNote]);
@@ -96,32 +110,32 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     }
     else{
       setIsEditingText(false);
-      setNewText(note.Text);
+      setTempNote(note);
     }
   }
 
-  const saveNote = async (newValue: string) => {
-    console.log('Saving')
-    const newNote: Note = {...note, Text: newValue.trim(), LastModified: new Date().toISOString()};
+  // const saveNote = async (newValue: Note) => {
+  //   console.log('Saving')
+  //   const newNote: Note = {...note, Text: newValue.trim(), LastModified: new Date().toISOString()};
 
-    if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
-      setIsAutoUpdating(true);
+  //   if(newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
+  //     setIsAutoUpdating(true);
 
-      const data = await objectiveslistApi.putObjectiveItems([newNote]);
+  //     const data = await objectiveslistApi.putObjectiveItems([newNote]);
 
-      if(data){
-        setIsEditingText(false);
-        putItemsInDisplay(data);
-      }
+  //     if(data){
+  //       setIsEditingText(false);
+  //       putItemsInDisplay(data);
+  //     }
 
-      setTimeout(() => {
-        setIsAutoUpdating(false);
-      }, 500); 
-    }
-  }
+  //     setTimeout(() => {
+  //       setIsAutoUpdating(false);
+  //     }, 500); 
+  //   }
+  // }
 
   const cancelEdit = () => {
-    setNewText(note.Text);
+    setTempNote(note);
     setIsEditingText(false);
   }
 
@@ -140,12 +154,19 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
               }
             </div>
             <div className='centerTitleContainer'>
+              <input
+                className={scss(theme, [SCSS.INPUT])}
+                type='text'
+                placeholder='Title'
+                value={tempNote.Title}
+                onChange={handleTitleInputChange}
+                onKeyDown={handleTitleKeyDown} autoFocus></input>
               <textarea 
                 className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
-                value={newText}
+                value={tempNote.Text}
                 onChange={handleTextInputChange}
-                onKeyDown={handleKeyDown} 
-                autoFocus></textarea>
+                onKeyDown={handleTextKeyDown} 
+                ></textarea>
             </div>
             <div className='sideTitleContainer'>
               {isAutoUpdating?
@@ -158,9 +179,12 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
             </div>
           </div>
           :
-          <div 
-            className={'noteTitle' + scss(theme, [SCSS.TEXT])}
-            onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>
+          <div className="noteDisplayContainer">
+            {note.Title.trim() !== '' && <div className='noteTitle' onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Title}</div>}
+            <div 
+              className={'noteText' + scss(theme, [SCSS.TEXT])}
+              onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>
+          </div>
         )
       }
     {note.Text === '' && !isEditingText && <img className='noteImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>}

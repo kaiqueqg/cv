@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House, MultiSelectType, MultSelectAction } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House, MultiSelectType, MultSelectAction, isCheckableItem } from "../../../TypesObjectives";
 import Loading from "../../../loading/loading";
 import TagsView from "./tags-view/tags-view";
 import { useLogContext } from "../../../contexts/log-context";
@@ -341,7 +341,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const choseNewItemToAdd = async (type: ItemType, pos?:number, amount?: number) => {
     if(!isAddingNewItemLocked) setIsAddingNewItemMenuOpen(false);
 
-    const baseItem:Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length);
+    const baseItem:Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length, '');
     let typeItem:any = {};
 
     switch (type) {
@@ -715,6 +715,45 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return "";
   }
 
+  const checkUncheckedDividerItems = async (value: boolean, divider: Item) => {
+    let start = false;
+    let itemsToChange:Item[] = [];
+    for(let i = 0; i < items.length; i++){
+      const item = items[i];
+      if(start && item.Type === ItemType.Divider) break;
+
+      if(start) {
+        switch(item.Type){
+          case ItemType.Exercise:
+            itemsToChange.push({...item, IsDone: value} as Exercise);
+            break;
+          case ItemType.Medicine:
+            itemsToChange.push({...item, IsChecked: value} as Medicine);
+            break;
+          case ItemType.Step:
+            itemsToChange.push({...item, Done: value} as Step);
+            break;
+          case ItemType.Grocery:
+            itemsToChange.push({...item, IsChecked: value} as Grocery);
+            break;
+          case ItemType.House:
+            itemsToChange.push({...item, WasContacted: value} as House);
+            break;
+        }
+      }
+
+      if(items[i] === divider){ 
+        start = true; 
+      }
+    }
+
+    const data = await objectiveslistApi.putObjectiveItems(itemsToChange);
+
+    if(data){
+      putItemsInDisplay(data);
+    }
+  }
+
   ////Order items only bellowing to divider
   const orderDividerItems = async (divider: Item) => {
     let start = false;
@@ -874,6 +913,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         isSelected={isSelected}
         isDisabled={isMultiSelectMenuOpen || isSelectingPastePos}
         orderDividerItems={orderDividerItems}
+        checkUncheckedDividerItems={checkUncheckedDividerItems}
         choseNewItemToAdd={choseNewItemToAdd}
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
@@ -1034,7 +1074,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
     let rtn: React.ReactNode[] = [];
     if(isMultiSelectMenuOpen && isSelectingPastePos) {
-      const fakeItem = {ItemId:'---', LastModified:'', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---'};
+      const fakeItem = {ItemId:'---', LastModified:'', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---', Title: 'fake'};
       const a = <ItemFakeView 
       key={'asd'}
       theme={Theme}
@@ -1079,35 +1119,31 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const getTopMenu = () => {
     if(isBelow700px){
       return (
-        <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
-          <div className='objTopMenu'>
-            {getObjectiveTitle()}
-            {!isEditingTitle && 
-              <div className={'objTopMenuBellow700px'}>
-                {getArchiveButton()}
-                {getIsShowingButton()}
-                {getPaletteButton()}
-                {getTagMenuButton()}
-                {getSearchMenuButton()}
-                {getFoldUnfoldButton()}
-                {getSortItemsButton()}
-                {getMultiSelectButton()}
-                {getIsShowingItemsButton()}
-                {getNewItemButton()}
-              </div>
-            }
-          </div>
+        <div className='objTopMenu'>
+          {getObjectiveTitle()}
+          {!isEditingTitle && 
+            <div className={'objTopMenuBellow700px'}>
+              {getArchiveButton()}
+              {getIsShowingButton()}
+              {getPaletteButton()}
+              {getTagMenuButton()}
+              {getSearchMenuButton()}
+              {getFoldUnfoldButton()}
+              {getSortItemsButton()}
+              {getMultiSelectButton()}
+              {getIsShowingItemsButton()}
+              {getNewItemButton()}
+            </div>
+          }
         </div>
       )
     }
 
     return(
-      <div className={'objTopContainer' + (items.length > 0? ' objTopContainerWithItem':'')}>
-        <div className='objTopMenu'>
-          {!isEditingTitle && getLeftIconsMenu()}
-          {getObjectiveTitle()}
-          {!isEditingTitle && getRightIconsMenu()}
-        </div>
+      <div className='objTopMenu'>
+        {!isEditingTitle && getLeftIconsMenu()}
+        {getObjectiveTitle()}
+        {!isEditingTitle && getRightIconsMenu()}
       </div>
     )
   }
@@ -1159,9 +1195,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
         <div className={'objectiveNewItemAmount' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
         <div className='objectiveNewItemImages'>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Wait)}} className='objMenuImageContainer'>
+          {/* <div onClick={()=>{choseNewItemToAdd(ItemType.Wait)}} className='objMenuImageContainer'>
             <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor(Theme) + '.png'}></img>
-          </div>
+          </div> */}
           <div onClick={()=>{choseNewItemToAdd(ItemType.House)}} className='objMenuImageContainer'>
             <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/home' + getTintColor(Theme) + '.png'}></img>
           </div>

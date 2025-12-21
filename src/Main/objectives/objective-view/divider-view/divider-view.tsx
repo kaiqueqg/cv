@@ -22,18 +22,20 @@ interface DividerProps extends ItemViewProps{
   divider: Divider,
   orderDividerItems: (item: Item)=>Promise<void>,
   choseNewItemToAdd: (type: ItemType, pos?:number, amount?: number)=>void,
+  checkUncheckedDividerItems: (value: boolean, divider: Item)=>void,
 }
 
 export const DividerView: React.FC<DividerProps> = (props) => {
-  const { user, setUser } = useUserContext();
-  const { identityApi, objectiveslistApi } = useRequestContext();
+  const { objectiveslistApi } = useRequestContext();
   const { popMessage } = useLogContext();
   const { scss } = useThemeContext();
-  const { divider, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelected, isSelecting, choseNewItemToAdd, orderDividerItems, itemTintColor } = props;
+  const { divider, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelected, isSelecting, choseNewItemToAdd, orderDividerItems, itemTintColor, checkUncheckedDividerItems } = props;
 
   const [newTitle, setNewTitle] = useState<string>(divider.Title);
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
   const [isOrderingAToZ, setIsOrderingAToZ] = useState<boolean>(false);
+  const [isAllCheckingUncheking, setIsAllCheckingUncheking] = useState<boolean>(false);
+  const [checkAll, setCheckAll] = useState<boolean>(false);
   
   const [isSavingTitle, setIsSavingTitle] = useState<boolean>(false);
   const [isSavingIsOpen, setIsSavingIsOpen] = useState<boolean>(false);
@@ -171,8 +173,32 @@ export const DividerView: React.FC<DividerProps> = (props) => {
     }
   }
 
+  const onChangeAllCheckedUnchecked = async () => {
+    setIsAllCheckingUncheking(true);
+
+    const newValue = !checkAll;
+    await checkUncheckedDividerItems(newValue, divider);
+    setCheckAll(newValue);
+    
+    setIsAllCheckingUncheking(false);
+  }
+
+  const getMainContainer = () => {
+    let s = 'dividerContainer ';
+
+    if(isAddingNewItem && !isDisabled){
+      s += scss(theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK]);
+    }
+    else{
+      s += scss(theme, [SCSS.BORDERCOLOR_CONTRAST], true, isSelecting, isSelected) + scss(theme, [SCSS.ITEM_BG_DARK])
+    }
+    
+    log.w(s)
+    return s;
+  }
+
   return (
-    <div className={'dividerContainer ' + scss(theme, [SCSS.BORDERCOLOR_CONTRAST], true, isSelecting, isSelected)}>
+    <div className={getMainContainer()}>
       <div className='titleLineContainer'>
         {!isEditingTitle && 
           (isSavingIsOpen?
@@ -185,6 +211,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             )
           )
         }
+        {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'} isLoading={isOrderingAToZ}/>}
         {isSavingTitle?
           <Loading IsBlack={theme==='white'}></Loading>
           :
@@ -208,15 +235,20 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             getTitle()
           )
         }
-        {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'} isLoading={isOrderingAToZ}/>}
+        {!isEditingTitle && (
+          checkAll?
+            <PressImage isBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/unchecked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
+            :
+            <PressImage isBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/checked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
+        )}
         {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem}/>}
       </div>
-      {isAddingNewItem &&
-        <div className='dividerNewItemContainer'>
+      {isAddingNewItem && !isDisabled &&
+        <div className={'dividerNewItemContainer '}>
           <div className={'objectiveNewItemAmount' + scss(theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Wait, divider.Pos)}}>
+          {/* <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Wait, divider.Pos)}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/wait' + itemTintColor(theme) + '.png'}></img>
-          </div>
+          </div> */}
           <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.House, divider.Pos);}}>
             <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme) + '.png'}></img>
           </div>

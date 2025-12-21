@@ -41,7 +41,6 @@ const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
         return;
       }
       
-      log.b('sendVerificationTwoFA')
       const tempToken: string|null = await session.readTwoFATempToken();
       if(tempToken) {
         const sendRequest: TwoFactorAuthRequest = { TwoFACode: verificationCode, TwoFATempToken: tempToken };

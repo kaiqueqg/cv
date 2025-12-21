@@ -112,6 +112,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const addNewObjective = async () => {
     setIsAddingNewObjective(true);
+
+    const tag = selectedTags.find((t: string) => t !== 'Pin');
     
     try {
       const emptyObjective: Objective = {
@@ -128,7 +130,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         IsShowingCheckedStep: true,
         IsShowingCheckedExercise: true,
         IsShowingCheckedMedicine: true,
-        Tags: [],
+        Tags: selectedTags.length === 2 && tag?[tag]:[],
       }
       
       const data = await objectiveslistApi.putObjectives([emptyObjective], (error:any) => popMessage(error.Message, MessageType.Error, 10));
@@ -462,6 +464,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       log.r('not' + fileName);
     }
   }
+
+  const isThereANonArchivedShowingObjetive = ():boolean => {
+    return  objectives.some((o: Objective) => o.IsShowing && !o.IsArchived);
+  }
   
   return (
     <div className='objectivesContainer'>
@@ -478,13 +484,13 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           <div className='objectivesListMainAndTagsContainer'>
             <div className='objectivesListMainTags'>{ getTagList() }</div>
             <div className='objectivesListMainContainer'>
-              {objectives.length === 0?
+              {isThereANonArchivedShowingObjetive()?
+                getObjectiveList()
+                :
                 <div className={'objectivesListFirstOneContainer'} onClick={addNewObjective}>
                   Create a new objective
-                  <PressImage src={process.env.PUBLIC_URL + '/newfile.png'}  isBlack={false}/>
+                  <PressImage src={process.env.PUBLIC_URL + '/newfile.png'}  isBlack={false} isLoading={isAddingNewObjective}/>
                 </div>
-                :
-                getObjectiveList()
               }
             </div>
             <div style={{height: '700px'}}></div>

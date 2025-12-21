@@ -203,7 +203,6 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
       setIsDeactivatingTwoFA(true);
 
       const requestDeactivate: TwoFactorAuthRequest = {TwoFACode: twoFAVerificationCode}
-      log.b(requestDeactivate)
       const data = await identityApi.deactivateTwoFA(requestDeactivate);
 
       if(data){
@@ -232,7 +231,6 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
   }
 
   const changeTwoFACode = (event: any) => {
-    log.b('changeTwoFACode')
     setTwoFAVerificationCode(event.target.value);
   }
 

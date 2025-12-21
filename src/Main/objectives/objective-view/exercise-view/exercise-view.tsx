@@ -172,16 +172,19 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
 
   const doneEdit = async () => {
     const newItem: Exercise = {...newExercise,
+      IsDone: newExercise.IsDone,
       Title: newExercise.Title.trim(),
       Reps: newExercise.Reps,
       Series: newExercise.Series,
       MaxWeight: newExercise.MaxWeight.trim(),
+      Pos: newExercise.Pos,
       Description: newExercise.Description.trim(),
       Weekdays: newExercise.Weekdays,
       BodyImages: newExercise.BodyImages,
     };
 
-    if(newItem.Title !== exercise.Title || 
+    if(newItem.IsDone !== exercise.IsDone ||
+      newItem.Title !== exercise.Title || 
       newItem.Reps !== exercise.Reps ||
       newItem.Series !== exercise.Series ||
       newItem.MaxWeight !== exercise.MaxWeight ||

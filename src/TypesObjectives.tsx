@@ -22,13 +22,14 @@ export interface Objective {
   Tags: string[],
 }
 
-export const ItemNew = (userId: string, objectiveId: string, itemId: string, type: ItemType, pos: number) => {
+export const ItemNew = (userId: string, objectiveId: string, itemId: string, type: ItemType, pos: number, title: string) => {
   return({
     UserIdObjectiveId: userId + objectiveId,
     ItemId: itemId,
     Pos: pos,
     Type: type,
     LastModified: (new Date()).toISOString(),
+    Title: title,
   });
 }
 
@@ -74,11 +75,22 @@ export enum ItemType {
   House = 'House'
 }
 
+export const isCheckableItem = (type: ItemType): boolean => {
+  return(
+    type === ItemType.Step || 
+    type === ItemType.Grocery || 
+    type === ItemType.House || 
+    type === ItemType.Exercise || 
+    type === ItemType.Medicine
+  )
+}
+
 export interface Item {
   ItemId: string,
   UserIdObjectiveId: string,
   Type: ItemType,
   Pos: number,
+  Title: string,
   LastModified: string,
 }
 
@@ -95,14 +107,12 @@ export enum StepImportance {
   LadybugGreen,
 }
 export interface Step extends Item {
-  Title: string,
   Done: boolean,
   Importance: StepImportance,
   AutoDestroy: boolean,
 }
 
 export interface Wait extends Item {
-  Title: string,
 }
 
 export interface Note extends Item {
@@ -115,17 +125,14 @@ export interface Question extends Item {
 }
 
 export interface Location extends Item {
-  Title: string,
   Url: string,
 }
 
 export interface Divider extends Item {
-  Title: string,
   IsOpen: boolean,
 }
 
 export interface Grocery extends Item {
-  Title: string,
   IsChecked: boolean,
   Quantity?: number,
   Unit?: string,
@@ -133,7 +140,6 @@ export interface Grocery extends Item {
 }
 
 export interface Medicine extends Item{
-  Title: string,
   IsChecked: boolean,
   Quantity?: number,
   Unit?: string,
@@ -144,7 +150,6 @@ export interface Medicine extends Item{
 export enum Weekdays{ Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday }
 
 export interface Exercise extends Item{
-  Title: string,
   IsDone: boolean,
   Reps: number,
   Series: number,
@@ -156,12 +161,10 @@ export interface Exercise extends Item{
 }
 
 export interface Link extends Item{
-  Title: string,
   Link: string,
 }
 
 export interface Image extends Item{
-  Title: string;
   Name: string,
   Size: number,
   Width: number,
@@ -170,7 +173,6 @@ export interface Image extends Item{
 }
 
 export interface House extends Item{
-  Title: string,
   Listing: string,
   MapLink: string,
   MeterSquare: string,
