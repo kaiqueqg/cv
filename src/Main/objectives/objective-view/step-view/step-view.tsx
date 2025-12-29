@@ -136,31 +136,31 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
   const getImportanceImage = () => {
     if(newImportance === StepImportance.Low){
-      return <PressImage src={process.env.PUBLIC_URL + '/low.png'} isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/low.png'} isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.Medium){
-      return <PressImage src={process.env.PUBLIC_URL + '/med.png'} isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/med.png'} isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.High){
-      return <PressImage src={process.env.PUBLIC_URL + '/high.png'} isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/high.png'} isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.Ladybug){
-      return <PressImage src={process.env.PUBLIC_URL + '/ladybug.png'}  isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/ladybug.png'}  isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.LadybugYellow){
-      return <PressImage src={process.env.PUBLIC_URL + '/ladybugyellow.png'}  isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/ladybugyellow.png'}  isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.LadybugGreen){
-      return <PressImage src={process.env.PUBLIC_URL + '/ladybuggreen.png'}  isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/ladybuggreen.png'}  isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.Question){
-      return <PressImage src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'} isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'} isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.Waiting){
-      return <PressImage src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'} isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'} isLoadingBlack={props.isLoadingBlack}/>
     }
     else if(newImportance === StepImportance.InProgress){
-      return <PressImage src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'} isBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'} isLoadingBlack={props.isLoadingBlack}/>
     }
     else{
       return <></>
@@ -171,9 +171,9 @@ export const StepView: React.FC<StepViewProps> = (props) => {
     if(isEditingTitle) return;
 
     if(step.Done)
-      return <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'} isLoading={isSavingDone}/>;
+      return <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone();}} src={process.env.PUBLIC_URL + '/step-filled-grey.png'} isLoading={isSavingDone}/>;
     else{
-      return <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone} confirm={step.AutoDestroy}/>
+      return <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone();}} src={process.env.PUBLIC_URL + '/step' + itemTintColor(theme) + '.png'} isLoading={isSavingDone} confirm={step.AutoDestroy}/>
     }
   }
 
@@ -187,7 +187,7 @@ export const StepView: React.FC<StepViewProps> = (props) => {
             process.env.PUBLIC_URL + (newAutoDestroy?('/explode'+itemTintColor(theme)+'.png'):'/explode-grey.png')
           }/> */}
         When you click on 
-        <PressImage isBlack={props.isLoadingBlack}onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/step'+itemTintColor(theme)+'.png'}></PressImage>
+        <PressImage isLoadingBlack={props.isLoadingBlack}onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/step'+itemTintColor(theme)+'.png'}></PressImage>
         should delete it? {newAutoDestroy? 'Yes':'No '}
       </div>
     )
@@ -205,29 +205,29 @@ export const StepView: React.FC<StepViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
               <input
-                className={'input ' + scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT, SCSS.BORDERCOLOR])}
                 type='text'
                 placeholder='Step text'
                 value={newTitle}
                 onChange={handleTextInputChange}
                 onKeyDown={handleKeyDown} autoFocus></input>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} isBlack={props.isLoadingBlack}/>
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} isBlack={props.isLoadingBlack}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
             </div>
             <div className='stepIconRowContainer'>
-              <PressImage isSelected={step.Importance===StepImportance.None} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.None);}} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.Low} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Low);}} src={process.env.PUBLIC_URL + '/low.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.Medium} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Medium);}} src={process.env.PUBLIC_URL + '/med.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.High} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.High);}} src={process.env.PUBLIC_URL + '/high.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.LadybugGreen} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Ladybug);}} src={process.env.PUBLIC_URL + '/ladybug.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.LadybugYellow} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugYellow);}} src={process.env.PUBLIC_URL + '/ladybugyellow.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.Ladybug} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugGreen);}} src={process.env.PUBLIC_URL + '/ladybuggreen.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.Question} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Question);}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.Waiting} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Waiting);}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'}/>
-              <PressImage isSelected={step.Importance===StepImportance.InProgress} isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.InProgress);}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.None} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.None);}} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.Low} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Low);}} src={process.env.PUBLIC_URL + '/low.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.Medium} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Medium);}} src={process.env.PUBLIC_URL + '/med.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.High} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.High);}} src={process.env.PUBLIC_URL + '/high.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.LadybugGreen} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Ladybug);}} src={process.env.PUBLIC_URL + '/ladybug.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.LadybugYellow} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugYellow);}} src={process.env.PUBLIC_URL + '/ladybugyellow.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.Ladybug} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.LadybugGreen);}} src={process.env.PUBLIC_URL + '/ladybuggreen.png'} rawImage/>
+              <PressImage isSelected={step.Importance===StepImportance.Question} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Question);}} src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.Waiting} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.Waiting);}} src={process.env.PUBLIC_URL + '/wait'+itemTintColor(theme)+'.png'}/>
+              <PressImage isSelected={step.Importance===StepImportance.InProgress} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.InProgress);}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
             </div>
             {getAutodestroyView()}
 

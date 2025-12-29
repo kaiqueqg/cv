@@ -4,6 +4,7 @@ import { useUserContext } from "../../../../contexts/user-context";
 import { SCSS, useThemeContext } from "../../../../contexts/theme-context";
 import log from "../../../../log/log";
 import Loading from "../../../../loading/loading";
+import PressImage from "../../../../press-image/press-image";
 
 
 interface TagsViewProps{
@@ -104,8 +105,8 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
           onChange={handleInputChange}
           onKeyDown={handleKeyDown} autoFocus>
         </input>
-        <img className='tagInputImage' onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} ></img>
-        <img className='tagInputImage' onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'}></img>
+        <PressImage onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} rawImage/>
+        <PressImage onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'} rawImage/>
       </div>
       <div className={'tagAvailableTagsTitle'+ scss(theme, [SCSS.TEXT])}>TAGS</div>
       <div className={'tagsList'}>

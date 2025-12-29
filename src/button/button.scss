@@ -1,0 +1,79 @@
+@import '../global.scss';
+
+// $bor: true;
+
+$size: 2px;
+$size2: -2px;
+
+.button-base{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  user-select: none;
+
+  font-weight: bolder;
+
+  border-radius: 5px;
+  border-width: 1px ;
+  border-style: solid;
+  border-color: $black;
+
+  box-shadow: $black 3px 3px 0 0;
+
+  padding: 7px 10px;
+  margin: 5px 5px;
+
+  background-clip: padding-box; // to remove small overflow of background on the corners
+
+  &-selected{
+    transform: translateY(1px) translateX(1px);
+    box-shadow: black 2px 2px 3px 0px inset;
+  }
+
+  @if($bor) { border: 1px solid rgb(8, 0, 255); border-radius: 5px; }
+}
+.button-base:active{ 
+  transform: translateY(2px) translateX(2px);
+  box-shadow: black 3px 3px 3px 1px inset;
+}
+
+[theme='Dark']{
+  .button-blue{background-color: $blue-darky; color: $beige}
+  .button-blue-selected{ background-color: $cv-blue; color: $beige}
+
+  .button-red{background-color: $red; color: $black}
+  .button-red-selected{background-color: $red-brighty; color: $black}
+  
+  .button-yellow{background-color: $yellow; color: $black}
+  .button-yellow-selected{background-color: $yellow-brighty; color: $black}
+  
+  .button-green{background-color: $green; color: $black}
+  .button-green-selected{background-color: $green-light; color: $black}
+  
+  .button-white{background-color: $beige; color: $black;}
+  .button-white-selected{background-color: $white; color: $black;}
+  
+  .button-disabled{background-color: $grey; color: $grey-dark;}
+  .button-disabled:active{background-color: $red;}
+}
+
+[theme='Light']{
+  .button-blue{background-color: $blue-light; color: $black}
+  .button-blue-selected{ background-color: $cv-blue; color: $beige}
+
+  .button-red{background-color: $red; color: $black}
+  .button-red-selected{background-color: $red-brighty; color: $black}
+  
+  .button-yellow{background-color: $yellow; color: $black}
+  .button-yellow-selected{background-color: $yellow-brighty; color: $black}
+  
+  .button-green{background-color: $green; color: $black}
+  .button-green-selected{background-color: $green-light; color: $black}
+  
+  .button-white{background-color: $beige; color: $black;}
+  .button-white-selected{background-color: $white; color: $black;}
+  
+  .button-disabled{background-color: $grey; color: $grey-dark;}
+  .button-disabled:active{background-color: $red;}
+}

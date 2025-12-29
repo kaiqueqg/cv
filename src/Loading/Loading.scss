@@ -1,5 +1,7 @@
-$bor: false;
-$size: 25px;
+@import '../global.scss';
+
+// $bor: true;
+$size: 30px;
 
 .loadingContainer{
   position: relative;

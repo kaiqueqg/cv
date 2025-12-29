@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { Theme } from '../Types';
 
 
 export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
@@ -20,7 +21,18 @@ export const enum SCSS {
 
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  // const [theme, setTheme] = useState<string>('light');
+  const [globalTheme, setGlobalTheme] = useState<string>(document.documentElement.getAttribute('Theme')??'Dark');
+
+  const changeTheme = () => {
+    if(globalTheme === Theme.Dark){
+      setGlobalTheme(Theme.Light);
+      document.documentElement.setAttribute('theme', Theme.Light);
+    }
+    else if(globalTheme === Theme.Light){
+      setGlobalTheme(Theme.Dark);
+      document.documentElement.setAttribute('theme', Theme.Dark);
+    }
+  }
 
   const getTintColor = (objTheme: string): string => {
     if(objTheme === 'white' || objTheme === 'pink')
@@ -114,9 +126,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ThemeContext.Provider value={{ 
-        // theme, setTheme,
         scss,
         getTintColor,
+        globalTheme,
+        changeTheme,
       }}>
       {children}
     </ThemeContext.Provider>
@@ -124,10 +137,10 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 };
 
 interface ThemeContextProps {
-  // theme: string;
-  // setTheme: React.Dispatch<React.SetStateAction<string>>,
   scss: (objTheme: string, items: SCSS[], fade?: boolean, isSelecting?: boolean, isSelected?: boolean) => string
   getTintColor: (objTheme: string) => string,
+  globalTheme: string,
+  changeTheme: () => void,
 }
 
 export const useThemeContext = () => {

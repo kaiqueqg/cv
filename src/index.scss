@@ -1,5 +1,3 @@
-@import './global.scss';
-
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,15 +9,11 @@ body {
   
 }
 
-div{
-  color: $beige;
-}
-
 .indexContainer{
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: $blue-darker-darker;
+  background-color: var(--site-background-color);
   min-height: 100vh;
 }
 

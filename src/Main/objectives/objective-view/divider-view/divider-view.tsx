@@ -193,7 +193,6 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       s += scss(theme, [SCSS.BORDERCOLOR_CONTRAST], true, isSelecting, isSelected) + scss(theme, [SCSS.ITEM_BG_DARK])
     }
     
-    log.w(s)
     return s;
   }
 
@@ -205,13 +204,13 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             <Loading IsBlack={theme==='white'}></Loading>
             :
             (divider.IsOpen?
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)changeIsOpen()}} src={process.env.PUBLIC_URL + '/down-chevron' + itemTintColor(theme) + '.png'}/>
               :
-              <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)changeIsOpen()}} src={process.env.PUBLIC_URL + '/up-chevron' + itemTintColor(theme) + '.png'}/>
             )
           )
         }
-        {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'} isLoading={isOrderingAToZ}/>}
+        {!isEditingTitle && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={onOrderAToZ} confirm={true} src={process.env.PUBLIC_URL + '/atoz' + itemTintColor(theme) + '.png'} isLoading={isOrderingAToZ}/>}
         {isSavingTitle?
           <Loading IsBlack={theme==='white'}></Loading>
           :
@@ -220,16 +219,16 @@ export const DividerView: React.FC<DividerProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={onTitleInputChange}
                 onKeyDown={onTitleKeyDown} autoFocus></input>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditTitle} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditTitle} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditTitle} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditTitle} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
             </>
             :
             getTitle()
@@ -237,11 +236,11 @@ export const DividerView: React.FC<DividerProps> = (props) => {
         }
         {!isEditingTitle && (
           checkAll?
-            <PressImage isBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/unchecked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
+            <PressImage isLoadingBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/unchecked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
             :
-            <PressImage isBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/checked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
+            <PressImage isLoadingBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/checked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
         )}
-        {!isEditingTitle && <PressImage isBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem}/>}
+        {!isEditingTitle && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem}/>}
       </div>
       {isAddingNewItem && !isDisabled &&
         <div className={'dividerNewItemContainer '}>

@@ -67,7 +67,7 @@ $bor: false;
 .exerciseBodyImagesContainer{
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
+  // width: 100%;
 
   @if($bor){
     border-width: 1px;
@@ -79,6 +79,7 @@ $bor: false;
 
 .exerciseBodyImageContainer{
   margin: 2px;
+  
   border-width: 1px;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0);

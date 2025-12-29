@@ -1,11 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './global.scss';
 import './index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './app';
-import { UserProvider } from './contexts/user-context';
-import './global.scss';
-import { ThemeProvider } from './contexts/theme-context';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

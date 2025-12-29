@@ -1,6 +1,6 @@
 @import '../../../global.scss';
 
-$bor: false;
+// $bor: true;
 
 .objContainer{
   position: relative;
@@ -11,7 +11,7 @@ $bor: false;
   min-width: 350px;
   max-width: 1000px;
   padding: 10px;
-  margin: 2px;
+  margin: 3px;
 
   border-radius: 5px;
   border-width: 1px;
@@ -25,6 +25,7 @@ $bor: false;
     border-radius: 5px;
   }
   
+  box-shadow: darken($blue-darker, 20%) 4px 4px 0 0;
 }
 
 .pinImage{
@@ -208,11 +209,11 @@ $bor: false;
 
 .objectiveSearchContainer{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: end;
   align-items: center;
   width: 100%;
-  padding: 10px 5px;
+  padding: 5px 5px 5px 10px;
   margin-bottom: 10px;
 
   border-width: 1px;
@@ -244,9 +245,9 @@ $bor: false;
   // padding: 10px 0px;
   margin: 0px 0px 10px 0px;
 
-  // border-width: 1px;
-  // border-style: solid;
-  // border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
 }
 
 .objectiveMultiSelectMenu{
@@ -282,9 +283,9 @@ $bor: false;
   padding: 0px 10px 0px 0px;
   margin: 4px 4px 4px 0px;
 
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
+  // border-width: 1px;
+  // border-style: solid;
+  // border-radius: 5px;
 
 
   @if($bor) {

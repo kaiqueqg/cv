@@ -1,15 +1,12 @@
 @import '../global.scss';
 
-$bor: false;
-// $size: 25px;
-// $sizeBig: 30px;
-// $sizeBigger: 35px;
+// $bor: true;
 
 $size: 36px;
 $sizeBig: 50px;
 $sizeBigger: 55px;
 
-.pressImageContainer{
+.press-image-container{
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -21,18 +18,26 @@ $sizeBigger: 55px;
   // margin: 5px;
   padding: 7px;
 
-  @if($bor){
-    border-width: 1px;
-    border-color: red;
-    border-style: solid;
-  }
+  margin: 2px;
+
+  border-radius: 5px;
+
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }
 
-.pressImageContainer:hover{
+.press-image-container-hover:hover{
   padding: 5px;
+
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0 0;
+  transform: translateX(-1px) translateY(-1px);
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
 }
 
-.pressImageContainerSelected{
+.press-image-container-selected{
   padding: 5px;
   background-color: rgba(0, 0, 0, 0.15);
   border-width: 1px;
@@ -41,14 +46,14 @@ $sizeBigger: 55px;
   border-radius: 5px;
 }
 
-.pressImageContainerBig{
+.press-image-container-big{
   min-width: $sizeBig;
   min-height: $sizeBig;
   max-width: $sizeBig;
   max-height: $sizeBig;
 }
 
-.pressImageContainerBigger{
+.press-image-container-bigger{
   min-width: $sizeBigger;
   min-height: $sizeBigger;
   max-width: $sizeBigger;
@@ -56,7 +61,7 @@ $sizeBigger: 55px;
 }
 
 
-.pressImageImage{
+.press-image-image{
   width: 100%;
   height: 100%;
   transition: opacity 0.5s ease;
@@ -89,15 +94,7 @@ $sizeBigger: 55px;
   }
 }
 
-.pressImageDisable{
-
-}
-
-.pressImageConfirm{
-  
-}
-
-.pressImageText{
+.press-image-text{
   position: 'absolute';
   color: red;
   font-size: 12;

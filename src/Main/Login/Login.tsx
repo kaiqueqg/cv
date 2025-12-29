@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './login.scss'
-import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType, TwoFactorAuthRequest } from '../../Types'
+import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType, TwoFactorAuthRequest, Theme } from '../../Types'
 import Loading from '../../loading/loading';
 import { useUserContext } from '../../contexts/user-context';
 import log from '../../log/log';
@@ -11,15 +11,16 @@ import { useRequestContext } from '../../contexts/request-context';
 import { local, session } from '../../storage/storage';
 import TwoFAView from './twofa-view/twofa-view';
 import RequestUserView from './request-user-view/request-user-view';
+import Button, { ButtonColor } from '../../button/button';
+import PressImage from '../../press-image/press-image';
 
 interface LoginProps{
 }
 
 const Login: React.FC<LoginProps> = () => {
-  const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
-  const { user, setUser, isServerUp } = useUserContext();
+  const { identityApi } = useRequestContext();
+  const { setUser } = useUserContext();
   const { popMessage } = useLogContext();
-  const navigate = useNavigate();
 
   const [isLogging, setIsLogging] = useState<boolean>(false);
   const [isLogged, setIsLogged] = useState<boolean>(false);
@@ -224,9 +225,9 @@ const Login: React.FC<LoginProps> = () => {
                     <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
                   }
                   {showPassword?
-                    <img className="loginImage" src={process.env.PUBLIC_URL + '/hide.png'} alt='meaningfull text' onClick={()=>{setShowPassword(false)}}></img>
+                    <PressImage src={process.env.PUBLIC_URL + '/hide.png'} isLoadingBlack onClick={()=>{setShowPassword(false)}}></PressImage>
                     :
-                    <img className="loginImage" src={process.env.PUBLIC_URL + '/show.png'} alt='meaningfull text' onClick={()=>{setShowPassword(true)}}></img>
+                    <PressImage src={process.env.PUBLIC_URL + '/show.png'} isLoadingBlack onClick={()=>{setShowPassword(true)}}></PressImage>
                   }
                 </div>
                 {typeAnPassword && <span className="warning-message concert-one-regular">Type a password</span>}
@@ -236,7 +237,11 @@ const Login: React.FC<LoginProps> = () => {
                 {isLogging?
                   <Loading/>
                   :
-                  <button className="btn-login" type="button" onClick={login}>Login</button>
+                  <Button
+                    color={ButtonColor.GREEN}
+                    text='LOGIN'
+                    onClick={login}
+                    ></Button>
                 }
               </div>
             </div>

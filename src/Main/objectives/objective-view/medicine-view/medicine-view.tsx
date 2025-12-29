@@ -150,12 +150,12 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='medicineCenterContainer'>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newMedicine.Title}
                 onChange={handleTitleInputChange}
@@ -163,7 +163,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newMedicine.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -171,14 +171,14 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newMedicine.Unit?? ''}
                 onChange={handleUnitInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Unit"></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newMedicine.Purpose?? ''}
                 onChange={handlePurposeInputChange}
@@ -186,8 +186,8 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 placeholder="Purpose"></input>
             </div>
             <div className='medicineSideContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditMedicine} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :
@@ -202,9 +202,9 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (medicine.IsChecked?
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>
+                  <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine-filled-grey.png'}/>
                   :
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/medicine' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

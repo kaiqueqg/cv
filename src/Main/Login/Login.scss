@@ -1,6 +1,6 @@
 @import '../../global.scss';
 
-$bor: false;
+// $bor: true;
 
 .login-container{
   display: flex;
@@ -126,55 +126,6 @@ $bor: false;
   display: block;
   color: crimson;
   margin: 5px 0px;
-}
-
-.input-base:focus + .focus-message {
-  display: block;
-
-  @if $bor {border: 1px solid rgb(0, 255, 13);}
-}
-
-.input-base{
-  display: flex;
-  justify-content: baseline;
-  vertical-align: middle;
-  color: beige;
-  background-color: #282C34;
-  padding: 5px 15px;
-  width: 100%;
-  outline: none;
-  font-size: 20px;
-  
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: $transparent;
-  border-style: solid;
-
-  @media(min-width: 700px){
-    min-height: 40px;
-    padding: 2px 5px;
-    font-size: medium
-  }
-
-  @if($bor) {
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(243, 219, 6);
-    border-radius: 5px;
-  }
-}
-
-.input-base:focus{
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: beige;
-  border-style: solid;
-  padding: 5px;
-  outline: none;
-}
-
-.input-base::placeholder{
-  color: $placeholder-dark;
 }
 
 .btn-login{

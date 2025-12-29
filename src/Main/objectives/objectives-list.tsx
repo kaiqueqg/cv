@@ -10,11 +10,12 @@ import Loading from "../../loading/loading";
 import ObjectiveHideView from "./objective-hide-view/objective-hide-view";
 import ObjectiveArchivedView from "./objective-archived-view/objective-archived-view";
 import { useLogContext } from "../../contexts/log-context";
-import { MessageType } from "../../Types";
+import { MessageType, Theme } from "../../Types";
 import PressImage from "../../press-image/press-image";
 import ObjectiveBackSideView from "./objective-backup-side-view/objective-backup-side-view";
 import { useRequestContext } from "../../contexts/request-context";
 import { useNavigate } from 'react-router-dom';
+import Button, { ButtonColor } from "../../button/button";
 
 interface ObjectivesListProps{}
 
@@ -346,8 +347,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const getTagList = () => {
 
     let list:JSX.Element[] = [
-      <div key={'tagall'} className={'objectivesListMainTag objectivesListMainTagSpecial'} onMouseDown={(e) => changeToAllTag()}>All</div>,
-      <div key={'tagnone'} className={'objectivesListMainTag objectivesListMainTagSpecial'} onMouseDown={(e) => changeToNoneTag()}>None</div>,
+      <div key={'tagall'} className={'objectivesListMainTagSpecial'} onMouseDown={(e) => changeToAllTag()}>All</div>,
+      <div key={'tagnone'} className={'objectivesListMainTagSpecial'} onMouseDown={(e) => changeToNoneTag()}>None</div>,
     ]
     const availableTagsSorted = availableTags.sort((a, b) => {
       if (a === "Pin") return -1;
@@ -403,19 +404,19 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             style={{ display: "none" }}
             onChange={handleFileUpload}
           />
-          <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isBlack={false}/>
-          <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isBlack={false}/>
-          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} disable={objectives.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isBlack={false}/>}
-          {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={false}/>}
+          <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isLoadingBlack={false}/>
+          <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isLoadingBlack={false}/>
+          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} disable={objectives.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoadingBlack={false}/>}
+          {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={false}/>}
           {(isEditingPos && !isEndingPos) && 
             ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
-            <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'} isBlack={false}/>
+            <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'} isLoadingBlack={false}/>
             :
             <div className='objectivesImage'></div>)
           }
-          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isBlack={false}/>}
-          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isBlack={false}/>}
-          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isBlack={false}/>}
+          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isLoadingBlack={false}/>}
+          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isLoadingBlack={false}/>}
+          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
         </div>
         {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>}
         {currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}
@@ -487,9 +488,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
               {isThereANonArchivedShowingObjetive()?
                 getObjectiveList()
                 :
-                <div className={'objectivesListFirstOneContainer'} onClick={addNewObjective}>
+                <div className={'objectivesListFirstOneContainer g-txt'} onClick={addNewObjective}>
                   Create a new objective
-                  <PressImage src={process.env.PUBLIC_URL + '/newfile.png'}  isBlack={false} isLoading={isAddingNewObjective}/>
+                  <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} isLoadingBlack={false} isLoading={isAddingNewObjective}/>
                 </div>
               }
             </div>
@@ -498,7 +499,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         </div>)
        :
         <div className='needLogin'>
-          <button className="btn-base btn-togrocerylist" type="button"  onClick={()=>{navigate('/login')}}>Need to login</button>
+          <Button color={ButtonColor.WHITE} text='Need to login' onClick={()=>{navigate('/login')}}></Button>
         </div>
       }
     </div>

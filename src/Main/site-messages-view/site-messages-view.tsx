@@ -27,7 +27,7 @@ const SiteMessagesView = (props: SiteMessagesViewProps) => {
     <div className={'objectiveMessagesContainer'}>
       <div className='site-messages-top-menu' onClick={clearMessages}>
         Clear all
-        {/* <PressImage isBlack onClick={clearMessages} src={process.env.PUBLIC_URL + '/trash-red.png'}/> */}
+        <PressImage onClick={clearMessages} src={process.env.PUBLIC_URL + '/trash-red.png'} rawImage/>
       </div>
       {getMessageList()}
     </div>

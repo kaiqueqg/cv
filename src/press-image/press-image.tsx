@@ -4,6 +4,7 @@ import './press-image.scss';
 import Loading from "../loading/loading";
 import { useThemeContext } from "../contexts/theme-context";
 import { MessageType } from "../Types";
+import { isBigInt64Array } from "util/types";
 
 export interface PressImageProps{
   id?: string,
@@ -19,14 +20,16 @@ export interface PressImageProps{
   disableMsg?: string,
   
   confirm?: boolean,
-  isLoading?: boolean,
   hideHoverEffect?: boolean,
   badgeText?: string,
   wasOk?: ()=>void,
   wasWrong?: ()=>void,
-
+  
+  isLoading?: boolean,
+  isLoadingBlack?: boolean,
   isSelected?: boolean,
-  isBlack: boolean,
+  rawImage?: boolean,
+
   size?: 'big'|'bigger',
 }
 
@@ -39,8 +42,8 @@ const PressImage = (props: PressImageProps) => {
 
   const getHideImage = () => {
     return(
-      <div id={props.id} className={'pressImageContainer ' + (props.hideHoverEffect?' pressImageContainerHover':'')}>
-        <div className={'pressImageImage'}></div>
+      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect?' press-image-container-hover':'')}>
+        <div className={'press-image-image'}></div>
       </div>
     )
   }
@@ -60,27 +63,27 @@ const PressImage = (props: PressImageProps) => {
 
   const getNormalImage = () => {
     const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
-    let classnameImageContainer = 'pressImageContainer ' + (props.isSelected && ' pressImageContainerSelected ');
+    let classnameImageContainer = 'press-image-container ' + (props.isSelected && ' press-image-container-selected ');
     if(props.size){
-      if(props.size === 'big') classnameImageContainer += 'pressImageContainerBig ';
-      if(props.size === 'bigger') classnameImageContainer += 'pressImageContainerBigger ';
+      if(props.size === 'big') classnameImageContainer += 'press-image-container-big ';
+      if(props.size === 'bigger') classnameImageContainer += 'press-image-container-bigger ';
     }
 
     return(
       <div
         id={props.id}
-        className={classnameImageContainer + (props.hideHoverEffect?' pressImageContainerHover':'')}
+        className={classnameImageContainer + (props.hideHoverEffect?'':' press-image-container-hover ')}
         onClick={normalTouchEnd}>
-        {props.src && <img className={'pressImageImage ' } src={imageSrc}></img>}
-        {props.badgeText && props.badgeText !== '' && <div className={'pressImageText'}>{props.badgeText}</div>}
+        {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ')} src={imageSrc}></img>}
+        {props.badgeText && props.badgeText !== '' && <div className={'press-image-text'}>{props.badgeText}</div>}
       </div>
     )
   }
 
   const getConfirmingImage = () => {
     return(
-      <div id={props.id} className={'pressImageContainer ' + (props.hideHoverEffect?' pressImageContainerHover':'')} onClick={props.onClick}>
-        <img className={'pressImageImage '} src={process.env.PUBLIC_URL + '/done.png'}></img>
+      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect?' press-image-container-hover':'')} onClick={props.onClick}>
+        <img className={'press-image-image '} src={process.env.PUBLIC_URL + '/done.png'}></img>
       </div>
     )
   }
@@ -95,7 +98,7 @@ const PressImage = (props: PressImageProps) => {
   
   return(
     props.isLoading?
-    <Loading IsBlack={props.isBlack} text={props.badgeText}></Loading>
+    <Loading IsBlack={props.isLoadingBlack} text={props.badgeText}></Loading>
     :
     (props.hide ?
       getHideImage()

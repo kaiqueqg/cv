@@ -154,12 +154,12 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='groceryCenterContainer'>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newGrocery.Title}
                 onChange={handleTitleInputChange}
@@ -167,7 +167,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newGrocery.Quantity?? ''}
                 onChange={handleQuantityInputChange}
@@ -175,14 +175,14 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Quantity"
                 min={1}></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newGrocery.GoodPrice?? ''}
                 onChange={handleGoodPriceInputChange}
                 onKeyDown={handleKeyDown}
                 placeholder="Good price"></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newGrocery.Unit?? ''}
                 onChange={handleUnitInputChange}
@@ -190,8 +190,8 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 placeholder="Unit"></input>
             </div>
             <div className='grocerySideContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditGrocery} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditGrocery} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :
@@ -206,9 +206,9 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (grocery.IsChecked?
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
+                  <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery-filled-grey.png'}/>
                   :
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsChecked()}} src={process.env.PUBLIC_URL + '/grocery' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

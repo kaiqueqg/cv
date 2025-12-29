@@ -24,6 +24,7 @@ import { useRequestContext } from "../../../contexts/request-context";
 import { MessageType } from "../../../Types";
 import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 import { parse } from "path";
+import { shouldBeBlack } from "../../../helper";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -849,7 +850,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
         ></StepView>
     }
     else if(item.Type === ItemType.Question){
@@ -863,7 +864,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></QuestionView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></QuestionView>
     }
     else if(item.Type === ItemType.Wait){
       rtnItem = <WaitView 
@@ -876,7 +877,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></WaitView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></WaitView>
     }
     else if(item.Type === ItemType.Note){
       rtnItem = <NoteView 
@@ -889,7 +890,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></NoteView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></NoteView>
     }
     else if(item.Type === ItemType.Location){
       rtnItem = <LocationView 
@@ -902,7 +903,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></LocationView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></LocationView>
     }
     else if(item.Type === ItemType.Divider){
       rtnItem = <DividerView 
@@ -918,7 +919,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></DividerView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></DividerView>
     }
     else if(item.Type === ItemType.Grocery){
       rtnItem = <GroceryView 
@@ -931,7 +932,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></GroceryView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></GroceryView>
     }
     else if(item.Type === ItemType.Medicine){
       rtnItem = <MedicineView 
@@ -944,7 +945,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></MedicineView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></MedicineView>
     }
     else if(item.Type === ItemType.Exercise){
       rtnItem = <ExerciseView 
@@ -957,7 +958,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></ExerciseView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></ExerciseView>
     }
     else if(item.Type === ItemType.Link){
       rtnItem = <LinkView 
@@ -970,7 +971,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></LinkView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></LinkView>
     }
     else if(item.Type === ItemType.Image){
       rtnItem = <ImageView 
@@ -983,7 +984,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></ImageView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></ImageView>
     }
     else if(item.Type === ItemType.House){
       rtnItem = <HouseView 
@@ -996,7 +997,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={isLoadingBlack()}></HouseView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}></HouseView>
     }
     else{
       rtnItem = <div key={'cantrender'}>Can't render</div>
@@ -1004,7 +1005,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
     return (
     <div key={item.ItemId} className='objItemRow' onClick={()=>onClickItemContainer(item)}>
-      {isMultiSelectMenuOpen && !isSelectingPastePos && <PressImage onClick={() => {if(isMultiSelectMenuOpen) addingRemovingItem(item)}} src={process.env.PUBLIC_URL + (isSelecting?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isBlack={isLoadingBlack()}/>}
+      {isMultiSelectMenuOpen && !isSelectingPastePos && <PressImage onClick={() => {if(isMultiSelectMenuOpen) addingRemovingItem(item)}} src={process.env.PUBLIC_URL + (isSelecting?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>}
       {devShowPos && <div className={'objDevPosText' + scss(Theme, [SCSS.TEXT])}>{item.Pos < 10?'0'+item.Pos:item.Pos}</div>}
       {rtnItem}
     </div>)
@@ -1084,7 +1085,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       putItemsInDisplay={putItemsInDisplay}
       removeItemsInDisplay={removeItemsInDisplay}
       itemTintColor={getTintColor}
-      isLoadingBlack={isLoadingBlack()}></ItemFakeView>
+      isLoadingBlack={shouldBeBlack(objective.Theme)}></ItemFakeView>
       rtn.push(
       <div key={'fake'} className='objItemRow' onClick={() => pasteItems(fakeItem)}>
         {a}
@@ -1101,7 +1102,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
   const getItemList = () => {
     if(isRequestingItems){
-      return <Loading IsBlack={Theme==='white' || Theme === 'pink'}></Loading>;
+      return <Loading IsBlack={shouldBeBlack(objective.Theme)}></Loading>;
     }
     else{
       return(
@@ -1195,42 +1196,17 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
         <div className={'objectiveNewItemAmount' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
         <div className='objectiveNewItemImages'>
-          {/* <div onClick={()=>{choseNewItemToAdd(ItemType.Wait)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/wait' + getTintColor(Theme) + '.png'}></img>
-          </div> */}
-          <div onClick={()=>{choseNewItemToAdd(ItemType.House)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/home' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Link)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/link' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Exercise)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Divider)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/minus' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Grocery)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Medicine)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Location)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Question)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/question-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Note)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/note' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Step)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
-          <div onClick={()=>{choseNewItemToAdd(ItemType.Image)}} className='objMenuImageContainer'>
-            <img className='objectiveNewItemImage' src={process.env.PUBLIC_URL + '/image-filled' + getTintColor(Theme) + '.png'}></img>
-          </div>
+          <PressImage src={process.env.PUBLIC_URL + '/home' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.House)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/link' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Link)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Exercise)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/minus' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Divider)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/grocery-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Grocery)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/medicine-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Medicine)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/location-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Location)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/question-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Question)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/note' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Note)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/step-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Step)}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/image-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Image)}}/>
         </div>
       </div>
     )
@@ -1254,27 +1230,27 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     const stgValue: string|null = sessionStorage.getItem('multiItems');
 
     return(
-      <div className={'objectiveMultiSelectContainer '}>
-        <PressImage onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isBlack={isLoadingBlack()}/>
+      <div className={'objectiveMultiSelectContainer ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG])}>
+        <PressImage onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
         <div className={'objectiveMultiSelectMenu '}>
-          <div className={'objectiveMultiSelectMenuIcon ' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], !(multItemsSelected.length !== 0 || stgValue !== null))} onClick={() => {if(multItemsSelected.length > 0 || stgValue !== null) eraseSelectedItems()}}>
-            <PressImage src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0 && stgValue === null} disableMsg="No item unselect..." disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon ' + scss(Theme, [SCSS.TEXT], !(multItemsSelected.length !== 0 || stgValue !== null))} onClick={() => {if(multItemsSelected.length > 0 || stgValue !== null) eraseSelectedItems()}}>
+            <PressImage src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0 && stgValue === null} disableMsg="No item unselect..." disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
             Unselect
           </div>
-          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)moveItems()}}>
-            <PressImage onClick={moveItems} src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/next-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)moveItems()}}>
+            <PressImage onClick={moveItems} src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/next-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
             Move
           </div>
-          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)copyItems()}}>
-            <PressImage onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)copyItems()}}>
+            <PressImage onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
             Copy
           </div>
-          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], stgValue === null)} onClick={() => {if(stgValue !== null)setIsSelectingPastePos(true);}}>
-            <PressImage onClick={() => {setIsSelectingPastePos(true);}} src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'} disable={stgValue === null} disableMsg="You need to select copy or move before paste..." disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], stgValue === null)} onClick={() => {if(stgValue !== null)setIsSelectingPastePos(true);}}>
+            <PressImage onClick={() => {setIsSelectingPastePos(true);}} src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'} disable={stgValue === null} disableMsg="You need to select copy or move before paste..." disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
             Paste
           </div>
-          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST, SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)deleteSelectedItems()}}>
-            <PressImage onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red' + getTintColor(Theme) + '.png'} confirm disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isBlack={isLoadingBlack()}/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)deleteSelectedItems()}}>
+            <PressImage onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red' + getTintColor(Theme) + '.png'} confirm disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage hideHoverEffect/>
             Delete
           </div>
         </div>
@@ -1288,15 +1264,15 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return(
       <div className={'objectiveSearchContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
         <input
-          className={scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' inputAlert':'')}
+          className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' inputAlert':'')}
           type='text'
           value={searchText}
           placeholder="search..."
           onChange={handleSearchChange}
           onKeyDown={handleSearchKeyDown} autoFocus>
         </input>
-        <img className='tagInputImage' onClick={doSearchText} src={process.env.PUBLIC_URL + '/done' + getTintColor(Theme) + '.png'}></img>
-        <img className='tagInputImage' onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor(Theme) + '.png'}></img>
+        <PressImage onClick={doSearchText} src={process.env.PUBLIC_URL + '/done' + getTintColor(Theme) + '.png'} rawImage></PressImage>
+        <PressImage onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor(Theme) + '.png'} rawImage></PressImage>
       </div>
     )
   }
@@ -1312,7 +1288,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         disable={items.length < 1 || !hasADividerToFold} isLoading={isLoadingFoldingUnfolding}
         disableSrc={process.env.PUBLIC_URL + '/double'+(  shouldFoldAll?'down':'up')+'-chevron-grey.png'}
         disableMsg="There's no divider item to fold..."
-        isBlack={isLoadingBlack()}
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
         badgeText={foldingUnfoldingDividersPartialInfo}
       />
     )
@@ -1329,7 +1305,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         disable={items.length < 2}
         disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'}
         disableMsg="There are fewer than two items on the list..."
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
 
@@ -1339,7 +1315,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={onChangeObjectiveIsArchived}
         src={process.env.PUBLIC_URL + '/archive' + getTintColor(Theme) + '.png'}
         confirm={true}
-        isBlack={isLoadingBlack()} />
+        isLoadingBlack={shouldBeBlack(objective.Theme)} />
     )
   }
 
@@ -1348,7 +1324,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       <PressImage
         onClick={onChangeObjectiveIsShowing}
         src={process.env.PUBLIC_URL + (objective.IsShowing? '/show':'/hide') + getTintColor(Theme) + '.png'}
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
 
@@ -1358,7 +1334,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={openColorMenu}
         src={process.env.PUBLIC_URL + '/palette' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingChangingColor}
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
 
@@ -1368,7 +1344,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={openTagsMenu}
         src={process.env.PUBLIC_URL + '/tag' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingChangingTags}
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
 
@@ -1380,7 +1356,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         disable={items.length < 1}
         disableSrc={process.env.PUBLIC_URL + '/search-grey.png'}
         disableMsg="No item to search..."
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
 
@@ -1391,7 +1367,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add' + getTintColor(Theme)) + '.png'}
         isLoading={isLoadingAddingNewItem}
         badgeText={addingNewItemPartialInfo}
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
+        rawImage={isAddingNewItemLocked}
+        />
     )
   }
 
@@ -1408,7 +1386,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         disable={!hasHidibleItems}
         disableSrc={process.env.PUBLIC_URL + '/checked-grey.png'}
         disableMsg="There's no item to hide..."
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
   
@@ -1419,7 +1397,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         src={process.env.PUBLIC_URL + '/change' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingIsEndingSelecMult}
         badgeText={selecMultPartialInfo}
-        isBlack={isLoadingBlack()}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     )
   }
 
@@ -1450,19 +1428,19 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return(
       <div className='objTitleContainer'>
         {isSavingTitle?
-          <Loading IsBlack={isLoadingBlack()}></Loading>
+          <Loading IsBlack={shouldBeBlack(objective.Theme)}></Loading>
           :
           (isEditingTitle?
             <>
-              <PressImage onClick={deleteObjective} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true} isBlack={isLoadingBlack()} isLoading={isDeleting}/>
+              <PressImage onClick={deleteObjective} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true} isLoadingBlack={shouldBeBlack(objective.Theme)} isLoading={isDeleting} rawImage/>
               <input
-                className={scss(Theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(Theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleChange}
                 onKeyDown={handleTitleKeyDown} autoFocus></input>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'} isBlack={isLoadingBlack()}/>
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isBlack={isLoadingBlack()}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
             </>
             :
             <div 
@@ -1553,9 +1531,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const searchTextIgnoreCase = (text: string):boolean => {
     return text.trim().toLowerCase().includes(searchText.trim().toLowerCase());
   }
-
-  ///TODO need to change
-  const isLoadingBlack = () => { return Theme==='white' || Theme==='pink'}
 
   const getPin = () => {
     const as = selectedTags.filter(tag => objective.Tags.includes(tag));

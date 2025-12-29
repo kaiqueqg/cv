@@ -96,17 +96,17 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
             {isDeleting?
               <Loading IsBlack={theme==='white'}></Loading>
               :
-              <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true} isLoading={isDeleting}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage isLoading={isDeleting}/>
             }
             <input 
-              className={scss(theme, [SCSS.INPUT])}
+              className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
               type='text'
               placeholder='Wait text'
               value={newTitle}
               onChange={handleTextInputChange}
               onKeyDown={handleKeyDown} autoFocus></input>
-            <PressImage isBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
-            <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
+            <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
+            <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
           </div>
           :
           <div className={'waitTitle' + scss(theme, [SCSS.TEXT], wait.Title.trim() !==  '')} onClick={()=>{if(!isDisabled)onChangeEditTitle()}}>{wait.Title}</div>

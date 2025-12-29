@@ -191,12 +191,12 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
           {isDeleting?
             <Loading IsBlack={theme==='white'}></Loading>
             :
-            <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+            <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
           }
         </div>
         <div className='houseCenterContainer'>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.Title}
             onChange={handleTitleInputChange}
@@ -204,7 +204,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Title"
             autoFocus></input>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.Listing}
             onChange={handleListingInputChange}
@@ -212,7 +212,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Listing"
             ></input>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.MapLink}
             onChange={handleMapLinkInputChange}
@@ -220,7 +220,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="MapLink"
             ></input>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.MeterSquare}
             onChange={handleMeterSquareInputChange}
@@ -228,7 +228,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="m²"
             ></input>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='number'
             value={newHouse.Rating === 0 ? '' : newHouse.Rating}
             onChange={handleRatingInputChange}
@@ -236,7 +236,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Rating"
             min={0}></input>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='text'
             value={newHouse.Address}
             onChange={handleAddressInputChange}
@@ -244,7 +244,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="Address"
             ></input>
           <input 
-            className={scss(theme, [SCSS.INPUT])}
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='number'
             value={newHouse.TotalPrice === 0 ? '' : newHouse.TotalPrice}
             onChange={handleTotalPriceInputChange}
@@ -267,8 +267,8 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             ></textarea>
         </div>
         <div className='houseSideContainer'>
-          <PressImage isBlack={props.isLoadingBlack} onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-          <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditHouse} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+          <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditHouse} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+          <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditHouse} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
         </div>
       </div>
     )
@@ -338,7 +338,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.Listing || house.Listing.trim() === '') return;
 
     return(
-      <PressImage isBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>
+      <PressImage isLoadingBlack={props.isLoadingBlack} onClick={openListing} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></PressImage>
     )
   }
 
@@ -346,7 +346,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.MapLink || house.MapLink.trim() === '') return;
     
     return(
-      <PressImage isBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>
+      <PressImage isLoadingBlack={props.isLoadingBlack} onClick={openMapLink} src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></PressImage>
     )
   }
 
@@ -374,9 +374,9 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
               <Loading IsBlack={theme==='white'||theme==='pink'}></Loading>
               :
               (house.WasContacted?
-                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/done.png'} rawImage/>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme, true) + '.png'}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeWasContacted()}} src={process.env.PUBLIC_URL + '/home.png'}/>
               )
             )
           }

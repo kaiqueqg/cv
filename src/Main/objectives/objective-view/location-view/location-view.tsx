@@ -123,12 +123,12 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='locationCenterContainer'>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleInputChange}
@@ -136,7 +136,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
                 placeholder='Title'>
               </input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newUrl}
                 onChange={handleUrlInputChange}
@@ -145,15 +145,19 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
                 autoFocus></input>
             </div>
             <div className='locationSideContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditLocation} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditLocation} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :
           <div className={'locationTitleLine' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingLocation(true)}}>{location.Title}</div>
         )
       }
-      {!isEditingLocation && <img className={'urlImage ' + ((location.Url && location.Url.trim()) !== ''?'':'urlImageNoPointer')} onClick={() => {if(!isDisabled && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}} src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + itemTintColor(theme) + '.png'}></img>}
+      {!isEditingLocation && 
+      <PressImage 
+        onClick={() => {if(!isDisabled && location.Url && location.Url.trim())window.open(location.Url, '_blank', 'noopener,noreferrer');}}
+        src={process.env.PUBLIC_URL + '/location' + ((location.Url && location.Url.trim()) === ''?'':'-filled') + itemTintColor(theme) + '.png'}></PressImage>
+      }
     </div>
   );
 }

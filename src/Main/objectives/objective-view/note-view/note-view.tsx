@@ -150,12 +150,12 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='centerTitleContainer'>
               <input
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 placeholder='Title'
                 value={tempNote.Title}
@@ -172,10 +172,10 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
               {isAutoUpdating?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')}/>
               }
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :
@@ -187,7 +187,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
           </div>
         )
       }
-    {note.Text === '' && !isEditingText && <img className='noteImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>}
+    {note.Text === '' && !isEditingText && <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></PressImage>}
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { useLogContext } from "../../../../contexts/log-context";
 import { MessageType } from "../../../../Types";
 import { useRequestContext } from "../../../../contexts/request-context";
 import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
+import Button, { ButtonColor } from "../../../../button/button";
 
 export function exerciseNew(){
   return {
@@ -280,20 +281,23 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
             size={'bigger'}
             src={bodyImages[bodyImage]}
             onClick={() => {onEditExercise(); }}
-            isBlack={props.isLoadingBlack}
+            isLoadingBlack={props.isLoadingBlack}
+            rawImage
           />
       );
     }
     else{
       return(
-        <div className={'exerciseBodyImageContainer ' + (isSelectedSaved? scss(theme, [SCSS.OBJ_BG]) + scss(theme, [SCSS.BORDERCOLOR])+' exerciseBodyImageContainerSelected ':'')}>
+        // <div className={'exerciseBodyImageContainer ' + (isSelectedSaved? scss(theme, [SCSS.OBJ_BG]) + scss(theme, [SCSS.BORDERCOLOR])+' exerciseBodyImageContainerSelected ':'')}>
           <PressImage
             size={'bigger'}
             src={bodyImages[bodyImage]}
             onClick={() => {bodyImageEditButton(bodyImage)}}
-            isBlack={props.isLoadingBlack}
+            isLoadingBlack={props.isLoadingBlack}
+            isSelected={isSelectedSaved}
+            rawImage
           />
-        </div>
+        // </div>
       )
     }
   }; 
@@ -339,12 +343,12 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='exerciseCenterContainer'>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newExercise.Title}
                 onChange={handleTitleInputChange}
@@ -352,28 +356,28 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newExercise.Series}
                 onChange={handleSeriesInputChange}
                 onKeyDown={handleKeyDown}
                 min={1}></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'
                 value={newExercise.Reps}
                 onChange={handleRepsInputChange}
                 onKeyDown={handleKeyDown}
                 min={1}></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newExercise.MaxWeight}
                 onChange={handleMaxHeightInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Max"></input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newExercise.Description}
                 onChange={handleDescriptionInputChange}
@@ -414,8 +418,8 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
               </div>}
             </div>
             <div className='exerciseSideContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :
@@ -432,9 +436,9 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
                 (exercise.IsDone?
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
+                  <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise-filled-grey.png'}/>
                   :
-                  <PressImage isBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
+                  <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeDone()}} src={process.env.PUBLIC_URL + '/exercise' + itemTintColor(theme) + '.png'}/>
                 )
               )
             }

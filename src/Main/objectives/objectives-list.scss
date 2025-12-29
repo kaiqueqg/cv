@@ -1,6 +1,6 @@
 @import '../../global.scss';
 
-$bor: false;
+// $bor: true;
 
 .needLogin{
   display: flex;
@@ -81,7 +81,6 @@ $bor: false;
 
 .objectivesSidePanelTitle{
   padding: 10px 0px;
-  background-color: $blue-darker;
   font-weight: bolder;
 
   @if $bor {border: 1px solid blue;}
@@ -134,11 +133,6 @@ $bor: false;
   font-weight: bolder;
 
   padding: 10px 10px;
-
-  // border-width: 1px;
-  // border-style: solid;
-  // border-color: red;
-  // border-radius: 5px;
 }
 
 .objectivesListMainContainer{
@@ -162,6 +156,8 @@ $bor: false;
   justify-content: center;
   align-items: center;
   margin: 10px 0px;
+
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }
 
 .objectivesListMainTag{
@@ -173,34 +169,44 @@ $bor: false;
   padding: 2px 10px;
   font-weight: bold;
   font-size: 13px;
-  color: $beige
-}
+  color: $beige;
 
-.objectivesListMainTagNotSelected{
-  color: grey;
-  border-width: 1px;
-  border-color: $transparent;
-  border-style: solid;
+  @if($bor) { border: 1px solid rgb(0, 255, 51); border-radius: 5px; }
 }
 
 .objectivesListMainTagSpecial{
-  color: black;
+  cursor:pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2px 5px;
+  padding: 2px 10px;
+  font-weight: bold;
+  font-size: 13px;
+  color: $beige;
 
   border-radius: 20px;
-  background-color: beige;
   border-width: 1px;
   border-color: black;
   border-style: solid;
+
+  box-shadow: $black 3px 3px 0 0;
+
+  @if($bor) { border: 1px solid rgb(255, 0, 187); border-radius: 5px; }
 }
 
 .objectivesListMainTagSelected{
   color: $beige;
+  background-color: $blue-dark;
 
   border-radius: 20px;
-  background-color: $blue-dark;
   border-width: 1px;
-  border-color: beige;
+  border-color: black;
   border-style: solid;
+
+  box-shadow: $black 3px 3px 0 0;
+
+  @if($bor) { border: 1px solid rgb(251, 255, 0); border-radius: 5px; }
 }
 
 .objectivesSettings{
@@ -351,8 +357,67 @@ $bor: false;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
 
-  // border-width: 1px;
-  // border-color: red;
-  // border-style: solid;
+[theme='Dark']{
+  .objectivesSidePanelTitle{
+    background-color: $blue-darker;
+    color: $beige;
+  }
+
+  .objectivesListMainTag{
+    color: $beige;
+  }
+
+  .objectivesListMainTag:hover{
+    background-color: $beige;
+    color: $black;
+
+    border-radius: 20px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+
+    box-shadow: $black 3px 3px 0 0;
+  }
+
+  .objectivesListMainTagSpecial{
+    background-color: $cv-blue;
+  }
+  .objectivesListMainTagSelected{
+    background-color: $beige;
+    color: $black;
+  }
+}
+
+[theme='Light']{
+  .objectivesSidePanelTitle{
+    background-color: $grey-light-light;
+    color: $black;
+  }
+
+  .objectivesListMainTag{
+    color: $black;
+  }
+
+  .objectivesListMainTag:hover{
+    background-color: $grey-light;
+    color: $black;
+
+    border-radius: 20px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+
+    box-shadow: $black 3px 3px 0 0;
+  }
+
+  .objectivesListMainTagSpecial{
+    background-color: $grey-dark;
+    color: $beige;
+  }
+  .objectivesListMainTagSelected{
+    background-color: $grey-light;
+    color: $black;
+  }
 }

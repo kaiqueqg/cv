@@ -1,0 +1,74 @@
+$transparent: #00000000;
+$screen-max-width: 700px;
+$blue-light: hsl(202, 46%, 72%);
+$blue: hsl(222, 100%, 50%);
+$bluey: hsl(222, 28%, 35%);
+$blue-darky: hsl(226, 34%, 25%);
+$blue-dark: hsl(220, 13%, 18%);
+$blue-darker: hsl(222, 13%, 15%);
+$blue-darker-darker: hsl(0, 0%, 11%);
+
+$black: hsl(0, 0%, 0%);
+$white: hsl(0, 0%, 100%);
+
+$beige: hsl(60, 56%, 91%);
+$beige-light-dark: hsl(0, 0%, 69%);
+$beige-dark: hsl(60, 3%, 28%);
+$beige-darker: hsl(60, 5%, 19%);
+$beigey: rgb(216, 174, 126);
+$beige-darky: rgb(156, 125, 90);
+
+
+$red: hsl(12, 83%, 62%);
+$red-brighty: hsl(8, 97%, 57%);
+$red-bright: hsl(8, 100%, 42%);
+$red-dark: hsl(0, 52%, 36%);
+
+$green-light: #60ff60;
+$green: #89db89;
+$green-dark: #5DA15D;
+
+$yellow: hsl(60, 100%, 74%);
+$yellow-brighty: hsl(60, 100%, 64%);
+
+$grey-light-light: hsl(0, 0%, 90%);
+$grey-light: hsl(0, 0%, 79%);
+$grey: grey;
+$grey-dark: rgb(61, 61, 61);
+
+$placeholder-dark: $grey;
+$placeholder-TextColor: grey;
+
+$cv-blue: hsl(210, 90%, 40%);
+
+$obj-blue-dark: hsl(225, 45%, 25%);
+$obj-red-dark: hsl(346, 68%, 28%);
+$obj-green-dark: hsl(153, 49%, 14%);
+$obj-white-dark: hsl(60, 56%, 91%);
+$obj-noTheme-dark: $blue-dark;
+$obj-cyan-dark: hsl(195, 53%, 31%);
+$obj-pink-dark: hsl(342, 81%, 87%);
+
+$obj-blue-light: hsl(218, 91%, 92%);
+$obj-red-light: hsl(1, 97%, 86%);
+$obj-green-light: hsl(120, 60%, 89%);
+$obj-white-light: hsl(60, 56%, 91%);
+$obj-noTheme-light: hsl(0, 0%, 100%);
+$obj-cyan-light: hsl(195, 53%, 71%);
+$obj-pink-light: hsl(342, 81%, 87%);
+
+$border-focus-blue-dark: rgb(40, 200, 240);
+$border-focus-red-dark: $red;
+$border-focus-green-dark: yellowgreen;
+$border-focus-cyan-dark: rgb(0, 251, 255);
+$border-focus-noTheme-dark:beige;
+$border-focus-white-dark: #E4A200;
+$border-focus-pink-dark: #E91E63;
+
+$border-focus-blue-light: rgb(40, 200, 240);
+$border-focus-red-light: $red;
+$border-focus-green-light: yellowgreen;
+$border-focus-cyan-light: rgb(0, 251, 255);
+$border-focus-noTheme-light:beige;
+$border-focus-white-light: #E4A200;
+$border-focus-pink-light: #E91E63;

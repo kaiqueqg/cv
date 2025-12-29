@@ -6,6 +6,11 @@ export interface LangText{
   it?: string,
 }
 
+export enum Theme{
+  Dark = 'Dark',
+  Light = 'Light',
+}
+
 export interface ResponseUser{
   Username: string,
   Email: string,

@@ -1,0 +1,1 @@
+export const shouldBeBlack = (theme: string):boolean => { return theme==='white' || theme==='pink'}

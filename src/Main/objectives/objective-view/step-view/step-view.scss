@@ -1,6 +1,6 @@
 @import '../../../../global.scss';
 
-$bor: false;
+// $bor: true;
 
 .stepContainer{
   display: flex;
@@ -19,7 +19,7 @@ $bor: false;
   @if($bor) {
     border-width: 1px;
     border-style: solid;
-    border-color: red;
+    border-color: rgb(0, 174, 255);
     border-radius: 5px;
   }
 }

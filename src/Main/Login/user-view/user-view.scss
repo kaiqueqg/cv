@@ -1,10 +1,22 @@
 @import '../../../global.scss';
 
-$bor: false;
+// $bor: true;
 
 .logged-container{
+  position: relative;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+
+  padding: 0px 20px;
+
+  width: 100%;
+
   padding-top: 20px;
-  @if $bor {border: 1px solid grey;}
+  @if $bor {border: 1px solid grey; background-color: #282C34;}
 }
 
 .card-container{
@@ -14,13 +26,22 @@ $bor: false;
   align-items: center;
   text-align: center;
   flex-direction: column;
-  background-color: $blue-darker;
 
+  width: 100%;
+  
   padding: 10px 15px;
   margin-bottom: 30px;
-
-  border: 1px solid $grey;
+  
+  border: 1px solid $grey-dark;
   border-radius: 5px;
+
+  box-shadow: darken($blue-darker, 20%) 5px 5px 0 0;
+  
+  @media(min-width: 700px){
+    width: 300px;
+  }
+
+  @if($bor) { border: 1px solid rgb(0, 238, 255); border-radius: 5px; }
 }
 
 .logged-title{
@@ -28,6 +49,8 @@ $bor: false;
   font-weight: bold;
   margin-bottom: 20px;
   user-select: none;
+
+  color:$beige;
 }
 
 .fa-deactivate-container{
@@ -68,40 +91,9 @@ $bor: false;
   @if $bor {border: 1px solid yellow;}
 }
 
-.input-base{
-  display: flex;
-  justify-content: baseline;
-  vertical-align: middle;
-  color: beige;
-  background-color: #282C34;
-  padding: 5px 15px;
-  width: 100%;
-  outline: none;
-  font-size: 20px;
-  
-  border-radius: 5px;
-  border-width: 1px;
-  border-color: $transparent;
-  border-style: solid;
-
-  @media(min-width: 700px){
-    min-height: 40px;
-    padding: 2px 5px;
-    font-size: medium
-  }
-
-  @if($bor) {
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(243, 219, 6);
-    border-radius: 5px;
-  }
-}
-
 .userRow{
   margin-bottom: 1px;
   padding: 5px;
-  color: $blue-light;
   max-width: 300px;
   text-align: left;
 
@@ -115,7 +107,6 @@ $bor: false;
 .userData{
   margin-bottom: 1px;
   padding: 5px;
-  color: white;
   text-align: left;
   border-color: $grey;
   border-style: solid;
@@ -125,10 +116,17 @@ $bor: false;
 }
 
 .logout-row{
-  flex-direction: column;
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  flex-direction: row;
 
-  @if $bor {border: 1px solid red;}
+  margin-bottom: 20px;
+  
+
+  @if $bor {border: 1px solid rgb(255, 0, 153);}
 }
 
 .btn-base{
@@ -244,4 +242,34 @@ $bor: false;
 
 .admin-service-image:hover{
   padding: 0px;
+}
+
+[theme='Dark']{
+  .card-container{
+    background-color: $blue-darker;
+  }
+  .logged-title{
+    color: $beige;
+  }
+  .userData{
+    color: $beige;
+  }
+  .userRow{
+    color: $blue-light;
+  }
+}
+
+[theme='Light']{
+  .card-container{
+    background-color: $grey-light-light;
+  }
+  .logged-title{
+    color: $black;
+  }
+  .userData{
+    color: $black;
+  }
+  .userRow{
+    color: $blue-darky;
+  }
 }

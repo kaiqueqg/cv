@@ -8,6 +8,7 @@ import log from "../../../log/log";
 import Loading from "../../../loading/loading";
 import { useRequestContext } from "../../../contexts/request-context";
 import { useLogContext } from "../../../contexts/log-context";
+import Button, { ButtonColor } from "../../../button/button";
 const QRCode = require("qrcode");
 
 interface UserViewProps{
@@ -20,7 +21,6 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
   const { user, setUser } = useUserContext();
   const { 
     popMessage,
-    // randomId
   } = useLogContext();
   const navigate = useNavigate();
   const [userList, setUserList] = useState<ResponseUser[]>([]);
@@ -259,8 +259,8 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
             </div>
           </div>
           <div className="logout-row">
-            <button className="btn-base btn-logout" type="button"  onClick={logout}>Logout</button>
-            <button className="btn-base btn-togrocerylist" type="button"  onClick={changeToObjectivesList}>To Objectives List</button>
+            <Button color={ButtonColor.RED} text={'logout'} onClick={logout}></Button>
+            <Button color={ButtonColor.WHITE} text={'To Objectives List'} onClick={changeToObjectivesList}></Button>
             {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
           </div>
         </>
@@ -279,7 +279,7 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
             }
           </div>
         }
-        <button className="btn-base" type="button" onClick={() => { setDeactivateTwoFA(!deactivateTwoFA)}}>{deactivateTwoFA?'Cancel':'Deactivate 2FA'}</button>
+        <Button color={ButtonColor.WHITE} text={deactivateTwoFA?'Cancel':'Deactivate 2FA'} onClick={() => { setDeactivateTwoFA(!deactivateTwoFA)}}></Button>
       </div>
       :
       <div className="card-container">
@@ -302,7 +302,7 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
           (isGettingQRCode?
             <Loading/>
             :
-            <button className="btn-base" type="button" onClick={get2FAAuth}>Get 2FA</button>
+            <Button color={ButtonColor.WHITE} text="Get 2FA" onClick={get2FAAuth}></Button>
           )
         }
       </div>

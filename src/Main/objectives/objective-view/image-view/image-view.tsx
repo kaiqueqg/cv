@@ -255,13 +255,13 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <img className='inputImage' onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='imageCenterContainer'>
               <div className='imageInfoContainer'>
                 <input
-                  className={scss(theme, [SCSS.INPUT])}
+                  className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                   type='text'
                   placeholder='Title'
                   value={newImage.Title}
@@ -284,7 +284,8 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
                   (isDeletingImage?
                     <Loading IsBlack={theme==='white'}></Loading>
                     :
-                    <img className='inputImage' onClick={deleteImage} src={process.env.PUBLIC_URL + '/trash-red.png'}></img>)
+                    <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
+                  )
                 }
               </div>
               {imageFile && 
@@ -295,8 +296,8 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
                 )}
             </div>
             <div className='imageSideContainer'>
-              <img className='inputImage' onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}></img>
-              <img className='inputImage' onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}></img>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :

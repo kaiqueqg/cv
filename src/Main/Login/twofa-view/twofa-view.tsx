@@ -7,6 +7,7 @@ import { useLogContext } from '../../../contexts/log-context';
 import { local, session } from '../../../storage/storage';
 import { MessageType, TwoFactorAuthRequest } from '../../../Types';
 import Loading from '../../../loading/loading';
+import Button, { ButtonColor } from '../../../button/button';
 
 interface TwoFAViewProps {
   setIsLogged: (value: boolean) => void,
@@ -31,48 +32,55 @@ const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
     setVerificationCode(event.target.value);
   }
 
-  const sendVerificationTwoFA = async (event: any) => {
+  const onClickEnter = async (event: any) => {
     if(event.key === 'Enter'){
-      setIsVerifingTwoFA(true);
-      
-      if(!(/^[0-9]{6}$/.test(verificationCode))){
-        setVerificationCode('');
-        popMessage('Bad verification code. Must be 6 numbers.', MessageType.Alert);
-        return;
-      }
-      
-      const tempToken: string|null = await session.readTwoFATempToken();
-      if(tempToken) {
-        const sendRequest: TwoFactorAuthRequest = { TwoFACode: verificationCode, TwoFATempToken: tempToken };
-        const data = await identityApi.validateTwoFA(sendRequest);
-  
-        if(data && data.User && data.Token){
-          local.setToken(data.Token);
-          local.setUser(data.User);
-          local.setFirstLogin(true);
-          setUser(data.User);
-          setIsLogged(true);
-        }
-        else{
-          popMessage('Login was ok but no data was returned.', MessageType.Error);
-          logout();
-        }
+      sendVerificationTwoFA();
+    }
+  }
 
-        setIsVerifingTwoFA(false);
+  const sendVerificationTwoFA = async () => {
+    setIsVerifingTwoFA(true);
+    
+    if(!(/^[0-9]{6}$/.test(verificationCode))){
+      setVerificationCode('');
+      popMessage('Bad verification code. Must be 6 numbers.', MessageType.Alert);
+      return;
+    }
+    
+    const tempToken: string|null = await session.readTwoFATempToken();
+    if(tempToken) {
+      const sendRequest: TwoFactorAuthRequest = { TwoFACode: verificationCode, TwoFATempToken: tempToken };
+      const data = await identityApi.validateTwoFA(sendRequest);
+
+      if(data && data.User && data.Token){
+        local.setToken(data.Token);
+        local.setUser(data.User);
+        local.setFirstLogin(true);
+        setUser(data.User);
+        setIsLogged(true);
       }
       else{
-        popMessage(`There's no token to try to approve 2FA code.`)
+        popMessage('Login was ok but no data was returned.', MessageType.Error);
+        logout();
       }
     }
+    else{
+      popMessage(`There's no token to try to approve 2FA code.`)
+    }
+
+    setIsVerifingTwoFA(false);
   }
 
   return (
     <div className='login-twofa-box'>
-      <div className='login-2fa-subtitle'>2FA Verification code:</div>
       {isVerifingTwoFA?
         <Loading/>
         :
-        <input ref={inputRef} name='TwoFA' className="input-base" type="text" onChange={changeTwoFACode} onKeyUp={sendVerificationTwoFA} placeholder="6 digit number" aria-label="TwoFA" value={verificationCode}></input>
+        <>
+          <div className='login-2fa-subtitle g-txt'>2FA Verification code:</div>
+          <input ref={inputRef} name='TwoFA' className="input-base" type="text" onChange={changeTwoFACode} onKeyUp={onClickEnter} placeholder="6 digit number" aria-label="TwoFA" value={verificationCode}></input>
+          <Button color={ButtonColor.GREEN} text='LOGIN' onClick={sendVerificationTwoFA} ></Button>
+        </>
       }
     </div>
   );

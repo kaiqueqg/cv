@@ -63,7 +63,7 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
         <Loading IsBlack={isLoadingBlack()}></Loading>
         :
         (isBeingHover?
-          <PressImage isBlack={isLoadingBlack()} src={process.env.PUBLIC_URL + '/show' + getTintColor(Theme) + '.png'}/>
+          <PressImage isLoadingBlack={isLoadingBlack()} src={process.env.PUBLIC_URL + '/show' + getTintColor(Theme) + '.png'}/>
           :
           <div className={'objectiveClosedText' + scss(Theme, [SCSS.TEXT])}>{objective.Title}</div>
         )

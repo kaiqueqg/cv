@@ -132,12 +132,12 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
               {isDeleting?
                 <Loading IsBlack={theme==='white'}></Loading>
                 :
-                <PressImage isBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm={true}/>
+                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
               }
             </div>
             <div className='linksCenterContainer'>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newTitle}
                 onChange={handleTitleInputChange}
@@ -145,7 +145,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
                 placeholder='Title'>
               </input>
               <input 
-                className={scss(theme, [SCSS.INPUT])}
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='text'
                 value={newLink}
                 onChange={handleLinkInputChange}
@@ -154,8 +154,8 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
               </input>
             </div>
             <div className='linksSideContainer'>
-              <PressImage isBlack={props.isLoadingBlack} onClick={doneEditLinks} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'}/>
-              <PressImage isBlack={props.isLoadingBlack} onClick={cancelEditLinks} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'}/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditLinks} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditLinks} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
           </div>
           :
@@ -164,9 +164,9 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
       }
       {!isEditingLinks &&
         (link.Link.trim() === ''?
-          <PressImage isBlack={props.isLoadingBlack} onClick={openLink} src={process.env.PUBLIC_URL + '/link-grey.png'}/>
+          <PressImage isLoadingBlack={props.isLoadingBlack} onClick={openLink} src={process.env.PUBLIC_URL + '/link-grey.png'}/>
           :
-          <PressImage isBlack={props.isLoadingBlack} onClick={openLink} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}/>
+          <PressImage isLoadingBlack={props.isLoadingBlack} onClick={openLink} src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}/>
         )
       }
     </div>
