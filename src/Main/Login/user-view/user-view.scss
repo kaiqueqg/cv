@@ -14,6 +14,9 @@
   padding: 0px 20px;
 
   width: 100%;
+  @media(min-width: 700px){
+    max-width: 500px;
+  }
 
   padding-top: 20px;
   @if $bor {border: 1px solid grey; background-color: #282C34;}
@@ -38,7 +41,7 @@
   box-shadow: darken($blue-darker, 20%) 5px 5px 0 0;
   
   @media(min-width: 700px){
-    width: 300px;
+    // max-width: 500px;
   }
 
   @if($bor) { border: 1px solid rgb(0, 238, 255); border-radius: 5px; }
@@ -129,27 +132,18 @@
   @if $bor {border: 1px solid rgb(255, 0, 153);}
 }
 
-.btn-base{
-  color: black;
-  background-color: beige;
-  padding: 7px 14px;
-  margin: 1px 5px;
-  font-weight: bold;
-  border-radius: 3px;
-  border: 1px solid rgba(0, 0, 0, 0);
-}
+// .btn-base{
+//   color: black;
+//   background-color: beige;
+//   padding: 7px 14px;
+//   margin: 1px 5px;
+//   font-weight: bold;
+//   border-radius: 3px;
+//   border: 1px solid rgba(0, 0, 0, 0);
+// }
 
-.btn-base:hover{
-}
-
-.btn-logout{
-  background-color: $red;
-}
-
-.btn-logout:hover{
-  color: $beige;
-  background-color: $red-dark;
-}
+// .btn-base:hover{
+// }
 
 .btn-togrocerylist{
   background-color: beige;

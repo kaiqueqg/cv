@@ -139,7 +139,7 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
   const getUserRow = (user: ResponseUser) => {
     return (
       <div key={user.Email} className='admin-user-row'>
-        <div className='admin-user-name'>{user.Email}</div>
+        <div className={'admin-user-name g-txt'}>{user.Email}</div>
         <img className={user.Status === 'Active'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{activateUser(user)}}></img>
         <img className={user.Status === 'Refused'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{refuseUser(user)}}></img>
         <img className={user.Status === 'WaitingApproval'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/wait.png'} alt='meaningfull text' onClick={()=>{waitingApproval(user)}}></img>
@@ -334,12 +334,12 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
             <div className='logged-title' onClick={() => {getServicesList()}}>Services:</div>
             <div className='admin-service-box'>
               <div className='admin-service-row'>
-                <div className='admin-service-name'>Identity:</div>
+                <div className='admin-service-name g-txt'>Identity:</div>
                 <img className={identityServiceStatus?.Up ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{changeIdentityStatus(true)}}></img>
                 <img className={!identityServiceStatus || !identityServiceStatus.Up ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{changeIdentityStatus(false)}}></img>
               </div>
               <div className='admin-service-row'>
-                <div className='admin-service-name'>Identity Request:</div>
+                <div className='admin-service-name g-txt'>Identity Request:</div>
                 <img className={identityServiceStatus?.RequestNewUserUp ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{changeRequestNewUserStatus(true)}}></img>
                 <img className={!identityServiceStatus || !identityServiceStatus.RequestNewUserUp ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{changeRequestNewUserStatus(false)}}></img>
               </div>

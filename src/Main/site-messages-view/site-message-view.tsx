@@ -43,7 +43,7 @@ const SiteMessageView = (props: SiteMessageViewProps) => {
         type = ButtonColor.RED;
         break;
       case MessageType.Normal:
-        type = ButtonColor.NEUTRAL;
+        type = ButtonColor.GREEN;
         break;
     }
 
