@@ -7,15 +7,18 @@ import { MessageType } from '../Types';
 interface ButtonProps {
   onClick?: () => void,
   color: ButtonColor,
-  text: string,
+  text?: string,
   isSelected?: boolean,
   isDisabled?: boolean,
   disabledMessage?: string,
+
+  src?: string,
+
 }
 
-export enum ButtonColor { BLUE, RED, GREEN, YELLOW, WHITE }
+export enum ButtonColor { BLUE, RED, GREEN, YELLOW, WHITE, NEUTRAL }
 
-const Button: React.FC<ButtonProps> = ({onClick,disabledMessage, text, isSelected, isDisabled, color}) => {
+const Button: React.FC<ButtonProps> = ({onClick,disabledMessage, text, isSelected, isDisabled, color, src}) => {
   const { scss } = useThemeContext();
   const { popMessage } = useLogContext();
   // const [isClicking, setIsClicking] = useState<boolean>(false);
@@ -41,6 +44,9 @@ const Button: React.FC<ButtonProps> = ({onClick,disabledMessage, text, isSelecte
         break;
       case ButtonColor.WHITE:
         rtn += ' button-white' +( isSelected?'-selected ':' ');
+        break;
+      case ButtonColor.NEUTRAL:
+        rtn += ' button-neutral' +( isSelected?'-selected ':' ');
         break;
     }
 
@@ -68,12 +74,23 @@ const Button: React.FC<ButtonProps> = ({onClick,disabledMessage, text, isSelecte
     }
   }
 
+  const getImageColor = () => {
+    if(color === ButtonColor.WHITE) return ' button-dark ';
+  }
+
   return (
     <div 
       className={getTheme()}
       onClick={click}
       >
-      {text}
+      {src && 
+        <div className={'button-image-container '}>
+          <img className={'button-image g-img-dark ' + getImageColor() + (text?' image-text-separation ':'')} src={src}></img>
+        </div>
+      }
+      <div className={' button-text '}>
+        {text}
+      </div>
     </div>
   );
 };

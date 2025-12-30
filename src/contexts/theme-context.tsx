@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Theme } from '../Types';
-
+import {local} from '../storage/storage';
+import { useLogContext } from './log-context';
 
 export const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
@@ -21,17 +22,38 @@ export const enum SCSS {
 
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const { popMessage }= useLogContext();
   const [globalTheme, setGlobalTheme] = useState<string>(document.documentElement.getAttribute('Theme')??'Dark');
+
+  useEffect(() => {
+    console.log('start ')
+    const start = async () => {
+      const t:string|null = await local.readTheme();
+      console.log('use ' + t)
+      if(t){
+        setGlobalTheme(t);
+        document.documentElement.setAttribute('Theme', t);
+      }
+    }
+
+    start();
+  }, [])
 
   const changeTheme = () => {
     if(globalTheme === Theme.Dark){
       setGlobalTheme(Theme.Light);
+      local.writeTheme(Theme.Light);
       document.documentElement.setAttribute('theme', Theme.Light);
     }
     else if(globalTheme === Theme.Light){
       setGlobalTheme(Theme.Dark);
+      local.writeTheme(Theme.Dark);
       document.documentElement.setAttribute('theme', Theme.Dark);
     }
+    // else if(globalTheme === Theme.Win95){
+    //   setGlobalTheme(Theme.Dark);
+    //   document.documentElement.setAttribute('theme', Theme.Dark);
+    // }
   }
 
   const getTintColor = (objTheme: string): string => {

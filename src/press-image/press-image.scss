@@ -44,6 +44,8 @@ $sizeBigger: 55px;
   border-style: solid;
   border-color: black;
   border-radius: 5px;
+
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0 0 inset;
 }
 
 .press-image-container-big{

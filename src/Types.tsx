@@ -9,6 +9,7 @@ export interface LangText{
 export enum Theme{
   Dark = 'Dark',
   Light = 'Light',
+  Win95 = 'Win95',
 }
 
 export interface ResponseUser{

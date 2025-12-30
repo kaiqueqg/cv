@@ -136,22 +136,22 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
   const getImportanceImage = () => {
     if(newImportance === StepImportance.Low){
-      return <PressImage src={process.env.PUBLIC_URL + '/low.png'} isLoadingBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/low.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
     }
     else if(newImportance === StepImportance.Medium){
-      return <PressImage src={process.env.PUBLIC_URL + '/med.png'} isLoadingBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/med.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
     }
     else if(newImportance === StepImportance.High){
-      return <PressImage src={process.env.PUBLIC_URL + '/high.png'} isLoadingBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/high.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
     }
     else if(newImportance === StepImportance.Ladybug){
-      return <PressImage src={process.env.PUBLIC_URL + '/ladybug.png'}  isLoadingBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/ladybug.png'}  isLoadingBlack={props.isLoadingBlack} rawImage/>
     }
     else if(newImportance === StepImportance.LadybugYellow){
-      return <PressImage src={process.env.PUBLIC_URL + '/ladybugyellow.png'}  isLoadingBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/ladybugyellow.png'}  isLoadingBlack={props.isLoadingBlack} rawImage/>
     }
     else if(newImportance === StepImportance.LadybugGreen){
-      return <PressImage src={process.env.PUBLIC_URL + '/ladybuggreen.png'}  isLoadingBlack={props.isLoadingBlack}/>
+      return <PressImage src={process.env.PUBLIC_URL + '/ladybuggreen.png'}  isLoadingBlack={props.isLoadingBlack} rawImage/>
     }
     else if(newImportance === StepImportance.Question){
       return <PressImage src={process.env.PUBLIC_URL + '/questionmark'+itemTintColor(theme)+'.png'} isLoadingBlack={props.isLoadingBlack}/>

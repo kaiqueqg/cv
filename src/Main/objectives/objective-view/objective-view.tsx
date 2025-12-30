@@ -48,7 +48,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const [items, setItems] = useState<(Item)[]>([]);
   const [itemSearchToShow, setItemsSearchToShow] = useState<string[]>([]);
   const [newTitle, setNewTitle] = useState<string>(props.objective.Title);
-  const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
+  // const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
 
@@ -56,6 +56,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const [wasNoSearchNoItemFound, setWasNoSearchNoItemFound] = useState<boolean>(false);
 
   //menus states
+  const [isObjectiveMenuOpen, setIsObjectiveMenuOpen] = useState<boolean>(false);
+
   const [isAddingNewItemMenuOpen, setIsAddingNewItemMenuOpen] = useState<boolean>(false);
   const [amountOfItemsToAdd, setAmountOfItemsToAdd] = useState<number>(1);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
@@ -101,15 +103,15 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       downloadItemList();
     }
 
-    const handleResize = () => {
-      setIsBelow700px(window.innerWidth < 700);
-    };
+    // const handleResize = () => {
+    //   setIsBelow700px(window.innerWidth < 700);
+    // };
 
     
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    // window.addEventListener('resize', handleResize);
+    // return () => {
+    //   window.removeEventListener('resize', handleResize);
+    // };
   }, []);
 
   useEffect(() => {
@@ -268,6 +270,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   const closeAllTopMenus = () => {
+    // setIsObjectiveMenuOpen(false);
+
     setIsAddingNewItemMenuOpen(false);
     setIsColorMenuOpen(false);
     setIsTagsMenuOpen(false);
@@ -453,6 +457,12 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     setSearchText('');
     setWasNoSearchNoItemFound(false);
     setItemsSearchToShow([]);
+  }
+
+  const openObjectiveMenu = () => {
+    closeAllTopMenus();
+
+    setIsObjectiveMenuOpen(!isObjectiveMenuOpen);
   }
 
   const onFoldUnfoldDividers = async () => {
@@ -1116,32 +1126,10 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   //TODO GET Menus ---------------------------------------------------------------------------
-
+  
   const getTopMenu = () => {
-    if(isBelow700px){
-      return (
-        <div className='objTopMenu'>
-          {getObjectiveTitle()}
-          {!isEditingTitle && 
-            <div className={'objTopMenuBellow700px'}>
-              {getArchiveButton()}
-              {getIsShowingButton()}
-              {getPaletteButton()}
-              {getTagMenuButton()}
-              {getSearchMenuButton()}
-              {getFoldUnfoldButton()}
-              {getSortItemsButton()}
-              {getMultiSelectButton()}
-              {getIsShowingItemsButton()}
-              {getNewItemButton()}
-            </div>
-          }
-        </div>
-      )
-    }
-
-    return(
-      <div className='objTopMenu'>
+    return (
+      <div className={'objTopMenu '}>
         {!isEditingTitle && getLeftIconsMenu()}
         {getObjectiveTitle()}
         {!isEditingTitle && getRightIconsMenu()}
@@ -1149,14 +1137,29 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     )
   }
 
-  const getLeftIconsMenu = () => {
-    return(
-      <div className='objTitleLeft'>
+  const getObjectiveMenu = () => {
+    if(!isObjectiveMenuOpen) return <></>;
+
+    return (
+      <div className={'objObjectiveMenu ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG])}>
         {getArchiveButton()}
         {getIsShowingButton()}
         {getPaletteButton()}
         {getTagMenuButton()}
         {getSearchMenuButton()}
+        {getFoldUnfoldButton()}
+        {getSortItemsButton()}
+        {getMultiSelectButton()}
+        {getIsShowingItemsButton()}
+        {getNewItemButton()}
+      </div>
+    )
+  }
+
+  const getLeftIconsMenu = () => {
+    return(
+      <div className='objTitleLeft'>
+        <PressImage hide/>
       </div>
     )
   }
@@ -1164,11 +1167,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const getRightIconsMenu = () => {
     return(
       <div className='objTitleRight'>
-        {getFoldUnfoldButton()}
-        {getSortItemsButton()}
-        {getMultiSelectButton()}
-        {getIsShowingItemsButton()}
-        {getNewItemButton()}
+        {getObjectiveMenuButton()}
       </div>
     )
   }
@@ -1278,8 +1277,19 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   //TODO GET Menus ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
   //TODO GET Buttons ---------------------------------------------------------------------------
+
+  const getObjectiveMenuButton = () => {
+    return(
+      <PressImage 
+        onClick={()=>{if(!isObjsEditingPos)openObjectiveMenu()}}
+        src={process.env.PUBLIC_URL + '/menu' + getTintColor(Theme) + '.png'}
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
+        isSelected={isObjectiveMenuOpen}
+      />
+    )
+  }
+
   const getFoldUnfoldButton = () => {
     return(
       <PressImage 
@@ -1334,7 +1344,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={openColorMenu}
         src={process.env.PUBLIC_URL + '/palette' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingChangingColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
+        isSelected={isColorMenuOpen}
+        />
     )
   }
 
@@ -1344,7 +1356,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={openTagsMenu}
         src={process.env.PUBLIC_URL + '/tag' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingChangingTags}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
+        isSelected={isTagsMenuOpen}
+      />
     )
   }
 
@@ -1356,7 +1370,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         disable={items.length < 1}
         disableSrc={process.env.PUBLIC_URL + '/search-grey.png'}
         disableMsg="No item to search..."
-        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
+        isSelected={isSearchingMenuOpen}
+      />
     )
   }
 
@@ -1368,6 +1384,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         isLoading={isLoadingAddingNewItem}
         badgeText={addingNewItemPartialInfo}
         isLoadingBlack={shouldBeBlack(objective.Theme)}
+        isSelected={isAddingNewItemMenuOpen || isAddingNewItemLocked}
         rawImage={isAddingNewItemLocked}
         />
     )
@@ -1397,7 +1414,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         src={process.env.PUBLIC_URL + '/change' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingIsEndingSelecMult}
         badgeText={selecMultPartialInfo}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}
+        isSelected={isMultiSelectMenuOpen}
+      />
     )
   }
 
@@ -1439,8 +1458,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
                 value={newTitle}
                 onChange={handleTitleChange}
                 onKeyDown={handleTitleKeyDown} autoFocus></input>
-              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
-              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+              <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage/>
+              <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage/>
             </>
             :
             <div 
@@ -1548,6 +1567,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     <div className={'objContainer' + scss(Theme, [SCSS.OBJ_BG])}>
       {getPin()}
       {getTopMenu()}
+      {getObjectiveMenu()}
       {getMultiSelectMenu()}
       {getSearchingMenu()}
       {getNewItemMenu()}

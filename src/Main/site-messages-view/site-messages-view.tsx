@@ -3,6 +3,7 @@ import './site-messages-view.scss';
 import { useLogContext } from "../../contexts/log-context";
 import SiteMessageView from "./site-message-view";
 import PressImage from "../../press-image/press-image";
+import Button, { ButtonColor } from "../../button/button";
 
 export interface SiteMessagesViewProps {
 }
@@ -25,10 +26,7 @@ const SiteMessagesView = (props: SiteMessagesViewProps) => {
     <></>
     :
     <div className={'objectiveMessagesContainer'}>
-      <div className='site-messages-top-menu' onClick={clearMessages}>
-        Clear all
-        <PressImage onClick={clearMessages} src={process.env.PUBLIC_URL + '/trash-red.png'} rawImage/>
-      </div>
+      <Button text="Clear all" color={ButtonColor.NEUTRAL} onClick={clearMessages} src={process.env.PUBLIC_URL + '/trash.png'}/>
       {getMessageList()}
     </div>
   );

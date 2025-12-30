@@ -162,7 +162,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
                 onChange={handleTitleInputChange}
                 onKeyDown={handleTitleKeyDown} autoFocus></input>
               <textarea 
-                className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
+                className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
                 value={tempNote.Text}
                 onChange={handleTextInputChange}
                 onKeyDown={handleTextKeyDown} 
@@ -180,7 +180,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
           </div>
           :
           <div className="noteDisplayContainer">
-            {note.Title.trim() !== '' && <div className='noteTitle' onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Title}</div>}
+            {note.Title.trim() !== '' && <div className={'noteTitle ' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Title}</div>}
             <div 
               className={'noteText' + scss(theme, [SCSS.TEXT])}
               onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>

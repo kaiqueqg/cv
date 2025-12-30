@@ -9,6 +9,7 @@ type LocalKeys = {
   UserPrefs: string,
   AvailableTags: string,
   SelectedTags: string,
+  Theme: string,
 };
 
 const localKeys: LocalKeys = {
@@ -19,6 +20,7 @@ const localKeys: LocalKeys = {
   UserPrefs: '@kaiqueqgcv:UserPrefs',
   AvailableTags: '@kaiqueqgcv:AvailableTags',
   SelectedTags: '@kaiqueqgcv:SelectedTags',
+  Theme: '@kaiqueqgcv:Theme',
 };
 
 type SessionKeys = {
@@ -152,6 +154,25 @@ export const local = {
   async deleteSelectedTags() {
     await localStorage.removeItem(localKeys.SelectedTags);
   },
+  
+  //^-------------------- Theme
+  async writeTheme(theme: string){
+    try {
+      await localStorage.setItem(localKeys.Theme, theme);
+    } catch (err) {
+    }
+  },
+  async readTheme(): Promise<string|null>{
+    try {
+      const data = await localStorage.getItem(localKeys.Theme);
+      if(data !== null){
+        return data;
+      }
+      return null;
+    } catch (err) {
+      return null;
+    }
+  }
 }
 
 export const session = {

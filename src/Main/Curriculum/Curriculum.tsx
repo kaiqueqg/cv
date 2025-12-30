@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './curriculum.scss'
 import { Language } from '../../Types';
 
@@ -7,6 +7,10 @@ interface CurriculumProps{
 
 const Curriculum: React.FC<CurriculumProps> = () => {
   const [lang, setLang] = useState<Language>(Language.EN);
+
+  useEffect(() => {
+    
+  }, [])
 
   return (
     <div className='curriculumContainer'>

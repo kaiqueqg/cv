@@ -22,6 +22,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   });
   
   useEffect(() => {
+    if(!user) setUser(local.getUser());
+
     loadUserPrefs();
     loadSelectedTags();
   }, []);

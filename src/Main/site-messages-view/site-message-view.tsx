@@ -4,6 +4,7 @@ import { useLogContext } from "../../contexts/log-context";
 import { MessageType, PopMessage } from "../../Types";
 import log from "../../log/log";
 import PressImage from "../../press-image/press-image";
+import Button, { ButtonColor } from "../../button/button";
 
 export interface SiteMessageViewProps {
   message: PopMessage, 
@@ -31,11 +32,30 @@ const SiteMessageView = (props: SiteMessageViewProps) => {
     }
   }
 
+  const getMessageView = () => {
+    let type = ButtonColor.NEUTRAL;
+
+    switch(message.type){
+      case MessageType.Alert:
+        type = ButtonColor.YELLOW;
+        break;
+      case MessageType.Error:
+        type = ButtonColor.RED;
+        break;
+      case MessageType.Normal:
+        type = ButtonColor.NEUTRAL;
+        break;
+    }
+
+    return <Button key={message.id} color={type} text={message.text} onClick={() => {removeMessage(message.id);}}/>
+  }
+
   return (
-    <div key={message.id} className={getMessageClassname()} onClick={() => {removeMessage(message.id);}}>
-      {message.text}
-      {/* <PressImage isBlack src={process.env.PUBLIC_URL + '/cancel.png'} onClick={() => {removeMessage(message.id);}}/> */}
-    </div>
+    getMessageView()
+    // <div key={message.id} className={getMessageClassname()} onClick={}>
+    //   {message.text}
+    //   {/* <PressImage isBlack src={process.env.PUBLIC_URL + '/cancel.png'} onClick={() => {removeMessage(message.id);}}/> */}
+    // </div>
   );
 };
 

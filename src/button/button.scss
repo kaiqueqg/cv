@@ -2,14 +2,17 @@
 
 // $bor: true;
 
-$size: 2px;
-$size2: -2px;
+$size: 20px;
+$sizeBig: 50px;
+$sizeBigger: 55px;
 
 .button-base{
   cursor: pointer;
   display: flex;
   justify-content: center;
   vertical-align: middle;
+  align-items: center;
+  text-align: center;
   user-select: none;
 
   font-weight: bolder;
@@ -38,6 +41,48 @@ $size2: -2px;
   box-shadow: black 3px 3px 3px 1px inset;
 }
 
+.button-image-container{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: $size;
+  min-height: $size;
+  max-width: $size;
+  max-height: $size;
+  margin: 0px 5px 0px 5px;
+
+  border-radius: 5px;
+
+  @if($bor) { border: 1px solid rgb(255, 0, 238); border-radius: 5px; }
+}
+
+.button-image{
+  cursor: pointer;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s ease;
+
+  @if($bor) { border: 1px solid rgb(0, 255, 8); border-radius: 5px; }
+}
+
+.button-dark{
+  filter: brightness(0%);
+}
+
+.button-text{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+}
+
+.image-text-separation{
+  margin-right: 5px;
+}
+
 [theme='Dark']{
   .button-blue{background-color: $blue-darky; color: $beige}
   .button-blue-selected{ background-color: $cv-blue; color: $beige}
@@ -54,6 +99,9 @@ $size2: -2px;
   .button-white{background-color: $beige; color: $black;}
   .button-white-selected{background-color: $white; color: $black;}
   
+  .button-neutral{background-color: $grey-dark; color: $beige;}
+  .button-neutral-selected{background-color: $white; color: $black;}
+
   .button-disabled{background-color: $grey; color: $grey-dark;}
   .button-disabled:active{background-color: $red;}
 }
@@ -73,6 +121,9 @@ $size2: -2px;
   
   .button-white{background-color: $beige; color: $black;}
   .button-white-selected{background-color: $white; color: $black;}
+  
+  .button-neutral{background-color: $grey-light-light; color: $black;}
+  .button-neutral-selected{background-color: $white; color: $black;}
   
   .button-disabled{background-color: $grey; color: $grey-dark;}
   .button-disabled:active{background-color: $red;}

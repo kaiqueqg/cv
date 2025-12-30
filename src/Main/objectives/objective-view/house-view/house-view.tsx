@@ -252,14 +252,14 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             placeholder="TotalPrice"
             min={0}></input>
           <textarea 
-            className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
+            className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
             value={newHouse.Details}
             onChange={handleDetailsInputChange}
             onKeyDown={handleLongTextKeyDown} 
             placeholder='Details'
             ></textarea>
           <textarea 
-            className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR])}
+            className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
             value={newHouse.Attention}
             onChange={handleAttentionInputChange}
             onKeyDown={handleLongTextKeyDown} 

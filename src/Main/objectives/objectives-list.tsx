@@ -387,7 +387,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       return 'ARCHIVED OBJECTIVES';
     }
     else{
-      return 'OBJECTIVES';
+      return 'HIDDEN OBJECTIVES';
     }
   }
 

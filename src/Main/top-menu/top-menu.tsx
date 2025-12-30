@@ -47,10 +47,12 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
     <div className='topMenu'>
       <div className='buttonsContainer'>
         {/* <Win95Btn imageSrc='/cancel.png'></Win95Btn> */}
-        <Button color={ButtonColor.WHITE} text={user?'User':'Login'} isSelected={currentMenuOption===MenuOption.Login} onClick={() =>{setCurrentMenuOption(MenuOption.Login); navigate("/login");}}></Button>
-        <Button color={ButtonColor.WHITE} text='Curriculum' isSelected={currentMenuOption===MenuOption.Curriculum} onClick={() =>{setCurrentMenuOption(MenuOption.Curriculum); navigate("/cv");}}></Button>
-        <Button color={ButtonColor.WHITE} text='Objectives' isSelected={currentMenuOption===MenuOption.ObjectivesList} onClick={() =>{setCurrentMenuOption(MenuOption.ObjectivesList); navigate("/objectiveslist");}}></Button>
-        <Button color={ButtonColor.WHITE} text={globalTheme} onClick={changeTheme}></Button>
+        <Button color={ButtonColor.BLUE} text={user?'User':'Login'} isSelected={currentMenuOption===MenuOption.Login} onClick={() =>{setCurrentMenuOption(MenuOption.Login); navigate("/login");}}></Button>
+        <Button color={ButtonColor.BLUE} text='Curriculum' isSelected={currentMenuOption===MenuOption.Curriculum} onClick={() =>{setCurrentMenuOption(MenuOption.Curriculum); navigate("/cv");}}></Button>
+        <Button color={ButtonColor.BLUE} text='Objectives' isSelected={currentMenuOption===MenuOption.ObjectivesList} onClick={() =>{setCurrentMenuOption(MenuOption.ObjectivesList); navigate("/objectiveslist");}}></Button>
+        {globalTheme==='Dark' && <Button color={ButtonColor.NEUTRAL} onClick={changeTheme} src={process.env.PUBLIC_URL + '/dark-mode.png'}></Button>}
+        {globalTheme==='Light' && <Button color={ButtonColor.NEUTRAL} onClick={changeTheme} src={process.env.PUBLIC_URL + '/light-mode.png'}></Button>}
+        {globalTheme==='Win95' && <Button color={ButtonColor.NEUTRAL} onClick={changeTheme} src={process.env.PUBLIC_URL + '/win95.png'}></Button>}
       </div>
       <SiteMessagesView></SiteMessagesView>
     </div>

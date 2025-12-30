@@ -5,13 +5,17 @@
 .objContainer{
   position: relative;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  vertical-align: middle;
   align-items: center;
+  text-align: center;
+  
+  flex-direction: column;
   min-width: 350px;
   max-width: 1000px;
-  padding: 10px;
+  // padding: 10px;
   margin: 3px;
+  padding: 5px;
 
   border-radius: 5px;
   border-width: 1px;
@@ -40,7 +44,7 @@
 
 .objTopContainer{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -49,42 +53,53 @@
     flex-direction: row;
   }
 
-  @if($bor) {
-    border-width: 1px;
-    border-color: green;
-    border-style: solid;
-  }
-}
-
-.objTopContainerWithItem{
-  // margin-bottom: 10px;
+  @if($bor) { border: 1px solid green; border-radius: 5px; }
 }
 
 .objTitleContainer{
   display: flex;
   justify-content: center;
   align-items: center;
+
   color: beige;
-  // min-height: 40px;
+
   width: 100%;
   min-width: 100px;
 
-  @if($bor) {
-    border-width: 1px;
-    border-color: rgb(125, 255, 125);
-    border-style: solid;
-  }
+  @if($bor) { border: 1px solid rgb(125, 255, 125); border-radius: 5px; }
 }
 
 .objTopMenu{
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-direction: row;
+  color: beige;
+  min-height: 50px;
+  min-width: 400px;
+  width: 100%;
+  
+  @media(min-width: 700px){
+    flex-wrap: nowrap;
+  }
+
+  @if($bor) { border: 1px solid rgb(0, 255, 221); border-radius: 5px; }
+}
+
+.objObjectiveMenu{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   flex-wrap: wrap;
   color: beige;
   min-height: 40px;
+  min-width: 400px;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
   
   @media(min-width: 700px){
     flex-wrap: nowrap;
@@ -120,7 +135,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  // width: 100%;
   min-height: 39px;
   margin: 0px 5px;
 
@@ -412,12 +427,12 @@
   align-items: center;
   text-align: center;
 
-  @if($bor) {
-    border-width: 1px;
-    border-style: dashed;
-    border-color: rgb(81, 156, 85);
-    border-radius: 5px;
-  }
+  margin-bottom: 2px;
+
+  // border-width: 1px;
+  // border-style: solid;
+  // border-color: red;
+  // border-radius: 5px;
 }
 
 .objDragImageContainer{
