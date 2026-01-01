@@ -10,6 +10,7 @@ export enum Theme{
   Dark = 'Dark',
   Light = 'Light',
   Win95 = 'Win95',
+  // Auto = 'Auto',
 }
 
 export interface ResponseUser{

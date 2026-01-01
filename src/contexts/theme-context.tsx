@@ -26,18 +26,30 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [globalTheme, setGlobalTheme] = useState<string>(document.documentElement.getAttribute('Theme')??'Dark');
 
   useEffect(() => {
-    console.log('start ')
+    
     const start = async () => {
-      const t:string|null = await local.readTheme();
-      console.log('use ' + t)
+      let t:string|null = await local.readTheme();
       if(t){
+        // if(t === Theme.Auto){
+        //   const t = getThemeFromTime();
+        // } 
         setGlobalTheme(t);
         document.documentElement.setAttribute('Theme', t);
+        
       }
     }
 
     start();
-  }, [])
+  }, []);
+
+  const getThemeFromTime = () => {
+    const hour = new Date().getHours(); // 0 → 23
+
+    if (hour >= 7 && hour < 19) {
+      return 'Light';
+    }
+    return 'Dark';
+  };
 
   const changeTheme = () => {
     if(globalTheme === Theme.Dark){
@@ -50,6 +62,11 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       local.writeTheme(Theme.Dark);
       document.documentElement.setAttribute('theme', Theme.Dark);
     }
+    // else if(globalTheme === Theme.Auto){
+    //   setGlobalTheme(Theme.Dark);
+    //   local.writeTheme(Theme.Dark);
+    //   document.documentElement.setAttribute('theme', Theme.Dark);
+    // }
     // else if(globalTheme === Theme.Win95){
     //   setGlobalTheme(Theme.Dark);
     //   document.documentElement.setAttribute('theme', Theme.Dark);

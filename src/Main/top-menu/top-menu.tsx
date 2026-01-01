@@ -46,7 +46,6 @@ const TopMenu: React.FC<TopMenuProps> = (props) => {
   return (
     <div className='topMenu'>
       <div className='buttonsContainer'>
-        {/* <Win95Btn imageSrc='/cancel.png'></Win95Btn> */}
         <Button color={ButtonColor.BLUE} text={user?'User':'Login'} isSelected={currentMenuOption===MenuOption.Login} onClick={() =>{setCurrentMenuOption(MenuOption.Login); navigate("/login");}}></Button>
         <Button color={ButtonColor.BLUE} text='Curriculum' isSelected={currentMenuOption===MenuOption.Curriculum} onClick={() =>{setCurrentMenuOption(MenuOption.Curriculum); navigate("/cv");}}></Button>
         <Button color={ButtonColor.BLUE} text='Objectives' isSelected={currentMenuOption===MenuOption.ObjectivesList} onClick={() =>{setCurrentMenuOption(MenuOption.ObjectivesList); navigate("/objectiveslist");}}></Button>

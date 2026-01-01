@@ -42,6 +42,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [isEditingPos, setIsEditingPos] = useState<boolean>(false);
   const [objsSelected, setObjsSelected] = useState<Objective[]>([]);
   const [isEndingPos, setIsEndingPos] = useState<any>(false);
+
+  const [isShowingObjsList, setIsShowingObjsList] = useState<boolean>(false);
   
   useEffect(() => {
     verifyLogin();
@@ -312,7 +314,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       }
     }
 
-    return rtnView;
+    return <div className={'objectiveSideSroll'}>{rtnView}</div>;
   }
 
   const changeToNoneTag = () => {
@@ -357,7 +359,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     });
     list = [...list, ...availableTagsSorted.map((tag:string) => getTagView(tag))];
 
-    return list;
+    return (
+      <div className='objectivesListMainTags'>{list}</div>
+    );
   }
 
   const getTagView = (tag:string) => {
@@ -382,45 +386,72 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     setIsBackingUpData(false);
   }
 
-  const getSideMenuTitle = (): string => {
+  const getSideMenuTitle = () => {
     if(currentSidePanelView === SidePanelView.Archived){
-      return 'ARCHIVED OBJECTIVES';
+      return <div className='objectivesSidePanelTitleText'>ARCHIVED OBJECTIVES</div>;
     }
     else{
-      return 'HIDDEN OBJECTIVES';
+      return <div className='objectivesSidePanelTitleText'>HIDDEN OBJECTIVES</div>;
     }
   }
 
   const getSideMenu = () => {
     return(
-      <div className='objectivesSidePanel'>
-        <div className={'objectivesSidePanelTitle'}>{getSideMenuTitle()}</div>
-        <div className='objectivesSidePanelButtons'>
-          <input
-            type="file"
-            accept="application/json"
-            ref={fileInputRef}
-            multiple
-            style={{ display: "none" }}
-            onChange={handleFileUpload}
-          />
-          <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isLoadingBlack={false}/>
-          <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isLoadingBlack={false}/>
-          {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} disable={objectives.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoadingBlack={false}/>}
-          {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={false}/>}
-          {(isEditingPos && !isEndingPos) && 
-            ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
-            <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'} isLoadingBlack={false}/>
-            :
-            <div className='objectivesImage'></div>)
-          }
-          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isLoadingBlack={false}/>}
-          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isLoadingBlack={false}/>}
-          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
+      <div className={'objectivesListSideContainer '}>
+        <div className={'objectivesSidePanel ' + ((currentSidePanelView === SidePanelView.Archived)?'objectivesSidePanelArchived':'')}>
+          <div className={'objectivesSidePanelTitle ' + ((currentSidePanelView === SidePanelView.Archived)?'objectivesSidePanelTitleArchived':'')}>
+            <PressImage />
+            {getSideMenuTitle()}
+            {isShowingObjsList && <PressImage onClick={() => {setIsShowingObjsList(!isShowingObjsList)}} src={process.env.PUBLIC_URL + '/down-chevron.png'}/>}
+            {!isShowingObjsList && <PressImage onClick={() => {setIsShowingObjsList(!isShowingObjsList)}} src={process.env.PUBLIC_URL + '/up-chevron.png'}/>}
+          </div>
+          <div className='objectivesSidePanelButtons'>
+            <input
+              type="file"
+              accept="application/json"
+              ref={fileInputRef}
+              multiple
+              style={{ display: "none" }}
+              onChange={handleFileUpload}
+            />
+            <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isLoadingBlack={false}/>
+            <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isLoadingBlack={false}/>
+            {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} disable={objectives.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoadingBlack={false}/>}
+            {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={false}/>}
+            {(isEditingPos && !isEndingPos) && 
+              ((objsSelected.length !== objectives.length && objsSelected.length > 0)?
+                <PressImage onClick={onEditingPosTo} src={process.env.PUBLIC_URL + '/move.png'} isLoadingBlack={false}/>
+                :
+                <div className='objectivesImage'></div>
+              )
+            }
+            {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isLoadingBlack={false}/>}
+            {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isLoadingBlack={false} isSelected/>}
+            {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
+          </div>
+          {/* {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>} */}
+          {isShowingObjsList && currentSidePanelView === SidePanelView.Closed && getObjectiveClosedListView()}
+          {isShowingObjsList && currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}
         </div>
-        {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>}
-        {currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}
-        {currentSidePanelView === SidePanelView.Closed && getObjectiveClosedListView()}
+      </div>
+    )
+  }
+
+  const getObjectivesTagsList = () => {
+    return(
+      <div className='objectivesListMainAndTagsContainer'>
+        {!isBelow700px && getTagList()}
+        <div className='objectivesListMainContainer'>
+          {isThereANonArchivedShowingObjetive()?
+            getObjectiveList()
+            :
+            <div className={'objectivesListFirstOneContainer g-txt'} onClick={addNewObjective}>
+              Create a new objective
+              <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} isLoadingBlack={false} isLoading={isAddingNewObjective}/>
+            </div>
+          }
+        </div>
+        <div style={{height: '700px'}}></div>
       </div>
     )
   }
@@ -479,11 +510,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         </div>
         :
         (<div className='objectivesListContainer'>
-          <div className={'objectivesListSideContainer ' + ((currentSidePanelView === SidePanelView.Archived)?'objectivesListSideContainerArchived':'')}> 
-            {getSideMenu()}
-          </div>
+          {isBelow700px && getTagList()}
+          {getSideMenu()}
           <div className='objectivesListMainAndTagsContainer'>
-            <div className='objectivesListMainTags'>{ getTagList() }</div>
             <div className='objectivesListMainContainer'>
               {isThereANonArchivedShowingObjetive()?
                 getObjectiveList()
@@ -494,8 +523,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
                 </div>
               }
             </div>
-            <div style={{height: '700px'}}></div>
           </div>
+          <div style={{height: '700px'}}></div>
         </div>)
        :
         <div className='needLogin'>

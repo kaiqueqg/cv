@@ -11,10 +11,6 @@ $bor: false;
   padding: 20px 0px 20px 0px;
   margin: 0px;
 
-  border-color: $beige-dark;
-  border-style: solid;
-  border-width: 0px 0px 1px 0px;
-  
   @media screen and (max-width: $screen-max-width){
     width: 100%;
   }

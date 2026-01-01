@@ -28,13 +28,15 @@ $green-light: #60ff60;
 $green: #89db89;
 $green-dark: #5DA15D;
 
-$yellow: hsl(60, 100%, 74%);
 $yellow-brighty: hsl(60, 100%, 64%);
+$yellow: hsl(60, 100%, 74%);
+$yellow-darky: hsl(60, 100%, 36%);
 
 $grey-light-light: hsl(0, 0%, 90%);
 $grey-light: hsl(0, 0%, 79%);
-$grey: grey;
-$grey-dark: rgb(61, 61, 61);
+$grey: hsl(0, 0%, 50%);
+$grey-darky: hsl(0, 0%, 40%);
+$grey-dark: hsl(0, 0%, 24%);
 
 $placeholder-dark: $grey;
 $placeholder-TextColor: grey;

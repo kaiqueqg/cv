@@ -48,40 +48,45 @@
     flex-direction: row;
   }
 
-  @if($bor){
-    border-width: 2px;
-    border-color: purple;
-    border-style: dashed;
-  }
+  @if($bor) { border: 1px solid purple; border-radius: 5px; }
 }
 
 .objectivesListSideContainer{
   display: flex;
   flex-direction: column;
   
-  border-width: 0px 1px 0px 0px;
-  border-color: $beige-darker;
-  border-style: solid;
   width: 100%;
-  // padding: 5px;
+
+  padding: 4px 10px;
   
   @media(min-width: 700px){
     align-items: flex-start;
     flex-direction: row;
     min-width: 160px;
-    width: 15%;
-    @if $bor {border: 3px solid blue;}
+    width: 300px;
   }
+
   @if $bor {border: 1px solid blue;}
 }
 
-.objectivesListSideContainerArchived{
-  background-color: $blue-dark;
-}
-
 .objectivesSidePanelTitle{
-  padding: 10px 0px;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  flex-direction: row;
+
+  padding: 10px;
   font-weight: bolder;
+
+  border-radius: 5px 5px 0px 0px;
+
+  width: 100%;
+
+  @media(min-width: 700px){
+  }
 
   @if $bor {border: 1px solid blue;}
 }
@@ -90,7 +95,25 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
+
+  padding: 0px 0px 5px 0px;
+  box-shadow: $black 3px 3px 0 0;
+
+  border-radius: 5px;
+}
+
+.objectivesSidePanelArchived{
+
+}
+
+.objectivesSidePanelTitleText{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  width: 100%;
 }
 
 .objectivesSidePanelButtons{
@@ -238,8 +261,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 300px; //TODO It's really necesssary?
-  // max-width: 700px;
+
+  min-width: 350px;
+  width: 100%;
+  max-width: 500px;
+
   margin: 0px 0px 10px 0px;
 }
 
@@ -258,11 +284,24 @@
   cursor: pointer;
 }
 
+.objectiveSideSroll{
+  overflow-y: auto;
+  max-height: 30vh;
+  
+  @media(min-width: 700px){
+    overflow-y: none;
+    max-height: none;
+  }
+  
+}
+
 .objectiveSideRow{
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0px 5px;
+  width: 100%;
+
   @if($bor){
     border-width: 1px;
     border-color: red;
@@ -365,6 +404,22 @@
     color: $beige;
   }
 
+  .objectivesSidePanel{
+    background-color: $blue-dark;
+  }
+
+  .objectivesSidePanelArchived{
+    background-color: $grey-darky;
+  }
+
+  .objectivesSidePanelTitle{
+    background-color: $blue-darker;
+  }
+
+  .objectivesSidePanelTitleArchived{
+    background-color: $grey-dark;
+  }
+
   .objectivesListMainTag{
     color: $beige;
   }
@@ -394,6 +449,23 @@
   .objectivesSidePanelTitle{
     background-color: $grey-light-light;
     color: $black;
+  }
+
+  .objectivesSidePanel{
+    background-color: $white;
+  }
+
+  .objectivesSidePanelArchived{
+    background-color: $grey-light;
+  }
+
+  .objectivesSidePanelTitle{
+    background-color: $grey-light;
+  }
+
+  .objectivesSidePanelTitleArchived{
+    background-color: $grey-darky;
+    color: $beige;
   }
 
   .objectivesListMainTag{

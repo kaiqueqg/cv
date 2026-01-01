@@ -210,19 +210,16 @@ const Login: React.FC<LoginProps> = () => {
             :
             <div className='login-box'>
               <div className="email-column">
-                <div className="pass-row">
-                  <input name='email'  className="input-base" type="email" onChange={changeEmail} placeholder="Email" aria-label="Email" value={email}></input>
-                  {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
-                  {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
-                  {wrongEmail && <span className="alert-message concert-one-regular">Wrong email</span>}
-                </div>
+                <input name='email' className="input-base" type="email" onChange={changeEmail} placeholder={"email"} aria-label="Email" value={email}></input>
+                {typeAnEmail && <span className="warning-message concert-one-regular">Type an email</span>}
+                {typeAnValidEmail && <span className="warning-message concert-one-regular">Type a valid email</span>}
               </div>
               <div className="pass-column">
                 <div className="pass-row">
                   {showPassword?
-                    <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
+                    <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="password" aria-label="Server" value={password}></input>
                     :
-                    <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>
+                    <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="password" aria-label="Server" value={password}></input>
                   }
                   {showPassword?
                     <PressImage src={process.env.PUBLIC_URL + '/hide.png'} isLoadingBlack onClick={()=>{setShowPassword(false)}}></PressImage>
@@ -231,7 +228,6 @@ const Login: React.FC<LoginProps> = () => {
                   }
                 </div>
                 {typeAnPassword && <span className="warning-message concert-one-regular">Type a password</span>}
-                {wrongPassword && <span className="alert-message concert-one-regular">Wrong password</span>}
               </div>
               <div className="login-row">
                 {isLogging?

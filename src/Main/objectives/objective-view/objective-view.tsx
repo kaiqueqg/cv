@@ -1234,23 +1234,18 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         <div className={'objectiveMultiSelectMenu '}>
           <div className={'objectiveMultiSelectMenuIcon ' + scss(Theme, [SCSS.TEXT], !(multItemsSelected.length !== 0 || stgValue !== null))} onClick={() => {if(multItemsSelected.length > 0 || stgValue !== null) eraseSelectedItems()}}>
             <PressImage src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0 && stgValue === null} disableMsg="No item unselect..." disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
-            Unselect
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)moveItems()}}>
             <PressImage onClick={moveItems} src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/next-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
-            Move
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)copyItems()}}>
             <PressImage onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
-            Copy
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], stgValue === null)} onClick={() => {if(stgValue !== null)setIsSelectingPastePos(true);}}>
             <PressImage onClick={() => {setIsSelectingPastePos(true);}} src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'} disable={stgValue === null} disableMsg="You need to select copy or move before paste..." disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
-            Paste
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)deleteSelectedItems()}}>
             <PressImage onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red' + getTintColor(Theme) + '.png'} confirm disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage hideHoverEffect/>
-            Delete
           </div>
         </div>
       </div>
