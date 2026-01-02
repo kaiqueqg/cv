@@ -43,7 +43,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [objsSelected, setObjsSelected] = useState<Objective[]>([]);
   const [isEndingPos, setIsEndingPos] = useState<any>(false);
 
-  const [isShowingObjsList, setIsShowingObjsList] = useState<boolean>(false);
+  const [isShowingObjsList, setIsShowingObjsList] = useState<boolean>(true);
   
   useEffect(() => {
     verifyLogin();
@@ -270,7 +270,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       }
     }
 
-    return rtnView;
+    return (
+      <div className={'objectives-list-objectives-container'}>
+        {rtnView}
+      </div>
+    )
   }
 
   const getObjectiveArchivedListView = () => {
@@ -349,8 +353,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const getTagList = () => {
 
     let list:JSX.Element[] = [
-      <div key={'tagall'} className={'objectivesListMainTagSpecial'} onMouseDown={(e) => changeToAllTag()}>All</div>,
-      <div key={'tagnone'} className={'objectivesListMainTagSpecial'} onMouseDown={(e) => changeToNoneTag()}>None</div>,
+      <div key={'tagall'} className={'objectivesListMainTagSpecial box-effect '} onMouseDown={(e) => changeToAllTag()}>All</div>,
+      <div key={'tagnone'} className={'objectivesListMainTagSpecial box-effect '} onMouseDown={(e) => changeToNoneTag()}>None</div>,
     ]
     const availableTagsSorted = availableTags.sort((a, b) => {
       if (a === "Pin") return -1;
@@ -367,7 +371,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const getTagView = (tag:string) => {
     let classname = 'objectivesListMainTag';
     if(selectedTags.includes(tag)){ 
-      classname += ' objectivesListMainTagSelected';
+      classname += ' objectivesListMainTagSelected box-effect ';
     }
 
     return <div key={'tag'+tag} className={classname} onMouseDown={(e) => changeSelectedTag(tag, e)}>{tag}</div>;
@@ -437,25 +441,6 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     )
   }
 
-  const getObjectivesTagsList = () => {
-    return(
-      <div className='objectivesListMainAndTagsContainer'>
-        {!isBelow700px && getTagList()}
-        <div className='objectivesListMainContainer'>
-          {isThereANonArchivedShowingObjetive()?
-            getObjectiveList()
-            :
-            <div className={'objectivesListFirstOneContainer g-txt'} onClick={addNewObjective}>
-              Create a new objective
-              <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} isLoadingBlack={false} isLoading={isAddingNewObjective}/>
-            </div>
-          }
-        </div>
-        <div style={{height: '700px'}}></div>
-      </div>
-    )
-  }
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const triggerFileInput = () => {
     fileInputRef.current?.click();
@@ -500,39 +485,80 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const isThereANonArchivedShowingObjetive = ():boolean => {
     return  objectives.some((o: Objective) => o.IsShowing && !o.IsArchived);
   }
-  
-  return (
-    <div className='objectivesContainer'>
-      {user && user.Status==='Active' ?
-        isUpdatingObjectives?
-        <div className='loadingListContainer'>
-          <Loading/>
-        </div>
-        :
-        (<div className='objectivesListContainer'>
-          {isBelow700px && getTagList()}
-          {getSideMenu()}
-          <div className='objectivesListMainAndTagsContainer'>
-            <div className='objectivesListMainContainer'>
+
+  const getNoObjShowingView = () => {
+    return(
+      <div className={'objectivesListFirstOneContainer g-txt'} onClick={addNewObjective}>
+        Create a new objective
+        <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} isLoadingBlack={false} isLoading={isAddingNewObjective}/>
+      </div>
+    )
+  }
+
+  const getFullView = () => {
+    return(
+      <div className='objectives-container'>
+        {user && user.Status==='Active' ?
+          isUpdatingObjectives?
+          <div className='loading-list-container'>
+            <Loading/>
+          </div>
+          :
+          (<div className='objectives-list-container'>
+            {getSideMenu()}
+            <div className='objectives-list-main-and-tags-container'>
+              {getTagList()}
               {isThereANonArchivedShowingObjetive()?
                 getObjectiveList()
                 :
-                <div className={'objectivesListFirstOneContainer g-txt'} onClick={addNewObjective}>
-                  Create a new objective
-                  <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} isLoadingBlack={false} isLoading={isAddingNewObjective}/>
-                </div>
+                getNoObjShowingView()
               }
             </div>
-          </div>
-          <div style={{height: '700px'}}></div>
-        </div>)
-       :
-        <div className='needLogin'>
+            <div style={{height: '700px'}}></div>
+          </div>)
+        :
+        <div className='need-login'>
           <Button color={ButtonColor.WHITE} text='Need to login' onClick={()=>{navigate('/login')}}></Button>
         </div>
-      }
-    </div>
-  );
+        }
+      </div>
+    )
+  }
+
+  const getVerticalView = () => {
+    return(
+      <div className='objectives-container'>
+        {user && user.Status==='Active' ?
+          isUpdatingObjectives?
+          <div className='.loading-list-container'>
+            <Loading/>
+          </div>
+          :
+          (<div className='objectives-list-container'>
+            {isBelow700px && getTagList()}
+            {getSideMenu()}
+            <div className='objectives-list-main-and-tags-container'>
+              <div className='.objectives-list-main-container'>
+                {!isBelow700px && getTagList()}
+                {isThereANonArchivedShowingObjetive()?
+                  getObjectiveList()
+                  :
+                  getNoObjShowingView()
+                }
+              </div>
+            </div>
+            <div style={{height: '700px'}}></div>
+          </div>)
+        :
+          <div className='need-login'>
+            <Button color={ButtonColor.WHITE} text='Need to login' onClick={()=>{navigate('/login')}}></Button>
+          </div>
+        }
+      </div>
+    )
+  }
+  
+  return ( isBelow700px ? getVerticalView() : getFullView() );
 }
 
 export default ObjectivesList;

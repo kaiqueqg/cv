@@ -3,8 +3,6 @@ import { useLogContext } from "../contexts/log-context";
 import './press-image.scss';
 import Loading from "../loading/loading";
 import { useThemeContext } from "../contexts/theme-context";
-import { MessageType } from "../Types";
-import { isBigInt64Array } from "util/types";
 
 export interface PressImageProps{
   id?: string,
@@ -31,14 +29,14 @@ export interface PressImageProps{
   rawImage?: boolean,
 
   size?: 'big'|'bigger',
+
+  children?: React.ReactNode;
 }
 
 const PressImage = (props: PressImageProps) => {
   const { popMessage } = useLogContext();
-  const { scss } = useThemeContext();
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
   const [text, setText] = useState<number>(2000);
-  const [imageClass, setImageClass] = useState<string>('spin fade-in');
 
   const getHideImage = () => {
     return(
@@ -76,6 +74,7 @@ const PressImage = (props: PressImageProps) => {
         onClick={normalTouchEnd}>
         {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ')} src={imageSrc}></img>}
         {props.badgeText && props.badgeText !== '' && <div className={'press-image-text'}>{props.badgeText}</div>}
+        {props.children}
       </div>
     )
   }

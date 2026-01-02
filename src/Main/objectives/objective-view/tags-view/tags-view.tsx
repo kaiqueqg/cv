@@ -70,7 +70,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getAvailableTagView = (tag: string) => {
     if(newTags.includes(tag)) return;
-    let style = 'tagContainer' + scss(theme, [SCSS.TEXT]) + scss(theme, [SCSS.BORDERCOLOR]);
+    let style = 'tagContainer box-effect' + scss(theme, [SCSS.TEXT, SCSS.OBJ_BG]) + scss(theme, [SCSS.BORDERCOLOR_CONTRAST]);
 
     return (
       <div key={`includedtagview-${tag}`} className={style} onClick={()=>{addAvailableTag(tag)}}>{tag}</div>
@@ -79,7 +79,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
 
   const getTagsView = (tag: string):React.ReactNode => {
     let style = '';
-    if(tags.includes(tag)) style+= 'tagContainer' + scss(theme, [SCSS.TEXT]) + scss(theme, [SCSS.BORDERCOLOR]);
+    if(tags.includes(tag)) style+= 'tagContainer box-effect ' + scss(theme, [SCSS.TEXT, SCSS.OBJ_BG]) + scss(theme, [SCSS.BORDERCOLOR_CONTRAST]);
     else style += 'tagContainerToSave' + scss(theme, [SCSS.TEXT_ALERT]) + scss(theme, [SCSS.BORDERCOLOR_ALERT]);
     return (
       <div key={`tagview-${tag}`} className={style} onClick={()=>{removeTag(tag)}}>{tag}</div>

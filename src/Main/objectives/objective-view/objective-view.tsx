@@ -1172,18 +1172,26 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     )
   }
 
+  const getColorButton = (theme: string) => {
+    return(
+      <PressImage isSelected={objective.Theme === theme}  onClick={()=>changeObjColor(theme)}>
+        <div className={'objective-color-button  ' + scss(theme, [SCSS.OBJ_BG])}></div>
+      </PressImage>
+    )
+  }
+
   const getColorMenu = () => {
     if(!(objective.IsShowing && isColorMenuOpen)) return <></>;
 
     return(
       <div className={'objectiveColorContainer ' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
-        <div className={'objectiveColorButton ' + scss('blue', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('blue')}></div>
-        <div className={'objectiveColorButton ' + scss('red', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('red')}></div>
-        <div className={'objectiveColorButton ' + scss('green', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('green')}></div>
-        <div className={'objectiveColorButton ' + scss('white', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('white')}></div>
-        <div className={'objectiveColorButton ' + scss('cyan', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('cyan')}></div>
-        <div className={'objectiveColorButton ' + scss('pink', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('pink')}></div>
-        <div className={'objectiveColorButton ' + scss('noTheme', [SCSS.OBJ_BG])} onClick={()=>changeObjColor('noTheme')}></div>
+        {getColorButton('blue')}
+        {getColorButton('red')}
+        {getColorButton('green')}
+        {getColorButton('white')}
+        {getColorButton('cyan')}
+        {getColorButton('pink')}
+        {getColorButton('noTheme')}
       </div>
     )
   }

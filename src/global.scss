@@ -91,6 +91,20 @@ input[type="number"] {
   }
 }
 
+.box-effect{
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0 0;
+  transform: translateX(-1px) translateY(-1px);
+}
+
+.box-effect-hover{
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0 0;
+  transform: translateX(-1px) translateY(-1px);
+}
+
+.box-effect-selected{
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0px 0px inset;
+}
+
 [theme="Dark"]{
   --test: red;
 
