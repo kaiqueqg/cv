@@ -129,8 +129,8 @@
 .objectives-list-objectives-container{
   display: flex;
   justify-content: center;
-  vertical-align: middle;
-  align-items: center;
+  vertical-align: top;
+  align-items: flex-start;
   text-align: center;
 
   flex-direction: row;

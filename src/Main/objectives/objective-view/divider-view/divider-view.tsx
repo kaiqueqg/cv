@@ -240,47 +240,22 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             :
             <PressImage isLoadingBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/checked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
         )}
-        {!isEditingTitle && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem}/>}
+        {!isEditingTitle && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem} rawImage={isAddingNewItemLocked}/>}
       </div>
       {isAddingNewItem && !isDisabled &&
         <div className={'dividerNewItemContainer '}>
           <div className={'objectiveNewItemAmount' + scss(theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
-          {/* <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Wait, divider.Pos)}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/wait' + itemTintColor(theme) + '.png'}></img>
-          </div> */}
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.House, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Link, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Exercise, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/exercise-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Divider, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/minus' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Grocery, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/grocery-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Medicine, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/medicine-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Location, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Question, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/question-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Note, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Step, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/step-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
-          <div className='dividerNewItemImageContainer' onClick={()=>{addNewItem(ItemType.Image, divider.Pos);}}>
-            <img className='dividerNewItemImage' src={process.env.PUBLIC_URL + '/image-filled' + itemTintColor(theme) + '.png'}></img>
-          </div>
+          <PressImage src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.House, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Link, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/exercise-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Exercise, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/minus' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Divider, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/grocery-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Grocery, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/medicine-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Medicine, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/location-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Location, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/question-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Question, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Note, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/step-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Step, divider.Pos);}}/>
+          <PressImage src={process.env.PUBLIC_URL + '/image-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Image, divider.Pos);}}/>
         </div>
       }
     </div>
