@@ -11,13 +11,13 @@ import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 
 interface ObjectiveHideViewProps{
   objective: Objective,
-  putObjectiveInDisplay: (obj?: Objective, remove?: boolean) => void,
+  putObjectivesInDisplay: (obj?: Objective[], remove?: boolean) => void,
   isObjsEditingPos: boolean,
 }
 
 const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
   const { identityApi, objectiveslistApi } = useRequestContext();
-  const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
+  const { objective, putObjectivesInDisplay, isObjsEditingPos } = props;
   const [isOpening, setIsOpening] = useState<boolean>(false);
   const [isBeingHover, setIsBeingHover] = useState<boolean>(false);
   const { Theme } = objective;
@@ -29,13 +29,13 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
     setIsOpening(true);
     try {
       const newObjective: Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
-      putObjectiveInDisplay(newObjective);
+      putObjectivesInDisplay([newObjective]);
 
       const data = await objectiveslistApi.putObjectives([newObjective]);
       if(data){
       }
       else{
-        putObjectiveInDisplay(objective); // is right?
+        putObjectivesInDisplay([objective]); // is right?
       }
     } catch (err) {
       log.err(JSON.stringify(err));

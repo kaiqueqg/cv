@@ -55,9 +55,8 @@
   flex-direction: column;
   
   width: 100%;
-
   padding: 4px 10px;
-  
+
   @media(min-width: 700px){
     align-items: flex-start;
     flex-direction: row;
@@ -267,11 +266,12 @@
 
 .objectiveSideSroll{
   overflow-y: auto;
-  max-height: 30vh;
-  
+  max-height: 40vh;
+
   @media(min-width: 700px){
-    overflow-y: none;
+    resize: vertical;
     max-height: none;
+    overflow-y: none;
   }
   
 }

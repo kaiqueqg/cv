@@ -14,11 +14,16 @@ interface ButtonProps {
 
   src?: string,
 
+  absolute?: boolean,
+  absX?: number,
+  absY?: number,
 }
 
 export enum ButtonColor { BLUE, RED, GREEN, YELLOW, WHITE, NEUTRAL }
 
-const Button: React.FC<ButtonProps> = ({onClick,disabledMessage, text, isSelected, isDisabled, color, src}) => {
+const Button: React.FC<ButtonProps> = ({
+    onClick,disabledMessage, text, isSelected, isDisabled, color, src, absX, absY, absolute,
+  }) => {
   const { scss } = useThemeContext();
   const { popMessage } = useLogContext();
   // const [isClicking, setIsClicking] = useState<boolean>(false);
@@ -80,6 +85,7 @@ const Button: React.FC<ButtonProps> = ({onClick,disabledMessage, text, isSelecte
 
   return (
     <div 
+      style={absolute && absX && absY?{top: absY, left: absX, position: 'absolute'}:undefined}
       className={getTheme()}
       onClick={click}
       >

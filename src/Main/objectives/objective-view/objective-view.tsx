@@ -28,7 +28,7 @@ import { shouldBeBlack } from "../../../helper";
 
 interface ObjectiveViewProps{
   objective: Objective,
-  putObjective: (obj?: Objective, remove?: boolean) => void,
+  putObjectives: (obj?: Objective[], remove?: boolean) => void,
   deleteObjectiveItemsInDisplay: (objectiveId: string, items: Item[], remove?: boolean) => void,
   isObjsEditingPos: boolean,
 }
@@ -42,7 +42,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const { putSelectedTags, selectedTags } = useUserContext();
   const { log, popMessage } = useLogContext();
   const { scss, getTintColor } = useThemeContext();
-  const { objective, putObjective, isObjsEditingPos } = props;
+  const { objective, putObjectives, isObjsEditingPos } = props;
   const { Theme } = objective;
   
   const [items, setItems] = useState<(Item)[]>([]);
@@ -202,7 +202,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       const data = await objectiveslistApi.deleteObjectives([objective]);
   
       if(data){
-        putObjective(objective, true);
+        putObjectives([objective], true);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -231,7 +231,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(newObjective.Title !== objective.Title) {
       const data = await objectiveslistApi.putObjectives([newObjective]);
       if(data){
-        putObjective(newObjective);
+        putObjectives([newObjective]);
         setIsEditingTitle(false);
       }
     }
@@ -257,7 +257,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       const data = await objectiveslistApi.putObjectives([newObjective]);
 
       if(data){
-        putObjective(newObjective);
+        putObjectives([newObjective]);
         putSelectedTags(newTags);
       }
     }
@@ -404,7 +404,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const onChangeObjectiveIsArchived = async () => {
     try {
       const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
-      putObjective(newObjective);
+      putObjectives([newObjective]);
       const data = await objectiveslistApi.putObjectives([newObjective]);
       
       if(data){
@@ -424,7 +424,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     try {
 
       const newObjective:Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
-      putObjective(newObjective); //change before confirm to be more practicle
+      putObjectives([newObjective]); //change before confirm to be more practicle
       const data = await objectiveslistApi.putObjectives([newObjective]);
       
       if(data){
@@ -495,9 +495,10 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       const data = await objectiveslistApi.putObjectives([newObj]);
       
       if(data){
-        putObjective(newObj);
+        await putObjectives([newObj]);
       }
       else{
+        
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -524,7 +525,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     const data = await objectiveslistApi.putObjectives([newObjective]);
       
     if(data){
-      putObjective(newObjective);
+      putObjectives([newObjective]);
     }
 
     setIsLoadingIsShowingItems(false);

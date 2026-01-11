@@ -35,6 +35,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [objectives, setObjectives] = useState<Objective[]>([]);
   const [isUpdatingObjectives, setIsUpdatingObjectives] = useState<boolean>(false);
   const [isAddingNewObjective, setIsAddingNewObjective] = useState<boolean>(false);
+  const [amountOfNewObjectives, setAmountOfNewObjectives] = useState<number>(1);
   const [isUploadingBackupData, setIsUploadingBackupData] = useState<boolean>(false);
   const [isBackingUpData, setIsBackingUpData] = useState<boolean>(false);
   const [currentSidePanelView, setCurrentSidePanelView] = useState<SidePanelView>(SidePanelView.Closed);
@@ -135,10 +136,17 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         IsShowingCheckedMedicine: true,
         Tags: selectedTags.length === 2 && tag?[tag]:[],
       }
+
+      let objsToSend:Objective[] = [];
+
+      for(let i = 0; i < amountOfNewObjectives; i++){
+        objsToSend.push(emptyObjective);
+      }
       
-      const data = await objectiveslistApi.putObjectives([emptyObjective], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectives(objsToSend, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      setAmountOfNewObjectives(1);
       if(data){
-        putObjectiveInDisplay(data[0]);
+        putObjectivesInDisplay(data);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -147,9 +155,12 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     setIsAddingNewObjective(false);
   }
 
-  const putObjectiveInDisplay = async (obj?: Objective, remove?: boolean) => {
-    if (obj) {
-      setObjectives((prevObjectives) => {
+  const putObjectivesInDisplay = async (objs?: Objective[], remove?: boolean) => {
+    
+    if (objs) {
+      for (let i = 0; i < objs.length; i++) {
+      const obj = objs[i];
+        setObjectives((prevObjectives) => {
         let newObjs = [];
         if (remove) {
           newObjs = prevObjectives.filter((o: Objective) => o.ObjectiveId !== obj.ObjectiveId);
@@ -178,6 +189,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
         return sorted;
       });
+      }
     } else {
       await updateObjectives();
     }
@@ -261,7 +273,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             <ObjectiveView 
               ref={el => objectiveRefs.current[objectives[i].ObjectiveId] = el}
               objective={objectives[i]}
-              putObjective={putObjectiveInDisplay}
+              putObjectives={putObjectivesInDisplay}
               deleteObjectiveItemsInDisplay={deleteObjectiveItemsInDisplay}
               isObjsEditingPos={isEditingPos}
             ></ObjectiveView>
@@ -290,7 +302,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             key={objectives[i].ObjectiveId}
             className={'objectiveSideRow ' + (isEditingPos ? 'isEditing' : '') + (isSelected?' objectiveSideRowSelected':'') + (isEndingPos&&isSelected?' objectiveSideRowSelectedEnding':'')}
             onClick={() => {isEditingPos && (isEndingPos? endEnditingPos(objectives[i]) : addingRemovingItem(objectives[i]))}}>
-            <ObjectiveArchivedView key={objectives[i].ObjectiveId} objective={objectives[i]} putObjectiveInDisplay={putObjectiveInDisplay} isObjsEditingPos={isEditingPos}></ObjectiveArchivedView>
+            <ObjectiveArchivedView key={objectives[i].ObjectiveId} objective={objectives[i]} putObjectivesInDisplay={putObjectivesInDisplay} isObjsEditingPos={isEditingPos}></ObjectiveArchivedView>
           </div>
         )
       }
@@ -312,7 +324,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             key={objectives[i].ObjectiveId}
             className={'objectiveSideRow ' + (isEditingPos ? 'isEditing' : '') + (isSelected?' objectiveSideRowSelected':'') + (isEndingPos&&isSelected?' objectiveSideRowSelectedEnding':'')}
             onClick={() => {isEditingPos && (isEndingPos? endEnditingPos(objectives[i]) : addingRemovingItem(objectives[i]))}}>
-            <ObjectiveHideView key={objectives[i].ObjectiveId} objective={objectives[i]} putObjectiveInDisplay={putObjectiveInDisplay} isObjsEditingPos={isEditingPos}></ObjectiveHideView>
+            <ObjectiveHideView key={objectives[i].ObjectiveId} objective={objectives[i]} putObjectivesInDisplay={putObjectivesInDisplay} isObjsEditingPos={isEditingPos}></ObjectiveHideView>
           </div>
         )
       }
@@ -399,6 +411,13 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   }
 
+  const plusNewFile = () => {
+    if(amountOfNewObjectives < 9)
+      setAmountOfNewObjectives(amountOfNewObjectives+1);
+    else
+      setAmountOfNewObjectives(1);
+  }
+
   const getSideMenu = () => {
     return(
       <div className={'objectivesListSideContainer '}>
@@ -431,7 +450,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             }
             {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isLoadingBlack={false}/>}
             {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isLoadingBlack={false} isSelected/>}
-            {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
+            {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onRightClick={plusNewFile} badgeText={amountOfNewObjectives>1?amountOfNewObjectives.toString():undefined} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
           </div>
           {/* {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>} */}
           {isShowingObjsList && currentSidePanelView === SidePanelView.Closed && getObjectiveClosedListView()}

@@ -12,6 +12,8 @@ export interface PressImageProps{
 
   onClick?: () => void,
   hide?: boolean,
+
+  onRightClick?: () => void,
   
   disable?: boolean,
   disableSrc?: string,
@@ -59,6 +61,13 @@ const PressImage = (props: PressImageProps) => {
     }
   }
 
+  const contextMenuClick = (e: any) => {
+    e.preventDefault();
+
+    console.log('Right click');
+    if(props.onRightClick) props.onRightClick();
+  }
+
   const getNormalImage = () => {
     const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
     let classnameImageContainer = 'press-image-container ' + (props.isSelected && ' press-image-container-selected ');
@@ -71,7 +80,8 @@ const PressImage = (props: PressImageProps) => {
       <div
         id={props.id}
         className={classnameImageContainer + (props.hideHoverEffect?'':' press-image-container-hover ')}
-        onClick={normalTouchEnd}>
+        onClick={normalTouchEnd}
+        onContextMenu={contextMenuClick}>
         {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ')} src={imageSrc}></img>}
         {props.badgeText && props.badgeText !== '' && <div className={'press-image-text'}>{props.badgeText}</div>}
         {props.children}

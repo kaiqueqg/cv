@@ -36,7 +36,7 @@ const App: React.FC<AppProps> = () => {
                     <Route path="/login" element={<Login/>}/>
                     <Route path="/cv" element={<Curriculum/>}/>
                     <Route path="/objectiveslist" element={<ObjectivesList/>}/>
-                    <Route path="/iot" element={<IoT></IoT>}/>
+                    {/* <Route path="/iot" element={<IoT></IoT>}/> */}
                   </Routes>
                 </HashRouter>
               </div>

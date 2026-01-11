@@ -120,6 +120,7 @@
 }
 
 .noteText{
+  cursor: pointer;
   display: flex;
   align-items: center;
   width: 100%;
@@ -145,12 +146,13 @@
   user-select: text;
   width: 100%;
   min-height: 300px;
+  min-width: 100%;
   background-color: #00000000;
   outline: 0px;
   margin: 15px 0px 0px 0px;
   padding: 10px 10px;
   
-  resize: both;
+  resize: vertical;
 
   border-width: 1px;
   border-color: black;
@@ -165,7 +167,7 @@
   width: 100%;
   resize: both;
   overflow: auto;
-  white-space: pre-wrap; // conserve les retours à la ligne
+  white-space: pre-wrap;
 
   border-width: 1px;
   border-style: solid;

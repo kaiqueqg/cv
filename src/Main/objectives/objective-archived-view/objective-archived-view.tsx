@@ -9,7 +9,7 @@ import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 
 interface ObjectiveArchivedViewProps{
   objective: Objective,
-  putObjectiveInDisplay: (obj?: Objective, remove?: boolean) => void,
+  putObjectivesInDisplay: (obj?: Objective[], remove?: boolean) => void,
   isObjsEditingPos: boolean,
 }
 
@@ -17,7 +17,7 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
   const { objectiveslistApi } = useRequestContext();
   const { scss, getTintColor } = useThemeContext();
 
-  const { objective, putObjectiveInDisplay, isObjsEditingPos } = props;
+  const { objective, putObjectivesInDisplay, isObjsEditingPos } = props;
   const { Theme } = objective;
 
   const [isUnarchiving, setIsUnarchiving] = useState<boolean>(false);
@@ -27,13 +27,13 @@ const ObjectiveArchivedView: React.FC<ObjectiveArchivedViewProps> = (props) => {
     setIsUnarchiving(true);
     try {
       const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
-      putObjectiveInDisplay(newObjective)
+      putObjectivesInDisplay([newObjective])
       const data = await objectiveslistApi.putObjectives([newObjective]);
   
       if(data){
       }
       else{
-        putObjectiveInDisplay(objective);
+        putObjectivesInDisplay([objective]);
       }
     } catch (err) {
       log.err(JSON.stringify(err));

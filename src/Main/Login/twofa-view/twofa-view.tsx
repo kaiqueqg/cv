@@ -39,7 +39,6 @@ const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
   }
 
   const sendVerificationTwoFA = async () => {
-    setIsVerifingTwoFA(true);
     
     if(!(/^[0-9]{6}$/.test(verificationCode))){
       setVerificationCode('');
@@ -47,6 +46,8 @@ const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
       return;
     }
     
+    setIsVerifingTwoFA(true);
+
     const tempToken: string|null = await session.readTwoFATempToken();
     if(tempToken) {
       const sendRequest: TwoFactorAuthRequest = { TwoFACode: verificationCode, TwoFATempToken: tempToken };
