@@ -172,11 +172,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
                 ></textarea>
             </div>
             <div className='sideTitleContainer'>
-              {isAutoUpdating?
-                <Loading IsBlack={theme==='white'}></Loading>
-                :
-                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')}/>
-              }
+              {/* <PressImage isLoadingBlack={props.isLoadingBlack} onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')} isLoading={isAutoUpdating}/> */}
               <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
               <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             </div>
@@ -184,13 +180,11 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
           :
           <div className="noteDisplayContainer">
             {note.Title.trim() !== '' && <div className={'noteTitle ' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Title}</div>}
-            <div 
-              className={'noteText' + scss(theme, [SCSS.TEXT])}
-              onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>
+            {(note.Text.trim() !== '' || note.Title.trim() === '') && <div className={'noteText' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>}
           </div>
         )
       }
-    {note.Text === '' && !isEditingText && <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'}></PressImage>}
+    {note.Text.trim() === '' && !isEditingText && <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}></PressImage>}
     </div>
   );
 }

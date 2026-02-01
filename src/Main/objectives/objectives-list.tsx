@@ -55,7 +55,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [objsSearchToShow, setObjsSearchToShow] = useState<string[]>([]);
   const [wasNoSearchNoItemFound, setWasNoSearchNoItemFound] = useState<boolean>(false);
   const [searchMatchCase, setSearchMatchCase] = useState<boolean>(false);
-  const [searchMatchWholeWord, setSearchMatchWholeWord] = useState<boolean>(true);
+  const [searchMatchWholeWord, setSearchMatchWholeWord] = useState<boolean>(false);
   const [searchMatchAccent, setSearchMatchAccent] = useState<boolean>(false);
   
   useEffect(() => {

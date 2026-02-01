@@ -1,6 +1,8 @@
 @import '../../../../global.scss';
 
-.medicineContainer{
+// $bor: true;
+
+.reviewContainer{
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -17,7 +19,7 @@
   border-style: solid;
 }
 
-.medicineDisplayContainer{
+.reviewDisplayContainer{
   display: flex;
   width: 100%;
   flex-direction: row;
@@ -25,16 +27,78 @@
   align-items: center;
 }
 
-.medicineLine{
+.reviewLine{
   display: flex;
+  justify-content: center;
+  vertical-align: middle;
   width: 100%;
   min-height: 35px;
+  flex-direction: column;
+  padding: 5px 0px 5px 5px;
+
+  @if($bor) { border: 1px solid yellow; border-radius: 5px; }
 }
 
-.medicineText{
+.reviewTitle{
   display: flex;
+  justify-content: flex-start;
+  vertical-align: middle;
   align-items: center;
+  text-align: center;
+  width: 100%;
   padding: 0px 5px 0px 10px;
+
+  font-size: 1em;
+
+  @if($bor) { border: 1px solid purple; border-radius: 5px; }
+}
+
+.reviewRating{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  align-items: center;
+  font-size: 0.7em;
+  font-weight: bold;
+  padding: 2px 3px;
+}
+
+.reviewDesc{
+  display: flex;
+  justify-content: flex-start;
+  vertical-align: middle;
+
+  align-items: center;
+  font-size: 0.7em;
+  font-weight: bold;
+  padding: 5px 0px 0px 10px;
+}
+
+.reviewTopLine{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+
+  flex-direction: row;
+  width: 100%;
+
+  @if($bor) { border: 1px solid green; border-radius: 5px; }
+}
+
+.reviewBottomLine{
+  display: flex;
+  justify-content: flex-start;
+  vertical-align: middle;
+
+  flex-direction: row;
+  width: 100%;
+
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }
 
 .inputsContainer{
@@ -45,13 +109,13 @@
   align-items: center;
 }
 
-.medicineCenterContainer{
+.reviewCenterContainer{
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.medicineSideContainer{
+.reviewSideContainer{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -61,13 +125,13 @@
   margin: 0px 2px;
 }
 
-.medicineImage{
+.reviewImage{
   cursor: pointer;
   max-width: 35px;
   max-height: 35px;
   padding: 7px;
 }
 
-.medicineImage:hover{
+.reviewImage:hover{
   padding: 4px;
 }

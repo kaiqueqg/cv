@@ -11,7 +11,9 @@ import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 
 export function reviewNew(){
   return {
-    
+    Rating: '',
+    Description: '',
+    IsCurrentChoise: false,
   }
 }
 
@@ -25,7 +27,7 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
   const { review, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelecting, isSelected, itemTintColor } = props;
 
   const [newReview, setNewReview] = useState<Review>(review);
-  const [isEditingreview, setIsEditingreview] = useState<boolean>(false);
+  const [isEditingreview, setIsEditingReview] = useState<boolean>(false);
   
   const [isSavingreview, setIsSavingreview] = useState<boolean>(false);
   const [isSavingIsChecked, setIsSavingIsChecked] = useState<boolean>(false);
@@ -45,7 +47,7 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
   }
 
   const onEditreview = () => {
-    if(!isDisabled)setIsEditingreview(!isEditingreview);
+    if(!isDisabled)setIsEditingReview(!isEditingreview);
   }
 
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -89,15 +91,16 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
       || newItem.Rating !== review.Rating?.trim()
       ) {
 
+      log.arr([newItem])
       const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){
-        setIsEditingreview(false);
+        setIsEditingReview(false);
         putItemsInDisplay(data);
       }
     }
     else{
-      setIsEditingreview(false);
+      setIsEditingReview(false);
       setNewReview(review);
     }
 
@@ -106,7 +109,7 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
 
   const cancelEditreview = () => {
     setNewReview(review);
-    setIsEditingreview(false);
+    setIsEditingReview(false);
   }
 
   const deleteItem = async () => {
@@ -129,7 +132,7 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
   }
 
   return (
-    <div className={'reviewContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], review.IsCurrentChoise, isSelecting, isSelected)}>
+    <div className={'reviewContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], !review.IsCurrentChoise, isSelecting, isSelected)}>
       {isSavingreview?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -152,6 +155,22 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
                 placeholder="Title"
                 autoFocus
                 spellCheck/>
+              <input 
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
+                type='text'
+                value={newReview.Rating}
+                onChange={handleRatingInputChange}
+                onKeyDown={handleKeyDown} 
+                placeholder="Rating"
+                spellCheck/>
+              <input 
+                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
+                type='text'
+                value={newReview.Description}
+                onChange={handleDescriptionInputChange}
+                onKeyDown={handleKeyDown} 
+                placeholder="Description"
+                spellCheck/>
             </div>
             <div className='reviewSideContainer'>
               <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditReview} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
@@ -161,14 +180,17 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
           :
           <div className={'reviewDisplayContainer'}>
             <div className='reviewLine' onClick={onEditreview}>
-              <div className={'reviewText' + scss(theme, [SCSS.TEXT], review.IsCurrentChoise)}> {getDisplayText()}</div>
+              <div className={'reviewTopLine '}>
+                <div className={'reviewRating ' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK], !review.IsCurrentChoise)}> {review.Rating}</div>
+                <div className={'reviewTitle ' + scss(theme, [SCSS.TEXT], !review.IsCurrentChoise)}> {getDisplayText()}</div>
+              </div>
+              {review.Description.trim() !== '' &&
+              <div className={'reviewBottomLine '}>
+                <div className={'reviewDesc g-txt-fade '}> {review.Description}</div>
+              </div>}
             </div>
             {!isEditingreview &&
-              (isSavingIsChecked?
-                <Loading IsBlack={theme==='white'}></Loading>
-                :
-                (review.IsCurrentChoise && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsCurrentChoise()}} src={process.env.PUBLIC_URL + '/review.png'}/>)
-              )
+              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)onChangeIsCurrentChoise()}} src={process.env.PUBLIC_URL + '/review.png'} isSelected={review.IsCurrentChoise} fadeWhenNotSelected isLoading={isSavingIsChecked}/>
             }
           </div>
         )

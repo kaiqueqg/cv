@@ -26,6 +26,7 @@ import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 import { parse } from "path";
 import { shouldBeBlack } from "../../../helper";
 import Button, { ButtonColor } from "../../../button/button";
+import { reviewNew, ReviewView } from "./review-view/review-view";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -384,6 +385,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         break;
       case ItemType.House:
         typeItem = {...baseItem, ...houseNew()};
+        break;
+      case ItemType.Review:
+        typeItem = {...baseItem, ...reviewNew()};
         break;
       default:
         break;
@@ -1006,6 +1010,19 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         itemTintColor={getTintColor}
         isLoadingBlack={shouldBeBlack(objective.Theme)}></HouseView>
     }
+    else if(item.Type === ItemType.Review){
+      rtnItem = <ReviewView 
+        key={item.ItemId}
+        theme={Theme}
+        review={item as Review}
+        isSelecting={isSelecting}
+        isSelected={isSelected}
+        isDisabled={isMultiSelectMenuOpen || isSelectingPastePos}
+        putItemsInDisplay={putItemsInDisplay}
+        removeItemsInDisplay={removeItemsInDisplay}
+        itemTintColor={getTintColor}
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+    }
     else{
       rtnItem = <div key={'cantrender'}>Can't render</div>
     }
@@ -1042,6 +1059,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       let shouldAddExercise = true;
       let shouldAddMedicine = true;
       let shouldAddHouse = true;
+      let shouldAddReview = true;
       let shouldAddIsInSearch = true;
 
       if(itemSearchToShow.length && !itemSearchToShow.includes(current.ItemId)) shouldAddIsInSearch = false;
@@ -1065,7 +1083,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         if(current.Type === ItemType.Exercise && !objective.IsShowingCheckedExercise) shouldAddExercise = !(current as Exercise).IsDone;
         if(current.Type === ItemType.Medicine && !objective.IsShowingCheckedMedicine) shouldAddMedicine = !(current as Medicine).IsChecked;
         if(current.Type === ItemType.House && !objective.IsShowingCheckedStep) shouldAddHouse = !(current as House).WasContacted;
-        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse && shouldAddIsInSearch){
+        if(current.Type === ItemType.Review && !objective.IsShowingCheckedStep) shouldAddReview = (current as Review).IsCurrentChoise;
+        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse && shouldAddReview && shouldAddIsInSearch){
           if(isAfterDivider && !objective.IsShowingCheckedStep)
             partialItems.push(current);
           else
@@ -1311,7 +1330,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         onClick={orderItemsAtoZ}
         src={process.env.PUBLIC_URL + '/atoz' + getTintColor(Theme) + '.png'}
         isLoading={isLoadingShorting}
-        badgeText={shortingPartialInfo}
+        // badgeText={shortingPartialInfo}
         confirm
         disable={items.length < 2}
         disableSrc={process.env.PUBLIC_URL + '/atoz-grey.png'}
