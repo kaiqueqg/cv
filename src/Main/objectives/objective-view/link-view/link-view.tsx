@@ -142,7 +142,8 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
                 value={newTitle}
                 onChange={handleTitleInputChange}
                 onKeyDown={handleKeyDown} 
-                placeholder='Title'>
+                placeholder='Title'
+                spellCheck>
               </input>
               <input 
                 className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}

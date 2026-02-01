@@ -9,6 +9,7 @@ import { useLogContext } from "../../../../contexts/log-context";
 import PressImage from "../../../../press-image/press-image";
 import { useRequestContext } from "../../../../contexts/request-context";
 import { SCSS, useThemeContext } from "../../../../contexts/theme-context";
+import Button, { ButtonColor } from "../../../../button/button";
 
 export function stepNew(){
   return {
@@ -179,17 +180,11 @@ export const StepView: React.FC<StepViewProps> = (props) => {
 
   const getAutodestroyView = () => {
     return(
-      <div className={'stepAutoDestroyContainer ' + scss(theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK, SCSS.TEXT], !newAutoDestroy)} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}}>
-        {/* <PressImage 
-          isBlack={props.isLoadingBlack}
-          onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} 
-          src={
-            process.env.PUBLIC_URL + (newAutoDestroy?('/explode'+itemTintColor(theme)+'.png'):'/explode-grey.png')
-          }/> */}
-        When you click on 
-        <PressImage isLoadingBlack={props.isLoadingBlack}onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} src={process.env.PUBLIC_URL + '/step'+itemTintColor(theme)+'.png'}></PressImage>
-        should delete it? {newAutoDestroy? 'Yes':'No '}
-      </div>
+      <Button color={ButtonColor.TRANSPARENT} onClick={() => {setNewAutoDestroy(!newAutoDestroy)}} isSelected={newAutoDestroy}>
+        {newAutoDestroy? 'Delete after done.':'Check after done.'}
+        {/* <img className={'inputImage'} src={process.env.PUBLIC_URL + '/step'+itemTintColor(theme)+'.png'}></img> */}
+        {/* should delete it? {newAutoDestroy? 'Yes':'No '} */}
+      </Button>
     )
   }
 
@@ -213,7 +208,9 @@ export const StepView: React.FC<StepViewProps> = (props) => {
                 placeholder='Step text'
                 value={newTitle}
                 onChange={handleTextInputChange}
-                onKeyDown={handleKeyDown} autoFocus></input>
+                onKeyDown={handleKeyDown}
+                autoFocus
+                spellCheck></input>
               <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
               <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} isLoadingBlack={props.isLoadingBlack} rawImage/>
             </div>
@@ -230,7 +227,6 @@ export const StepView: React.FC<StepViewProps> = (props) => {
               <PressImage isSelected={step.Importance===StepImportance.InProgress} isLoadingBlack={props.isLoadingBlack} onClick={() => {if(!isDisabled)doneEdit(StepImportance.InProgress);}} src={process.env.PUBLIC_URL + '/inprogress'+itemTintColor(theme)+'.png'}/>
             </div>
             {getAutodestroyView()}
-
           </div>
           :
           <>

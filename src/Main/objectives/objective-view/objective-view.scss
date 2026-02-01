@@ -136,7 +136,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  // width: 100%;
+  width: 100%;
   min-height: 39px;
   margin: 0px 5px;
 
@@ -240,13 +240,7 @@
     flex-direction: row;
   }
 
-  @if($bor) {
-    border-width: 1px;
-    border-style: solid;
-    border-color: red;
-    border-radius: 5px;
-  }
-  
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }
 
 .objectiveMultiSelectContainer{
@@ -360,7 +354,7 @@
   
   @media(min-width: 700px){
     justify-content: end;
-    flex-wrap: nowrap;
+    // flex-wrap: nowrap;
   }
 }
 

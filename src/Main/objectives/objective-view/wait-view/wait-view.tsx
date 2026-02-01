@@ -104,7 +104,7 @@ export const WaitView: React.FC<WaitViewProps> = (props) => {
               placeholder='Wait text'
               value={newTitle}
               onChange={handleTextInputChange}
-              onKeyDown={handleKeyDown} autoFocus></input>
+              onKeyDown={handleKeyDown} autoFocus spellCheck></input>
             <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
             <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
           </div>

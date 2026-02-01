@@ -2,7 +2,8 @@
 
 // $bor: true;
 
-$size: 20px;
+$sizeSmall: 20px;
+$size: 25px;
 $sizeBig: 50px;
 $sizeBigger: 55px;
 
@@ -18,7 +19,7 @@ $sizeBigger: 55px;
   font-weight: bolder;
 
   border-radius: 5px;
-  border-width: 1px ;
+  border-width: 1px;
   border-style: solid;
   border-color: $black;
 
@@ -36,6 +37,18 @@ $sizeBigger: 55px;
 
   @if($bor) { border: 1px solid rgb(8, 0, 255); border-radius: 5px; }
 }
+
+.button-base-small{
+  font-size: 1em;
+  padding: 2px 5px;
+}
+
+.button-base-smaller{
+  font-size: 0.7em;
+  padding: 2px 5px;
+  margin: 2px;
+}
+
 .button-base:active{ 
   transform: translateY(2px) translateX(2px);
   box-shadow: black 3px 3px 3px 1px inset;
@@ -102,6 +115,9 @@ $sizeBigger: 55px;
   .button-neutral{background-color: $grey-dark; color: $beige;}
   .button-neutral-selected{background-color: $white; color: $black;}
 
+  .button-transparent{background-color: rgba(255, 255, 255, 0.11); color: $black;}
+  .button-transparent-selected{background-color: rgba(0, 0, 0, 0.11); color: $black;}
+
   .button-disabled{background-color: $grey; color: $grey-dark;}
   .button-disabled:active{background-color: $red;}
 }
@@ -124,6 +140,9 @@ $sizeBigger: 55px;
   
   .button-neutral{background-color: $grey-light-light; color: $black;}
   .button-neutral-selected{background-color: $white; color: $black;}
+
+  .button-transparent{background-color: rgba(255, 255, 255, 0.11); color: $black;}
+  .button-transparent-selected{background-color: rgba(0, 0, 0, 0.11); color: $black;}
   
   .button-disabled{background-color: $grey; color: $grey-dark;}
   .button-disabled:active{background-color: $red;}

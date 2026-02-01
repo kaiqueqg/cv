@@ -103,7 +103,9 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
           type='text'
           value={newTag}
           onChange={handleInputChange}
-          onKeyDown={handleKeyDown} autoFocus>
+          onKeyDown={handleKeyDown}
+          autoFocus
+          spellCheck>
         </input>
         <PressImage onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} rawImage/>
         <PressImage onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'} rawImage/>

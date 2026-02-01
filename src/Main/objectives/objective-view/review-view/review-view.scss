@@ -1,0 +1,73 @@
+@import '../../../../global.scss';
+
+.medicineContainer{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
+
+  width: 100%;
+  min-height: 40px;
+  margin-bottom: 2px;
+
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.medicineDisplayContainer{
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.medicineLine{
+  display: flex;
+  width: 100%;
+  min-height: 35px;
+}
+
+.medicineText{
+  display: flex;
+  align-items: center;
+  padding: 0px 5px 0px 10px;
+}
+
+.inputsContainer{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.medicineCenterContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.medicineSideContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 10%;
+  margin: 0px 2px;
+}
+
+.medicineImage{
+  cursor: pointer;
+  max-width: 35px;
+  max-height: 35px;
+  padding: 7px;
+}
+
+.medicineImage:hover{
+  padding: 4px;
+}

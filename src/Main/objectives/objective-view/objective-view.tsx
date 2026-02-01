@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House, MultiSelectType, MultSelectAction, isCheckableItem } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House, MultiSelectType, MultSelectAction, isCheckableItem, Review } from "../../../TypesObjectives";
 import Loading from "../../../loading/loading";
 import TagsView from "./tags-view/tags-view";
 import { useLogContext } from "../../../contexts/log-context";
@@ -25,6 +25,7 @@ import { MessageType } from "../../../Types";
 import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 import { parse } from "path";
 import { shouldBeBlack } from "../../../helper";
+import Button, { ButtonColor } from "../../../button/button";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -49,6 +50,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const [itemSearchToShow, setItemsSearchToShow] = useState<string[]>([]);
   const [newTitle, setNewTitle] = useState<string>(props.objective.Title);
   // const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
+  const [failDownload, setFailDownload] = useState<boolean>(false);
 
   const [isEditingTitle, setIsEditingTitle] = useState<boolean>(false);
 
@@ -102,16 +104,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(objective.IsShowing) {
       downloadItemList();
     }
-
-    // const handleResize = () => {
-    //   setIsBelow700px(window.innerWidth < 700);
-    // };
-
-    
-    // window.addEventListener('resize', handleResize);
-    // return () => {
-    //   window.removeEventListener('resize', handleResize);
-    // };
   }, []);
 
   useEffect(() => {
@@ -140,6 +132,10 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       if(data){
         const sorted = data.sort((a: Item, b: Item) => a.Pos-b.Pos);
         setItems(sorted);
+        setFailDownload(false);
+      }
+      else{
+        setFailDownload(true);
       }
     } 
     catch (err) {
@@ -346,7 +342,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const choseNewItemToAdd = async (type: ItemType, pos?:number, amount?: number) => {
     if(!isAddingNewItemLocked) setIsAddingNewItemMenuOpen(false);
 
-    const baseItem:Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length, '');
+    const baseItem: Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length, '');
     let typeItem:any = {};
 
     switch (type) {
@@ -1086,7 +1082,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
     let rtn: React.ReactNode[] = [];
     if(isMultiSelectMenuOpen && isSelectingPastePos) {
-      const fakeItem = {ItemId:'---', LastModified:'', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---', Title: 'fake'};
+      const fakeItem = {ItemId:'---', LastModified:'', CreatedAt: '', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---', Title: 'fake'};
       const a = <ItemFakeView 
       key={'asd'}
       theme={Theme}
@@ -1204,6 +1200,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
         <div className={'objectiveNewItemAmount' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
         <div className='objectiveNewItemImages'>
+          <PressImage src={process.env.PUBLIC_URL + '/review' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Review)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/home' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.House)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/link' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Link)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/exercise-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Exercise)}}/>
@@ -1214,7 +1211,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
           <PressImage src={process.env.PUBLIC_URL + '/question-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Question)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/note' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Note)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/step-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Step)}}/>
-          <PressImage src={process.env.PUBLIC_URL + '/image-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Image)}}/>
+          {/* <PressImage src={process.env.PUBLIC_URL + '/image-filled' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Image)}}/> */}
         </div>
       </div>
     )
@@ -1267,12 +1264,12 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return(
       <div className={'objectiveSearchContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
         <input
-          className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' inputAlert':'')}
+          className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' input-simple-base-alert ':'')}
           type='text'
           value={searchText}
           placeholder="search..."
           onChange={handleSearchChange}
-          onKeyDown={handleSearchKeyDown} autoFocus>
+          onKeyDown={handleSearchKeyDown} autoFocus spellCheck>
         </input>
         <PressImage onClick={doSearchText} src={process.env.PUBLIC_URL + '/done' + getTintColor(Theme) + '.png'} rawImage></PressImage>
         <PressImage onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor(Theme) + '.png'} rawImage></PressImage>
@@ -1461,7 +1458,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
                 type='text'
                 value={newTitle}
                 onChange={handleTitleChange}
-                onKeyDown={handleTitleKeyDown} autoFocus></input>
+                onKeyDown={handleTitleKeyDown} autoFocus spellCheck></input>
               <PressImage onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage/>
               <PressImage onClick={doneEdit} src={process.env.PUBLIC_URL + '/done.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage/>
             </>
@@ -1542,11 +1539,18 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       else if(item.Type === ItemType.House){
         if(searchTextIgnoreCase((item as House).Title)) newList.push(item.ItemId);
       }
+      else if(item.Type === ItemType.Review){
+        if(searchTextIgnoreCase((item as Review).Title)) newList.push(item.ItemId);
+      }
       else{
       }
     });
 
-    if(newList.length === 0) setWasNoSearchNoItemFound(true);
+    if(newList.length === 0){
+      popMessage(`None found...`, MessageType.Alert);
+      setWasNoSearchNoItemFound(true);
+    }
+    
     setItemsSearchToShow(newList);
 
   }
@@ -1567,18 +1571,25 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }
   }
 
+  const getErrorItemsMessage = () => {
+    return (
+      <Button color={ButtonColor.NEUTRAL} onClick={downloadItemList} text={'Get items'}/>
+    )
+  }
+
   return (
     <div className={'objContainer' + scss(Theme, [SCSS.OBJ_BG])}>
-      {getPin()}
-      {getTopMenu()}
-      {getObjectiveMenu()}
-      {getMultiSelectMenu()}
-      {getSearchingMenu()}
-      {getNewItemMenu()}
-      {getTagMenu()}
-      {getColorMenu()}
-      {getItemList()}
-      {getHiddenMessage()}
+        {getPin()}
+        {getTopMenu()}
+        {getObjectiveMenu()}
+        {getMultiSelectMenu()}
+        {getSearchingMenu()}
+        {getNewItemMenu()}
+        {getTagMenu()}
+        {getColorMenu()}
+        {getItemList()}
+        {getHiddenMessage()}
+        {failDownload && !isRequestingItems && getErrorItemsMessage()}
     </div>
   );
 })

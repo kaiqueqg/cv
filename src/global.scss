@@ -48,7 +48,6 @@ input[type="number"] {
   box-shadow: black 2px 2px 2px 0px inset;
 
   @media(min-width: 700px){
-    font-size: 25px;
   }
 
   @if($bor) {
@@ -91,6 +90,11 @@ input[type="number"] {
   }
 }
 
+.input-simple-base-alert{
+  border-color: red;
+  color: red
+}
+
 .box-effect{
   box-shadow: darken($blue-darker, 20%) 2px 2px 0 0;
   transform: translateX(-1px) translateY(-1px);
@@ -117,6 +121,7 @@ input[type="number"] {
   .g-txt-fade{color: #a3a3a3;}
 
   .g-img-dark{}
+  .g-img-fade{filter:brightness(30%)}
 
   .input-base{
     color: $beige;
@@ -130,6 +135,11 @@ input[type="number"] {
   .input-simple-base{
     border-color: $beige;
     color: $beige;
+  }
+
+  .input-simple-base-alert{
+    border-color: $red;
+    color: $red;
   }
 
   .global-blue-obj-background{background: linear-gradient(to right, $obj-blue-dark, lighten($obj-blue-dark, 3%));}
@@ -233,6 +243,7 @@ input[type="number"] {
   .g-txt{color: $black;}
   .g-txt-fade{color: #a3a3a3;}
   .g-img-dark{filter:brightness(0%)}
+  .g-img-fade{filter:brightness(70%)}
 
   .input-base{
     color: $black;
@@ -246,6 +257,11 @@ input[type="number"] {
   .input-simple-base{
     border-color: $black;
     color: $black;
+  }
+
+  .input-simple-base-alert{
+    border-color: red;
+    color: red
   }
 
   .global-blue-obj-background{background: linear-gradient(to right, $obj-blue-light, darken($obj-blue-light, 3%));}
@@ -304,14 +320,22 @@ input[type="number"] {
   .global-cyan-item-background{background-color: darken($obj-cyan-light, 10%);}
   .global-white-item-background{background-color: darken($obj-white-light, 10%);}
   .global-pink-item-background{background-color: darken($obj-pink-light, 10%);}
+  
+  .global-blue-item-background-dark{background-color: darken($obj-blue-light, 5%);}
+  .global-red-item-background-dark{background-color: darken($obj-red-light, 5%);}
+  .global-green-item-background-dark{background-color: darken($obj-green-light, 5%);}
+  .global-notheme-item-background-dark{background-color: darken($obj-noTheme-light, 10%);}
+  .global-cyan-item-background-dark{background-color: darken($obj-cyan-light, 5%);}
+  .global-white-item-background-dark{background-color: darken($obj-white-light, 5%);}
+  .global-pink-item-background-dark{background-color: darken($obj-pink-light, 5%);}
 
   .global-blue-input{color: $black;border-color: $black; background-color: $transparent;}
   .global-red-input{color: $black;border-color: $black; background-color: $transparent;}
   .global-green-input{color: $black;border-color: $black; background-color: $transparent;}
   .global-cyan-input{color: $black;border-color: $black; background-color: $transparent;}
   .global-notheme-input{color: $black;border-color: $black; background-color: $transparent;}
-  .global-white-input{color: $beige;border-color: $black; background-color: $transparent;}
-  .global-pink-input{color: $beige;border-color: $black; background-color: $transparent;}
+  .global-white-input{color: $black;border-color: $black; background-color: $transparent;}
+  .global-pink-input{color: $black;border-color: $black; background-color: $transparent;}
 
   .global-blue-input-contrast{color: black;border-color: black;}
   .global-red-input-contrast{color: black;border-color: black;}

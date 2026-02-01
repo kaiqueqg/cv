@@ -160,12 +160,15 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
                 placeholder='Title'
                 value={tempNote.Title}
                 onChange={handleTitleInputChange}
-                onKeyDown={handleTitleKeyDown} autoFocus></input>
+                onKeyDown={handleTitleKeyDown} autoFocus
+                spellCheck
+                ></input>
               <textarea 
                 className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
                 value={tempNote.Text}
                 onChange={handleTextInputChange}
                 onKeyDown={handleTextKeyDown} 
+                spellCheck
                 ></textarea>
             </div>
             <div className='sideTitleContainer'>

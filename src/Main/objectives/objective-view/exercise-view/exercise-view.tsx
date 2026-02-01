@@ -74,6 +74,16 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     cancel: process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png',
   };
 
+  const weekdayByIndex: Weekdays[] = [
+    Weekdays.Sunday,
+    Weekdays.Monday,
+    Weekdays.Tuesday,
+    Weekdays.Wednesday,
+    Weekdays.Thursday,
+    Weekdays.Friday,
+    Weekdays.Saturday,
+  ];
+
   useEffect(()=>{
     const now = new Date();
     const exerciseDate = new Date(exercise.LastDone);
@@ -84,15 +94,13 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
       now.getDay() > exerciseDate.getDay()
     )
 
-    if (exercise.IsDone && needToWorkoutToday && exercise.Weekdays.includes(now.getDay())) {
+    const today: Weekdays = weekdayByIndex[new Date().getDay()];
+    if (exercise.IsDone && needToWorkoutToday && exercise.Weekdays.includes(today)) {
       onChangeDone();
     }
 
     exercise
   }, []);
-
-  // useEffect(() => {
-  // }, [exercise, newExercise]);
 
   const handleTitleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewExercise({...newExercise, Title: event.target.value});
@@ -223,28 +231,19 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     setNewExercise(exercise);
   }
 
-  const getWeekButtonColor = (weekday: Weekdays) => {
-    const isCont = newExercise.Weekdays.includes(weekday);
-    if(isCont){
-      return 'exerciseWeekdaysButton exerciseWeekdaysButtonSelected ' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR]) + scss(theme, [SCSS.OBJ_BG])
-    }
-    else{
-      return 'exerciseWeekdaysButton ' + scss(theme, [SCSS.TEXT]);
-    }
-  }
-
   const getWeekdaysButtons = () => {
+    const size = 'small';
     return(
       <div className={'exerciseWeekdaysContainer'}>
-        <div className={'exerciseWeekdaysButtonAllNone' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR]) + scss(theme, [SCSS.OBJ_BG])} onClick={allWeekdayChange}>All</div>
-        <div className={'exerciseWeekdaysButtonAllNone' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR]) + scss(theme, [SCSS.OBJ_BG])} onClick={noneWeekdayChange}>None</div>
-        <div className={getWeekButtonColor(Weekdays.Monday)} onClick={()=>weekdayChange(Weekdays.Monday)}>Mon</div>
-        <div className={getWeekButtonColor(Weekdays.Tuesday)} onClick={()=>weekdayChange(Weekdays.Tuesday)}>Tue</div>
-        <div className={getWeekButtonColor(Weekdays.Wednesday)} onClick={()=>weekdayChange(Weekdays.Wednesday)}>Wed</div>
-        <div className={getWeekButtonColor(Weekdays.Thursday)} onClick={()=>weekdayChange(Weekdays.Thursday)}>Thu</div>
-        <div className={getWeekButtonColor(Weekdays.Friday)} onClick={()=>weekdayChange(Weekdays.Friday)}>Fri</div>
-        <div className={getWeekButtonColor(Weekdays.Saturday)} onClick={()=>weekdayChange(Weekdays.Saturday)}>Sat</div>
-        <div className={getWeekButtonColor(Weekdays.Sunday)} onClick={()=>weekdayChange(Weekdays.Sunday)}>Sun</div>
+        <Button size={size} color={ButtonColor.NEUTRAL} text="All" onClick={allWeekdayChange}/>
+        <Button size={size} color={ButtonColor.NEUTRAL} text="None" onClick={noneWeekdayChange}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Mon" onClick={()=>weekdayChange(Weekdays.Monday)} isSelected={newExercise.Weekdays.includes(Weekdays.Monday)}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Tue" onClick={()=>weekdayChange(Weekdays.Tuesday)} isSelected={newExercise.Weekdays.includes(Weekdays.Tuesday)}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Wed" onClick={()=>weekdayChange(Weekdays.Wednesday)} isSelected={newExercise.Weekdays.includes(Weekdays.Wednesday)}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Thu" onClick={()=>weekdayChange(Weekdays.Thursday)} isSelected={newExercise.Weekdays.includes(Weekdays.Thursday)}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Fri" onClick={()=>weekdayChange(Weekdays.Friday)} isSelected={newExercise.Weekdays.includes(Weekdays.Friday)}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Sat" onClick={()=>weekdayChange(Weekdays.Saturday)} isSelected={newExercise.Weekdays.includes(Weekdays.Saturday)}/>
+        <Button size={size} color={ButtonColor.TRANSPARENT} text="Sun" onClick={()=>weekdayChange(Weekdays.Sunday)} isSelected={newExercise.Weekdays.includes(Weekdays.Sunday)}/>
       </div>
     )
   }
@@ -278,26 +277,25 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     if(view){
       return (
         <PressImage
-            size={'bigger'}
-            src={bodyImages[bodyImage]}
-            onClick={() => {onEditExercise(); }}
-            isLoadingBlack={props.isLoadingBlack}
-            rawImage
-          />
+          key={bodyImage}
+          src={bodyImages[bodyImage]}
+          onClick={() => {onEditExercise(); }}
+          isLoadingBlack={props.isLoadingBlack}
+          rawImage
+        />
       );
     }
     else{
       return(
-        // <div className={'exerciseBodyImageContainer ' + (isSelectedSaved? scss(theme, [SCSS.OBJ_BG]) + scss(theme, [SCSS.BORDERCOLOR])+' exerciseBodyImageContainerSelected ':'')}>
           <PressImage
-            size={'bigger'}
+            key={bodyImage}
+            size={'big'}
             src={bodyImages[bodyImage]}
             onClick={() => {bodyImageEditButton(bodyImage)}}
             isLoadingBlack={props.isLoadingBlack}
             isSelected={isSelectedSaved}
             rawImage
           />
-        // </div>
       )
     }
   }; 
@@ -319,17 +317,9 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
     if(exercise.Title !== ''){
       if(exercise.Reps > 1 || exercise.Series > 1) title += exercise.Series + 'x' + exercise.Reps + ' ';
       title += exercise.Title;
-      if(exercise.MaxWeight) title += ' (Max: '+exercise.MaxWeight+')';
-      title += exercise.Weekdays.includes(Weekdays.Monday)?' Mo':'';
-      title += exercise.Weekdays.includes(Weekdays.Tuesday)?' Tu':'';
-      title += exercise.Weekdays.includes(Weekdays.Wednesday)?' We':'';
-      title += exercise.Weekdays.includes(Weekdays.Thursday)?' Th':'';
-      title += exercise.Weekdays.includes(Weekdays.Friday)?' Fr':'';
-      title += exercise.Weekdays.includes(Weekdays.Saturday)?' Sa':'';
-      title += exercise.Weekdays.includes(Weekdays.Sunday)?' Su':'';
     }
     
-    return <div className={'exerciseText' + scss(theme, [SCSS.TEXT], exercise.IsDone)}>{title}</div>;
+    return <div className={'exercise-text' + scss(theme, [SCSS.TEXT], exercise.IsDone)}>{title}</div>;
   }
 
   return (
@@ -354,7 +344,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 onChange={handleTitleInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Title"
-                autoFocus></input>
+                autoFocus spellCheck></input>
               <input 
                 className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'
@@ -382,7 +372,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
                 value={newExercise.Description}
                 onChange={handleDescriptionInputChange}
                 onKeyDown={handleKeyDown} 
-                placeholder="Description"></input>
+                placeholder="Description" spellCheck></input>
               <div className={'exerciseHeaderText ' + scss(theme, [SCSS.TEXT])}>WEEKDAYS</div>
               {getWeekdaysButtons()}
               <div className={'exerciseHeaderText ' + scss(theme, [SCSS.TEXT])}>BODY PART</div>
@@ -424,12 +414,19 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
           </div>
           :
           <div className='exerciseDisplayContainer'>
-            <div className='exerciseLine' onClick={onEditExercise}>
-              <div className={'exerciseMainLine' + scss(theme, [SCSS.TEXT] ,exercise.IsDone)}>
+            <div className='exercise-line' onClick={onEditExercise}>
+              <div className={'exercise-main-line' + scss(theme, [SCSS.TEXT] ,exercise.IsDone)}>
                 {getBodyImages()}
                 {getTitle()}
+                {exercise.MaxWeight && <div className={"exercise-max-item " + scss(theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK, SCSS.TEXT])}>{exercise.MaxWeight}</div>}
               </div>
-              {exercise.Description && <div className={'exerciseDescriptionText'}> {exercise.Description}</div>}
+              {exercise.Weekdays.length > 0 && 
+              <div className='exercise-weekday-line'>
+                {exercise.Weekdays.map((day) =>{
+                  return <div className={"exercise-weekday-item " + scss(theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK, SCSS.TEXT])}>{day.slice(0, 2)}</div>
+                })}
+              </div>}
+              {exercise.Description && <div className={'exercise-description-text'}> {exercise.Description}</div>}
             </div>
             {!isEditingExercise &&
               (isSavingIsDone?

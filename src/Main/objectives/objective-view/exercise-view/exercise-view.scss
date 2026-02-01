@@ -27,7 +27,7 @@ $bor: false;
   align-items: center;
 }
 
-.exerciseLine{
+.exercise-line{
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -35,22 +35,68 @@ $bor: false;
   min-height: 35px;
 }
 
-.exerciseMainLine{
+.exercise-main-line{
   display: flex;
   align-items: center;
 }
 
-.exerciseText{
+.exercise-weekday-line{
+  display: flex;
+  vertical-align: middle;
+
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  padding: 2px 5px;
+}
+
+.exercise-max-item{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  padding: 2px 5px;
+  margin: 2px 2px 2px 5px;
+
+  font-size: 0.8em;
+}
+
+.exercise-weekday-item{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  padding: 2px 5px;
+  margin: 2px;
+
+  font-size: 0.8em;
+}
+
+.exercise-text{
   display: flex;
   align-items: center;
   margin-left: 10px;
+
+  width: 100%;
 }
 
-.exerciseDescriptionText{
+.exercise-description-text{
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin: 0px 0px 2px 10px;
+  margin: 5px 0px 10px 10px;
 }
 
 .inputsContainer{
@@ -136,35 +182,6 @@ $bor: false;
     border-radius: 5px;
   }
   
-}
-
-.exerciseWeekdaysButton{
-  cursor: pointer;
-  margin: 5px 10px;
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: bold;
-  
-  border-width: 1px;
-  border-color: $transparent;
-  border-style: solid;
-  border-radius: 5px;
-}
-
-.exerciseWeekdaysButton:hover{
-  border-color: $black;
-}
-
-.exerciseWeekdaysButtonSelected{
-  cursor: pointer;
-  margin: 5px 10px;
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: bold;
-
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
 }
 
 .exerciseWeekdaysButtonAllNone{

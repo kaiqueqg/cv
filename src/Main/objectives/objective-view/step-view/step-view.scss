@@ -30,6 +30,7 @@
   align-items: center;
   flex-direction: column;
   width: 100%;
+  padding-bottom: 5px;
 
   @if($bor){
     border-width: 1px;
@@ -113,11 +114,11 @@
 
 .inputImage{
   cursor: pointer;
-  max-width: 35px;
-  max-height: 35px;
+  max-width: 30px;
+  max-height: 330px;
   padding: 7px;
 }
 
-.inputImage:hover{
-  padding: 4px;
-}
+// .inputImage:hover{
+//   padding: 4px;
+// }

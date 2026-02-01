@@ -161,7 +161,8 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 onChange={handleTitleInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Title"
-                autoFocus></input>
+                autoFocus
+                spellCheck></input>
               <input 
                 className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'
@@ -183,7 +184,8 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
                 value={newMedicine.Purpose?? ''}
                 onChange={handlePurposeInputChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Purpose"></input>
+                placeholder="Purpose"
+                spellCheck></input>
             </div>
             <div className='medicineSideContainer'>
               <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditMedicine} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>

@@ -7,7 +7,7 @@ $bor: false;
   position: relative;
   display: flex;
   min-height: 44px;
-  margin: 2px;
+  margin: 0px 0px 5px 0px;
   padding: 3px 8px 3px 8px;
   align-items: center;
   width: 100%;
@@ -16,11 +16,7 @@ $bor: false;
   border-style: solid;
   border-radius: 5px;
 
-  @if($bor){
-    border-width: 1px;
-    border-color: rgb(255, 0, 0);
-    border-style: solid;
-  }
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }
 
 .objectiveClosedContainer:hover{
@@ -32,7 +28,7 @@ $bor: false;
   top: 0;
   left: 0;
   transform: translate(-30%, -50%);
-  z-index: 9999; /* ensures it's on top of other elements */
+  z-index: 9999;
   width: 15px;
   height: auto;
 }
@@ -47,11 +43,7 @@ $bor: false;
   text-overflow: ellipsis;
   width: 100%;
 
-  @if($bor){
-    border-width: 1px;
-    border-color: rgb(9, 255, 0);
-    border-style: solid;
-  }
+  @if($bor) { border: 1px solid green; border-radius: 5px; }
 }
 
 .objectiveClosedImage{

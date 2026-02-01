@@ -14,6 +14,7 @@ export interface Objective {
   IsArchived: boolean,
   IsShowing: boolean,
   LastModified: string,
+  CreatedAt: string,
   Pos: number,
   IsShowingCheckedGrocery?: boolean,
   IsShowingCheckedStep?: boolean,
@@ -22,7 +23,7 @@ export interface Objective {
   Tags: string[],
 }
 
-export const ItemNew = (userId: string, objectiveId: string, itemId: string, type: ItemType, pos: number, title: string) => {
+export const ItemNew = (userId: string, objectiveId: string, itemId: string, type: ItemType, pos: number, title: string): Item => {
   return({
     UserIdObjectiveId: userId + objectiveId,
     ItemId: itemId,
@@ -30,6 +31,7 @@ export const ItemNew = (userId: string, objectiveId: string, itemId: string, typ
     Type: type,
     LastModified: (new Date()).toISOString(),
     Title: title,
+    CreatedAt: (new Date()).toISOString(),
   });
 }
 
@@ -72,7 +74,8 @@ export enum ItemType {
   Link = 'Link',
   ItemFake = 'ItemFake',
   Image = 'Image',
-  House = 'House'
+  House = 'House',
+  Review = 'Review',
 }
 
 export const isCheckableItem = (type: ItemType): boolean => {
@@ -92,6 +95,7 @@ export interface Item {
   Pos: number,
   Title: string,
   LastModified: string,
+  CreatedAt: string,
 }
 
 export enum StepImportance {
@@ -147,7 +151,7 @@ export interface Medicine extends Item{
   Components?: string[],
 }
 
-export enum Weekdays{ Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday }
+export enum Weekdays{ Sunday='Sunday', Monday='Monday', Tuesday='Tuesday', Wednesday='Wednesday', Thursday='Thursday', Friday='Friday', Saturday='Saturday' }
 
 export interface Exercise extends Item{
   IsDone: boolean,
@@ -182,6 +186,12 @@ export interface House extends Item{
   WasContacted: boolean,
   Details: string,
   Attention: string,
+}
+
+export interface Review extends Item{
+  Rating: string,
+  Description: string,
+  IsCurrentChoise: boolean,
 }
 
 export interface DeviceData{

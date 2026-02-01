@@ -165,7 +165,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
                 onChange={handleTitleInputChange}
                 onKeyDown={handleKeyDown} 
                 placeholder="Title"
-                autoFocus></input>
+                autoFocus spellCheck></input>
               <input 
                 className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
                 type='number'

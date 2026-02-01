@@ -202,7 +202,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             onChange={handleTitleInputChange}
             onKeyDown={handleKeyDown} 
             placeholder="Title"
-            autoFocus></input>
+            autoFocus spellCheck></input>
           <input 
             className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
             type='text'
@@ -242,6 +242,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             onChange={handleAddressInputChange}
             onKeyDown={handleKeyDown} 
             placeholder="Address"
+            spellCheck
             ></input>
           <input 
             className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
@@ -257,6 +258,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             onChange={handleDetailsInputChange}
             onKeyDown={handleLongTextKeyDown} 
             placeholder='Details'
+            spellCheck
             ></textarea>
           <textarea 
             className={'houseTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
@@ -264,6 +266,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
             onChange={handleAttentionInputChange}
             onKeyDown={handleLongTextKeyDown} 
             placeholder='Attention'
+            spellCheck
             ></textarea>
         </div>
         <div className='houseSideContainer'>

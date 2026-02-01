@@ -30,6 +30,8 @@ export interface PressImageProps{
   isSelected?: boolean,
   rawImage?: boolean,
 
+  fadeWhenNotSelected?: boolean,
+
   size?: 'big'|'bigger',
 
   children?: React.ReactNode;
@@ -72,8 +74,8 @@ const PressImage = (props: PressImageProps) => {
     const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
     let classnameImageContainer = 'press-image-container ' + (props.isSelected && ' press-image-container-selected ');
     if(props.size){
-      if(props.size === 'big') classnameImageContainer += 'press-image-container-big ';
-      if(props.size === 'bigger') classnameImageContainer += 'press-image-container-bigger ';
+      if(props.size === 'big') classnameImageContainer += ' press-image-container-big ';
+      if(props.size === 'bigger') classnameImageContainer += ' press-image-container-bigger ';
     }
 
     return(
@@ -82,7 +84,7 @@ const PressImage = (props: PressImageProps) => {
         className={classnameImageContainer + (props.hideHoverEffect?'':' press-image-container-hover ')}
         onClick={normalTouchEnd}
         onContextMenu={contextMenuClick}>
-        {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ')} src={imageSrc}></img>}
+        {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ') + ((props.fadeWhenNotSelected && !props.isSelected)?' g-img-fade ':'')} src={imageSrc}></img>}
         {props.badgeText && props.badgeText !== '' && <div className={'press-image-text'}>{props.badgeText}</div>}
         {props.children}
       </div>
@@ -91,7 +93,7 @@ const PressImage = (props: PressImageProps) => {
 
   const getConfirmingImage = () => {
     return(
-      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect?' press-image-container-hover':'')} onClick={props.onClick}>
+      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect ?' press-image-container-hover':'')} onClick={props.onClick}>
         <img className={'press-image-image '} src={process.env.PUBLIC_URL + '/done.png'}></img>
       </div>
     )

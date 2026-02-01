@@ -266,7 +266,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
                   placeholder='Title'
                   value={newImage.Title}
                   onChange={handleTextInputChange}
-                  onKeyDown={handleKeyDown} autoFocus>
+                  onKeyDown={handleKeyDown} autoFocus spellCheck>
                 </input>
                 {imageFile && <img className='inputImage' onClick={saveImage} src={process.env.PUBLIC_URL + '/save'+itemTintColor(theme)+'.png'}></img>}
                 {(image.Name !== '') && <img className='inputImage' onClick={downloadImage} src={process.env.PUBLIC_URL + '/download'+itemTintColor(theme)+'.png'}></img>}

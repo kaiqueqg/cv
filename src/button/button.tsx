@@ -4,8 +4,9 @@ import { SCSS, useThemeContext } from '../contexts/theme-context';
 import { isDisabled } from '@testing-library/user-event/dist/utils';
 import { useLogContext } from '../contexts/log-context';
 import { MessageType } from '../Types';
+import Loading from '../loading/loading';
 interface ButtonProps {
-  onClick?: () => void,
+  onClick: () => void,
   color: ButtonColor,
   text?: string,
   isSelected?: boolean,
@@ -13,16 +14,21 @@ interface ButtonProps {
   disabledMessage?: string,
 
   src?: string,
+  children?: any,
 
   absolute?: boolean,
   absX?: number,
   absY?: number,
+
+  isLoading?: boolean,
+
+  size?: 'smaller' | 'small' | 'big',
 }
 
-export enum ButtonColor { BLUE, RED, GREEN, YELLOW, WHITE, NEUTRAL }
+export enum ButtonColor { BLUE, RED, GREEN, YELLOW, WHITE, NEUTRAL, TRANSPARENT }
 
 const Button: React.FC<ButtonProps> = ({
-    onClick,disabledMessage, text, isSelected, isDisabled, color, src, absX, absY, absolute,
+    onClick,disabledMessage, text, isSelected, isDisabled, color, src, absX, absY, absolute, children, isLoading, size,
   }) => {
   const { scss } = useThemeContext();
   const { popMessage } = useLogContext();
@@ -31,7 +37,7 @@ const Button: React.FC<ButtonProps> = ({
   let count = 0;
 
   const getTheme = () => {
-    let rtn = 'button-base ' +( isSelected?'button-base-selected ':' ');
+    let rtn = 'button-base ' + (size?`button-base-${size} `:'') + ( isSelected?'button-base-selected ':' ');
     if(isDisabled || !onClick) return ' button-disabled ';
 
     switch(color){
@@ -52,6 +58,9 @@ const Button: React.FC<ButtonProps> = ({
         break;
       case ButtonColor.NEUTRAL:
         rtn += ' button-neutral' +( isSelected?'-selected ':' ');
+        break;
+      case ButtonColor.TRANSPARENT:
+        rtn += ' button-transparent' +( isSelected?'-selected ':' ');
         break;
     }
 
@@ -80,7 +89,11 @@ const Button: React.FC<ButtonProps> = ({
   }
 
   const getImageColor = () => {
-    if(color === ButtonColor.WHITE) return ' button-dark ';
+    if(color === ButtonColor.WHITE || 
+      color === ButtonColor.RED ||
+      color === ButtonColor.GREEN || 
+      color === ButtonColor.YELLOW
+    ) return ' button-dark ';
   }
 
   return (
@@ -95,6 +108,7 @@ const Button: React.FC<ButtonProps> = ({
         </div>
       }
       <div className={' button-text '}>
+        {children}
         {text}
       </div>
     </div>

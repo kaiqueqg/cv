@@ -138,7 +138,8 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 onChange={handleStatementInputChange}
                 onKeyDown={handleStatementKeyDown} 
                 placeholder='Statement' 
-                autoFocus={newStatement.trim() === ''}>
+                autoFocus={newStatement.trim() === ''}
+                spellCheck>
               </input>
               <input 
                 className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
@@ -147,7 +148,8 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
                 onChange={handleAnswerInputChange}
                 onKeyDown={handleAnswerKeyDown} 
                 placeholder="Answer"
-                autoFocus={newAnswer.trim() === ''}>
+                autoFocus={newAnswer.trim() === ''}
+                spellCheck>
               </input>
             </div>
             <div className='questionSideContainer'>

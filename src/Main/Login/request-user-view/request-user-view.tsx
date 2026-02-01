@@ -122,7 +122,7 @@ const RequestUserView: React.FC<RequestUserViewProps> = ({setIsLogged, }) => {
           {typeAnPasswordCreate && <span className="alert-message concert-one-regular">Type an password.</span>}
       </div>
       <div className="login-row">
-          <input className="input-base"  type="text" onChange={changeReason} onKeyUp={reasonEnter} placeholder="Reason" aria-label="Server"></input>
+          <input className="input-base"  type="text" onChange={changeReason} onKeyUp={reasonEnter} placeholder="Reason" aria-label="Server" spellCheck></input>
           {typeReasonCreate ?
           <span className="alert-message concert-one-regular">Write something, otherwise I'll refuse."</span>
           :

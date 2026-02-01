@@ -226,7 +226,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
                 type='text'
                 value={newTitle}
                 onChange={onTitleInputChange}
-                onKeyDown={onTitleKeyDown} autoFocus></input>
+                onKeyDown={onTitleKeyDown} autoFocus spellCheck></input>
               <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEditTitle} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
               <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEditTitle} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
             </>
@@ -245,6 +245,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       {isAddingNewItem && !isDisabled &&
         <div className={'dividerNewItemContainer '}>
           <div className={'objectiveNewItemAmount' + scss(theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+          <PressImage src={process.env.PUBLIC_URL + '/review' + itemTintColor(theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Review)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.House, divider.Pos);}}/>
           <PressImage src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Link, divider.Pos);}}/>
           <PressImage src={process.env.PUBLIC_URL + '/exercise-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Exercise, divider.Pos);}}/>
@@ -255,7 +256,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
           <PressImage src={process.env.PUBLIC_URL + '/question-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Question, divider.Pos);}}/>
           <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Note, divider.Pos);}}/>
           <PressImage src={process.env.PUBLIC_URL + '/step-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Step, divider.Pos);}}/>
-          <PressImage src={process.env.PUBLIC_URL + '/image-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Image, divider.Pos);}}/>
+          {/* <PressImage src={process.env.PUBLIC_URL + '/image-filled' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Image, divider.Pos);}}/> */}
         </div>
       }
     </div>

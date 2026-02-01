@@ -133,7 +133,8 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
                 value={newTitle}
                 onChange={handleTitleInputChange}
                 onKeyDown={handleTitleKeyDown} 
-                placeholder='Title'>
+                placeholder='Title'
+                spellCheck>
               </input>
               <input 
                 className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
