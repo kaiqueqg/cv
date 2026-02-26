@@ -27,6 +27,13 @@ input[type="number"] {
 
 }
 
+.no-select{
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 .input-base{
   display: flex;
   justify-content: baseline;
@@ -379,21 +386,21 @@ input[type="number"] {
 .global-white-bordercolor-fade{border-color: $transparent;}
 .global-pink-bordercolor-fade{border-color: $transparent;}
 
-.global-blue-bordercolor-selecting{border-color: rgb(40, 200, 240);}//ok
+.global-blue-bordercolor-selecting{border-color: $red;}//ok
 .global-red-bordercolor-selecting{border-color: $red;}
-.global-green-bordercolor-selecting{border-color: yellowgreen;}//ok
-.global-cyan-bordercolor-selecting{border-color: rgb(0, 251, 255);}
-.global-notheme-bordercolor-selecting{border-color: beige;}//ok
-.global-white-bordercolor-selecting{border-color: red;}
-.global-pink-bordercolor-selecting{border-color: red;}
+.global-green-bordercolor-selecting{border-color: $red;}//ok
+.global-cyan-bordercolor-selecting{border-color: $red;}
+.global-notheme-bordercolor-selecting{border-color: $red;}//ok
+.global-white-bordercolor-selecting{border-color: $red;}
+.global-pink-bordercolor-selecting{border-color: $red;}
 
-.global-blue-bordercolor-selected{border-color: rgb(40, 200, 240); border-style: dashed;}//ok
+.global-blue-bordercolor-selected{border-color: $red; border-style: dashed;}//ok
 .global-red-bordercolor-selected{border-color: $red; border-style: dashed;}
-.global-green-bordercolor-selected{border-color: yellowgreen; border-style: dashed;}//ok
-.global-cyan-bordercolor-selected{border-color: rgb(0, 251, 255); border-style: dashed;}
-.global-notheme-bordercolor-selected{border-color: beige; border-style: dashed;}//ok
-.global-white-bordercolor-selected{border-color: red; border-style: dashed;}
-.global-pink-bordercolor-selected{border-color: red; border-style: dashed;}
+.global-green-bordercolor-selected{border-color: $red; border-style: dashed;}//ok
+.global-cyan-bordercolor-selected{border-color: $red; border-style: dashed;}
+.global-notheme-bordercolor-selected{border-color: $red; border-style: dashed;}//ok
+.global-white-bordercolor-selected{border-color: $red; border-style: dashed;}
+.global-pink-bordercolor-selected{border-color: $red; border-style: dashed;}
 
 .global-blue-bordercolor-alert{border-color: $red;}
 .global-red-bordercolor-alert{border-color: $red;}

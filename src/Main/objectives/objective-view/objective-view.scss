@@ -13,7 +13,7 @@
   flex-direction: column;
   
   width: 100%;
-  max-width: 500px;
+  // max-width: 500px;
   margin: 3px;
   padding: 5px;
 
@@ -64,7 +64,7 @@
   color: beige;
 
   width: 100%;
-  min-width: 100px;
+  // min-width: 100px;
 
   @if($bor) { border: 1px solid rgb(125, 255, 125); border-radius: 5px; }
 }
@@ -79,7 +79,7 @@
   width: 100%;
   
   @media(min-width: 700px){
-    min-width: 400px;
+    // min-width: 400px;
     flex-wrap: nowrap;
   }
 
@@ -103,14 +103,10 @@
   border-radius: 5px;
   
   @media(min-width: 700px){
-    flex-wrap: nowrap;
+    // flex-wrap: nowrap;
   }
 
-  @if($bor) {
-    border-width: 1px;
-    border-color: green;
-    border-style: solid;
-  }
+  @if($bor) { border: 1px solid rgb(30, 255, 0); border-radius: 5px; }
 }
 
 .objTopMenuBellow700px{

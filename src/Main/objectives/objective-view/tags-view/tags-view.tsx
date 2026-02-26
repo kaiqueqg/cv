@@ -37,17 +37,21 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
     setNewTag(event.target.value);
   }
 
+  const insertEditTags = () => {
+    if(newTag.trim() !== '' && !newTags.includes(newTag.trim())){
+        setNewTags((prevTags) => [...prevTags, newTag.trim()]);
+      }
+      setNewTag('');
+  }
+
   const handleKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter' && event.shiftKey) {
       doneEditTags(newTags);
     } 
     else if (event.key === 'Enter'){
-      if(newTag.trim() !== '' && !newTags.includes(newTag.trim())){
-        setNewTags((prevTags) => [...prevTags, newTag.trim()]);
-      }
-      setNewTag('');
+      insertEditTags();
     } else if (event.key === 'Escape') {
-        cancelEditTags();
+      cancelEditTags();
     }
   }
 
@@ -107,6 +111,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
           autoFocus
           spellCheck>
         </input>
+        <PressImage onClick={insertEditTags} src={process.env.PUBLIC_URL + '/add' + getTintColor() + '.png'}/>
         <PressImage onClick={()=>{doneEditTags(newTags)}} src={process.env.PUBLIC_URL + '/done' + getTintColor() + '.png'} rawImage/>
         <PressImage onClick={()=>{setNewTag(''); cancelEditTags();}} src={process.env.PUBLIC_URL + '/cancel' + getTintColor() + '.png'} rawImage/>
       </div>

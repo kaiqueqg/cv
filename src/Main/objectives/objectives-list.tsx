@@ -58,6 +58,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [searchMatchWholeWord, setSearchMatchWholeWord] = useState<boolean>(false);
   const [searchMatchAccent, setSearchMatchAccent] = useState<boolean>(false);
   
+  //test
+  const [objCol, setObjCol] = useState<number>(3);
+
   useEffect(() => {
     // verifyLogin();
     updateObjectives();
@@ -71,6 +74,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  useEffect(() => {
+
+  },[objCol]);
 
   const parseJwt = (token :string) => {
     var base64Url = token.split('.')[1];
@@ -270,7 +277,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const objectiveRefs = useRef<Record<string, any>>({});
   const getObjectiveList = () => {
-    let rtnView: JSX.Element[] = [];  
+    let list: JSX.Element[] = [];  
 
     for(let i = 0; i < objectives.length; i++){
       const hasTagSelected = objectives[i].Tags.length>0? selectedTags.some((item)=>objectives[i].Tags.includes(item)): true;
@@ -282,7 +289,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       const shouldBeDisplayed = !objectives[i].IsArchived && objectives[i].IsShowing && hasTagSelected && shouldAddIsInSearch;
       if(shouldBeDisplayed) {
         const isSelected = objsSelected.includes(objectives[i]);
-        rtnView.push(
+
+        let divToAdd = 
           <div 
             key={objectives[i].ObjectiveId}
             className={'objectiveRow ' + (isEditingPos ? 'isEditing' : '') + (isSelected?' objectiveRowSelected':'') + (isEndingPos&&isSelected?' objectiveRowSelectedEnding':'')}
@@ -294,20 +302,19 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
               deleteObjectiveItemsInDisplay={deleteObjectiveItemsInDisplay}
               isObjsEditingPos={isEditingPos}
             ></ObjectiveView>
-          </div>
-        )
+          </div>;
+
+        list.push(divToAdd);
       }
     }
 
     return (
-      <div className={'objectives-list-objectives-container'}>
-        {isUpdatingObjectives?
-          <Loading/>
-          :
-          rtnView
-        }
+      <div className="objectives-column-holder" 
+        // style={{columnCount: list.length > 3?3:list.length}}
+        >
+        {list}
       </div>
-    )
+    );
   }
 
   const getObjectiveArchivedListView = () => {
@@ -453,8 +460,6 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const orderObjsByTitle = async () => {
     setIsSortingObjs(true);
-    setIsSortMenuOpen(false);
-
     let objsOrdered: Objective[] = objectives.sort((a, b) => {
       return a.Title.localeCompare(b.Title)
     });
@@ -464,18 +469,21 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     for(let i = 0; i < objsOrdered.length; i++){
       sending.push({...objsOrdered[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
+    
+    setIsSortMenuOpen(false);
 
     const data = await objectiveslistApi.putObjectives(sending);
 
     if(data){
       putObjectivesInDisplay(data);
     }
-    
+
     setIsSortingObjs(false);
   }
 
   const orderObjsByColor = async () => {
     setIsSortingObjs(true);
+
     const ORDER: Record<string, number> = {
       noTheme: 0,
       blue: 1,
@@ -496,13 +504,15 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     for(let i = 0; i < objsOrdered.length; i++){
       sending.push({...objsOrdered[i], Pos: i, LastModified: (new Date()).toISOString()});
     }
+    
+    setIsSortMenuOpen(false);
 
     const data = await objectiveslistApi.putObjectives(sending);
 
     if(data){
       putObjectivesInDisplay(data);
     }
-    
+
     setIsSortingObjs(false);
   }
 
@@ -528,11 +538,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       if(!searchMatchCase) newTitle = newTitle.toLowerCase();
 
       if(searchMatchWholeWord){
-        log.g(`${newSearch} - ${newTitle}`)
         if(newSearch === newTitle) newList.push(o.ObjectiveId);
       }
       else{
-        log.b(`${newSearch} - ${newTitle}`)
         if(newTitle.includes(newSearch)) newList.push(o.ObjectiveId);
       }
     }
@@ -588,6 +596,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     )
   }
 
+  const changeCol = () => {
+    const n = objCol === 5?1:objCol+1;
+    setObjCol(n)
+  }
+
   const getSideMenuOptionsView = () => {
     return(
       <>
@@ -616,6 +629,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           <PressImage src={process.env.PUBLIC_URL + '/sort.png'} onClick={() => {setIsSortMenuOpen(!isSortMenuOpen)}} isSelected={isSortMenuOpen} isLoading={isSortingObjs}></PressImage>
           <PressImage onClick={()=>{if(isSearchingMenuOpen)cancelSearch(); setIsSearchingMenuOpen(!isSearchingMenuOpen);}} src={process.env.PUBLIC_URL + '/search.png'} isSelected={isSearchingMenuOpen}/>
           {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onRightClick={plusNewFile} badgeText={amountOfNewObjectives>1?amountOfNewObjectives.toString():undefined} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
+          {/* <PressImage src={process.env.PUBLIC_URL + '/copy.png'} badgeText={objCol.toString()} onClick={changeCol} isLoading={isAddingNewObjective} isLoadingBlack={false}/> */}
         </div>
         {isSortMenuOpen &&
           <div className={'objectives-side-menu '}>
@@ -705,6 +719,20 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       !isAddingNewObjective && <Button color={ButtonColor.BLUE} text='New objective' onClick={addNewObjective} src={process.env.PUBLIC_URL + '/newfile.png'}></Button>
     )
   }
+  const getMainObjectivesFullView = () => {
+
+
+    return(
+      <div className='objectives-list-main-and-tags-container'>
+        {getTagList()}
+        {isThereANonArchivedShowingObjetive()?
+          getObjectiveList()
+          :
+          getNoObjShowingView()
+        }
+      </div>
+    )
+  }
 
   const getFullView = () => {
     return(
@@ -712,14 +740,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         {user && user.Status==='Active' ?
           <div className='objectives-list-container'>
             {getSideMenu()}
-            <div className='objectives-list-main-and-tags-container'>
-              {getTagList()}
-              {isThereANonArchivedShowingObjetive()?
-                getObjectiveList()
-                :
-                getNoObjShowingView()
-              }
-            </div>
+            {getMainObjectivesFullView()}
             <div style={{height: '700px'}}></div>
           </div>
         :

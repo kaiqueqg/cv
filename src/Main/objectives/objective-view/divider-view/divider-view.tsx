@@ -244,7 +244,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       </div>
       {isAddingNewItem && !isDisabled &&
         <div className={'dividerNewItemContainer '}>
-          <div className={'objectiveNewItemAmount' + scss(theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+          <div className={'objectiveNewItemAmount no-select ' + scss(theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
           <PressImage src={process.env.PUBLIC_URL + '/review' + itemTintColor(theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Review)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/home' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.House, divider.Pos);}}/>
           <PressImage src={process.env.PUBLIC_URL + '/link' + itemTintColor(theme) + '.png'} onClick={()=>{addNewItem(ItemType.Link, divider.Pos);}}/>

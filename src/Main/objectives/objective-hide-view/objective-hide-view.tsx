@@ -53,7 +53,7 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
 
   return (
     <div 
-      className={'objectiveClosedContainer ' + scss(objective.Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.OBJ_BG])} 
+      className={'objectiveClosedContainer box-effect ' + scss(objective.Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.OBJ_BG])} 
       onClick={()=>{if(!isObjsEditingPos)onChangeObjectiveShowing(objective)}}
       onMouseEnter={()=>{if(!isObjsEditingPos)setIsBeingHover(true)}}
       onMouseLeave={()=>{setIsBeingHover(false)}}
@@ -63,7 +63,7 @@ const ObjectiveHideView: React.FC<ObjectiveHideViewProps> = (props) => {
         <Loading IsBlack={isLoadingBlack()}></Loading>
         :
         (isBeingHover?
-          <PressImage isLoadingBlack={isLoadingBlack()} src={process.env.PUBLIC_URL + '/show' + getTintColor(Theme) + '.png'}/>
+          <PressImage src={process.env.PUBLIC_URL + '/show.png'} hideHoverEffect/>
           :
           <div className={'objectiveClosedText' + scss(Theme, [SCSS.TEXT])}>{objective.Title}</div>
         )

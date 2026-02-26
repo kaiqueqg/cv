@@ -173,11 +173,6 @@
 
   flex-wrap: wrap;
   width: 100%;
-
-  border-width: 1px;
-  border-style: solid;
-  border-color: green;
-  border-radius: 5px;
 }
 
 .objectives-list-objectives-container{
@@ -191,6 +186,11 @@
 
   flex-direction: row;
   flex-wrap: wrap;
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: red;
+  border-radius: 5px;
 }
 
 .objectives-list-main-and-tags-container{
@@ -205,7 +205,6 @@
   @media(min-width: 700px){
     width: 85%;
   }
-
   @if $bor {border: 1px solid rgb(172, 13, 92);}
 }
 
@@ -303,14 +302,38 @@
   @if($bor) { border: 1px solid rgb(251, 255, 0); border-radius: 5px; }
 }
 
+.objectives-column-holder{
+  // display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  width: 100%;
+  column-gap: 2px;
+  flex-direction: row;
+  border-radius: 5px;
+
+  column-count: 1;
+  @media(min-width: 900px){
+    column-count: 2;
+  }
+  @media(min-width: 1400px){
+    column-count: 3;
+  }
+  
+
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
+}
+
 .objectiveRow{
   display: flex;
   justify-content: center;
   align-items: center;
 
-  min-width: 350px;
+  break-inside: avoid;
+  gap: 10px;
+
+  // min-width: 350px;
   width: 100%;
-  max-width: 500px;
+  // max-width: 450px;
 
   margin: 0px 0px 10px 0px;
 }
@@ -348,7 +371,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 5px;
+  padding: 0px 10px;
   width: 100%;
 
   @if($bor) { border: 1px dashed rgb(136, 48, 48); border-radius: 5px; }

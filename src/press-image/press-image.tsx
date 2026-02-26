@@ -35,6 +35,9 @@ export interface PressImageProps{
   size?: 'big'|'bigger',
 
   children?: React.ReactNode;
+
+  /**Title */
+  t?: string,
 }
 
 const PressImage = (props: PressImageProps) => {
@@ -84,17 +87,17 @@ const PressImage = (props: PressImageProps) => {
         className={classnameImageContainer + (props.hideHoverEffect?'':' press-image-container-hover ')}
         onClick={normalTouchEnd}
         onContextMenu={contextMenuClick}>
-        {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ') + ((props.fadeWhenNotSelected && !props.isSelected)?' g-img-fade ':'')} src={imageSrc}></img>}
-        {props.badgeText && props.badgeText !== '' && <div className={'press-image-text'}>{props.badgeText}</div>}
+        {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ') + ((props.fadeWhenNotSelected && !props.isSelected)?' g-img-fade ':'')} src={imageSrc} title={props.t}/>}
+        {props.badgeText && props.badgeText !== '' && <div className={'press-image-text no-select '}>{props.badgeText}</div>}
         {props.children}
-      </div>
+      </div> 
     )
   }
 
   const getConfirmingImage = () => {
     return(
       <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect ?' press-image-container-hover':'')} onClick={props.onClick}>
-        <img className={'press-image-image '} src={process.env.PUBLIC_URL + '/done.png'}></img>
+        <img className={'press-image-image '} src={process.env.PUBLIC_URL + '/done.png'} title='Confim'/>
       </div>
     )
   }
