@@ -1,6 +1,6 @@
 // LogContext.tsx
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Divider, Grocery, Item, ItemType, Location,  Note, Question, Step, Wait, Objective } from '../TypesObjectives';
+import { Divider, Grocery, Item, ItemType, Location,  Note, Question, Step, Objective } from '../TypesObjectives';
 import { LogLevel, MessageType, PopMessage, } from '../Types';
 
 interface LogProviderProps {
@@ -108,7 +108,6 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
           if(text.Type===ItemType.Note) return (text as Note).Text;
           if(text.Type===ItemType.Question) return (text as Question).Statement;
           if(text.Type===ItemType.Step) return (text as Step).Title;
-          if(text.Type===ItemType.Wait) return (text as Wait).Title;
         });
         console.log('%c[DEV]' + formattedTexts, 'color: rgba(255, 255, 255, 1); font-weight: bold;');
         // putLog(...formattedTexts);
@@ -123,7 +122,6 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
           if(text.Type===ItemType.Note) return (text as Note).Text;
           if(text.Type===ItemType.Question) return (text as Question).Statement;
           if(text.Type===ItemType.Step) return (text as Step).Title;
-          if(text.Type===ItemType.Wait) return (text as Wait).Title;
         });
         console.log('%c[DEV]' + formattedTexts, 'color: rgb(255, 80, 80); font-weight: bold;');
         // putLog(...formattedTexts);
@@ -138,7 +136,6 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
           if(text.Type===ItemType.Note) return (text as Note).Text;
           if(text.Type===ItemType.Question) return (text as Question).Statement;
           if(text.Type===ItemType.Step) return (text as Step).Title;
-          if(text.Type===ItemType.Wait) return (text as Wait).Title;
         });
         console.log('%c[DEV]' + formattedTexts, 'color: rgba(21, 255, 0, 1); font-weight: bold;');
         // putLog(...formattedTexts);
@@ -153,7 +150,6 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
           if(text.Type===ItemType.Note) return (text as Note).Text;
           if(text.Type===ItemType.Question) return (text as Question).Statement;
           if(text.Type===ItemType.Step) return (text as Step).Title;
-          if(text.Type===ItemType.Wait) return (text as Wait).Title;
         });
         console.log('%c[DEV]' + formattedTexts, 'color: rgba(25, 0, 255, 1); font-weight: bold;');
         // putLog(...formattedTexts);

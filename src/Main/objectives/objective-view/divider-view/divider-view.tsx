@@ -240,7 +240,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
             :
             <PressImage isLoadingBlack={props.isLoadingBlack} onClick={onChangeAllCheckedUnchecked} confirm={true} src={process.env.PUBLIC_URL + '/checked' + itemTintColor(theme) + '.png'} isLoading={isAllCheckingUncheking}/>
         )}
-        {!isEditingTitle && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isLoading={isLoadingAddingNewItem} rawImage={isAddingNewItemLocked}/>}
+        {!isEditingTitle && <PressImage isLoadingBlack={props.isLoadingBlack} onClick={addingNewItem} src={process.env.PUBLIC_URL + (isAddingNewItemLocked?'/lock':'/add'+ itemTintColor(theme)) + '.png'} isSelected={isAddingNewItem ||isAddingNewItemLocked} isLoading={isLoadingAddingNewItem} rawImage={isAddingNewItemLocked}/>}
       </div>
       {isAddingNewItem && !isDisabled &&
         <div className={'dividerNewItemContainer '}>

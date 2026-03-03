@@ -117,7 +117,7 @@ export const QuestionView: React.FC<QuestionViewProps> = (props) => {
   }
 
   return (
-    <div className={'questionContainer '+scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], shouldBeClear(), isSelecting, isSelected)}>
+    <div className={'questionContainer '+scss(theme, [SCSS.ITEM_BG], shouldBeClear(), isSelecting, isSelected)}>
       {isSavingQuestion?
         <Loading IsBlack={theme==='white'}></Loading>
         :

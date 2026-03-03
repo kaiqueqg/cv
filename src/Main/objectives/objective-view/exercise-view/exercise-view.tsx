@@ -323,7 +323,7 @@ export const ExerciseView: React.FC<ExerciseViewProps> = (props) => {
   }
 
   return (
-    <div className={'exerciseContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], exercise.IsDone, isSelecting, isSelected)}>
+    <div className={'exerciseContainer' + scss(theme, [SCSS.ITEM_BG], exercise.IsDone, isSelecting, isSelected)}>
       {isSavingExercise?
         <Loading IsBlack={theme==='white'}></Loading>
         :

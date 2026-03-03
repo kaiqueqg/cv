@@ -3,7 +3,7 @@ import { useUserContext } from "../../contexts/user-context";
 import {local} from "../../storage/storage";
 import './objectives-list.scss';
 import log from "../../log/log";
-import { Item, Objective, ObjectivesList as ObjectivesListType, Question, Step, Wait } from "../../TypesObjectives";
+import { Item, Objective, ObjectivesList as ObjectivesListType } from "../../TypesObjectives";
 import { ObjectiveView } from "./objective-view/objective-view";
 import Loading from "../../loading/loading";
 import ObjectiveHideView from "./objective-hide-view/objective-hide-view";

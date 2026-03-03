@@ -10,11 +10,11 @@
   align-items: center;
 
   width: 100%;
-  // margin-bottom: 2px;
 
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
+  border-color: $transparent;
 
   @if($bor) {
     border-width: 1px;

@@ -12,6 +12,8 @@ export const itemFakeNew = () => {
 }
 
 interface StepViewProps extends ItemViewProps{
+  onMouseEnter: () => void,
+  onMouseLeave: () => void,
 }
 
 export const ItemFakeView: React.FC<StepViewProps> = (props) => {
@@ -22,7 +24,7 @@ export const ItemFakeView: React.FC<StepViewProps> = (props) => {
   }, []);
 
   return (
-    <div className={'itemFakeContainer'+scss(theme, [SCSS.BORDERCOLOR_CONTRAST])}>
+    <div className={'itemFakeContainer'+scss(theme, [SCSS.BORDERCOLOR_CONTRAST])} onMouseEnter={props.onMouseEnter} onMouseLeave={props.onMouseLeave}>
       <div className={'itemFakeTitle'+scss(theme, [SCSS.TEXT])}>click to be the first</div>
     </div>
   );

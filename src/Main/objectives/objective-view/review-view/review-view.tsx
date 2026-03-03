@@ -132,7 +132,7 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
   }
 
   return (
-    <div className={'reviewContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], !review.IsCurrentChoise, isSelecting, isSelected)}>
+    <div className={'reviewContainer' + scss(theme, [SCSS.ITEM_BG], !review.IsCurrentChoise, isSelecting, isSelected)}>
       {isSavingreview?
         <Loading IsBlack={theme==='white'}></Loading>
         :
@@ -181,7 +181,9 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
           <div className={'reviewDisplayContainer'}>
             <div className='reviewLine' onClick={onEditreview}>
               <div className={'reviewTopLine '}>
-                <div className={'reviewRating ' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK], !review.IsCurrentChoise)}> {review.Rating}</div>
+                {review.Rating.trim() !== '' && 
+                  <div className={'reviewRating ' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK], !review.IsCurrentChoise)}> {review.Rating}</div>
+                }
                 <div className={'reviewTitle ' + scss(theme, [SCSS.TEXT], !review.IsCurrentChoise)}> {getDisplayText()}</div>
               </div>
               {review.Description.trim() !== '' &&

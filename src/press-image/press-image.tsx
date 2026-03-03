@@ -29,6 +29,7 @@ export interface PressImageProps{
   isLoadingBlack?: boolean,
   isSelected?: boolean,
   rawImage?: boolean,
+  wasSelected?: boolean,
 
   fadeWhenNotSelected?: boolean,
 
@@ -41,7 +42,7 @@ export interface PressImageProps{
 }
 
 const PressImage = (props: PressImageProps) => {
-  const { popMessage } = useLogContext();
+  const { popMessage, log } = useLogContext();
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
   const [text, setText] = useState<number>(2000);
 
@@ -69,13 +70,14 @@ const PressImage = (props: PressImageProps) => {
   const contextMenuClick = (e: any) => {
     e.preventDefault();
 
-    console.log('Right click');
     if(props.onRightClick) props.onRightClick();
   }
 
   const getNormalImage = () => {
     const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
-    let classnameImageContainer = 'press-image-container ' + (props.isSelected && ' press-image-container-selected ');
+
+    if(props.wasSelected)log.w('qsd')
+    let classnameImageContainer = 'press-image-container ' + (props.isSelected && ' press-image-container-selected ') + (props.wasSelected && ' press-image-container-was-selected ');
     if(props.size){
       if(props.size === 'big') classnameImageContainer += ' press-image-container-big ';
       if(props.size === 'bigger') classnameImageContainer += ' press-image-container-bigger ';
@@ -84,10 +86,20 @@ const PressImage = (props: PressImageProps) => {
     return(
       <div
         id={props.id}
-        className={classnameImageContainer + (props.hideHoverEffect?'':' press-image-container-hover ')}
+        className={classnameImageContainer + (props.hideHoverEffect || props.isSelected || props.disable?'':' press-image-container-hover ')}
         onClick={normalTouchEnd}
         onContextMenu={contextMenuClick}>
-        {props.src && <img className={'press-image-image ' + (props.rawImage?'':' g-img-dark ') + ((props.fadeWhenNotSelected && !props.isSelected)?' g-img-fade ':'')} src={imageSrc} title={props.t}/>}
+        {props.src && 
+        <img
+          className={'press-image-image ' + 
+            (props.rawImage?'':' g-img-dark ') +
+            ((props.fadeWhenNotSelected && !props.isSelected)?' g-img-fade ':'') +
+            (props.wasSelected? ' g-img-blur ' : '')}
+          src={imageSrc}
+          title={props.t}
+          
+        />
+        }
         {props.badgeText && props.badgeText !== '' && <div className={'press-image-text no-select '}>{props.badgeText}</div>}
         {props.children}
       </div> 
@@ -96,7 +108,7 @@ const PressImage = (props: PressImageProps) => {
 
   const getConfirmingImage = () => {
     return(
-      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect ?' press-image-container-hover':'')} onClick={props.onClick}>
+      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect || props.isSelected ?' press-image-container-hover':'')} onClick={props.onClick}>
         <img className={'press-image-image '} src={process.env.PUBLIC_URL + '/done.png'} title='Confim'/>
       </div>
     )

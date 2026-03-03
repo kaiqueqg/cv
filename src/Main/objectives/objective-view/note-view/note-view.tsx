@@ -140,7 +140,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   }
 
   return (
-    <div className={'noteContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], note.Text.trim() !== '', isSelecting, isSelected)}>
+    <div className={'noteContainer' + scss(theme, [SCSS.ITEM_BG], note.Text.trim() !== '', isSelecting, isSelected)}>
       {isSavingText?
         <Loading IsBlack={theme==='white'}></Loading>
         :

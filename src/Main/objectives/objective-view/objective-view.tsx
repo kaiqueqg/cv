@@ -1,13 +1,12 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import './objective-view.scss';
 import { useUserContext } from "../../../contexts/user-context";
-import { Item, ItemType, Note, Objective, Question, Step, Wait, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House, MultiSelectType, MultSelectAction, isCheckableItem, Review } from "../../../TypesObjectives";
+import { Item, ItemType, Note, Objective, Question, Step, Location, Divider, Grocery, Medicine, Exercise, Weekdays, StepImportance, Link, Image, ItemNew, House, MultiSelectType, MultSelectAction, isCheckableItem, Review } from "../../../TypesObjectives";
 import Loading from "../../../loading/loading";
 import TagsView from "./tags-view/tags-view";
 import { useLogContext } from "../../../contexts/log-context";
 
 import { ItemFakeView, itemFakeNew } from "./item-fake-view/item-fake-view";
-import { WaitView, waitNew} from "./wait-view/wait-view";
 import { QuestionView, questionNew } from "./question-view/question-view";
 import { StepView, stepNew } from "./step-view/step-view";
 import { NoteView, noteNew } from "./note-view/note-view";
@@ -27,6 +26,7 @@ import { parse } from "path";
 import { shouldBeBlack } from "../../../helper";
 import Button, { ButtonColor } from "../../../button/button";
 import { reviewNew, ReviewView } from "./review-view/review-view";
+import { captureRejectionSymbol } from "events";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -94,6 +94,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const [isSelectingPastePos, setIsSelectingPastePos] = useState<any>(false);
   const [isSavingTitle, setIsSavingTitle] = useState<boolean>(false);
   const [isRequestingItems, setIsRequestingItems] = useState<boolean>(false);
+  const [objHoveringId, setObjHoveringId] = useState<string>('');
 
   //dev
   const [devShowPos, setDevShowPos] = useState<boolean>(false);
@@ -356,9 +357,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       case ItemType.Question:
         typeItem = {...baseItem, ...questionNew()};
         break;
-      case ItemType.Wait:
-        typeItem = {...baseItem, ...waitNew()};
-        break;
       case ItemType.Note:
         typeItem = {...baseItem, ...noteNew()};
         break;
@@ -475,7 +473,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     });
 
     const data = await objectiveslistApi.putObjectiveItems(newDividers, (value: string) => {
-      log.r(value)
       setFoldingUnfoldingDividersPartialInfo(value);
     });
     if(data){
@@ -561,6 +558,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const eraseSelectedItems = () => {
     setMultItemsSelected([]);
     setShouldSelectAll(false);
+    setIsSelectingPastePos(false);
     sessionStorage.removeItem('multiItems');
   }
 
@@ -571,7 +569,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     popMessage('Items to move selected.');
 
     setSelecMultPartialInfo('');
-    setIsMultiSelectMenuOpen(false);
+    // setIsMultiSelectMenuOpen(false);
     setMultItemsSelected([]);
     setShouldSelectAll(false);
 
@@ -683,9 +681,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const getSortableText = (item: Item, onlyTitle?: boolean): string => {
     if (item.Type === ItemType.Step) {
         return (item as Step).Title.toLowerCase();
-    }
-    if (item.Type === ItemType.Wait) {
-      return (item as Wait).Title.toLowerCase();
     }
     if (item.Type === ItemType.Grocery) {
       return (item as Grocery).Title.toLowerCase();
@@ -837,7 +832,18 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   ////Get the specific Item view
-  const getItemView = (item: Item): React.ReactNode => {
+  const onClickItemContainer = (item: Item) => {
+    if(isMultiSelectMenuOpen){
+      if(isSelectingPastePos){
+        pasteItems(item);
+      }
+      else{
+        addingRemovingItem(item);
+      }
+    }
+  }
+
+  const getDisplayItemView = (item: Item, index: number, focus: boolean): React.ReactNode => {
     let rtnItem;
     const includes = multItemsSelected.includes(item);
     const isSelecting = includes && isMultiSelectMenuOpen && !isSelectingPastePos;
@@ -877,19 +883,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
         isLoadingBlack={shouldBeBlack(objective.Theme)}></QuestionView>
-    }
-    else if(item.Type === ItemType.Wait){
-      rtnItem = <WaitView 
-        key={item.ItemId}
-        theme={Theme}
-        wait={item as Wait}
-        isSelecting={isSelecting}
-        isSelected={isSelected}
-        isDisabled={isMultiSelectMenuOpen || isSelectingPastePos}
-        putItemsInDisplay={putItemsInDisplay}
-        removeItemsInDisplay={removeItemsInDisplay}
-        itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></WaitView>
     }
     else if(item.Type === ItemType.Note){
       rtnItem = <NoteView 
@@ -1029,30 +1022,61 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }
 
     return (
-    <div key={item.ItemId} className='objItemRow' onClick={()=>onClickItemContainer(item)}>
-      {isMultiSelectMenuOpen && !isSelectingPastePos && <PressImage onClick={() => {if(isMultiSelectMenuOpen) addingRemovingItem(item)}} src={process.env.PUBLIC_URL + (isSelecting?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>}
+    <div key={item.ItemId + index} className={' obj-item-row ' + (focus?' obj-item-row-focus ':'')} onClick={()=>onClickItemContainer(item)} onMouseEnter={() => setObjHoveringId(item.ItemId)} onMouseLeave={() => setObjHoveringId('')}>
+      {isMultiSelectMenuOpen && !isSelectingPastePos &&
+        <PressImage
+          onClick={() => {if(isMultiSelectMenuOpen) addingRemovingItem(item)}}
+          src={process.env.PUBLIC_URL + (isSelecting?'/checked':'/unchecked') + getTintColor(Theme) + '.png'}
+          isLoadingBlack={shouldBeBlack(objective.Theme)}
+        />}
       {devShowPos && <div className={'objDevPosText' + scss(Theme, [SCSS.TEXT])}>{item.Pos < 10?'0'+item.Pos:item.Pos}</div>}
       {rtnItem}
     </div>)
   }
 
-  const onClickItemContainer = (item: Item) => {
-    if(isMultiSelectMenuOpen){
-      if(isSelectingPastePos){
-        pasteItems(item);
-      }
-      else{
-        addingRemovingItem(item);
-      }
-    }
-  }
-
   const getDisplayItemList = () => {
+    let rtnNodes: React.ReactNode[] = [];
     let filteredItems:Item[] = [];
     let partialItems:Item[] = [];
+    let listIndexPastePos: number[] = [];
 
     let isAfterDivider = false;
     let isDividerOpen = true;
+
+    const v: string|null = sessionStorage.getItem('multiItems');
+    let itemsToPaste: Item[] = [];
+    if(v) itemsToPaste = JSON.parse(v).items;
+
+    /// fake item
+    if(isMultiSelectMenuOpen && isSelectingPastePos) {
+      const fakeItem = {ItemId:'---', LastModified:'', CreatedAt: '', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---', Title: 'fake'};
+      const a = <ItemFakeView 
+                  key={'asd'}
+                  theme={Theme}
+                  isSelecting={false}
+                  isSelected={false}
+                  isDisabled={false}
+                  putItemsInDisplay={putItemsInDisplay}
+                  removeItemsInDisplay={removeItemsInDisplay}
+                  itemTintColor={getTintColor}
+                  isLoadingBlack={shouldBeBlack(objective.Theme)}
+                  onMouseEnter={() => setObjHoveringId('asd')} 
+                  onMouseLeave={() => setObjHoveringId('')}
+                />
+      rtnNodes.push(
+      <div key={'fake'} className='obj-item-row' onClick={() => pasteItems(fakeItem)}>
+        {a}
+      </div>);
+
+      if('asd' === objHoveringId && isSelectingPastePos){
+        itemsToPaste.forEach((i: Item) =>{
+          listIndexPastePos.push(filteredItems.length);
+          filteredItems.push(i)
+        })
+      }
+    }
+
+    /// all items
     for(let i = 0; i < items.length; i++){
       let current = items[i];
       let shouldAddStep = true;
@@ -1094,37 +1118,25 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         else{
         }
       }
+
+      if(current.ItemId === objHoveringId && isSelectingPastePos){
+        itemsToPaste.forEach((i: Item) =>{
+          listIndexPastePos.push(filteredItems.length);
+          filteredItems.push(i)
+        })
+      }
     }
 
     if(partialItems.length > 1 && !objective.IsShowingCheckedStep){
       filteredItems.push(...partialItems);
     }
 
-    let rtn: React.ReactNode[] = [];
-    if(isMultiSelectMenuOpen && isSelectingPastePos) {
-      const fakeItem = {ItemId:'---', LastModified:'', CreatedAt: '', Pos:-1, Type: ItemType.ItemFake, UserIdObjectiveId:'---', Title: 'fake'};
-      const a = <ItemFakeView 
-      key={'asd'}
-      theme={Theme}
-      isSelecting={false}
-      isSelected={false}
-      isDisabled={false}
-      putItemsInDisplay={putItemsInDisplay}
-      removeItemsInDisplay={removeItemsInDisplay}
-      itemTintColor={getTintColor}
-      isLoadingBlack={shouldBeBlack(objective.Theme)}></ItemFakeView>
-      rtn.push(
-      <div key={'fake'} className='objItemRow' onClick={() => pasteItems(fakeItem)}>
-        {a}
-      </div>);
-    }
-
     hiddenItems = (items.length - filteredItems.length);
-    filteredItems.forEach((item)=>{
-      rtn.push(getItemView(item));
+    filteredItems.forEach((item, i)=>{
+      rtnNodes.push(getDisplayItemView(item, i, listIndexPastePos.includes(i)));
     })
 
-    return rtn;
+    return rtnNodes;
   };
 
   const getItemList = () => {
@@ -1158,7 +1170,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(!isObjectiveMenuOpen) return <></>;
 
     return (
-      <div className={'objObjectiveMenu ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG])}>
+      <div className={'objObjectiveMenu ' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         {getArchiveButton()}
         {getIsShowingButton()}
         {getPaletteButton()}
@@ -1201,7 +1213,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(!(objective.IsShowing && isColorMenuOpen)) return <></>;
 
     return(
-      <div className={'objectiveColorContainer ' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
+      <div className={'objectiveColorContainer ' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         {getColorButton('blue')}
         {getColorButton('red')}
         {getColorButton('green')}
@@ -1217,7 +1229,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(!isAddingNewItemMenuOpen) return <></>;
 
     return(
-      <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
+      <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         <div className={'objectiveNewItemAmount no-select ' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
         <div className='objectiveNewItemImages'>
           <PressImage src={process.env.PUBLIC_URL + '/review' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Review)}}/>
@@ -1255,23 +1267,50 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     const stgValue: string|null = sessionStorage.getItem('multiItems');
 
     return(
-      <div className={'objectiveMultiSelectContainer ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG])}>
-        <PressImage t='Select/Unselect all' onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
+      <div className={'objectiveMultiSelectContainer ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK])}>
+        <PressImage t='Select/Unselect all' onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hide={isSelectingPastePos}/>
         <div className={'objectiveMultiSelectMenu '}>
           <div className={'objectiveMultiSelectMenuIcon ' + scss(Theme, [SCSS.TEXT], !(multItemsSelected.length !== 0 || stgValue !== null))} onClick={() => {if(multItemsSelected.length > 0 || stgValue !== null) eraseSelectedItems()}}>
-            <PressImage t='Unselect all items' src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0 && stgValue === null} rawImage={multItemsSelected.length === 0 && stgValue === null} disableMsg="No item unselect..." disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
+            <PressImage 
+              t='Unselect all items'
+              src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'}
+              disable={multItemsSelected.length === 0 && stgValue === null}
+              rawImage={multItemsSelected.length === 0 && stgValue === null}
+              disableMsg="No item unselect..."
+              disableSrc={process.env.PUBLIC_URL + '/eraser-grey.png'}
+              isLoadingBlack={shouldBeBlack(objective.Theme)}
+            />
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)moveItems()}}>
-            <PressImage t='Select items to move' onClick={moveItems} src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} rawImage={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/next-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
+            <PressImage
+              t='Select items to move'
+              onClick={moveItems}
+              src={process.env.PUBLIC_URL + '/next' + getTintColor(Theme) + '.png'}
+              disable={multItemsSelected.length === 0}
+              rawImage={multItemsSelected.length === 0}
+              disableMsg="No item selected..."
+              disableSrc={process.env.PUBLIC_URL + '/next-grey.png'}
+              isLoadingBlack={shouldBeBlack(objective.Theme)}
+            />
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)copyItems()}}>
-            <PressImage t='Copy items' onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} rawImage={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
+            <PressImage t='Copy items' onClick={copyItems} src={process.env.PUBLIC_URL + '/copy' + getTintColor(Theme) + '.png'} disable={multItemsSelected.length === 0} rawImage={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/copy-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)}/>
           </div>
-          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], stgValue === null)} onClick={() => {if(stgValue !== null)setIsSelectingPastePos(true);}}>
-            <PressImage t='Move items to...' onClick={() => {setIsSelectingPastePos(true);}} src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'} disable={stgValue === null} disableMsg="You need to select copy or move before paste..." disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'} rawImage={stgValue === null} isLoadingBlack={shouldBeBlack(objective.Theme)} hideHoverEffect/>
+          <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], stgValue === null)}>
+            <PressImage
+              t='Paste items...'
+              onClick={() => {setIsSelectingPastePos(!isSelectingPastePos);}}
+              src={process.env.PUBLIC_URL + '/insert' + getTintColor(Theme) + '.png'}
+              disable={stgValue === null}
+              disableMsg="You need to select copy or move before paste..."
+              disableSrc={process.env.PUBLIC_URL + '/insert-grey.png'}
+              rawImage={stgValue === null}
+              isLoadingBlack={shouldBeBlack(objective.Theme)}
+              isSelected={isSelectingPastePos}
+            />
           </div>
           <div className={'objectiveMultiSelectMenuIcon' + scss(Theme, [SCSS.TEXT], multItemsSelected.length === 0)} onClick={()=> {if(multItemsSelected.length !== 0)deleteSelectedItems()}}>
-            <PressImage t='Delete items selected' onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage hideHoverEffect/>
+            <PressImage t='Delete items selected' onClick={deleteSelectedItems} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm disable={multItemsSelected.length === 0} disableMsg="No item selected..." disableSrc={process.env.PUBLIC_URL + '/trash-grey.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} rawImage/>
           </div>
         </div>
       </div>
@@ -1282,7 +1321,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(!isSearchingMenuOpen) return <></>;
 
     return(
-      <div className={'objectiveSearchContainer' + scss(Theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
+      <div className={'objectiveSearchContainer' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         <input
           className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' input-simple-base-alert ':'')}
           type='text'
@@ -1529,9 +1568,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       else if(item.Type === ItemType.Question){
         if(searchTextIgnoreCase((item as Question).Statement)) newList.push(item.ItemId);
       }
-      else if(item.Type === ItemType.Wait){
-        if(searchTextIgnoreCase((item as Wait).Title)) newList.push(item.ItemId);
-      }
       else if(item.Type === ItemType.Note){
         if(searchTextIgnoreCase((item as Note).Text)) newList.push(item.ItemId);
       }
@@ -1586,7 +1622,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   const getHiddenMessage = () => {
-    if(hiddenItems !== 0){
+    if(hiddenItems > 0){
       return <div className={'objTitle'+scss(Theme, [SCSS.TEXT])}>{hiddenItems} hidden item{hiddenItems>1?'s':''}.</div>
     }
   }

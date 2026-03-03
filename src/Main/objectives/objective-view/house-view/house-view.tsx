@@ -393,7 +393,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
   }
 
   return (
-    <div className={'houseContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], house.WasContacted, isSelecting, isSelected)}>
+    <div className={'houseContainer' + scss(theme, [SCSS.ITEM_BG], house.WasContacted, isSelecting, isSelected)}>
       {isSavingHouse?
         <Loading IsBlack={theme==='white'}></Loading>
         :

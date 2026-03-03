@@ -113,7 +113,7 @@ export const LocationView: React.FC<LocationViewProps> = (props) => {
   }
 
   return (
-    <div className={'locationContainer'+ scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], location.Url.trim()!=='', isSelecting, isSelected)}>
+    <div className={'locationContainer'+ scss(theme, [SCSS.ITEM_BG], location.Url.trim()!=='', isSelecting, isSelected)}>
       {isSavingLocation?
         <Loading IsBlack={theme==='white'}></Loading>
         :

@@ -140,7 +140,7 @@ export const MedicineView: React.FC<MedicineViewProps> = (props) => {
   }
 
   return (
-    <div className={'medicineContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], medicine.IsChecked, isSelecting, isSelected)}>
+    <div className={'medicineContainer' + scss(theme, [SCSS.ITEM_BG], medicine.IsChecked, isSelecting, isSelected)}>
       {isSavingMedicine?
         <Loading IsBlack={theme==='white'}></Loading>
         :

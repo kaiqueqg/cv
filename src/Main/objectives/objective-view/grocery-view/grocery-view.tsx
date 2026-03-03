@@ -144,7 +144,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
   }
 
   return (
-    <div className={'groceryContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], grocery.IsChecked, isSelecting, isSelected)}>
+    <div className={'groceryContainer' + scss(theme, [SCSS.ITEM_BG], grocery.IsChecked, isSelecting, isSelected)}>
       {isSavingGrocery?
         <Loading IsBlack={theme==='white'}></Loading>
         :

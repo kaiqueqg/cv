@@ -63,7 +63,6 @@ export interface PresignedUrl { url: string }
 
 export enum ItemType {
   Step = 'Step',
-  Wait = 'Wait',
   Question = 'Question',
   Note = 'Note',
   Location = 'Location',
@@ -114,9 +113,6 @@ export interface Step extends Item {
   Done: boolean,
   Importance: StepImportance,
   AutoDestroy: boolean,
-}
-
-export interface Wait extends Item {
 }
 
 export interface Note extends Item {

@@ -122,7 +122,7 @@ export const LinkView: React.FC<LinkViewProps> = (props) => {
   }
 
   return (
-    <div className={'linksContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], link.Link.trim() !== '', isSelecting, isSelected)}>
+    <div className={'linksContainer' + scss(theme, [SCSS.ITEM_BG], link.Link.trim() !== '', isSelecting, isSelected)}>
       {isSavingLinks?
         <Loading IsBlack={theme==='white'}></Loading>
         :

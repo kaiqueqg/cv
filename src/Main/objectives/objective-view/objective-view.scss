@@ -28,7 +28,7 @@
     border-color: red;
     border-radius: 5px;
   }
-  
+
   box-shadow: darken($blue-darker, 20%) 4px 4px 0 0;
 }
 
@@ -411,7 +411,7 @@
   margin-right: 5px;
 }
 
-.objItemRow{
+.obj-item-row{
   display: flex;
   justify-content: center;
   vertical-align: middle;
@@ -420,10 +420,25 @@
 
   margin-bottom: 2px;
 
-  // border-width: 1px;
-  // border-style: solid;
-  // border-color: red;
-  // border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: $transparent;
+  border-radius: 5px;
+}
+
+.obj-item-row-focus{
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+
+  margin-bottom: 2px;
+  
+  border-width: 1px;
+  border-style: solid;
+  border-color: red;
+  border-radius: 5px;
 }
 
 .objDragImageContainer{

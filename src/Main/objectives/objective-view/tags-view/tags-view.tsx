@@ -95,7 +95,7 @@ const TagsView: React.FC<TagsViewProps> = (props) => {
   }
 
   return (
-    <div className={'tagsContainer ' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST])}>
+    <div className={'tagsContainer ' + scss(theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
       <div className={'tagAvailableTagsTitle'+ scss(theme, [SCSS.TEXT])}>AVAILABLE</div>
       <div className={'tagsList'}>
         {availableTagsFiltered.map((tag)=>{ return getAvailableTagView(tag)})}

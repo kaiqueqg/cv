@@ -245,7 +245,7 @@ export const ImageView: React.FC<ImageViewProps> = (props) => {
   }
 
   return (
-    <div className={'imageContainer' + scss(theme, [SCSS.ITEM_BG, SCSS.BORDERCOLOR_CONTRAST], false, isSelecting, isSelected)}>
+    <div className={'imageContainer' + scss(theme, [SCSS.ITEM_BG], false, isSelecting, isSelected)}>
       {isSavingImage?
         <Loading IsBlack={theme==='white'}></Loading>
         :

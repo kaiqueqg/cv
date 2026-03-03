@@ -9,11 +9,11 @@ $bor: false;
   align-items: center;
   text-align: center;
   width: 100%;
-  margin-bottom: 2px;
   min-height: 35px;
 
   border-width: 1px;
   border-style: solid;
+  border-color: $transparent;
   border-radius: 5px;
 }
 
