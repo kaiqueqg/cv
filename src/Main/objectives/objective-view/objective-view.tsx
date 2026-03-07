@@ -1172,7 +1172,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return (
       <div className={'objObjectiveMenu ' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         {getArchiveButton()}
-        {getIsShowingButton()}
         {getPaletteButton()}
         {getTagMenuButton()}
         {getSearchMenuButton()}
@@ -1188,7 +1187,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const getLeftIconsMenu = () => {
     return(
       <div className='objTitleLeft'>
-        <PressImage hide/>
+        {/* <PressImage hide/> */}
+        {getIsShowingButton()}
       </div>
     )
   }

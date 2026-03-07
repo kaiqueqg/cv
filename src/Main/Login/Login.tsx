@@ -217,14 +217,15 @@ const Login: React.FC<LoginProps> = () => {
               <div className="pass-column">
                 <div className="pass-row">
                   {showPassword?
-                    <input className="input-base" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="password" aria-label="Server" value={password}></input>
+                    <>
+                      <input className="input-base input-password-showing" type="text" onChange={changePassword} onKeyUp={passwordEnter} placeholder="password" aria-label="Server" value={password}/>
+                      <PressImage src={process.env.PUBLIC_URL + '/show.png'} isLoadingBlack onClick={()=>{setShowPassword(!showPassword)}}/>
+                    </>
                     :
-                    <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="password" aria-label="Server" value={password}></input>
-                  }
-                  {showPassword?
-                    <PressImage src={process.env.PUBLIC_URL + '/hide.png'} isLoadingBlack onClick={()=>{setShowPassword(false)}}></PressImage>
-                    :
-                    <PressImage src={process.env.PUBLIC_URL + '/show.png'} isLoadingBlack onClick={()=>{setShowPassword(true)}}></PressImage>
+                    <>
+                      <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="********" aria-label="Server" value={password}/>
+                      <PressImage src={process.env.PUBLIC_URL + '/hide.png'} isLoadingBlack onClick={()=>{setShowPassword(!showPassword)}}/>
+                    </>
                   }
                 </div>
                 {typeAnPassword && <span className="warning-message concert-one-regular">Type a password</span>}
