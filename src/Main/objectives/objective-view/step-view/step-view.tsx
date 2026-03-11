@@ -197,22 +197,22 @@ export const StepView: React.FC<StepViewProps> = (props) => {
         src = process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png';
         break;
       case StepImportance.Low:
-        src = process.env.PUBLIC_URL + '/low' + itemTintColor(theme) + '.png';
+        src = process.env.PUBLIC_URL + '/low.png';
         break;
       case StepImportance.Medium:
-        src = process.env.PUBLIC_URL + '/med' + itemTintColor(theme) + '.png';
+        src = process.env.PUBLIC_URL + '/med.png';
         break;
       case StepImportance.High:
-        src = process.env.PUBLIC_URL + '/high' + itemTintColor(theme) + '.png';
+        src = process.env.PUBLIC_URL + '/high.png';
         break;
       case StepImportance.LadybugGreen:
-        src = process.env.PUBLIC_URL + '/ladybuggreen' + itemTintColor(theme) + '.png';
+        src = process.env.PUBLIC_URL + '/ladybuggreen.png';
         break;
       case StepImportance.LadybugYellow:
-        src = process.env.PUBLIC_URL + '/ladybugyellow' + itemTintColor(theme) + '.png';
+        src = process.env.PUBLIC_URL + '/ladybugyellow.png';
         break;
       case StepImportance.Ladybug:
-        src = process.env.PUBLIC_URL + '/ladybug' + itemTintColor(theme) + '.png';
+        src = process.env.PUBLIC_URL + '/ladybug.png';
         break;
       case StepImportance.Question:
         src = process.env.PUBLIC_URL + '/questionmark' + itemTintColor(theme) + '.png';

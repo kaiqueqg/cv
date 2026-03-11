@@ -1026,8 +1026,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       {isMultiSelectMenuOpen && !isSelectingPastePos &&
         <PressImage
           onClick={() => {if(isMultiSelectMenuOpen) addingRemovingItem(item)}}
-          src={process.env.PUBLIC_URL + (isSelecting?'/checked':'/unchecked') + getTintColor(Theme) + '.png'}
+          src={process.env.PUBLIC_URL + (isSelecting?'/checked' + getTintColor(Theme) + '.png':'/unchecked-grey.png') }
           isLoadingBlack={shouldBeBlack(objective.Theme)}
+          rawImage={!isSelecting}
         />}
       {devShowPos && <div className={'objDevPosText' + scss(Theme, [SCSS.TEXT])}>{item.Pos < 10?'0'+item.Pos:item.Pos}</div>}
       {rtnItem}
@@ -1268,10 +1269,11 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
     return(
       <div className={'objectiveMultiSelectContainer ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK])}>
-        <PressImage t='Select/Unselect all' onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked') + getTintColor(Theme) + '.png'} isLoadingBlack={shouldBeBlack(objective.Theme)} hide={isSelectingPastePos}/>
+        <PressImage t='Select/Unselect all' onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked')+ getTintColor(Theme) + '.png' } isLoadingBlack={shouldBeBlack(objective.Theme)} hide={isSelectingPastePos}/>
         <div className={'objectiveMultiSelectMenu '}>
           <PressImage 
             t='Unselect all items'
+            onClick={eraseSelectedItems}
             src={process.env.PUBLIC_URL + '/eraser' + getTintColor(Theme) + '.png'}
             disable={multItemsSelected.length === 0 && stgValue === null}
             rawImage={multItemsSelected.length === 0 && stgValue === null}

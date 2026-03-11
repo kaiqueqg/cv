@@ -69,6 +69,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     // }
     // else if(globalTheme === Theme.Win95){
     //   setGlobalTheme(Theme.Dark);
+    //   local.writeTheme(Theme.Dark);
     //   document.documentElement.setAttribute('theme', Theme.Dark);
     // }
   }
