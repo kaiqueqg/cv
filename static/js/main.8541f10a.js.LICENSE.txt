@@ -59,7 +59,3 @@
  *
  * @license MIT
  */
-
-//!Dangerous
-
-//!Write new objectives
