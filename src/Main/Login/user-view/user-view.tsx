@@ -1,9 +1,9 @@
 import { useUserContext } from "../../../contexts/user-context";
-import {local, session} from "../../../storage/storage";
+import {local, session, StgKey} from "../../../storage/storage";
 import { useNavigate } from 'react-router-dom';
 import './user-view.scss';
 import { useEffect, useState } from "react";
-import { ResponseUser, Response, ResponseServices, MessageType, TwoFactorAuthRequest } from "../../../Types";
+import { User, Response, ResponseServices, MessageType, TwoFactorAuthRequest } from "../../../Types";
 import log from "../../../log/log";
 import Loading from "../../../loading/loading";
 import { useRequestContext } from "../../../contexts/request-context";
@@ -12,18 +12,17 @@ import Button, { ButtonColor } from "../../../button/button";
 const QRCode = require("qrcode");
 
 interface UserViewProps{
-  setIsLogged: (value: boolean) => void,
   logout: () => void,
 }
 
-const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
+const UserView: React.FC<UserViewProps> = ({logout}) => {
   const { identityApi, objectiveslistApi, s3Api } = useRequestContext();
   const { user, setUser } = useUserContext();
   const { 
     popMessage,
   } = useLogContext();
   const navigate = useNavigate();
-  const [userList, setUserList] = useState<ResponseUser[]>([]);
+  const [userList, setUserList] = useState<User[]>([]);
   const [identityServiceStatus, setIdentityServiceStatus] = useState<ResponseServices>();
   const [isGettingUserInfo, setIsGettingUserInfo] = useState<boolean>(false);
   const [isGettingUserList, setIsGettingUserList] = useState<boolean>(false);
@@ -58,7 +57,7 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
 
     const newUser = await identityApi.getUserInfo();
     if(newUser){
-      local.setUser(newUser);
+      local.setData(StgKey.User, newUser);
       setUser(newUser);
     }
 
@@ -96,21 +95,21 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
     console.log(response);
   }
 
-  const activateUser = async (user: ResponseUser) => {
+  const activateUser = async (user: User) => {
     setIsGettingUserList(true);
     const respUser = await identityApi.changeUserStatus({Email: user.Email, Status: 'Active'});
     await getUserList();
     setIsGettingUserList(false);
   }
 
-  const refuseUser = async (user: ResponseUser) => {
+  const refuseUser = async (user: User) => {
     setIsGettingUserList(true);
     const respUser = await identityApi.changeUserStatus({Email: user.Email, Status: 'Refused'});
     await getUserList();
     setIsGettingUserList(false);
   }
 
-  const waitingApproval = async (user: ResponseUser) => {
+  const waitingApproval = async (user: User) => {
     setIsGettingUserList(true);
     const respUser = await identityApi.changeUserStatus({Email: user.Email, Status: 'WaitingApproval'});
     await getUserList();
@@ -136,10 +135,10 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
     await getServicesList();
   }
 
-  const getUserRow = (user: ResponseUser) => {
+  const getUserRow = (user: User) => {
     return (
       <div key={user.Email} className='admin-user-row'>
-        <div className={'admin-user-name g-txt'}>{user.Email}</div>
+        <div className={'admin-user-name g-txt'}>{'asdsd'}</div>
         <img className={user.Status === 'Active'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{activateUser(user)}}></img>
         <img className={user.Status === 'Refused'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{refuseUser(user)}}></img>
         <img className={user.Status === 'WaitingApproval'? 'admin-user-image' : 'admin-user-image beige-darker'} src={process.env.PUBLIC_URL + '/wait.png'} alt='meaningfull text' onClick={()=>{waitingApproval(user)}}></img>
@@ -234,41 +233,43 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
     setTwoFAVerificationCode(event.target.value);
   }
 
-  return(
-  <div className={"logged-container "}>
-      <div className='card-container'>
-      {isGettingUserInfo?
-        <Loading/>
-        :
-        <>
-          <div className='logged-title' onClick={getUserInfo}>PROFILE</div>
-          <div className="logged-info-box">
-            <div className="logged-box">
-              <div className="userRow"><b>Username:</b> </div>
-              <div className="userRow"><b>Email:</b> </div>
-              <div className="userRow"><b>Role:</b> </div>
-              <div className="userRow"><b>Status:</b> </div>
-              <div className="userRow"><b>2FA:</b> </div>
+  const getProfileCard = () => {
+    return(
+      <Loading isLoading={isGettingUserInfo}>
+        <div className='card-container'>
+          <>
+            <div className='logged-title' onClick={getUserInfo}>PROFILE</div>
+            <div className="logged-info-box">
+              <div className="logged-box">
+                <div className="userRow"><b>Username:</b> </div>
+                <div className="userRow"><b>Email:</b> </div>
+                <div className="userRow"><b>Role:</b> </div>
+                <div className="userRow"><b>Status:</b> </div>
+                <div className="userRow"><b>2FA:</b> </div>
+              </div>
+              <div className="logged-box">
+                <div className="userData">{user?.Username}</div>
+                <div className="userData">{user?.Email === ''? 'No email':user?.Email}</div>
+                <div className="userData">{user?.Role}</div>
+                <div className="userData">{user?.Status}</div>
+                <div className="userData">{(user?.TwoFAActive)? 'Active':'Not active'}</div>
+              </div>
             </div>
-            <div className="logged-box">
-              <div className="userData">{user?.Username}</div>
-              <div className="userData">{user?.Email}</div>
-              <div className="userData">{user?.Role}</div>
-              <div className="userData">{user?.Status}</div>
-              <div className="userData">{(user?.TwoFAActive)? 'Active':'Not active'}</div>
+            <div className="logout-row">
+              <Button color={ButtonColor.RED} text={'logout'} onClick={logout}></Button>
+              <Button color={ButtonColor.WHITE} text={'To Objectives List'} onClick={changeToObjectivesList}></Button>
+              {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
             </div>
-          </div>
-          <div className="logout-row">
-            <Button color={ButtonColor.RED} text={'logout'} onClick={logout}></Button>
-            <Button color={ButtonColor.WHITE} text={'To Objectives List'} onClick={changeToObjectivesList}></Button>
-            {user?.Status === 'WaitingApproval' && <button className="btn-base btn-togrocerylist" type="button"  onClick={resendApproveEmail}>Ask again for approval.</button>}
-          </div>
-        </>
-      }
-    </div>
-    {user?.TwoFAActive?
+          </>
+        </div>
+      </Loading>
+    )
+  }
+
+  const getDeactivate2FACard = () => {
+    return(
       <div className="card-container">
-        <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.Error)}}>Deactivate 2FA</div>
+        <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.ERROR)}}>Deactivate 2FA</div>
         {deactivateTwoFA && 
           <div className={'fa-deactivate-container'}>
             <div className='fa-deactivate-subtitle'>Verification code:</div>
@@ -281,9 +282,13 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
         }
         <Button color={ButtonColor.WHITE} text={deactivateTwoFA?'Cancel':'Deactivate 2FA'} onClick={() => { setDeactivateTwoFA(!deactivateTwoFA)}}></Button>
       </div>
-      :
+    )
+  }
+
+  const getActivate2FA = () => {
+    return(
       <div className="card-container">
-        <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.Error)}}>Activate 2FA</div>
+        <div className='logged-title' onClick={()=>{popMessage('Message test...', MessageType.ERROR)}}>Activate 2FA</div>
         {twoFAQRCode !== ''?
           (isActivatingTwoFA?
             <Loading/>
@@ -306,49 +311,66 @@ const UserView: React.FC<UserViewProps> = ({setIsLogged, logout}) => {
           )
         }
       </div>
+    )
+  }
+
+  const getAdminCards = () => {
+    if(user?.Role !== 'Admin') return <></>;
+
+    return(
+      <>
+        <div className='card-container'>
+          {isGettingUserList ? (
+            <Loading/>
+          ) : (
+            <>
+              <div className='logged-title' onClick={() => {getUserList()}}>Users:</div>
+              <div className='admin-users-box'>
+                {userList.length > 0 && userList.map((user: User) => (
+                  getUserRow(user)
+                ))}
+              </div>
+              {isShowingChangePass && <div className="changeEmailText">{emailChangePassword}</div>}
+              {isShowingChangePass && <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>}
+            </>
+          )}
+        </div>
+        <div className='card-container'>
+          {isGettingServicesList ? (
+            <Loading/>
+          ) : (
+            <>
+              <div onClick={emergencyStop}>Emergency Stop</div>
+              <div className='logged-title' onClick={() => {getServicesList()}}>Services:</div>
+              <div className='admin-service-box'>
+                <div className='admin-service-row'>
+                  <div className='admin-service-name g-txt'>Identity:</div>
+                  <img className={identityServiceStatus?.Up ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{changeIdentityStatus(true)}}></img>
+                  <img className={!identityServiceStatus || !identityServiceStatus.Up ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{changeIdentityStatus(false)}}></img>
+                </div>
+                <div className='admin-service-row'>
+                  <div className='admin-service-name g-txt'>Identity Request:</div>
+                  <img className={identityServiceStatus?.RequestNewUserUp ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{changeRequestNewUserStatus(true)}}></img>
+                  <img className={!identityServiceStatus || !identityServiceStatus.RequestNewUserUp ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{changeRequestNewUserStatus(false)}}></img>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </>
+    ) 
+  }
+
+  return(
+    <div className={"logged-container"}>
+      {getProfileCard()}
+
+    {user?.TwoFAActive?
+      getDeactivate2FACard()
+      :
+      getActivate2FA()
     }
-    {user?.Role === 'Admin' && (
-    <>
-      <div className='card-container'>
-        {isGettingUserList ? (
-          <Loading/>
-        ) : (
-          <>
-            <div className='logged-title' onClick={() => {getUserList()}}>Users:</div>
-            <div className='admin-users-box'>
-              {userList.length > 0 && userList.map((user: ResponseUser) => (
-                getUserRow(user)
-              ))}
-            </div>
-            {isShowingChangePass && <div className="changeEmailText">{emailChangePassword}</div>}
-            {isShowingChangePass && <input className="input-base" type="password" onChange={changePassword} onKeyUp={passwordEnter} placeholder="Password" aria-label="Server" value={password}></input>}
-          </>
-        )}
-      </div>
-      <div className='card-container'>
-        {isGettingServicesList ? (
-          <Loading/>
-        ) : (
-          <>
-            <div onClick={emergencyStop}>Emergency Stop</div>
-            <div className='logged-title' onClick={() => {getServicesList()}}>Services:</div>
-            <div className='admin-service-box'>
-              <div className='admin-service-row'>
-                <div className='admin-service-name g-txt'>Identity:</div>
-                <img className={identityServiceStatus?.Up ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{changeIdentityStatus(true)}}></img>
-                <img className={!identityServiceStatus || !identityServiceStatus.Up ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{changeIdentityStatus(false)}}></img>
-              </div>
-              <div className='admin-service-row'>
-                <div className='admin-service-name g-txt'>Identity Request:</div>
-                <img className={identityServiceStatus?.RequestNewUserUp ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/active.png'} alt='meaningfull text' onClick={()=>{changeRequestNewUserStatus(true)}}></img>
-                <img className={!identityServiceStatus || !identityServiceStatus.RequestNewUserUp ? 'admin-service-image' : 'admin-service-image beige-darker'} src={process.env.PUBLIC_URL + '/refused.png'} alt='meaningfull text' onClick={()=>{changeRequestNewUserStatus(false)}}></img>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
-    </>
-  )}
+    {getAdminCards()}
   </div>
   )
 }

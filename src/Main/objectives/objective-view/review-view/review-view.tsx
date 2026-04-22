@@ -91,7 +91,6 @@ export const ReviewView: React.FC<ReviewViewProps> = (props) => {
       || newItem.Rating !== review.Rating?.trim()
       ) {
 
-      log.arr([newItem])
       const data = await objectiveslistApi.putObjectiveItems([newItem]);
 
       if(data){

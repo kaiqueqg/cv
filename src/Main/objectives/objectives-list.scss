@@ -208,6 +208,12 @@
   @if $bor {border: 1px solid rgb(172, 13, 92);}
 }
 
+.objectives-list-main-not-logged{
+  color: red;
+  font-weight: bold;
+  font-size: larger;
+}
+
 .objectivesListFirstOneContainer{
   cursor: pointer;
   display: flex;

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './login.scss'
-import { CreateUserModel, ResponseUser, MenuOption, Response, MessageType, TwoFactorAuthRequest, Theme } from '../../Types'
+import { CreateUserModel, User, MenuOption, Response, MessageType, TwoFactorAuthRequest, Theme } from '../../Types'
 import Loading from '../../loading/loading';
-import { useUserContext } from '../../contexts/user-context';
+import { DefaultUser, useUserContext } from '../../contexts/user-context';
 import log from '../../log/log';
 import { useNavigate } from 'react-router-dom';
 import UserView from './user-view/user-view';
 import { useLogContext } from '../../contexts/log-context';
 import { useRequestContext } from '../../contexts/request-context';
-import { local, session } from '../../storage/storage';
+import { local, session, StgKey } from '../../storage/storage';
 import TwoFAView from './twofa-view/twofa-view';
 import RequestUserView from './request-user-view/request-user-view';
 import Button, { ButtonColor } from '../../button/button';
@@ -19,11 +19,10 @@ interface LoginProps{
 
 const Login: React.FC<LoginProps> = () => {
   const { identityApi } = useRequestContext();
-  const { setUser } = useUserContext();
+  const { setUser, writeIsLogged, isLogged } = useUserContext();
   const { popMessage } = useLogContext();
 
   const [isLogging, setIsLogging] = useState<boolean>(false);
-  const [isLogged, setIsLogged] = useState<boolean>(false);
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -64,11 +63,11 @@ const Login: React.FC<LoginProps> = () => {
       }
     }
     else{
-      popMessage(response.Message, MessageType.Error, 10);
+      popMessage(response.Message, MessageType.ERROR, 10);
     }
   }
 
-  // interface LoginData { User: ResponseUser, Token: string }
+  //interface LoginData { User: ResponseUser, Token: string }
   const login = async () => {
     if(email.trim() === ""){
       setWrongEmail(false);
@@ -99,27 +98,29 @@ const Login: React.FC<LoginProps> = () => {
     try {
       const data = await identityApi.login(JSON.stringify(user), loginError);
       if(data){
-        /// Fist require 2FA
+        // Fist require 2FA
         if(data.RequiringTwoFA){
           if(data.TwoFATempToken && data.TwoFATempToken.trim() !== ''){
             session.writeTwoFATempToken(data.TwoFATempToken);
             setRequiringTwoFA(true);
           }
           else{
-            popMessage('There was a problem with requiring 2FA code.', MessageType.Error);
+            popMessage('There was a problem with requiring 2FA code.', MessageType.ERROR);
           }
         }
         else{
-          /// Normal login, without 2FA
+          // Normal login, without 2FA
           if(data.User && data.Token){
-            local.setToken(data.Token);
-            local.setUser(data.User);
-            local.setFirstLogin(true);
+            local.setData(StgKey.JwtToken, data.Token);
+            local.setData(StgKey.User, data.User);
+            local.setData(StgKey.FirstLogin, true);
+            local.setData(StgKey.IsLogged, true);
+            local.setData(StgKey.Objectives, []);
+            local.setData(StgKey.Items, []);
             setUser(data.User);
-            setIsLogged(true);
           }
           else{
-            popMessage('Login was ok but no data was returned.', MessageType.Error);
+            popMessage('Login was ok but no data was returned.', MessageType.ERROR);
           }
         }
       }
@@ -149,28 +150,15 @@ const Login: React.FC<LoginProps> = () => {
     }
   }
 
-  const checkForLoginToken = () =>{
-    const token = local.getToken();
-
-    if(token != null && token !== undefined){
-      const parsedToken = parseJwt(token);
-      const now = new Date();
-      const tokenDate = new Date(parsedToken.exp * 1000);
-
-      return tokenDate > now;
-    }
-
-    return false;
-  }
-
   const logout = async () => {
-    local.deleteToken();
-    local.deleteUser();
-    local.deleteAvailableTags();
-    local.deleteSelectedTags();
-    local.deleteFirstLogin();
-    setUser(null);
-    setIsLogged(false);
+    local.deleteData(StgKey.JwtToken);
+    local.deleteData(StgKey.User);
+    local.deleteData(StgKey.AvailableTags);
+    local.deleteData(StgKey.SelectedTags);
+    local.deleteData(StgKey.FirstLogin);
+    local.deleteData(StgKey.IsLogged);
+    setUser(DefaultUser);
+    writeIsLogged(false);
     setRequiringTwoFA(false);
   }
 
@@ -183,8 +171,8 @@ const Login: React.FC<LoginProps> = () => {
 
   //Responsable for getting token and user from storage to state
   const verifyLogin = () => {
-    const token = local.getToken();
-    const user = local.getUser();
+    const token = local.getData(StgKey.JwtToken);
+    const user = local.getData(StgKey.User);
 
     if(token != null && token !== undefined && user != null && user !== undefined){
       const parsedToken = parseJwt(token);
@@ -192,8 +180,17 @@ const Login: React.FC<LoginProps> = () => {
       const tokenDate = new Date(parsedToken.exp * 1000);
 
       if(parsedToken.exp === undefined || tokenDate > now){
-        setUser(local.getUser());
-        setIsLogged(true);
+        const userData = local.getData(StgKey.User);
+        if(userData === null) {
+          setUser(DefaultUser);
+          writeIsLogged(false);
+        }
+        else{
+          setUser(userData);
+          writeIsLogged(true);
+        }
+        
+        local.setData(StgKey.IsLogged, true);
       }
       else{
         logout();
@@ -206,7 +203,7 @@ const Login: React.FC<LoginProps> = () => {
       {!isLogged?
         <div className='login-wrapper'>
           {requiringTwoFA?
-            <TwoFAView setIsLogged={setIsLogged} logout={logout}></TwoFAView>
+            <TwoFAView logout={logout}></TwoFAView>
             :
             <div className='login-box'>
               <div className="email-column">
@@ -235,7 +232,7 @@ const Login: React.FC<LoginProps> = () => {
                   <Loading/>
                   :
                   <Button
-                    color={ButtonColor.GREEN}
+                    color={ButtonColor.BLUE}
                     text='LOGIN'
                     onClick={login}
                     ></Button>
@@ -246,7 +243,7 @@ const Login: React.FC<LoginProps> = () => {
           {/* <RequestUserView setIsLogged={setIsLogged}></RequestUserView> */}
         </div>
         :
-        <UserView setIsLogged={setIsLogged} logout={logout}></UserView>
+        <UserView logout={logout}></UserView>
       }
     </div>
   );

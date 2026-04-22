@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useUserContext } from "../../contexts/user-context";
-import {local} from "../../storage/storage";
+import {local, randomId, StgKey} from "../../storage/storage";
 import './objectives-list.scss';
 import log from "../../log/log";
 import { Item, Objective, ObjectivesList as ObjectivesListType } from "../../TypesObjectives";
@@ -11,29 +11,26 @@ import ObjectiveArchivedView from "./objective-archived-view/objective-archived-
 import { useLogContext } from "../../contexts/log-context";
 import { MessageType, Theme } from "../../Types";
 import PressImage from "../../press-image/press-image";
-import ObjectiveBackSideView from "./objective-backup-side-view/objective-backup-side-view";
 import { useRequestContext } from "../../contexts/request-context";
 import { useNavigate } from 'react-router-dom';
 import Button, { ButtonColor } from "../../button/button";
-import { useThemeContext } from "../../contexts/theme-context";
 
 interface ObjectivesListProps{}
 
 enum SidePanelView {Archived, Closed, Backup};
 
 const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
-  const { user, setUser,
-    // firstLogin, writeFirstLogin,
-    availableTags, writeAvailableTags, removeAvailableTags,
-    selectedTags, writeSelectedTags, putSelectedTags, removeSelectedTags
+  const { isReady, user, setUser,
+    availableTags, writeAvailableTags,
+    selectedTags, writeSelectedTags, putSelectedTags, removeSelectedTags, isLogged
   } = useUserContext();
   const { popMessage } = useLogContext();
   const { objectiveslistApi } = useRequestContext();
-  const navigate = useNavigate();
 
-  const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
   const [objectives, setObjectives] = useState<Objective[]>([]);
-  const [isUpdatingObjectives, setIsUpdatingObjectives] = useState<boolean>(true);
+  const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
+  // const [objectives, setObjectives] = useState<Objective[]>([]);
+  const [isUpdatingObjectives, setIsUpdatingObjectives] = useState<boolean>(false);
   const [isAddingNewObjective, setIsAddingNewObjective] = useState<boolean>(false);
   const [amountOfNewObjectives, setAmountOfNewObjectives] = useState<number>(1);
   const [isUploadingBackupData, setIsUploadingBackupData] = useState<boolean>(false);
@@ -58,11 +55,14 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [searchMatchWholeWord, setSearchMatchWholeWord] = useState<boolean>(false);
   const [searchMatchAccent, setSearchMatchAccent] = useState<boolean>(false);
   
-  //test
+  //TODO Test
   const [objCol, setObjCol] = useState<number>(3);
-
   useEffect(() => {
-    // verifyLogin();
+    const a = local.getData(StgKey.IsLogged);
+    if(!a) {
+      popMessage('Not logged.', MessageType.ERROR, Infinity);
+    }
+
     updateObjectives();
 
     const handleResize = () => {
@@ -73,36 +73,14 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [isReady]);
+
+  useEffect(() => {
+  },[isReady])
 
   useEffect(() => {
 
   },[objCol]);
-
-  const parseJwt = (token :string) => {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
-  }
-
-  const verifyLogin = async () => {
-    const token = await local.getToken();
-    const user = await local.getUser();
-
-    if(token && user){
-      const parsedToken = parseJwt(token);
-      const now = new Date();
-      const tokenDate = new Date(parsedToken.exp * 1000);
-
-      if(parsedToken.exp === undefined || tokenDate > now){
-        setUser(await local.getUser());
-      }
-    }
-  }
 
   ///TODO too heavy
   const updateObjectives = async () => {
@@ -110,7 +88,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
     const data = await objectiveslistApi.getObjectiveList();
     if(data){
-      const sorted = data.sort((a: Objective, b: Objective) => a.Pos-b.Pos);
+      const sorted = [...data].sort((a: Objective, b: Objective) => a.Pos-b.Pos);
       setObjectives(sorted);
 
       //updating available tags and selected tags
@@ -122,10 +100,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         const uniqueTags = Array.from(new Set(tags));
         writeAvailableTags(uniqueTags);
         
-        const v = local.getFirstLogin(); //I need a better solution
+        const v = local.getData(StgKey.FirstLogin); //I need a better solution
         if(v) {
           writeSelectedTags(uniqueTags);
-          local.setFirstLogin(false);
+          local.setData(StgKey.FirstLogin, false);
         }
       }
     }
@@ -140,7 +118,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     
     try {
       const emptyObjective: Objective = {
-        ObjectiveId: '',
+        ObjectiveId: randomId(),
         IsShowing: true,
         IsArchived: false,
         Title: 'Title',
@@ -162,8 +140,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       for(let i = 0; i < amountOfNewObjectives; i++){
         objsToSend.push(emptyObjective);
       }
-      log.w(objsToSend)
-      const data = await objectiveslistApi.putObjectives(objsToSend, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectives(objsToSend, (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
       setAmountOfNewObjectives(1);
       if(data){
         putObjectivesInDisplay(data);
@@ -176,20 +153,19 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const putObjectivesInDisplay = async (objs?: Objective[], remove?: boolean) => {
-    
     if (objs) {
       for (let i = 0; i < objs.length; i++) {
-      const obj = objs[i];
-        setObjectives((prevObjectives) => {
+        const obj = objs[i];
+
         let newObjs = [];
         if (remove) {
-          newObjs = prevObjectives.filter((o: Objective) => o.ObjectiveId !== obj.ObjectiveId);
+          newObjs = objectives.filter((o: Objective) => o.ObjectiveId !== obj.ObjectiveId);
         } else {
-          const itemInList = prevObjectives.find((o: Objective) => o.ObjectiveId === obj.ObjectiveId);
+          const itemInList = objectives.find((o: Objective) => o.ObjectiveId === obj.ObjectiveId);
           if (itemInList) {
-            newObjs = prevObjectives.map((o: Objective) => o.ObjectiveId === obj.ObjectiveId ? obj : o);
+            newObjs = objectives.map((o: Objective) => o.ObjectiveId === obj.ObjectiveId ? obj : o);
           } else {
-            newObjs = [...prevObjectives, obj];
+            newObjs = [...objectives, obj];
           }
         }
         const sorted = newObjs.sort((a, b) => a.Pos - b.Pos);
@@ -206,16 +182,13 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           }
         }
         writeAvailableTags(['Pin', ...Array.from(tagSet)])
-
-        return sorted;
-      });
+        setObjectives(sorted);
       }
     } else {
       await updateObjectives();
     }
   }
 
-  //! Dangerous
   const deleteObjectiveItemsInDisplay = (objectiveId: string, items: Item[]) => {
     objectiveRefs.current[objectiveId].deleteItems(items);
   }
@@ -263,7 +236,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     try{
       setIsUpdatingObjectives(true);
       setObjectives(finalList);
-      const data = await objectiveslistApi.putObjectives(finalList, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectives(finalList, (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
       if(data) {
       }
       else{
@@ -358,7 +331,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
         
         const isSelected = objsSelected.includes(objectives[i]);
         rtnView.push( 
-          <div 
+          <div
             key={objectives[i].ObjectiveId}
             className={'objectiveSideRow ' + (isEditingPos ? 'isEditing' : '') + (isSelected?' objectiveSideRowSelected':'') + (isEndingPos&&isSelected?' objectiveSideRowSelectedEnding':'')}
             onClick={() => {isEditingPos && (isEndingPos? endEnditingPos(objectives[i]) : addingRemovingItem(objectives[i]))}}>
@@ -381,7 +354,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   
   const changeSelectedTag = (tag:string, event: React.MouseEvent) => {
     if(tag === 'Pin') {
-      popMessage(`You can't unselect Pin tag.`, MessageType.Alert); 
+      popMessage(`You can't unselect Pin tag.`, MessageType.ALERT); 
       return;
     }
     if(event.shiftKey && event.button === 0){
@@ -431,8 +404,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const backupData = async () => {
     setIsBackingUpData(true);
-    const data:{success: boolean} = await objectiveslistApi.backupData((error:any) => popMessage(error.Message, MessageType.Error, 10));
-    console.log(data);
+    const data:{success: boolean} = await objectiveslistApi.backupData((error:any) => popMessage(error.Message, MessageType.ERROR, 10));
     if(data && data.success){
       popMessage('Backup done: ' + data.success);
     }
@@ -460,7 +432,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const orderObjsByTitle = async () => {
     setIsSortingObjs(true);
-    let objsOrdered: Objective[] = objectives.sort((a, b) => {
+    let objsOrdered: Objective[] = [...objectives].sort((a, b) => {
       return a.Title.localeCompare(b.Title)
     });
 
@@ -523,7 +495,6 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   }
 
   const doSearchText = () => {
-    log.b('doSearchText')
     let newList: string[] = [];
     let newSearch = searchText.trim();
 
@@ -547,7 +518,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
     if(newList.length === 0) {
       setWasNoSearchNoItemFound(true);
-      popMessage(`None found...`, MessageType.Alert);
+      popMessage(`None found...`, MessageType.ALERT);
     }
 
     setObjsSearchToShow(newList);
@@ -613,10 +584,10 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             style={{ display: "none" }}
             onChange={handleFileUpload}
           />
-          {user?.Role === 'Admin' && <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isLoadingBlack={false}/>}
+          {isLogged && <PressImage onClick={()=>{backupData()}} src={process.env.PUBLIC_URL + '/backup.png'} isLoading={isBackingUpData} isLoadingBlack={false}/>}
           {user?.Role === 'Admin' && <PressImage onClick={()=>{triggerFileInput()}} src={process.env.PUBLIC_URL + '/upload.png'} isLoading={isUploadingBackupData} isLoadingBlack={false}/>}
-          {!isEditingPos && currentSidePanelView === SidePanelView.Closed &&  <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isLoadingBlack={false}/>}
-          {!isEditingPos && currentSidePanelView === SidePanelView.Archived &&  <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isLoadingBlack={false} isSelected/>}
+          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/hide.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Closed)} isLoadingBlack={false} isSelected={currentSidePanelView === SidePanelView.Closed}/>}
+          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/archived.png'} onClick={()=>setCurrentSidePanelView(SidePanelView.Archived)} isLoadingBlack={false} isSelected={currentSidePanelView === SidePanelView.Archived}/>}
           {!isEditingPos && <PressImage onClick={startEditingPos} src={process.env.PUBLIC_URL + '/change.png'} disable={objectives.length < 2} disableSrc={process.env.PUBLIC_URL + '/change-grey.png'} isLoadingBlack={false}/>}
           {isEditingPos && <PressImage onClick={cancelEditingPos} src={process.env.PUBLIC_URL + '/cancel.png'} isLoadingBlack={false}/>}
           {(isEditingPos && !isEndingPos) && 
@@ -626,8 +597,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
               <div className='objectivesImage'></div>
             )
           }
-          <PressImage src={process.env.PUBLIC_URL + '/sort.png'} onClick={() => {setIsSortMenuOpen(!isSortMenuOpen)}} isSelected={isSortMenuOpen} isLoading={isSortingObjs}></PressImage>
-          <PressImage onClick={()=>{if(isSearchingMenuOpen)cancelSearch(); setIsSearchingMenuOpen(!isSearchingMenuOpen);}} src={process.env.PUBLIC_URL + '/search.png'} isSelected={isSearchingMenuOpen}/>
+          {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/sort.png'} onClick={() => {setIsSortMenuOpen(!isSortMenuOpen)}} isSelected={isSortMenuOpen} isLoading={isSortingObjs}></PressImage>}
+          {!isEditingPos && <PressImage onClick={()=>{if(isSearchingMenuOpen)cancelSearch(); setIsSearchingMenuOpen(!isSearchingMenuOpen);}} src={process.env.PUBLIC_URL + '/search.png'} isSelected={isSearchingMenuOpen}/>}
           {!isEditingPos && <PressImage src={process.env.PUBLIC_URL + '/newfile.png'} onRightClick={plusNewFile} badgeText={amountOfNewObjectives>1?amountOfNewObjectives.toString():undefined} onClick={addNewObjective} isLoading={isAddingNewObjective} isLoadingBlack={false}/>}
           {/* <PressImage src={process.env.PUBLIC_URL + '/copy.png'} badgeText={objCol.toString()} onClick={changeCol} isLoading={isAddingNewObjective} isLoadingBlack={false}/> */}
         </div>
@@ -656,14 +627,12 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           {isSideMenuOptionsOpen && getSideMenuOptionsView()}
           {isSearchingMenuOpen && getSearchView()}
           {/* {currentSidePanelView === SidePanelView.Backup && <ObjectiveBackSideView></ObjectiveBackSideView>} */}
-          {isUpdatingObjectives ?
-            <Loading/>
-            :
+          <Loading isLoading={isUpdatingObjectives}>
             <>
               {isShowingObjsList && currentSidePanelView === SidePanelView.Closed && getObjectiveClosedListView()}
               {isShowingObjsList && currentSidePanelView === SidePanelView.Archived && getObjectiveArchivedListView()}
             </>
-          }
+          </Loading>
         </div>
       </div>
     )
@@ -699,7 +668,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const uploadBackupData = async (data: ObjectivesListType, fileName: string) => {
     setIsUpdatingObjectives(true);
-    await objectiveslistApi.syncObjectivesList(data, (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    await objectiveslistApi.syncObjectivesList(data, (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
     setIsUpdatingObjectives(false);
 
     if(data){
@@ -710,7 +679,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     }
   }
 
-  const isThereANonArchivedShowingObjetive = ():boolean => {
+  const isThereANonArchivedShowingObjetive = (): boolean => {
     return  objectives.some((o: Objective) => o.IsShowing && !o.IsArchived);
   }
 
@@ -719,9 +688,8 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
       !isAddingNewObjective && <Button color={ButtonColor.BLUE} text='New objective' onClick={addNewObjective} src={process.env.PUBLIC_URL + '/newfile.png'}></Button>
     )
   }
+
   const getMainObjectivesFullView = () => {
-
-
     return(
       <div className='objectives-list-main-and-tags-container'>
         {getTagList()}
@@ -737,17 +705,11 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const getFullView = () => {
     return(
       <div className='objectives-container'>
-        {user && user.Status==='Active' ?
-          <div className='objectives-list-container'>
-            {getSideMenu()}
-            {getMainObjectivesFullView()}
-            <div style={{height: '700px'}}></div>
-          </div>
-        :
-        <div className='need-login'>
-          <Button color={ButtonColor.WHITE} text='Need to login' onClick={()=>{navigate('/login')}}></Button>
+        <div className='objectives-list-container'>
+          {getSideMenu()}
+          {getMainObjectivesFullView()}
+          <div style={{height: '700px'}}></div>
         </div>
-        }
       </div>
     )
   }
@@ -755,8 +717,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const getVerticalView = () => {
     return(
       <div className='objectives-container'>
-        {user && user.Status==='Active' ?
-          isUpdatingObjectives?
+        { isUpdatingObjectives?
           <div className='loading-list-container'>
             <Loading/>
           </div>
@@ -776,16 +737,16 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             </div>
             <div style={{height: '700px'}}></div>
           </div>)
-        :
-          <div className='need-login'>
-            <Button color={ButtonColor.WHITE} text='Need to login' onClick={()=>{navigate('/login')}}></Button>
-          </div>
         }
       </div>
     )
   }
   
-  return ( isBelow700px ? getVerticalView() : getFullView() );
+  return ( 
+    <Loading isLoading={!isReady}>
+      {isBelow700px ? getVerticalView() : getFullView()}
+    </Loading>
+   );
 }
 
 export default ObjectivesList;

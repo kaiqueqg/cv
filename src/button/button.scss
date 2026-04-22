@@ -59,10 +59,10 @@ $sizeBigger: 55px;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: $size;
-  min-height: $size;
-  max-width: $size;
-  max-height: $size;
+  min-width: $sizeSmall;
+  min-height: $sizeSmall;
+  max-width: $sizeSmall;
+  max-height: $sizeSmall;
   margin: 0px 5px 0px 5px;
 
   border-radius: 5px;

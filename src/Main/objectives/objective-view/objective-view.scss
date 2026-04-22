@@ -327,7 +327,7 @@
   }
 }
 
-.objectiveNewItemAmount{
+.objective-new-item-amount{
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -339,6 +339,9 @@
   height: 30px;
   font-weight: bold;
   margin-left: 5px;
+  padding: 18px;
+
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }
 
 .objectiveNewItemImages{

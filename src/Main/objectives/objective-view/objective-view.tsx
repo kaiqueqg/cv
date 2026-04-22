@@ -27,6 +27,7 @@ import { shouldBeBlack } from "../../../helper";
 import Button, { ButtonColor } from "../../../button/button";
 import { reviewNew, ReviewView } from "./review-view/review-view";
 import { captureRejectionSymbol } from "events";
+import { randomId } from "../../../storage/storage";
 
 interface ObjectiveViewProps{
   objective: Objective,
@@ -41,13 +42,13 @@ export interface ObjectiveViewRef{
 
 export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((props, ref) => {
   const { objectiveslistApi } = useRequestContext();
-  const { putSelectedTags, selectedTags } = useUserContext();
+  const { putSelectedTags, selectedTags, isLogged } = useUserContext();
   const { log, popMessage } = useLogContext();
   const { scss, getTintColor } = useThemeContext();
   const { objective, putObjectives, isObjsEditingPos } = props;
   const { Theme } = objective;
   
-  const [items, setItems] = useState<(Item)[]>([]);
+  const [items, setItems] = useState<Item[]>([]);
   const [itemSearchToShow, setItemsSearchToShow] = useState<string[]>([]);
   const [newTitle, setNewTitle] = useState<string>(props.objective.Title);
   // const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
@@ -64,6 +65,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const [isAddingNewItemMenuOpen, setIsAddingNewItemMenuOpen] = useState<boolean>(false);
   const [amountOfItemsToAdd, setAmountOfItemsToAdd] = useState<number>(1);
   const [isAddingNewItemLocked, setIsAddingNewItemLocked] = useState<boolean>(false);
+  const [isAddingOnTop, setisAddingOnTop] = useState<boolean>(false);
 
   const [isColorMenuOpen, setIsColorMenuOpen] = useState<boolean>(false);
   const [isTagsMenuOpen, setIsTagsMenuOpen] = useState<boolean>(false);
@@ -119,7 +121,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }));
   }, [items]);
 
-  //!Dangerous
+  // BAD Dangerous
   useImperativeHandle(ref, () => ({
     deleteItems(items: Item[]) {
       deleteItems(items);
@@ -148,40 +150,35 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     setIsRequestingItems(false);
   }
 
-  ///Put items in display
-  const putItemsInDisplay = async (items: Item[]) => {
-    setItems((prevItems) => {
-      let newItems: Item[] = [...prevItems];
-      // Add or update each item
-      for (const item of items) {
-        const existingIndex = newItems.findIndex((i: Item) => i.ItemId === item.ItemId);
-        if (existingIndex >= 0) {
-          newItems[existingIndex] = item; // update
-        } else {
-          newItems.push(item); // add new
-        }
+  // Put items in display
+  const putItemsInDisplay = async (values: Item[]) => {
+    let newItems: Item[] = [...items];
+    // Add or update each item
+    for (const item of values) {
+      const existingIndex = newItems.findIndex((i: Item) => i.ItemId === item.ItemId);
+      if (existingIndex >= 0) {
+        newItems[existingIndex] = item; // Update
+      } else {
+        newItems.push(item); // Add new
       }
+    }
 
-      return newItems.sort((a, b) => a.Pos - b.Pos);
-    });
+    setItems(newItems.sort((a, b) => a.Pos - b.Pos));
   }
 
-  ///Remove items in display
-  const removeItemsInDisplay = (items: Item[]) => {
-    setItems((prevItems) => {
-      let newItems: Item[] = [...prevItems];
+  // Remove items in display
+  const removeItemsInDisplay = (values: Item[]) => {
+    let newItems: Item[] = [...items];
 
-      // Remove all matching items
-      newItems = newItems.filter(
-        (i: Item) => !items.some((r: Item) => r.ItemId === i.ItemId)
-      );
+    // Remove all matching items
+    newItems = newItems.filter(
+      (i: Item) => !values.some((r: Item) => r.ItemId === i.ItemId)
+    );
 
-      // Sort by position
-      return newItems.sort((a, b) => a.Pos - b.Pos);
-    });
+    setItems(newItems);
   }
 
-  ///Delete items in DB and update in display
+  // Delete items in DB and update in display
   const deleteItems = async (items: Item[]) => {
     setIsLoadingIsEndingSelecMult(true);
     const data = await objectiveslistApi.deleteObjectiveItems(items, (value: string) =>{
@@ -296,7 +293,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }
     else{//start adding item
       setIsAddingNewItemMenuOpen(true);
-        setIsAddingNewItemLocked(false);
+      setIsAddingNewItemLocked(false);
     }
   }
 
@@ -308,10 +305,15 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if (pos !== undefined && pos !== null) {
       const newList = items.filter((i: Item) => !multItemsSelected.includes(i));
 
-      const before = newList.slice(0, pos + 1);
-      const after = newList.slice(pos + 1);
-
-      const adjustedList = [...before, ...addItems, ...after];
+      let adjustedList = [];
+      if(pos === 0){
+        adjustedList = [...addItems, ...newList];
+      }
+      else{
+        const before = newList.slice(0, pos+1);
+        const after = newList.slice(pos + 1);
+        adjustedList = [...before, ...addItems, ...after];
+      }
 
       for (let i = 0; i < adjustedList.length; i++) {
         sending.push({
@@ -344,7 +346,10 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const choseNewItemToAdd = async (type: ItemType, pos?:number, amount?: number) => {
     if(!isAddingNewItemLocked) setIsAddingNewItemMenuOpen(false);
 
-    const baseItem: Item = ItemNew('', objective.ObjectiveId, '', type, pos?pos:items.length, '');
+    const positionByMenu: number = isAddingOnTop?0:items.length;
+    const positionFinal:number = pos?pos:positionByMenu;
+    
+    const baseItem: Item = ItemNew('', objective.ObjectiveId, '', type, positionFinal, '');
     let typeItem:any = {};
 
     switch (type) {
@@ -396,7 +401,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     for(let i = 0; i < finalAmount; i++){
       itemList.push(typeItem);
     }
-    await addNewItems(itemList, pos)
+    await addNewItems(itemList, positionFinal)
   }
 
   const onChangeObjectiveIsArchived = async () => {
@@ -528,7 +533,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     setIsLoadingIsShowingItems(false);
   }
 
-  ////Open or close multi select menu
+  // Open or close multi select menu
   const onMultiSelectOpen = () => {
     closeAllTopMenus();
     setIsMultiSelectMenuOpen(!isMultiSelectMenuOpen);
@@ -541,7 +546,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     setMultItemsSelected([]);
   }
 
-  //// Add or remove Item from multi select list
+  // Add or remove Item from multi select list
   const addingRemovingItem = (item: Item) => {
     const filteredList = multItemsSelected.filter((i) => i.ItemId !== item.ItemId);
 
@@ -553,8 +558,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }
   }
   
-  ///TODO Multi select functions --------------------------------------------------------------------------
-
+  // Multi select functions --------------------------------------------------------------------------
   const eraseSelectedItems = () => {
     setMultItemsSelected([]);
     setShouldSelectAll(false);
@@ -638,13 +642,13 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
           }
           catch(err){}
         } catch (err) {
-          popMessage('Error trying to paste.', MessageType.Error);
+          popMessage('Error trying to paste.', MessageType.ERROR);
           return;
         }
       }
     }
     catch{
-      popMessage('Error trying to parse items', MessageType.Error);
+      popMessage('Error trying to parse items', MessageType.ERROR);
     }
 
     setSelecMultPartialInfo('');
@@ -664,8 +668,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     setIsLoadingIsEndingSelecMult(false);
   }
 
-  ///TODO Multi select functions ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+  ///Multi select functions ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   const sortItemsAlphabetically = (items: Item[], onlyTitle?: boolean): Item[] => {
     return items.sort((a, b) => {
         const titleA = getSortableText(a, onlyTitle);
@@ -1155,7 +1158,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }
   }
 
-  //TODO GET Menus ---------------------------------------------------------------------------
+  //GET Menus ---------------------------------------------------------------------------
   
   const getTopMenu = () => {
     return (
@@ -1231,7 +1234,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
     return(
       <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
-        <div className={'objectiveNewItemAmount no-select ' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+        <div className={'objective-new-item-amount no-select ' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
+        <PressImage src={process.env.PUBLIC_URL + '/up' + getTintColor(Theme) + '.png'} src2={process.env.PUBLIC_URL + '/down' + getTintColor(Theme) + '.png'} changeToSecondImage={isAddingOnTop} onClick={()=>{setisAddingOnTop(!isAddingOnTop)}} holdHoverEffect/>
         <div className='objectiveNewItemImages'>
           <PressImage src={process.env.PUBLIC_URL + '/review' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Review)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/home' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.House)}}/>
@@ -1328,8 +1332,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     )
   }
 
-  //TODO GET Menus ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  //TODO GET Buttons ---------------------------------------------------------------------------
+  //GET Menus ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // GET Buttons ---------------------------------------------------------------------------
 
   const getObjectiveMenuButton = () => {
     return(
@@ -1472,8 +1476,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     )
   }
 
-  //TODO GET Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
+  //GET Buttons ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   const multiSelectChangeSelectAll = () => {
     if(shouldSelectAll){
       setMultItemsSelected([]);
@@ -1595,7 +1598,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     });
 
     if(newList.length === 0){
-      popMessage(`None found...`, MessageType.Alert);
+      popMessage(`None found...`, MessageType.ALERT);
       setWasNoSearchNoItemFound(true);
     }
     
@@ -1637,7 +1640,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         {getColorMenu()}
         {getItemList()}
         {getHiddenMessage()}
-        {failDownload && !isRequestingItems && getErrorItemsMessage()}
+        {failDownload && !isRequestingItems &&  isLogged && getErrorItemsMessage()}
     </div>
   );
 })

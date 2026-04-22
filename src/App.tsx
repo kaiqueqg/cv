@@ -31,10 +31,10 @@ const App: React.FC<AppProps> = () => {
                 <HashRouter>
                   <TopMenu></TopMenu>
                   <Routes>
-                    <Route path="" element={<Curriculum/>}/>
-                    <Route path="/" element={<Curriculum/>}/>
+                    <Route path="" element={<ObjectivesList/>}/>
+                    <Route path="/" element={<ObjectivesList/>}/>
                     <Route path="/login" element={<Login/>}/>
-                    <Route path="/cv" element={<Curriculum/>}/>
+                    {/* <Route path="/cv" element={<Curriculum/>}/> */}
                     <Route path="/objectiveslist" element={<ObjectivesList/>}/>
                     {/* <Route path="/iot" element={<IoT></IoT>}/> */}
                   </Routes>

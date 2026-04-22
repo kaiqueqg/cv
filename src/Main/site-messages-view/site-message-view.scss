@@ -3,24 +3,7 @@
 $bor: false;
 
 .messageBase{
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  vertical-align: middle;
-  align-items: center;
-  text-align: center;
-  user-select: none;
   
-  padding: 2px 10px;
-  margin: 5px;
-  border-radius: 5px;
-
-  font-weight: bolder;
-  font-size: 12px;
-
-  @media(min-width: 700px){
-    font-size: 20px;
-  }
 }
 
 .messageAlert{

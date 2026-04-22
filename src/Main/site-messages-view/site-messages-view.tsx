@@ -4,6 +4,7 @@ import { useLogContext } from "../../contexts/log-context";
 import SiteMessageView from "./site-message-view";
 import PressImage from "../../press-image/press-image";
 import Button, { ButtonColor } from "../../button/button";
+import { PopMessage } from "../../Types";
 
 export interface SiteMessagesViewProps {
 }
@@ -14,19 +15,17 @@ const SiteMessagesView = (props: SiteMessagesViewProps) => {
   },[messageList]);
 
   const getMessageList = () => {
-    return(
-      messageList.map((item)=>{
-        return <SiteMessageView key={item.id} message={item}></SiteMessageView>
-      })
-    )
-  }
+    return messageList.map(item => (
+      <SiteMessageView key={item.id} message={item} />
+    ));
+  };
 
   return (
     messageList.length === 0?
     <></>
     :
     <div className={'objectiveMessagesContainer'}>
-      <Button text="Clear all" color={ButtonColor.NEUTRAL} onClick={clearMessages} src={process.env.PUBLIC_URL + '/trash.png'}/>
+      {messageList.length > 1 && <Button text="Clear all" color={ButtonColor.WHITE} onClick={clearMessages} src={process.env.PUBLIC_URL + '/trash.png'}/>}
       {getMessageList()}
     </div>
   );

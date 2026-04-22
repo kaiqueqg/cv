@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './request-user-view.scss'
 import Loading from '../../../loading/loading';
-import { local } from '../../../storage/storage';
+import { local, StgKey } from '../../../storage/storage';
 import { CreateUserModel } from '../../../Types';
 import { useRequestContext } from '../../../contexts/request-context';
 import { useUserContext } from '../../../contexts/user-context';
+import { useThemeContext } from '../../../contexts/theme-context';
+import Button, { ButtonColor } from '../../../button/button';
 interface RequestUserViewProps {
   setIsLogged: (value: boolean) => void,
 }
@@ -25,6 +27,15 @@ const RequestUserView: React.FC<RequestUserViewProps> = ({setIsLogged, }) => {
   const [reason, setReason] = useState<string>('');
 
   const [isCreatingNewUser, setIsCreatingNewUser] = useState<boolean>(false);
+
+  useEffect(() =>{
+    // const check = async () => {
+    //   const test = await identityApi.getIdentityServiceStatus();
+    //   console.log(test);
+    // }
+
+    // check();
+  }, [])
 
   function isValidEmail(input: string) {
     const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -64,9 +75,9 @@ const RequestUserView: React.FC<RequestUserViewProps> = ({setIsLogged, }) => {
 
       
       if(data){
-        local.setToken(data.Token);
-        local.setUser(data.User);
-        local.setFirstLogin(true);
+        local.setData(StgKey.JwtToken, data.Token);
+        local.setData(StgKey.User,data.User);
+        local.setData(StgKey.FirstLogin, true);
         setUser(data.User);
         setIsLogged(true);
       }
@@ -107,7 +118,7 @@ const RequestUserView: React.FC<RequestUserViewProps> = ({setIsLogged, }) => {
   return (
     <div className=" login-box">
       <div style={{width: '100%', height:'1px', margin: '40px 0px', backgroundColor: 'black'}}></div>
-      <h3 style={{margin: '40px 0px 30px 0px'}}>Do you want to test my project?</h3>
+      <h3 className={'request-user-title g-txt'}>Do you want to test my project?</h3>
       <div className="login-row">
           <input className="input-base" type="text" onChange={changeCreateEmail} placeholder="Email" aria-label="Email"></input>
           {typeAnEmailCreate && <span className="alert-message concert-one-regular">Type an email.</span>}
@@ -133,7 +144,7 @@ const RequestUserView: React.FC<RequestUserViewProps> = ({setIsLogged, }) => {
           {isCreatingNewUser?
           <Loading></Loading>
           :
-          <button className="btn-base btn-create" type="button" onClick={createLogin}>Send it</button>
+          <Button color={ButtonColor.BLUE} onClick={createLogin} text='REQUEST'/>
           }
       </div>
     </div>

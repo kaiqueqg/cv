@@ -13,7 +13,7 @@ export enum Theme{
   // Auto = 'Auto',
 }
 
-export interface ResponseUser{
+export interface User{
   Username: string,
   Email: string,
   Status: string,
@@ -48,7 +48,7 @@ export interface ResponseServices{
 }
 
 export interface LoginModel{
-  User?: ResponseUser,
+  User?: User,
   Token?: string,
   RequiringTwoFA: boolean,
   TwoFATempToken?: string,
@@ -60,7 +60,7 @@ export interface LoginRequest {
   ExpoToken?: string;
 }
 export interface LoginResponse {
-  User?: ResponseUser,
+  User?: User,
   Token?: string,
   RequiringTwoFA: boolean,
   TwoFATempToken?: string,
@@ -96,7 +96,7 @@ export interface Response<T>{
 export enum Language{ PR_BR, EN, FR, IT };
 export enum MenuOption{ Main, Login, Curriculum, GroceryList, ObjectivesList, IoT, WorldDefence };
 export enum LogLevel { Dev, Warn, Error, None }
-export enum MessageType { Normal, Error, Alert, }
+export enum MessageType { NEUTRAL, NORMAL, ERROR, ALERT }
 
 export interface PopMessage { 
   id: string,

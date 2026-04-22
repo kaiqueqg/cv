@@ -26,7 +26,6 @@ const ObjectiveBackSideView: React.FC<ObjectiveBackupSideViewProps> = (props) =>
     const data = await objectiveslistApi.getBackupDataList();
     if(data){
       setBackupDataList(data);
-      log.g(data);
     }
 
     setIsGettingBackupData(false);

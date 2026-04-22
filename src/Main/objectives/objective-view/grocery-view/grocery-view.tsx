@@ -69,7 +69,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
 
     try {
       const newItem: Grocery = { ...grocery, IsChecked: !grocery.IsChecked, LastModified: new Date().toISOString()};
-      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
 
       if(data){
         setIsSavingIsChecked(false);
@@ -98,7 +98,7 @@ export const GroceryView: React.FC<GroceryViewProps> = (props) => {
       setIsEditingGrocery(true);
 
       putItemsInDisplay([newItem]);
-      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItems([newItem], (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
 
       if(data){
         setIsEditingGrocery(false);

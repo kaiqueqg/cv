@@ -67,7 +67,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
       || newDivider.Pos !== divider.Pos) {
       setIsEditingTitle(true);
 
-      const data = await objectiveslistApi.putObjectiveItems([newDivider], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+      const data = await objectiveslistApi.putObjectiveItems([newDivider], (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
 
       if(data){
         setIsEditingTitle(false);
@@ -91,7 +91,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
     setIsSavingIsOpen(true);
     const newDivider: Divider = {...divider, IsOpen: divider.IsOpen? !divider.IsOpen:true, LastModified: new Date().toISOString()};
 
-    const data = await objectiveslistApi.putObjectiveItems([newDivider], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.putObjectiveItems([newDivider], (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
     if(data){
       putItemsInDisplay(data);
     }
@@ -107,7 +107,7 @@ export const DividerView: React.FC<DividerProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
 
-    const data = await objectiveslistApi.deleteObjectiveItems([divider], (error:any) => popMessage(error.Message, MessageType.Error, 10));
+    const data = await objectiveslistApi.deleteObjectiveItems([divider], (error:any) => popMessage(error.Message, MessageType.ERROR, 10));
 
     if(data){
       removeItemsInDisplay([divider]);

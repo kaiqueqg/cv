@@ -7,6 +7,7 @@ import { useThemeContext } from "../contexts/theme-context";
 export interface PressImageProps{
   id?: string,
   src?: string,
+  src2?: string,
 
   changeToSecondImage?: boolean,
 
@@ -21,6 +22,7 @@ export interface PressImageProps{
   
   confirm?: boolean,
   hideHoverEffect?: boolean,
+  holdHoverEffect?: boolean,
   badgeText?: string,
   wasOk?: ()=>void,
   wasWrong?: ()=>void,
@@ -35,7 +37,7 @@ export interface PressImageProps{
 
   size?: 'big'|'bigger',
 
-  children?: React.ReactNode;
+  children?: JSX.Element;
 
   /**Title */
   t?: string,
@@ -60,7 +62,9 @@ const PressImage = (props: PressImageProps) => {
         setText(2000);
         confirm();
       }
-      else if(props.onClick) props.onClick();
+      else if(props.onClick) {
+        props.onClick();
+      }
     }
     else if(props.disableMsg){
       popMessage(props.disableMsg);
@@ -74,19 +78,21 @@ const PressImage = (props: PressImageProps) => {
   }
 
   const getNormalImage = () => {
-    const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:props.src;
+    const imageSrc = (props.disable&&props.disableSrc)?props.disableSrc:(props.changeToSecondImage?props.src2:props.src);
 
-    if(props.wasSelected)log.w('qsd')
     let classnameImageContainer = 'press-image-container ' + (props.isSelected && ' press-image-container-selected ') + (props.wasSelected && ' press-image-container-was-selected ');
     if(props.size){
       if(props.size === 'big') classnameImageContainer += ' press-image-container-big ';
       if(props.size === 'bigger') classnameImageContainer += ' press-image-container-bigger ';
     }
 
+    let hoverClass = (props.hideHoverEffect || props.isSelected || props.disable?'':' press-image-container-hover ');
+    hoverClass += (props.holdHoverEffect? ' press-image-container-hover-hold ':'');
+
     return(
       <div
         id={props.id}
-        className={classnameImageContainer + (props.hideHoverEffect || props.isSelected || props.disable?'':' press-image-container-hover ')}
+        className={classnameImageContainer + hoverClass}
         onClick={normalTouchEnd}
         onContextMenu={contextMenuClick}>
         {props.src && 
@@ -106,9 +112,14 @@ const PressImage = (props: PressImageProps) => {
     )
   }
 
+  const onClickConfirm = () => {
+    if(props.onClick) props.onClick();
+    setIsConfirming(false);
+  }
+
   const getConfirmingImage = () => {
     return(
-      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect || props.isSelected ?' press-image-container-hover':'')} onClick={props.onClick}>
+      <div id={props.id} className={'press-image-container ' + (props.hideHoverEffect || props.isSelected ?' press-image-container-hover':'')} onClick={onClickConfirm}>
         <img className={'press-image-image '} src={process.env.PUBLIC_URL + '/done.png'} title='Confim'/>
       </div>
     )

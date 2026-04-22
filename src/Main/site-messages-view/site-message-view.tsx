@@ -15,47 +15,39 @@ const SiteMessageView = (props: SiteMessageViewProps) => {
   const { message } = props;
 
   useEffect(()=>{
-    setTimeout(()=>{
-      removeMessage(message.id);
-    }, message.timeout);
+    if(message.timeout !== Infinity) {
+      setTimeout(()=>{
+        removeMessage(message.id);
+      }, message.timeout);
+    }
   }
   ,[]);
 
-  const getMessageClassname = () => {
-    switch (message.type) {
-      case MessageType.Alert:
-        return 'messageBase messageAlert';       
-      case MessageType.Error:
-        return 'messageBase messageError';
-      case MessageType.Normal:
-        return 'messageBase messageNormal';
-    }
-  }
-
   const getMessageView = () => {
-    let type = ButtonColor.NEUTRAL;
+    let type = ButtonColor.GREEN;
 
     switch(message.type){
-      case MessageType.Alert:
+      case MessageType.NEUTRAL:
+        type = ButtonColor.NEUTRAL;
+        break;
+      case MessageType.ALERT:
         type = ButtonColor.YELLOW;
         break;
-      case MessageType.Error:
+      case MessageType.ERROR:
         type = ButtonColor.RED;
         break;
-      case MessageType.Normal:
+      case MessageType.NORMAL:
         type = ButtonColor.GREEN;
         break;
     }
 
-    return <Button key={message.id} color={type} text={message.text} onClick={() => {removeMessage(message.id);}}/>
+    return (
+        <Button key={message.id} color={type} text={message.text} onClick={() => {removeMessage(message.id);}}/>
+    )
   }
 
   return (
     getMessageView()
-    // <div key={message.id} className={getMessageClassname()} onClick={}>
-    //   {message.text}
-    //   {/* <PressImage isBlack src={process.env.PUBLIC_URL + '/cancel.png'} onClick={() => {removeMessage(message.id);}}/> */}
-    // </div>
   );
 };
 

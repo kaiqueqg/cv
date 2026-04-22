@@ -24,8 +24,8 @@ const Curriculum: React.FC<CurriculumProps> = () => {
       </div>
       <div className='cvContainer'>
         {/* {lang === Language.PR_BR && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum.pdf#view=fitH"}/>} */}
-        {lang === Language.EN && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-En.pdf#view=fitH"}/>}
-        {lang === Language.FR && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-Fr.pdf#view=fitH"}/>}
+        {/* {lang === Language.EN && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-En.pdf#view=fitH"}/>} */}
+        {/* {lang === Language.FR && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-Fr.pdf#view=fitH"}/>} */}
         {/* {lang === Language.IT && <iframe className='pdf' src={process.env.PUBLIC_URL +  "/Curriculum-It.pdf#view=fitH"}/>} */}
         {/* <Knowledges lang={lang}></Knowledges>
         <Experiences lang={lang}></Experiences> */}

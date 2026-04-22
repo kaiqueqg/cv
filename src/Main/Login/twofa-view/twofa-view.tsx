@@ -4,19 +4,18 @@ import log from '../../../log/log';
 import { useUserContext } from '../../../contexts/user-context';
 import { useRequestContext } from '../../../contexts/request-context';
 import { useLogContext } from '../../../contexts/log-context';
-import { local, session } from '../../../storage/storage';
+import { local, session, StgKey } from '../../../storage/storage';
 import { MessageType, TwoFactorAuthRequest } from '../../../Types';
 import Loading from '../../../loading/loading';
 import Button, { ButtonColor } from '../../../button/button';
 
 interface TwoFAViewProps {
-  setIsLogged: (value: boolean) => void,
   logout: () => void,
 }
 
-const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
+const TwoFAView: React.FC<TwoFAViewProps> = ({logout}) => {
   const { identityApi } = useRequestContext();
-  const { setUser } = useUserContext();
+  const { setUser, writeIsLogged } = useUserContext();
   const { popMessage } = useLogContext();
   
   const [verificationCode, setVerificationCode] = useState<string>('');
@@ -42,7 +41,7 @@ const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
     
     if(!(/^[0-9]{6}$/.test(verificationCode))){
       setVerificationCode('');
-      popMessage('Bad verification code. Must be 6 numbers.', MessageType.Alert);
+      popMessage('Bad verification code. Must be 6 numbers.', MessageType.ALERT);
       return;
     }
     
@@ -54,14 +53,16 @@ const TwoFAView: React.FC<TwoFAViewProps> = ({setIsLogged, logout}) => {
       const data = await identityApi.validateTwoFA(sendRequest);
 
       if(data && data.User && data.Token){
-        local.setToken(data.Token);
-        local.setUser(data.User);
-        local.setFirstLogin(true);
+        local.setData(StgKey.JwtToken, data.Token);
+        local.setData(StgKey.User, data.User);
+        local.setData(StgKey.FirstLogin, true);
+        local.setData(StgKey.Objectives, []);
+        local.setData(StgKey.Items, []);
+        writeIsLogged(true);
         setUser(data.User);
-        setIsLogged(true);
       }
       else{
-        popMessage('Login was ok but no data was returned.', MessageType.Error);
+        popMessage('Login was ok but no data was returned.', MessageType.ERROR);
         logout();
       }
     }

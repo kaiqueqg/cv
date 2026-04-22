@@ -266,26 +266,35 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
 
   const [messageList, setMessageList] = useState<PopMessage[]>([]);
   const popMessage = (text: string, type?: MessageType, timeoutInSeconds?: number) => {
-    const words = text.split(/\s+/).length;
-    const displayTime = Math.max(5, words * 0.8);
 
-    let timeout = timeoutInSeconds?timeoutInSeconds:displayTime;
-    timeout = Math.min(Math.max(timeout, 1), 30);
-    timeout *= 1000;
+    let timeouttoAdd = Infinity;
+    if(timeoutInSeconds !== Infinity){
+      timeouttoAdd = timeoutInSeconds??Math.max(5, (text.split(/\s+/).length) * 0.8);
+      timeouttoAdd = Math.min(Math.max(timeouttoAdd, 1), 30);
+      timeouttoAdd *= 1000;
+    }
 
-    setMessageList((prevList) => [
-      ...prevList,
-      {
+    const newPopMessage: PopMessage = {
         id: randomId(),
         text: text,
-        type: type ?? MessageType.Normal,
-        timeout: timeout,
-      },
-    ]);
+        type: type ?? MessageType.NORMAL,
+        timeout: timeouttoAdd,
+      }
+
+    setMessageList((prev) => {
+      const filteredList = prev.filter((m) => {
+        return m.text !== text;
+      });
+      return [...filteredList, newPopMessage];
+    });
   }
 
   const removeMessage = (removeId: string) => {
     setMessageList(prevMessages => prevMessages.filter(msg => msg.id !== removeId));
+  }
+
+  const removeMessageByText = (text: string) => {
+    setMessageList(prevMessages => prevMessages.filter(msg => msg.text !== text));
   }
 
   const clearMessages = () => {
@@ -299,7 +308,7 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
       log,
       consoleLogs,
       deleteLog,
-      messageList, popMessage, removeMessage, clearMessages,
+      messageList, popMessage, removeMessage, removeMessageByText, clearMessages,
     }}>
     {children}
     </LogContext.Provider>
@@ -337,6 +346,7 @@ interface LogContextType {
   messageList: PopMessage[],
   popMessage: (text: string, type?: MessageType, timeoutInSeconds?: number) => void,
   removeMessage: (removeId: string) => void,
+  removeMessageByText: (removeId: string) => void,
   clearMessages: () => void,
 }
 

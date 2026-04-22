@@ -28,8 +28,7 @@ interface ButtonProps {
 export enum ButtonColor { BLUE, RED, GREEN, YELLOW, WHITE, NEUTRAL, TRANSPARENT }
 
 const Button: React.FC<ButtonProps> = ({
-    onClick,disabledMessage, text, isSelected, isDisabled, color, src, absX, absY, absolute, children, isLoading, size,
-  }) => {
+    onClick,disabledMessage, text, isSelected, isDisabled, color, src, absX, absY, absolute, children, isLoading, size }) => {
   const { scss } = useThemeContext();
   const { popMessage } = useLogContext();
   // const [isClicking, setIsClicking] = useState<boolean>(false);
@@ -77,10 +76,10 @@ const Button: React.FC<ButtonProps> = ({
       }, 3000);
 
       if(disabledMessage){
-        popMessage(disabledMessage, MessageType.Alert);
+        popMessage(disabledMessage, MessageType.ALERT);
       }
       else if(count >= 3 && !disabledMessage){
-        popMessage(`It's off......`, MessageType.Alert);
+        popMessage(`It's off......`, MessageType.ALERT);
       }
     }
     else{

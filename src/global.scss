@@ -130,6 +130,7 @@ input[type="number"] {
   }
   .g-txt{color: $beige;}
   .g-txt-fade{color: #a3a3a3;}
+  .g-txt-alert{color: #ff5454;}
 
   .g-img-dark{}
   .g-img-fade{filter:brightness(30%)}
@@ -257,6 +258,7 @@ input[type="number"] {
   
   .g-img-dark{filter:brightness(0%)}
   .g-img-fade{filter:brightness(70%)}
+  .g-txt-alert{color: #ff5454;}
 
   .input-base{
     color: $black;

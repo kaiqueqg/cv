@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import './step-view.scss';
-import { useUserContext } from "../../../../contexts/user-context";
 import { Item, ItemViewProps, Step, StepImportance } from "../../../../TypesObjectives";
 import log from "../../../../log/log";
-// import { objectiveslistApi } from "../../../../requests-sdk/requests-sdk";
 import Loading from "../../../../loading/loading";
 import { useLogContext } from "../../../../contexts/log-context";
 import PressImage from "../../../../press-image/press-image";
@@ -87,8 +85,8 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   const deleteItem = async () => {
     setIsDeleting(true);
     const data = await objectiveslistApi.deleteObjectiveItems([step]);
-
     if(data){
+      log.arrg(data)
       setIsEditingTitle(false);
       removeItemsInDisplay([step]);
     }

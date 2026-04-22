@@ -35,6 +35,29 @@ $size: 36px;
   border-radius: 5px;
 }
 
+.press-image-container:active{
+  background-color: rgba(0, 0, 0, 0.15);
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
+  transform: translateX(0px) translateY(0px);
+
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0 0 inset;
+}
+
+.press-image-container-hover-hold{
+  padding: 5px;
+
+  box-shadow: darken($blue-darker, 20%) 2px 2px 0 0;
+  transform: translateX(-1px) translateY(-1px);
+
+  border-width: 1px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 5px;
+}
+
 .press-image-container-was-selected{
   // padding: 5px;
   // background-color: rgba(0, 0, 0, 0.15);
