@@ -1613,6 +1613,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const getPin = () => {
     const as = selectedTags.filter(tag => objective.Tags.includes(tag));
     if(as.length === 1 && as[0] === 'Pin')
+      // return <PressImage src={process.env.PUBLIC_URL + '/pin.png'}/>
       return <img className='pinImage' src={process.env.PUBLIC_URL + '/pin.png'}></img>
   }
 

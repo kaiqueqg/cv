@@ -29,7 +29,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
 
   const [tempNote, setTempNote] = useState<Note>(note);
   const [isEditingText, setIsEditingText] = useState<boolean>(false);
-  const [isSavingText, setIsSavingTitle] = useState<boolean>(false);
+  const [isSavingNote, setIsSavingNote] = useState<boolean>(false);
   const [isAutoUpdating, setIsAutoUpdating] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [shouldAutoSave, setShouldAutoSave] = useState<boolean>(false);
@@ -43,6 +43,26 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
 
   const onChangeEditTitle = () => {
     setIsEditingText(!isEditingText);
+  }
+
+  const onChangeIsShowing = async () => {
+    setIsSavingNote(true);
+
+    try {
+      const newItem: Note = { ...note, IsShowing: !note.IsShowing, LastModified: new Date().toISOString()};
+      const data = await objectiveslistApi.putObjectiveItems([newItem]);
+      
+      if(data){
+        putItemsInDisplay([newItem]);
+        setIsSavingNote(false);
+      }
+    } catch (err) {
+      log.err(JSON.stringify(err));
+    }
+
+    setTimeout(() => {
+      setIsSavingNote(false);
+    }, 200); 
   }
 
   const handleTextInputChange = (event: any) => {
@@ -95,7 +115,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     const newNote: Note = {...tempNote, Title: tempNote.Title, Text: tempNote.Text, LastModified: new Date().toISOString()};
 
     if(newNote.Title !== note.Title || newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
-      setIsSavingTitle(true);
+      setIsSavingNote(true);
 
       const data = await objectiveslistApi.putObjectiveItems([newNote]);
 
@@ -105,7 +125,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
       }
 
       setTimeout(() => {
-        setIsSavingTitle(false);
+        setIsSavingNote(false);
       }, 200); 
     }
     else{
@@ -139,52 +159,75 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
     setIsEditingText(false);
   }
 
+  const getEditingView = () => {
+    return(
+      <div className='noteTitleContainer'>
+        <div className='sideTitleContainer'>
+          <Loading isLoading={isDeleting}>
+            <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
+          </Loading>
+        </div>
+        <div className='centerTitleContainer'>
+          <input
+            className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
+            type='text'
+            placeholder='Title'
+            value={tempNote.Title}
+            onChange={handleTitleInputChange}
+            onKeyDown={handleTitleKeyDown} autoFocus
+            spellCheck
+            ></input>
+          <textarea 
+            className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
+            value={tempNote.Text}
+            onChange={handleTextInputChange}
+            onKeyDown={handleTextKeyDown} 
+            spellCheck
+            ></textarea>
+        </div>
+        <div className='sideTitleContainer'>
+          {/* <PressImage isLoadingBlack={props.isLoadingBlack} onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')} isLoading={isAutoUpdating}/> */}
+          <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
+          <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
+        </div>
+      </div>
+    )
+  }
+
+  const getDisplayView = () => {
+    const hasTitle = note.Title.trim() !== '';
+    const hasText = note.Text.trim() !== '';
+
+    let showText = hasText;
+    if(!hasTitle) showText = true;
+    if(hasTitle && !note.IsShowing) showText = false;
+
+    return(
+      <div className="noteDisplayContainer">
+        {hasTitle && 
+          <div className={'noteTitleContainer'}>
+            <div className={'noteTitle ' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Title}</div>
+            {note.IsShowing?
+              <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeIsShowing()}}/>
+              :
+              <PressImage src={process.env.PUBLIC_URL + '/note-grey.png'} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeIsShowing()}}/>
+            }
+          </div>
+        }
+        {showText && <div className={'noteText' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>}
+      </div>
+    )
+  }
+
   return (
     <div className={'noteContainer' + scss(theme, [SCSS.ITEM_BG], note.Text.trim() !== '', isSelecting, isSelected)}>
-      {isSavingText?
-        <Loading IsBlack={theme==='white'}></Loading>
-        :
-        (isEditingText?
-          <div className='noteTitleContainer'>
-            <div className='sideTitleContainer'>
-              {isDeleting?
-                <Loading IsBlack={theme==='white'}></Loading>
-                :
-                <PressImage isLoadingBlack={props.isLoadingBlack} onClick={deleteItem} src={process.env.PUBLIC_URL + '/trash-red.png'} confirm rawImage/>
-              }
-            </div>
-            <div className='centerTitleContainer'>
-              <input
-                className={'input-simple-base ' + scss(theme, [SCSS.INPUT])}
-                type='text'
-                placeholder='Title'
-                value={tempNote.Title}
-                onChange={handleTitleInputChange}
-                onKeyDown={handleTitleKeyDown} autoFocus
-                spellCheck
-                ></input>
-              <textarea 
-                className={'noteTextArea' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST])}
-                value={tempNote.Text}
-                onChange={handleTextInputChange}
-                onKeyDown={handleTextKeyDown} 
-                spellCheck
-                ></textarea>
-            </div>
-            <div className='sideTitleContainer'>
-              {/* <PressImage isLoadingBlack={props.isLoadingBlack} onClick={()=>{setShouldAutoSave(!shouldAutoSave)}} src={process.env.PUBLIC_URL + (shouldAutoSave? ('/save' + itemTintColor(theme) + '.png'):'/save-grey.png')} isLoading={isAutoUpdating}/> */}
-              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={doneEdit} src={process.env.PUBLIC_URL + '/done' + itemTintColor(theme) + '.png'} rawImage/>
-              <PressImage isLoadingBlack={props.isLoadingBlack} onClick={cancelEdit} src={process.env.PUBLIC_URL + '/cancel' + itemTintColor(theme) + '.png'} rawImage/>
-            </div>
-          </div>
+      <Loading isLoading={isSavingNote}>
+        {isEditingText?
+          getEditingView()
           :
-          <div className="noteDisplayContainer">
-            {note.Title.trim() !== '' && <div className={'noteTitle ' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Title}</div>}
-            {(note.Text.trim() !== '' || note.Title.trim() === '') && <div className={'noteText' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}>{note.Text}</div>}
-          </div>
-        )
+          getDisplayView()
       }
-    {note.Text.trim() === '' && !isEditingText && <PressImage src={process.env.PUBLIC_URL + '/note' + itemTintColor(theme) + '.png'} onClick={() => {if(!isDisabled && !hasTextSelection())onChangeEditTitle()}}></PressImage>}
+      </Loading>
     </div>
   );
 }

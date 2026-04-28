@@ -93,6 +93,15 @@
   
 }
 
+.noteTitleContainer{
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+  width: 100%;
+
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
+}
+
 .noteTitle{
   display: flex;
   vertical-align: middle;

@@ -117,6 +117,7 @@ export interface Step extends Item {
 
 export interface Note extends Item {
   Text: string,
+  IsShowing: boolean,
 }
 
 export interface Question extends Item {
