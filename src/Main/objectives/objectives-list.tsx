@@ -27,6 +27,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const { popMessage } = useLogContext();
   const { objectiveslistApi } = useRequestContext();
 
+  const objectiveRefs = useRef<Record<string, any>>({});
   const [objectives, setObjectives] = useState<Objective[]>([]);
   const [isBelow700px, setIsBelow700px] = useState(window.innerWidth < 700);
   // const [objectives, setObjectives] = useState<Objective[]>([]);
@@ -248,14 +249,13 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     cancelEditingPos();
   }
 
-  const objectiveRefs = useRef<Record<string, any>>({});
   const getObjectiveList = () => {
     let list: JSX.Element[] = [];  
 
     for(let i = 0; i < objectives.length; i++){
       const hasTagSelected = objectives[i].Tags.length>0? selectedTags.some((item)=>objectives[i].Tags.includes(item)): true;
 
-      //// false in case you are searching and it's not in the list
+      // false in case you are searching and it's not in the list
       let shouldAddIsInSearch = true;
       if(objsSearchToShow.length && !objsSearchToShow.includes(objectives[i].ObjectiveId)) shouldAddIsInSearch = false;
 
@@ -274,7 +274,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
               putObjectives={putObjectivesInDisplay}
               deleteObjectiveItemsInDisplay={deleteObjectiveItemsInDisplay}
               isObjsEditingPos={isEditingPos}
-            ></ObjectiveView>
+            />
           </div>;
 
         list.push(divToAdd);

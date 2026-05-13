@@ -47,7 +47,7 @@ export interface ItemViewProps{
 }
 
 export enum MultiSelectType { MOVE = 'Move', COPY = 'Copy' }
-export interface MultSelectAction { type: MultiSelectType, objectiveId: string, items: Item[] }
+export interface MultSelectAction { type: MultiSelectType, fromObjectiveId: string, items: Item[] }
 
 export interface DisplayTag{
   tag: string,

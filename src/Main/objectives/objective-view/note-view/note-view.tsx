@@ -13,6 +13,7 @@ import { useThemeContext, SCSS } from "../../../../contexts/theme-context";
 export function noteNew(){
   return {
     Text: '',
+    IsShowing: true,
   }
 }
 
@@ -114,7 +115,7 @@ export const NoteView: React.FC<NoteViewProps> = (props) => {
   const doneEdit = async () => {
     const newNote: Note = {...tempNote, Title: tempNote.Title, Text: tempNote.Text, LastModified: new Date().toISOString()};
 
-    if(newNote.Title !== note.Title || newNote.Text !== note.Text || newNote.Pos !== note.Pos) {
+    if(newNote.Title !== note.Title || newNote.Text !== note.Text || newNote.Pos !== note.Pos || newNote.IsShowing !== note.IsShowing) {
       setIsSavingNote(true);
 
       const data = await objectiveslistApi.putObjectiveItems([newNote]);

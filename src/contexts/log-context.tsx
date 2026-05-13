@@ -45,33 +45,33 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
     arrg(array: any[], f?:(e:any)=>string){
       for(let i = 0; i < array.length; i++){
         if(f)
-          log.dev(f(array[i]));
+          log.g(f(array[i]));
         else
-          log.dev(array[i]);
+          log.g(array[i]);
       }
     },
     arrb(array: any[], f?:(e:any)=>string){
       for(let i = 0; i < array.length; i++){
         if(f)
-          log.dev(f(array[i]));
+          log.b(f(array[i]));
         else
-          log.dev(array[i]);
+          log.b(array[i]);
       }
     },
     arrr(array: any[], f?:(e:any)=>string){
       for(let i = 0; i < array.length; i++){
         if(f)
-          log.dev(f(array[i]));
+          log.r(f(array[i]));
         else
-          log.dev(array[i]);
+          log.r(array[i]);
       }
     },
     arry(array: any[], f?:(e:any)=>string){
       for(let i = 0; i < array.length; i++){
         if(f)
-          log.dev(f(array[i]));
+          log.y(f(array[i]));
         else
-          log.dev(array[i]);
+          log.y(array[i]);
       }
     },
     dev(...texts: any[]) {
@@ -86,7 +86,8 @@ export const LogProvider: React.FC<LogProviderProps> = ({ children }) => {
             return text;
           }
         });
-        console.log(`\x1b[38;2;255;255;255m[DEV]`, ...formattedTexts);
+        console.log('%c[DEV]' + formattedTexts, 'color: #f5f5dc; font-weight: bold;');
+        // console.log(`\x1b[38;2;255;255;255m[DEV]`, ...formattedTexts);
         // putLog(...formattedTexts);
       }
     },

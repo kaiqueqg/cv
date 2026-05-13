@@ -299,8 +299,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
   ////Actualy add the items
   const addNewItems = async (addItems: Item[], pos?:number) => {
-    let sending:Item[] = [];
+    setIsLoadingAddingNewItem(true);
 
+    let sending:Item[] = [];
     //^ With pos
     if (pos !== undefined && pos !== null) {
       const newList = items.filter((i: Item) => !multItemsSelected.includes(i));
@@ -325,7 +326,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     }
     //^ Without pos
     else{
-      setIsLoadingAddingNewItem(true);
+      
       for(let i = 0; i < addItems.length; i++){
         sending.push({...addItems[i], Pos: items.length+i});
       }
@@ -567,7 +568,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   const moveItems = () => {
-    const action: MultSelectAction = { type: MultiSelectType.MOVE, objectiveId:objective.ObjectiveId, items: multItemsSelected};
+    const action: MultSelectAction = { type: MultiSelectType.MOVE, fromObjectiveId:objective.ObjectiveId, items: multItemsSelected};
     sessionStorage.setItem('multiItems', JSON.stringify(action));
 
     popMessage('Items to move selected.');
@@ -581,13 +582,13 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   const copyItems = () => {
-    const action: MultSelectAction = { type: MultiSelectType.COPY, objectiveId:objective.ObjectiveId, items: multItemsSelected};
+    const action: MultSelectAction = { type: MultiSelectType.COPY, fromObjectiveId:objective.ObjectiveId, items: multItemsSelected};
     sessionStorage.setItem('multiItems', JSON.stringify(action));
 
     popMessage('Items copied.');
 
     setSelecMultPartialInfo('');
-    setIsMultiSelectMenuOpen(false);
+    // setIsMultiSelectMenuOpen(false);
     setMultItemsSelected([]);
     setShouldSelectAll(false);
 
@@ -596,42 +597,60 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
   const pasteItems = async (itemTo: Item) => {
     try{
-      const action: string|null = sessionStorage.getItem('multiItems'); /// should 
+      const action: string|null = sessionStorage.getItem('multiItems');
       let parsedAction: MultSelectAction;
 
       if(action) {
         try {
           parsedAction = JSON.parse(action);
 
-          const itemsToCopy = parsedAction.items.map((item: Item) => {
-            return {...item, ItemId: '', UserIdObjectiveId: objective.ObjectiveId };
+          let itemsToInsert:Item[] = parsedAction.items.map((item: Item) => {
+            return {...item, ItemId: parsedAction.type === MultiSelectType.COPY?'':item.ItemId, UserIdObjectiveId: objective.ObjectiveId };
           });
 
-          const index = items.indexOf(itemTo);
-          const before = items.slice(0, index+1);
-          const after = items.slice(index+1);
-
-          let ajustedList = [...before, ...itemsToCopy, ...after];
-
-          let finalList:Item[] = [];
-          for(let i = 0; i < ajustedList.length; i++){
-            finalList.push({...ajustedList[i], Pos: i, LastModified: (new Date()).toISOString()});
+          //- Loop to remove the items in case is move, copy doesnt need because will be new ones
+          let filteredList: Item[] = [];
+          if(parsedAction.type === MultiSelectType.MOVE){
+            for (let i = 0; i < items.length; i++) {
+              const e = items[i];
+              const hasIt = itemsToInsert.some(i => i.ItemId === e.ItemId);
+              if(!hasIt) {
+                filteredList.push(e);
+              }
+            }
+          }
+          else{
+            filteredList = [...items];
           }
 
+          //- Index where the item should start to be placed after. Based on remaning items
+          let indexToInsert = filteredList.findIndex((item: Item) => {return item.ItemId === itemTo.ItemId});;
+
+          //- Joining arrays
+          const before: Item[] = filteredList.slice(0, indexToInsert===-1?0:(indexToInsert+1));
+          const after: Item[] = filteredList.slice(indexToInsert===-1?0:(indexToInsert+1), filteredList.length);
+          
+          const insertedList = [...before, ...itemsToInsert, ...after];
+
+          //- Loop to update Pos after all done
+          let finalList: Item[] = [];
+          for (let i = 0; i < insertedList.length; i++) {
+            const current = insertedList[i];
+
+            finalList.push({...current, Pos: i, LastModified: (new Date()).toISOString()})
+          }
+
+          //- Actual upload
           try{
             setIsLoadingIsEndingSelecMult(true);
-            const data = await objectiveslistApi.putObjectiveItems(finalList, 
-            //   (value: string) =>{
-            //   setSelecMultPartialInfo(value);
-            // }
-          );
+            const data: Item[]|null = await objectiveslistApi.putObjectiveItems(finalList);
 
             if(data) {
               sessionStorage.removeItem('multiItems');
               setItems(data);
 
-              if(parsedAction.type === MultiSelectType.MOVE){
-                props.deleteObjectiveItemsInDisplay(parsedAction.objectiveId, parsedAction.items, true);
+              if(parsedAction.type === MultiSelectType.MOVE && parsedAction.fromObjectiveId !== objective.ObjectiveId){
+                props.deleteObjectiveItemsInDisplay(parsedAction.fromObjectiveId, parsedAction.items, true);
               }
               
               setMultItemsSelected([]);
@@ -674,9 +693,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         const titleA = getSortableText(a, onlyTitle);
         const titleB = getSortableText(b, onlyTitle);
 
-        if (titleA < titleB) return -1;
-        if (titleA > titleB) return 1;
-        return 0;
+        return titleA.localeCompare(titleB, undefined, {
+          sensitivity: "base",
+        });
     });
   }
 
@@ -871,8 +890,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}
-        ></StepView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Question){
       rtnItem = <QuestionView 
@@ -885,7 +903,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></QuestionView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Note){
       rtnItem = <NoteView 
@@ -898,7 +916,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></NoteView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Location){
       rtnItem = <LocationView 
@@ -911,7 +929,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></LocationView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Divider){
       rtnItem = <DividerView 
@@ -927,7 +945,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></DividerView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Grocery){
       rtnItem = <GroceryView 
@@ -940,7 +958,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></GroceryView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Medicine){
       rtnItem = <MedicineView 
@@ -953,7 +971,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></MedicineView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Exercise){
       rtnItem = <ExerciseView 
@@ -966,7 +984,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></ExerciseView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Link){
       rtnItem = <LinkView 
@@ -979,7 +997,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></LinkView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Image){
       rtnItem = <ImageView 
@@ -992,7 +1010,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></ImageView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.House){
       rtnItem = <HouseView 
@@ -1005,7 +1023,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         putItemsInDisplay={putItemsInDisplay}
         removeItemsInDisplay={removeItemsInDisplay}
         itemTintColor={getTintColor}
-        isLoadingBlack={shouldBeBlack(objective.Theme)}></HouseView>
+        isLoadingBlack={shouldBeBlack(objective.Theme)}/>
     }
     else if(item.Type === ItemType.Review){
       rtnItem = <ReviewView 
@@ -1047,9 +1065,16 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     let isAfterDivider = false;
     let isDividerOpen = true;
 
-    const v: string|null = sessionStorage.getItem('multiItems');
+    //Things for pasting items
+    const action = sessionStorage.getItem('multiItems')
+    
+    let parsedAction: MultSelectAction|null = null;
+    if(action){
+      parsedAction = JSON.parse(action);
+    }
+
     let itemsToPaste: Item[] = [];
-    if(v) itemsToPaste = JSON.parse(v).items;
+    if(parsedAction) itemsToPaste = parsedAction.items;
 
     /// fake item
     if(isMultiSelectMenuOpen && isSelectingPastePos) {
@@ -1090,6 +1115,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       let shouldAddHouse = true;
       let shouldAddReview = true;
       let shouldAddIsInSearch = true;
+      let shouldAddPastingItems = true;
 
       if(itemSearchToShow.length && !itemSearchToShow.includes(current.ItemId)) shouldAddIsInSearch = false;
 
@@ -1113,7 +1139,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
         if(current.Type === ItemType.Medicine && !objective.IsShowingCheckedMedicine) shouldAddMedicine = !(current as Medicine).IsChecked;
         if(current.Type === ItemType.House && !objective.IsShowingCheckedStep) shouldAddHouse = !(current as House).WasContacted;
         if(current.Type === ItemType.Review && !objective.IsShowingCheckedStep) shouldAddReview = (current as Review).IsCurrentChoise;
-        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse && shouldAddReview && shouldAddIsInSearch){
+        if(isSelectingPastePos && parsedAction && parsedAction.type === MultiSelectType.MOVE && itemsToPaste.some((i: Item)=>{return i.ItemId === current.ItemId})) shouldAddPastingItems = false; //See if item is in paste items and if where are in paste mode
+
+        if(isDividerOpen && shouldAddStep && shouldAddGrocery && shouldAddExercise && shouldAddMedicine && shouldAddHouse && shouldAddReview && shouldAddIsInSearch && shouldAddPastingItems){
           if(isAfterDivider && !objective.IsShowingCheckedStep)
             partialItems.push(current);
           else
@@ -1235,7 +1263,8 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     return(
       <div className={'objectiveNewItemContainer' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         <div className={'objective-new-item-amount no-select ' + scss(Theme, [SCSS.TEXT])} onClick={increaseAmountItemsToAdd}>{amountOfItemsToAdd + 'x'}</div>
-        <PressImage src={process.env.PUBLIC_URL + '/up' + getTintColor(Theme) + '.png'} src2={process.env.PUBLIC_URL + '/down' + getTintColor(Theme) + '.png'} changeToSecondImage={isAddingOnTop} onClick={()=>{setisAddingOnTop(!isAddingOnTop)}} holdHoverEffect/>
+        {isAddingOnTop}
+        <PressImage src={process.env.PUBLIC_URL + '/down' + getTintColor(Theme) + '.png'} src2={process.env.PUBLIC_URL + '/up' + getTintColor(Theme) + '.png'} changeToSecondImage={isAddingOnTop} onClick={()=>{setisAddingOnTop(!isAddingOnTop)}} holdHoverEffect/>
         <div className='objectiveNewItemImages'>
           <PressImage src={process.env.PUBLIC_URL + '/review' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.Review)}}/>
           <PressImage src={process.env.PUBLIC_URL + '/home' + getTintColor(Theme) + '.png'} onClick={()=>{choseNewItemToAdd(ItemType.House)}}/>
