@@ -23,7 +23,7 @@ import { useRequestContext } from "../../../contexts/request-context";
 import { MessageType } from "../../../Types";
 import { SCSS, useThemeContext } from "../../../contexts/theme-context";
 import { parse } from "path";
-import { shouldBeBlack } from "../../../helper";
+import { compareTextForSearch, shouldBeBlack } from "../../../helper";
 import Button, { ButtonColor } from "../../../button/button";
 import { reviewNew, ReviewView } from "./review-view/review-view";
 import { captureRejectionSymbol } from "events";
@@ -70,9 +70,15 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const [isColorMenuOpen, setIsColorMenuOpen] = useState<boolean>(false);
   const [isTagsMenuOpen, setIsTagsMenuOpen] = useState<boolean>(false);
   const [isMultiSelectMenuOpen, setIsMultiSelectMenuOpen] = useState<boolean>(false);
-  const [isSearchingMenuOpen, setIsSearchingMenuOpen] = useState<boolean>(false);
   const [shouldFoldAll, setShouldFoldAll] = useState<boolean>(true);
   const [hasADividerToFold, setHasADividerToFold] = useState<boolean>(false);
+
+  //Search
+  const [isSearchingMenuOpen, setIsSearchingMenuOpen] = useState<boolean>(false);
+  const [searchMatchCase, setSearchMatchCase] = useState<boolean>(false);
+  const [searchMatchWholeWord, setSearchMatchWholeWord] = useState<boolean>(false);
+  const [searchMatchAccent, setSearchMatchAccent] = useState<boolean>(false);
+  const searchOptions = {searchdMatchWholeWord: searchMatchWholeWord, searchMatchAccent: searchMatchAccent, searchMatchCase: searchMatchCase};
   
   //menu loadings
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -1299,10 +1305,18 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(!isMultiSelectMenuOpen) return <></>;
     
     const stgValue: string|null = sessionStorage.getItem('multiItems');
+    const selectedNumber: string|undefined = multItemsSelected.length>0?multItemsSelected.length.toString():undefined;
 
     return(
       <div className={'objectiveMultiSelectContainer ' + scss(Theme, [SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK])}>
-        <PressImage t='Select/Unselect all' onClick={multiSelectChangeSelectAll} src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked')+ getTintColor(Theme) + '.png' } isLoadingBlack={shouldBeBlack(objective.Theme)} hide={isSelectingPastePos}/>
+        <PressImage
+          t='Select/Unselect all'
+          onClick={multiSelectChangeSelectAll}
+          src={process.env.PUBLIC_URL + (shouldSelectAll?'/checked':'/unchecked')+ getTintColor(Theme) + '.png' }
+          isLoadingBlack={shouldBeBlack(objective.Theme)}
+          hide={isSelectingPastePos}
+          badgeText={selectedNumber}
+        />
         <div className={'objectiveMultiSelectMenu '}>
           <PressImage 
             t='Unselect all items'
@@ -1346,17 +1360,24 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(!isSearchingMenuOpen) return <></>;
 
     return(
-      <div className={'objectiveSearchContainer' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
-        <input
-          className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' input-simple-base-alert ':'')}
-          type='text'
-          value={searchText}
-          placeholder="search..."
-          onChange={handleSearchChange}
-          onKeyDown={handleSearchKeyDown} autoFocus spellCheck>
-        </input>
-        <PressImage onClick={doSearchText} src={process.env.PUBLIC_URL + '/done' + getTintColor(Theme) + '.png'} rawImage></PressImage>
-        <PressImage onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor(Theme) + '.png'} rawImage></PressImage>
+      <div className={'objective-search-container' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
+        <div className={'objective-search-row'}>
+          <input
+            className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' input-simple-base-alert ':'')}
+            type='text'
+            value={searchText}
+            placeholder="search..."
+            onChange={handleSearchChange}
+            onKeyDown={handleSearchKeyDown} autoFocus spellCheck>
+          </input>
+          <PressImage onClick={doSearchText} src={process.env.PUBLIC_URL + '/done' + getTintColor(Theme) + '.png'} rawImage></PressImage>
+          <PressImage onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor(Theme) + '.png'} rawImage></PressImage>
+        </div>
+        <div className={'objective-search-row'}>
+          <PressImage onClick={() => {setSearchMatchWholeWord(!searchMatchWholeWord)}} src={process.env.PUBLIC_URL + '/matchWholeWord.png'} isSelected={searchMatchWholeWord} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchAccent(!searchMatchAccent)}} src={process.env.PUBLIC_URL + '/matchIgnoreAccent.png'} isSelected={searchMatchAccent} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchCase(!searchMatchCase)}} src={process.env.PUBLIC_URL + '/matchCase.png'} isSelected={searchMatchCase} fadeWhenNotSelected/>
+        </div>
       </div>
     )
   }
@@ -1584,43 +1605,47 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   const doSearchText = () => {
+    log.w('123123')
+    // if(searchText.trim()){
+    //   popMessage('Type something to search...', MessageType.ALERT);
+    //   log.w('asdsad')
+    //   return;
+    // }
+
     let newList: string[] = [];
     items.forEach((item: Item)=>{
       if(item.Type === ItemType.Step){
-        if(searchTextIgnoreCase((item as Step).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Step).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Question){
-        if(searchTextIgnoreCase((item as Question).Statement)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Question).Statement, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Note){
-        if(searchTextIgnoreCase((item as Note).Text)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Note).Text, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Location){
-        if(searchTextIgnoreCase((item as Location).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Location).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Divider){
-        if(searchTextIgnoreCase((item as Divider).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Divider).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Grocery){
-        if(searchTextIgnoreCase((item as Grocery).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Grocery).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Medicine){
-        if(searchTextIgnoreCase((item as Medicine).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Medicine).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Exercise){
-        if(searchTextIgnoreCase((item as Exercise).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Exercise).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Link){
-        if(searchTextIgnoreCase((item as Link).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Link).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.Image){
-        if(searchTextIgnoreCase((item as Image).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as Image).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else if(item.Type === ItemType.House){
-        if(searchTextIgnoreCase((item as House).Title)) newList.push(item.ItemId);
-      }
-      else if(item.Type === ItemType.Review){
-        if(searchTextIgnoreCase((item as Review).Title)) newList.push(item.ItemId);
+        if(compareTextForSearch((item as House).Title, searchText, searchOptions)) newList.push(item.ItemId);
       }
       else{
       }
@@ -1633,10 +1658,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     
     setItemsSearchToShow(newList);
 
-  }
-
-  const searchTextIgnoreCase = (text: string):boolean => {
-    return text.trim().toLowerCase().includes(searchText.trim().toLowerCase());
   }
 
   const getPin = () => {

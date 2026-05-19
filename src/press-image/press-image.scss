@@ -7,6 +7,7 @@ $size: 36px;
 
 .press-image-container{
   cursor: pointer;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -150,10 +151,13 @@ $size: 36px;
 }
 
 .press-image-text{
-  position: 'absolute';
-  color: red;
-  font-size: 12;
-  font-weight: 'bold';
-
+  position: absolute;
+  text-align: center;
+  left: 20px;
+  top: 15px;
   
+  font-size: smaller;
+  
+  
+  @if($bor) { border: 1px solid red; border-radius: 5px; }
 }

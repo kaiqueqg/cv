@@ -132,6 +132,19 @@ input[type="number"] {
   .g-txt-fade{color: #a3a3a3;}
   .g-txt-alert{color: #ff5454;}
 
+  $text-shadow-color: rgb(0, 0, 0);
+  .txt-shadow{
+    text-shadow:
+      -1px -1px 0 $text-shadow-color,
+      1px -1px 0 $text-shadow-color,
+      -1px  1px 0 $text-shadow-color,
+      1px  1px 0 $text-shadow-color,
+      -1px -1px 0 $text-shadow-color,
+      1px -1px 0 $text-shadow-color,
+      -1px  1px 0 $text-shadow-color,
+      1px  1px 0 $text-shadow-color;
+  }
+
   .g-img-dark{}
   .g-img-fade{filter:brightness(30%)}
 
@@ -255,6 +268,19 @@ input[type="number"] {
   }
   .g-txt{color: $black;}
   .g-txt-fade{color: #a3a3a3;}
+
+  $text-shadow-color: #f5f5dc;
+  .txt-shadow{
+    text-shadow:
+      -1px -1px 0 $text-shadow-color,
+      1px -1px 0 $text-shadow-color,
+      -1px  1px 0 $text-shadow-color,
+      1px  1px 0 $text-shadow-color,
+      -1px -1px 0 $text-shadow-color,
+      1px -1px 0 $text-shadow-color,
+      -1px  1px 0 $text-shadow-color,
+      1px  1px 0 $text-shadow-color;
+  }
   
   .g-img-dark{filter:brightness(0%)}
   .g-img-fade{filter:brightness(70%)}

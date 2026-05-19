@@ -106,7 +106,10 @@ const PressImage = (props: PressImageProps) => {
           
         />
         }
-        {props.badgeText && props.badgeText !== '' && <div className={'press-image-text no-select '}>{props.badgeText}</div>}
+        {
+        props.badgeText && props.badgeText !== '' && 
+        <div className={'press-image-text no-select txt-shadow g-txt'}>{props.badgeText}</div>
+        }
         {props.children}
       </div> 
     )
