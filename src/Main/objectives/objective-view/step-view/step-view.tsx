@@ -94,7 +94,6 @@ export const StepView: React.FC<StepViewProps> = (props) => {
   }
 
   const doneEdit = async (newImp?: StepImportance) => {
-
     const newStep: Step = {
       ...step,
       Title: newTitle.trim(),

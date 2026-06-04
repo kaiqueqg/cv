@@ -96,26 +96,18 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
   };
 
   const IDENTITY_URLS = {
-    BR: process.env.REACT_APP_IDENTITY_URL_BR!,
     FR: process.env.REACT_APP_IDENTITY_URL_FR!,
-    default: process.env.REACT_APP_IDENTITY_URL_DEFAULT!
   };
 
   const OBJECTIVELIST_URLS = {
-    BR: process.env.REACT_APP_OBJECTIVELIST_URL_BR!,
-    FR: process.env.REACT_APP_OBJECTIVELIST_URL_FR!,
-    default: process.env.REACT_APP_OBJECTIVELIST_URL_DEFAULT!
+    FR_PROD: process.env.REACT_APP_OBJECTIVELIST_URL_FR_PROD!,
+    FR_DEV: process.env.REACT_APP_OBJECTIVELIST_URL_FR_DEV!,
   };
+
+  const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
   const getIdentityUrl = async () => {
     try {
-      // const res = await fetch('https://ipapi.co/json/');
-      // const data = await res.json();
-      // const country = data.country_code;
-
-      // if (country === 'BR') return IDENTITY_URLS['BR'];
-      // if (country === 'FR') return IDENTITY_URLS['FR'];
-
       return IDENTITY_URLS['FR'];
     } catch (err) {
       console.error('Error getting region, using default', err);
@@ -125,16 +117,15 @@ export const RequestProvider: React.FC<RequestProviderProps> = ({ children }) =>
 
   const getObjectivelistUrl = async () => {
     try {
-      // const res = await fetch('https://ipapi.co/json/');
-      // const data = await res.json();
-      // const country = data.country_code;
-
-      // if (country === 'BR') return OBJECTIVELIST_URLS['BR'];
-      // // if (country === 'FR') return OBJECTIVELIST_URLS['FR'];
-      return OBJECTIVELIST_URLS['FR'];
+      if(isLocal){
+        return OBJECTIVELIST_URLS['FR_DEV'];
+      }
+      else{
+        return OBJECTIVELIST_URLS['FR_PROD'];
+      }
     } catch (err) {
       console.error('Error getting region, using default', err);
-      return OBJECTIVELIST_URLS['FR'];
+      return OBJECTIVELIST_URLS['FR_PROD'];
     }
   }
 

@@ -31,7 +31,7 @@ import { randomId } from "../../../storage/storage";
 
 interface ObjectiveViewProps{
   objective: Objective,
-  putObjectives: (obj?: Objective[], remove?: boolean) => void,
+  putObjectivesIndisplay: (obj?: Objective[], remove?: boolean) => void,
   deleteObjectiveItemsInDisplay: (objectiveId: string, items: Item[], remove?: boolean) => void,
   isObjsEditingPos: boolean,
 }
@@ -45,7 +45,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const { putSelectedTags, selectedTags, isLogged } = useUserContext();
   const { log, popMessage } = useLogContext();
   const { scss, getTintColor } = useThemeContext();
-  const { objective, putObjectives, isObjsEditingPos } = props;
+  const { objective, putObjectivesIndisplay, isObjsEditingPos } = props;
   const { Theme } = objective;
   
   const [items, setItems] = useState<Item[]>([]);
@@ -158,18 +158,20 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
 
   // Put items in display
   const putItemsInDisplay = async (values: Item[]) => {
-    let newItems: Item[] = [...items];
-    // Add or update each item
-    for (const item of values) {
-      const existingIndex = newItems.findIndex((i: Item) => i.ItemId === item.ItemId);
-      if (existingIndex >= 0) {
-        newItems[existingIndex] = item; // Update
-      } else {
-        newItems.push(item); // Add new
+    setItems(prevItems => {
+      let newItems: Item[] = [...prevItems];
+      // Add or update each item
+      for (const item of values) {
+        const existingIndex = newItems.findIndex((i: Item) => i.ItemId === item.ItemId);
+        if (existingIndex >= 0) {
+          console.log('updating ' + item.Title+' ' + (item as Step).Done)
+          newItems[existingIndex] = item; // Update
+        } else {
+          newItems.push(item); // Add new
+        }
       }
-    }
-
-    setItems(newItems.sort((a, b) => a.Pos - b.Pos));
+      return newItems.sort((a, b) => a.Pos - b.Pos)
+    })
   }
 
   // Remove items in display
@@ -203,7 +205,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       const data = await objectiveslistApi.deleteObjectives([objective]);
   
       if(data){
-        putObjectives([objective], true);
+        putObjectivesIndisplay([objective], true);
       }
     } catch (err) {
       log.err(JSON.stringify(err));
@@ -232,7 +234,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     if(newObjective.Title !== objective.Title) {
       const data = await objectiveslistApi.putObjectives([newObjective]);
       if(data){
-        putObjectives([newObjective]);
+        putObjectivesIndisplay([newObjective]);
         setIsEditingTitle(false);
       }
     }
@@ -258,7 +260,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       const data = await objectiveslistApi.putObjectives([newObjective]);
 
       if(data){
-        putObjectives([newObjective]);
+        putObjectivesIndisplay([newObjective]);
         putSelectedTags(newTags);
       }
     }
@@ -274,6 +276,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     // setIsObjectiveMenuOpen(false);
 
     setIsAddingNewItemMenuOpen(false);
+    setIsAddingNewItemLocked(false);
     setIsColorMenuOpen(false);
     setIsTagsMenuOpen(false);
     setIsSearchingMenuOpen(false);
@@ -414,7 +417,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const onChangeObjectiveIsArchived = async () => {
     try {
       const newObjective: Objective = {...objective, IsArchived: !objective.IsArchived, LastModified: new Date().toISOString()};
-      putObjectives([newObjective]);
+      putObjectivesIndisplay([newObjective]);
       const data = await objectiveslistApi.putObjectives([newObjective]);
       
       if(data){
@@ -434,7 +437,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     try {
 
       const newObjective:Objective = {...objective, IsShowing: !objective.IsShowing, LastModified: new Date().toISOString()};
-      putObjectives([newObjective]); //change before confirm to be more practicle
+      putObjectivesIndisplay([newObjective]); //change before confirm to be more practicle
       const data = await objectiveslistApi.putObjectives([newObjective]);
       
       if(data){
@@ -504,7 +507,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       const data = await objectiveslistApi.putObjectives([newObj]);
       
       if(data){
-        await putObjectives([newObj]);
+        await putObjectivesIndisplay([newObj]);
       }
       else{
         
@@ -534,7 +537,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     const data = await objectiveslistApi.putObjectives([newObjective]);
       
     if(data){
-      putObjectives([newObjective]);
+      putObjectivesIndisplay([newObjective]);
     }
 
     setIsLoadingIsShowingItems(false);
@@ -1363,7 +1366,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       <div className={'objective-search-container' + scss(Theme, [SCSS.ITEM_BG_DARK, SCSS.BORDERCOLOR_CONTRAST])}>
         <div className={'objective-search-row'}>
           <input
-            className={'input-simple-base ' + scss(Theme, [SCSS.INPUT]) + (wasNoSearchNoItemFound? ' input-simple-base-alert ':'')}
+            className={'input-simple-base ' + (wasNoSearchNoItemFound? ' input-simple-base-alert ':'')}
             type='text'
             value={searchText}
             placeholder="search..."
@@ -1374,9 +1377,9 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
           <PressImage onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel' + getTintColor(Theme) + '.png'} rawImage></PressImage>
         </div>
         <div className={'objective-search-row'}>
-          <PressImage onClick={() => {setSearchMatchWholeWord(!searchMatchWholeWord)}} src={process.env.PUBLIC_URL + '/matchWholeWord.png'} isSelected={searchMatchWholeWord} fadeWhenNotSelected/>
-          <PressImage onClick={() => {setSearchMatchAccent(!searchMatchAccent)}} src={process.env.PUBLIC_URL + '/matchIgnoreAccent.png'} isSelected={searchMatchAccent} fadeWhenNotSelected/>
-          <PressImage onClick={() => {setSearchMatchCase(!searchMatchCase)}} src={process.env.PUBLIC_URL + '/matchCase.png'} isSelected={searchMatchCase} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchWholeWord(!searchMatchWholeWord); doSearchText();}} src={process.env.PUBLIC_URL + '/matchWholeWord' + getTintColor(Theme) + '.png'} isSelected={searchMatchWholeWord} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchAccent(!searchMatchAccent); doSearchText();}} src={process.env.PUBLIC_URL + '/matchIgnoreAccent.png'} isSelected={searchMatchAccent} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchCase(!searchMatchCase); doSearchText();}} src={process.env.PUBLIC_URL + '/matchCase.png'} isSelected={searchMatchCase} fadeWhenNotSelected/>
         </div>
       </div>
     )
@@ -1605,12 +1608,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   }
 
   const doSearchText = () => {
-    log.w('123123')
-    // if(searchText.trim()){
-    //   popMessage('Type something to search...', MessageType.ALERT);
-    //   log.w('asdsad')
-    //   return;
-    // }
 
     let newList: string[] = [];
     items.forEach((item: Item)=>{
@@ -1652,7 +1649,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     });
 
     if(newList.length === 0){
-      popMessage(`None found...`, MessageType.ALERT);
+      popMessage(`No item found...`, MessageType.ALERT);
       setWasNoSearchNoItemFound(true);
     }
     

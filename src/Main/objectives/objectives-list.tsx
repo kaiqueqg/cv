@@ -14,6 +14,7 @@ import PressImage from "../../press-image/press-image";
 import { useRequestContext } from "../../contexts/request-context";
 import { useNavigate } from 'react-router-dom';
 import Button, { ButtonColor } from "../../button/button";
+import { compareTextForSearch } from "../../helper";
 
 interface ObjectivesListProps{}
 
@@ -55,6 +56,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
   const [searchMatchCase, setSearchMatchCase] = useState<boolean>(false);
   const [searchMatchWholeWord, setSearchMatchWholeWord] = useState<boolean>(false);
   const [searchMatchAccent, setSearchMatchAccent] = useState<boolean>(false);
+  const searchOptions = {searchdMatchWholeWord: searchMatchWholeWord, searchMatchAccent: searchMatchAccent, searchMatchCase: searchMatchCase};
   
   //TODO Test
   const [objCol, setObjCol] = useState<number>(3);
@@ -271,7 +273,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             <ObjectiveView 
               ref={el => objectiveRefs.current[objectives[i].ObjectiveId] = el}
               objective={objectives[i]}
-              putObjectives={putObjectivesInDisplay}
+              putObjectivesIndisplay={putObjectivesInDisplay}
               deleteObjectiveItemsInDisplay={deleteObjectiveItemsInDisplay}
               isObjsEditingPos={isEditingPos}
             />
@@ -496,29 +498,14 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
 
   const doSearchText = () => {
     let newList: string[] = [];
-    let newSearch = searchText.trim();
-
-    if(!searchMatchAccent){ newSearch = removeAccents(newSearch); }
-    if(!searchMatchCase) newSearch = newSearch.toLowerCase();
-
     for(let i = 0; i < objectives.length; i++){
       const o = objectives[i];
-
-      let newTitle = o.Title.trim();
-      if(!searchMatchAccent) newTitle = removeAccents(newTitle);
-      if(!searchMatchCase) newTitle = newTitle.toLowerCase();
-
-      if(searchMatchWholeWord){
-        if(newSearch === newTitle) newList.push(o.ObjectiveId);
-      }
-      else{
-        if(newTitle.includes(newSearch)) newList.push(o.ObjectiveId);
-      }
+      if(compareTextForSearch(o.Title, searchText, searchOptions)) newList.push(o.ObjectiveId);
     }
 
     if(newList.length === 0) {
       setWasNoSearchNoItemFound(true);
-      popMessage(`None found...`, MessageType.ALERT);
+      popMessage(`No objective found...`, MessageType.ALERT);
     }
 
     setObjsSearchToShow(newList);
@@ -559,9 +546,9 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
           <PressImage onClick={cancelSearch} src={process.env.PUBLIC_URL + '/cancel.png'} rawImage />
         </div>
         <div className={'objectives-search-row'}>
-          <PressImage onClick={() => {setSearchMatchWholeWord(!searchMatchWholeWord)}} src={process.env.PUBLIC_URL + '/matchWholeWord.png'} isSelected={searchMatchWholeWord} fadeWhenNotSelected/>
-          <PressImage onClick={() => {setSearchMatchAccent(!searchMatchAccent)}} src={process.env.PUBLIC_URL + '/matchIgnoreAccent.png'} isSelected={searchMatchAccent} fadeWhenNotSelected/>
-          <PressImage onClick={() => {setSearchMatchCase(!searchMatchCase)}} src={process.env.PUBLIC_URL + '/matchCase.png'} isSelected={searchMatchCase} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchWholeWord(!searchMatchWholeWord); doSearchText();}} src={process.env.PUBLIC_URL + '/matchWholeWord.png'} isSelected={searchMatchWholeWord} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchAccent(!searchMatchAccent); doSearchText();}} src={process.env.PUBLIC_URL + '/matchIgnoreAccent.png'} isSelected={searchMatchAccent} fadeWhenNotSelected/>
+          <PressImage onClick={() => {setSearchMatchCase(!searchMatchCase); doSearchText();}} src={process.env.PUBLIC_URL + '/matchCase.png'} isSelected={searchMatchCase} fadeWhenNotSelected/>
         </div>
       </div>
     )
@@ -614,6 +601,14 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
     )
   }
 
+  const onCangeIsSideMenuOptionsOpen = () => {
+    log.w('a')
+    cancelSearch();
+
+    setIsAddingNewObjective(false);
+    setIsSideMenuOptionsOpen(!isSideMenuOptionsOpen);
+  }
+
   const getSideMenu = () => {
     return(
       <div className={'objectivesListSideContainer '}>
@@ -622,7 +617,7 @@ const ObjectivesList: React.FC<ObjectivesListProps> = (props) => {
             {isShowingObjsList && <PressImage onClick={() => {setIsShowingObjsList(!isShowingObjsList)}} src={process.env.PUBLIC_URL + '/down-chevron.png'}/>}
             {!isShowingObjsList && <PressImage onClick={() => {setIsShowingObjsList(!isShowingObjsList)}} src={process.env.PUBLIC_URL + '/up-chevron.png'}/>}
             {getSideMenuTitle()}
-            <PressImage src={process.env.PUBLIC_URL + '/menu.png'} onClick={()=>{setIsSideMenuOptionsOpen(!isSideMenuOptionsOpen)}} isSelected={isSideMenuOptionsOpen}/>
+            <PressImage src={process.env.PUBLIC_URL + '/menu.png'} onClick={onCangeIsSideMenuOptionsOpen} isSelected={isSideMenuOptionsOpen}/>
           </div>
           {isSideMenuOptionsOpen && getSideMenuOptionsView()}
           {isSearchingMenuOpen && getSearchView()}
