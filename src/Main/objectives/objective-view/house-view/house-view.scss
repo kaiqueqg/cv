@@ -1,6 +1,6 @@
 @import '../../../../global.scss';
 
-$bor: false;
+// $bor: true;
 
 .houseContainer{
   display: flex;
@@ -152,12 +152,55 @@ $bor: false;
 
 .houseInfo{
   display: flex;
-  padding: 5px 10px;
-  vertical-align: middle;
-  font-size: smaller;
+  align-items: center;
+  text-align: center;
   
-  @media(min-width: 700px){
-    justify-content: left;
+  font-size: smaller;
+  font-weight: bold;
+
+  padding: 0px 5px;
+  margin: 0px 5px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  [theme="Dark"]{
+    
+  }
+
+  [theme="Light"]{
+    
+  }
+
+  @if($bor){
+    border-width: 1px;
+    border-color: green;
+    border-style: solid;
+  }
+}
+
+.houseInfo{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  
+  font-size: smaller;
+  font-weight: bold;
+
+  padding: 0px 5px;
+  margin: 0px 5px;
+
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+
+  [theme="Dark"]{
+    
+  }
+
+  [theme="Light"]{
+    
   }
 
   @if($bor){

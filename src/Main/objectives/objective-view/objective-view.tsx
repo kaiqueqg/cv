@@ -140,6 +140,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
     try {
       const data = await objectiveslistApi.getObjectiveItemList(objective.ObjectiveId);
       if(data){
+        // log.arry(data)
         const sorted = data.sort((a: Item, b: Item) => a.Pos-b.Pos);
         setItems(sorted);
         setFailDownload(false);
@@ -164,7 +165,6 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
       for (const item of values) {
         const existingIndex = newItems.findIndex((i: Item) => i.ItemId === item.ItemId);
         if (existingIndex >= 0) {
-          console.log('updating ' + item.Title+' ' + (item as Step).Done)
           newItems[existingIndex] = item; // Update
         } else {
           newItems.push(item); // Add new
@@ -593,6 +593,7 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const copyItems = () => {
     const action: MultSelectAction = { type: MultiSelectType.COPY, fromObjectiveId:objective.ObjectiveId, items: multItemsSelected};
     sessionStorage.setItem('multiItems', JSON.stringify(action));
+    navigator.clipboard.writeText(JSON.stringify(action));
 
     popMessage('Items copied.');
 
@@ -1307,7 +1308,12 @@ export const ObjectiveView = forwardRef<ObjectiveViewRef, ObjectiveViewProps>((p
   const getMultiSelectMenu = () => {
     if(!isMultiSelectMenuOpen) return <></>;
     
-    const stgValue: string|null = sessionStorage.getItem('multiItems');
+    let stgValue: string|null = null;
+    try {
+      stgValue = sessionStorage.getItem('multiItems');
+    } catch (err) {
+      log.err(err)
+    }
     const selectedNumber: string|undefined = multItemsSelected.length>0?multItemsSelected.length.toString():undefined;
 
     return(

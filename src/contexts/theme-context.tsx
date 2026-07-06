@@ -13,6 +13,7 @@ export const enum SCSS {
   INPUT_CONTRAST,
   INPUT_ALERT,
   TEXT,
+  TEXT_YELLOW,
   TEXT_CONTRAST,
   TEXT_ALERT,
   BORDERCOLOR,
@@ -97,6 +98,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         return '-input-alert input ';
       case SCSS.TEXT:
         return '-text'+(fade?'-fade':'');
+      case SCSS.TEXT_YELLOW:
+        return '-text-yellow';
       case SCSS.TEXT_CONTRAST:
         return '-text-contrast';
       case SCSS.TEXT_ALERT:

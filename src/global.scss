@@ -184,6 +184,14 @@ input[type="number"] {
   .global-white-text{color: black;}
   .global-pink-text{color: black;}
 
+  .global-blue-text-yellow{color: #fffc53;}
+  .global-red-text-yellow{color: #fffc53;}
+  .global-green-text-yellow{color: #fffc53;}
+  .global-cyan-text-yellow{color: #fffb00;}
+  .global-notheme-text-yellow{color: #fffc53}
+  .global-white-text-yellow{color: rgb(133, 133, 0);}
+  .global-pink-text-yellow{color: rgb(133, 133, 0)}
+
   .global-blue-text-fade{color: #a3a3a3;}
   .global-red-text-fade{color: #a3a3a3;}
   .global-green-text-fade{color: #a3a3a3;}
@@ -321,6 +329,14 @@ input[type="number"] {
   .global-notheme-text{color: $black;}
   .global-white-text{color: $black;}
   .global-pink-text{color: $black;}
+
+  .global-blue-text-yellow{color: rgb(255, 255, 34);}
+  .global-red-text-yellow{color: rgb(255, 255, 78);}
+  .global-green-text-yellow{color: rgb(133, 133, 0)}
+  .global-cyan-text-yellow{color: #fffc5b;}
+  .global-notheme-text-yellow{color: rgb(133, 133, 0)}
+  .global-white-text-yellow{color: rgb(133, 133, 0);}
+  .global-pink-text-yellow{color: rgb(133, 133, 0);}
 
   .global-blue-text-fade{color: #a3a3a3;}
   .global-red-text-fade{color: #a3a3a3;}

@@ -29,8 +29,7 @@ interface HouseViewProps extends ItemViewProps{
 }
 
 export const HouseView: React.FC<HouseViewProps> = (props) => {
-  const { user, setUser } = useUserContext();
-  const { identityApi, objectiveslistApi } = useRequestContext();
+  const { objectiveslistApi } = useRequestContext();
   const { scss } = useThemeContext();
   const { house, theme, putItemsInDisplay, removeItemsInDisplay, isDisabled, isSelecting, isSelected, itemTintColor } = props;
 
@@ -120,6 +119,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
       TotalPrice: newHouse.TotalPrice,
       Details: newHouse.Details.trim(),
       Attention: newHouse.Attention.trim(),  
+      LastModified: new Date().toISOString()
     };
 
     if(newHouse.Title !== house.Title
@@ -133,12 +133,14 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
       || newItem.Attention !== house.Attention) {
       setIsEditingHouse(true);
 
+      log.r(JSON.stringify(newItem))
       const data = await objectiveslistApi.putObjectiveItems([newItem]);
-
+      
       if(data){
+        log.g(JSON.stringify(newItem))
         setIsEditingHouse(false);
         putItemsInDisplay(data);
-        setNewHouse(newHouse);
+        setNewHouse(newItem);
       }
 
       setTimeout(() => {
@@ -291,7 +293,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.MeterSquare || house.MeterSquare.trim() === '') return;
 
     return(
-      <div className={'houseInfo' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
+      <div className={'houseInfo' + scss(theme, [SCSS.TEXT, SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {house.MeterSquare+'m²'}
       </div>
     )
@@ -301,7 +303,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
     if(!house.TotalPrice || house.TotalPrice === 0) return;
     
     return(
-      <div className={'houseInfo' + scss(theme, [SCSS.TEXT])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
+      <div className={'houseInfo' + scss(theme, [SCSS.TEXT_YELLOW, SCSS.BORDERCOLOR_CONTRAST, SCSS.ITEM_BG_DARK])} onClick={() => {if(!isDisabled)setIsEditingHouse(true)}}>
         {'$' + house.TotalPrice.toString()}
       </div>
     )
@@ -368,7 +370,6 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
               {getMeterSquareView()}
               {getTotalPrice()}
             </div>
-            {getAdressView()}
           </div>
           {getListingView()}
           {getMapLinkView()}
@@ -385,6 +386,7 @@ export const HouseView: React.FC<HouseViewProps> = (props) => {
           }
         </div>
         <div className='houseDisplaySecondaryContainer'>
+          {getAdressView()}
           {getDetailsView()}
           {getAttentionView()}
         </div>
